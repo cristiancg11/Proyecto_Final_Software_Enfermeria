@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
+  ViewChild,
   computed,
   inject,
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 import { HandwashStep } from '../../core/models/handwash.models';
 
@@ -123,6 +126,28 @@ import { HandwashStep } from '../../core/models/handwash.models';
 
           <!-- Columna Derecha: Cronómetro y Visualizador -->
           <div class="lg:col-span-5 flex flex-col items-center justify-center text-center">
+            <div class="w-full mb-5 relative overflow-hidden rounded-2xl bg-[#0B2B29] aspect-video">
+              <video #cameraVideo autoplay muted playsinline class="w-full h-full object-cover scale-x-[-1]"></video>
+              <canvas #handOverlay class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+              @if (cameraActive()) {
+                <div class="absolute left-3 top-3 rounded-full bg-[#0B2B29]/80 px-3 py-1 text-[11px] font-bold text-white">
+                  {{ handsDetected() >= 2 ? '✓ Dos manos detectadas' : 'Muestra ambas manos' }}
+                </div>
+                @if (cameraActive()) {
+                  <div class="absolute bottom-3 left-3 right-3 rounded-xl bg-white/90 px-3 py-2 text-left text-[11px] text-[#0B2B29]">
+                    <b>{{ palmsValidated() ? '✓ Movimiento correcto' : 'Verificando: ' + palmsEvidence().toFixed(1) + ' / 1.5 s' }}</b><br>{{ palmsFeedback() }}
+                  </div>
+                }
+                <button type="button" (click)="stopCamera()" class="absolute right-3 top-3 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#0B2B29]">Apagar</button>
+              } @else {
+                <div class="absolute inset-0 flex flex-col items-center justify-center p-5 text-white">
+                  <p class="text-sm font-bold">Evaluación asistida por cámara</p>
+                  <p class="mt-1 text-xs text-white/70">El video se procesa en este dispositivo; no se guarda.</p>
+                  <button type="button" (click)="startCamera()" [disabled]="cameraLoading()" class="mt-4 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0B2B29]">{{ cameraLoading() ? 'Preparando…' : 'Activar cámara' }}</button>
+                  @if (cameraError()) { <p class="mt-2 text-xs text-[#FFB6A6]">{{ cameraError() }}</p> }
+                </div>
+              }
+            </div>
             <!-- Representación Visual del Cronómetro -->
             <div class="relative w-56 h-56 md:w-64 md:h-64 flex items-center justify-center mb-6">
               <!-- Círculo de Fondo -->
@@ -199,9 +224,10 @@ import { HandwashStep } from '../../core/models/handwash.models';
             <button
               type="button"
               (click)="completeStep()"
+              [disabled]="cameraActive()"
               class="w-full btn-primary py-4 text-base md:text-lg flex items-center justify-center gap-3 shadow-xl hover:scale-[1.02] group"
             >
-              <span>{{ isLastStep() ? 'Finalizar Práctica' : 'Paso Completado' }}</span>
+              <span>{{ cameraActive() ? 'La cámara avanzará al detectar el movimiento' : (isLastStep() ? 'Finalizar Práctica' : 'Paso Completado') }}</span>
               <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
@@ -261,6 +287,16 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly steps = this.stateService.steps;
   readonly currentStepIndex = signal(0);
   readonly currentSeconds = signal(0);
+  readonly cameraActive = signal(false);
+  readonly cameraLoading = signal(false);
+  readonly cameraError = signal('');
+  readonly handsDetected = signal(0);
+  readonly palmsEvidence = signal(0);
+  readonly palmsValidated = signal(false);
+  readonly palmsFeedback = signal('Acerca las palmas y frota continuamente.');
+
+  @ViewChild('cameraVideo') private cameraVideo?: ElementRef<HTMLVideoElement>;
+  @ViewChild('handOverlay') private handOverlay?: ElementRef<HTMLCanvasElement>;
 
   readonly currentStep = computed(() => this.steps[this.currentStepIndex()]);
   readonly isLastStep = computed(() => this.currentStepIndex() === this.steps.length - 1);
@@ -284,6 +320,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
   private timerInterval: any = null;
   private startTime: number = 0;
+  private stream: MediaStream | null = null;
+  private detector: HandLandmarker | null = null;
+  private animationFrame: number | null = null;
+  private previousCenters: { x: number; y: number }[] | null = null;
+  private previousFrameAt: number | null = null;
+  private autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
     if (!this.student()) {
@@ -299,7 +341,74 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopTimer();
+    this.stopCamera();
   }
+
+  async startCamera(): Promise<void> {
+    this.cameraLoading.set(true); this.cameraError.set('');
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+      const video = this.cameraVideo?.nativeElement;
+      if (!video) throw new Error('Visor no disponible');
+      video.srcObject = this.stream; await video.play();
+      if (!this.detector) {
+        const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm');
+        this.detector = await HandLandmarker.createFromOptions(vision, { baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task' }, runningMode: 'VIDEO', numHands: 2 });
+      }
+      this.cameraActive.set(true); this.detectHands();
+    } catch (error) {
+      this.releaseStream();
+      this.cameraError.set(error instanceof DOMException && error.name === 'NotAllowedError' ? 'Debes autorizar el permiso de cámara.' : 'No fue posible iniciar la cámara.');
+    } finally { this.cameraLoading.set(false); }
+  }
+
+  stopCamera(): void {
+    if (this.animationFrame !== null) cancelAnimationFrame(this.animationFrame);
+    if (this.autoAdvanceTimer !== null) clearTimeout(this.autoAdvanceTimer);
+    this.animationFrame = null; this.cameraActive.set(false); this.handsDetected.set(0); this.resetPalmsEvidence(); this.releaseStream();
+    const canvas = this.handOverlay?.nativeElement; canvas?.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  private detectHands(): void {
+    const video = this.cameraVideo?.nativeElement;
+    if (!video || !this.detector || !this.cameraActive()) return;
+    const result = this.detector.detectForVideo(video, performance.now());
+    this.handsDetected.set(result.landmarks.length); this.evaluatePalms(result.landmarks); this.drawLandmarks(result.landmarks);
+    this.animationFrame = requestAnimationFrame(() => this.detectHands());
+  }
+
+  private evaluatePalms(landmarks: { x: number; y: number }[][]): void {
+    const now = performance.now();
+    const instruction = this.currentStep().title;
+    if (landmarks.length < 2) { this.palmsFeedback.set(`${instruction}: muestra las dos manos frente a la cámara.`); this.previousCenters = null; this.previousFrameAt = now; return; }
+    const centers = landmarks.slice(0, 2).map(hand => ({ x: (hand[0].x + hand[9].x) / 2, y: (hand[0].y + hand[9].y) / 2 }));
+    const close = Math.hypot(centers[0].x - centers[1].x, centers[0].y - centers[1].y) < this.currentDistanceThreshold();
+    const movement = this.previousCenters ? (Math.hypot(centers[0].x - this.previousCenters[0].x, centers[0].y - this.previousCenters[0].y) + Math.hypot(centers[1].x - this.previousCenters[1].x, centers[1].y - this.previousCenters[1].y)) / 2 : 0;
+    const elapsed = this.previousFrameAt ? Math.min(.15, (now - this.previousFrameAt) / 1000) : 0;
+    if (close && movement > .004) {
+      const evidence = Math.min(1.5, this.palmsEvidence() + elapsed);
+      this.palmsEvidence.set(evidence);
+      if (evidence >= 1.5 && !this.palmsValidated()) {
+        this.palmsValidated.set(true);
+        this.palmsFeedback.set(`${instruction} reconocido. Avanzando al siguiente paso…`);
+        this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
+      } else if (!this.palmsValidated()) this.palmsFeedback.set(`¡Bien! Mantén el movimiento de ${instruction.toLowerCase()}.`);
+    } else this.palmsFeedback.set(close ? `Realiza fricción continua para ${instruction.toLowerCase()}.` : `Acerca las manos para ${instruction.toLowerCase()}.`);
+    this.previousCenters = centers; this.previousFrameAt = now;
+  }
+
+  private drawLandmarks(landmarks: { x: number; y: number }[][]): void {
+    const canvas = this.handOverlay?.nativeElement, video = this.cameraVideo?.nativeElement;
+    if (!canvas || !video || !video.videoWidth) return;
+    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d'); if (!context) return;
+    context.clearRect(0, 0, canvas.width, canvas.height); context.fillStyle = '#00B39F';
+    for (const hand of landmarks) for (const point of hand) { context.beginPath(); context.arc((1 - point.x) * canvas.width, point.y * canvas.height, 4, 0, Math.PI * 2); context.fill(); }
+  }
+
+  private resetPalmsEvidence(): void { this.palmsEvidence.set(0); this.palmsValidated.set(false); this.palmsFeedback.set('Acerca las palmas y frota continuamente.'); this.previousCenters = null; this.previousFrameAt = null; }
+  private currentDistanceThreshold(): number { return [0.34, 0.43, 0.34, 0.38, 0.30, 0.32][this.currentStepIndex()] ?? 0.34; }
+  private releaseStream(): void { this.stream?.getTracks().forEach(track => track.stop()); this.stream = null; const video = this.cameraVideo?.nativeElement; if (video) video.srcObject = null; }
 
   private startStepTimer(): void {
     this.stopTimer();
@@ -324,6 +433,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   completeStep(): void {
+    this.finishCurrentStep();
+  }
+
+  private finishCurrentStep(): void {
+    if (this.autoAdvanceTimer !== null) clearTimeout(this.autoAdvanceTimer);
+    this.autoAdvanceTimer = null;
     const finalSeconds = Math.max(0.5, this.currentSeconds());
     const stepNum = this.currentStep().number;
 
@@ -335,6 +450,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.router.navigate(['/resultado']);
     } else {
       this.currentStepIndex.update((idx) => idx + 1);
+      this.resetPalmsEvidence();
       this.startStepTimer();
     }
   }
