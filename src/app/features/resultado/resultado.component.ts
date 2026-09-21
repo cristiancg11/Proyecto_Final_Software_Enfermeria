@@ -89,7 +89,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
               <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 col-span-2 sm:col-span-1">
                 <span class="text-[11px] font-bold text-[#537571] uppercase block">Quiz Diagnóstico</span>
-                <span class="text-lg font-bold text-[#FF6A4D]">{{ evaluation().quizScore }}/3 Aciertos</span>
+                <span class="text-lg font-bold text-[#FF6A4D]">{{ evaluation().quizScore }} de {{ evaluation().totalQuizQuestions }} Aciertos</span>
               </div>
             </div>
           </div>
