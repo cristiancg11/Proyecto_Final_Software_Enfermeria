@@ -135,7 +135,13 @@ import { HandwashStep } from '../../core/models/handwash.models';
                 </div>
                 @if (cameraActive()) {
                   <div class="absolute bottom-3 left-3 right-3 rounded-xl bg-white/90 px-3 py-2 text-left text-[11px] text-[#0B2B29]">
-                    <b>{{ palmsValidated() ? '✓ Movimiento correcto' : 'Verificando: ' + palmsEvidence().toFixed(1) + ' / 1.5 s' }}</b><br>{{ palmsFeedback() }}
+                    <b>{{ palmsValidated() ? '✓ Movimiento reconocido por cámara' : 'Reconociendo el movimiento: ' + palmsEvidence().toFixed(1) + ' / 1.5 s' }}</b>
+                    <br>
+                    @if (palmsValidated() && currentSeconds() < 3) {
+                      Mantén la fricción hasta que el cronómetro llegue a 3.0 s para que el paso sea óptimo.
+                    } @else {
+                      {{ palmsFeedback() }}
+                    }
                   </div>
                 }
                 <button type="button" (click)="stopCamera()" class="absolute right-3 top-3 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#0B2B29]">Apagar</button>

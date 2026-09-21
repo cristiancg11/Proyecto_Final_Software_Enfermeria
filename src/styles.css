@@ -176,6 +176,12 @@ header .text-\[\#008072\],
 header .text-\[\#00B39F\],
 footer .text-\[\#87A3A0\] { color: #50E7FF !important; }
 
+/* Refuerzo de contraste para textos heredados dentro de la barra y el pie. */
+header a, header span, footer span { text-shadow: 0 1px 14px rgba(80, 231, 255, .16); }
+header nav a { color: #D9E8F7 !important; }
+header nav a:hover { color: #D9FF43 !important; }
+footer { color: #C9D9E8 !important; }
+
 /* Animations */
 @keyframes pulseSubtle {
   0%, 100% { transform: scale(1); }
