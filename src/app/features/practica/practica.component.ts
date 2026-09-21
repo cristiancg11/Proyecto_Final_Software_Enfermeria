@@ -93,7 +93,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           <!-- Columna Izquierda: Información del Paso -->
-          <div class="lg:col-span-7 space-y-5">
+          <div class="lg:col-span-6 space-y-5">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#FFE9DE] text-[#FF6A4D] text-xs font-bold">
               Maniobra Oficial OMS #{{ currentStep().number }}
             </div>
@@ -125,8 +125,8 @@ import { HandwashStep } from '../../core/models/handwash.models';
           </div>
 
           <!-- Columna Derecha: Cronómetro y Visualizador -->
-          <div class="lg:col-span-5 flex flex-col items-center justify-center text-center">
-            <div class="w-full mb-5 relative overflow-hidden rounded-2xl bg-[#0B2B29] aspect-video">
+          <div class="lg:col-span-6 flex flex-col items-center justify-center text-center">
+            <div class="w-full mb-5 relative overflow-hidden rounded-2xl bg-[#0B2B29] aspect-[4/3]">
               <video #cameraVideo autoplay muted playsinline class="w-full h-full object-cover scale-x-[-1]"></video>
               <canvas #handOverlay class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
               @if (cameraActive()) {

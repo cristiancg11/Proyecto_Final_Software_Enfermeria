@@ -14,7 +14,7 @@ import {
 })
 export class HandwashStateService {
   // Questions Catalog
-  readonly diagnosticQuestions: DiagnosticQuestion[] = [
+  private readonly questionBank: DiagnosticQuestion[] = [
     {
       id: 1,
       question:
@@ -60,7 +60,17 @@ export class HandwashStateService {
       rationale:
         'Las joyas y el esmalte acumulan microorganismos patógenos y microfisuras que impiden una antisepsia eficaz en el área asistencial.',
     },
+    { id: 4, question: '¿Cuándo se recomienda preferir la fricción con preparación alcohólica?', context: 'Selección del método de higiene', options: ['Cuando las manos no están visiblemente sucias.', 'Solo después de usar guantes estériles.', 'Únicamente al final del turno.', 'Cuando hay sangre visible en las manos.'], correctIndex: 0, rationale: 'La preparación alcohólica es el método preferido cuando las manos no están visiblemente sucias, por su rapidez y eficacia.' },
+    { id: 5, question: '¿Qué se debe hacer inmediatamente después de quitarse los guantes?', context: 'Uso seguro de guantes', options: ['Aplicar crema humectante.', 'Realizar higiene de manos.', 'Colocar un nuevo par de guantes.', 'Desinfectar solo las uñas.'], correctIndex: 1, rationale: 'Los guantes no sustituyen la higiene de manos; pueden contaminarse al retirarlos o tener microperforaciones.' },
+    { id: 6, question: '¿Cuál es la acción correcta antes de una tarea aséptica?', context: 'Prevención de infecciones', options: ['Higiene de manos antes de preparar o manipular material limpio.', 'Usar doble guante sin higiene previa.', 'Esperar hasta terminar el procedimiento.', 'Lavar únicamente la mano dominante.'], correctIndex: 0, rationale: 'La higiene antes de una tarea aséptica evita llevar microorganismos al paciente o al material estéril.' },
+    { id: 7, question: '¿Por qué se recomienda mantener las uñas cortas?', context: 'Preparación de manos', options: ['Para usar mejor el reloj clínico.', 'Porque bajo las uñas se acumulan microorganismos.', 'Para reducir el consumo de jabón.', 'Porque acelera el secado de guantes.'], correctIndex: 1, rationale: 'Las zonas subungueales son reservorios frecuentes de microorganismos y son difíciles de limpiar correctamente.' },
+    { id: 8, question: 'Después de tocar el entorno del paciente, ¿qué corresponde hacer?', context: '5 Momentos OMS', options: ['Higiene de manos antes de atender otro paciente.', 'Retirar el uniforme.', 'Usar guantes estériles de inmediato.', 'Esperar al final de la jornada.'], correctIndex: 0, rationale: 'La higiene tras tocar el entorno del paciente previene la transmisión cruzada entre superficies y pacientes.' },
+    { id: 9, question: '¿Qué superficie suele omitirse durante un lavado apresurado?', context: 'Técnica de fricción', options: ['La frente.', 'El antebrazo completo.', 'Pulgares, yemas y espacios interdigitales.', 'Los hombros.'], correctIndex: 2, rationale: 'Pulgares, yemas, uñas y espacios interdigitales son zonas de difícil acceso que requieren movimientos específicos.' },
+    { id: 10, question: '¿Cuál es el objetivo principal de la fricción durante la higiene de manos?', context: 'Fundamento de la técnica', options: ['Perfumar las manos.', 'Remover flora transitoria de las superficies de la mano.', 'Reemplazar el uso de agua.', 'Aumentar la temperatura de la piel.'], correctIndex: 1, rationale: 'La fricción mecánica permite desprender la flora transitoria de todas las superficies de las manos.' },
   ];
+
+  private activeDiagnosticQuestions: DiagnosticQuestion[] = this.pickRandomQuestions(5);
+  get diagnosticQuestions(): DiagnosticQuestion[] { return this.activeDiagnosticQuestions; }
 
   // Official 6 steps
   readonly steps: HandwashStep[] = [
@@ -210,6 +220,8 @@ export class HandwashStateService {
 
   // State Mutators
   setStudent(student: StudentInfo): void {
+    this.activeDiagnosticQuestions = this.pickRandomQuestions(5);
+    this._diagnosticAnswers.set({});
     this._student.set({
       ...student,
       registeredAt: new Date(),
@@ -280,5 +292,9 @@ export class HandwashStateService {
     this._student.set(null);
     this._diagnosticAnswers.set({});
     this._stepRecords.set([]);
+  }
+
+  private pickRandomQuestions(count: number): DiagnosticQuestion[] {
+    return [...this.questionBank].sort(() => Math.random() - 0.5).slice(0, count);
   }
 }

@@ -47,11 +47,11 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           <div class="flex items-center gap-3">
             <div class="text-right">
               <div class="text-xs text-[#537571] font-semibold">Progreso Diagnóstico</div>
-              <div class="text-sm font-bold text-[#008072]">{{ answeredCount() }} de 3 Preguntas</div>
+              <div class="text-sm font-bold text-[#008072]">{{ answeredCount() }} de {{ questions.length }} Preguntas</div>
             </div>
             <div class="w-12 h-12 rounded-full border-4 border-slate-100 flex items-center justify-center text-xs font-bold text-[#00B39F]"
-                 [ngClass]="answeredCount() === 3 ? 'border-[#00B39F] bg-[#00B39F]/10' : 'border-slate-200'">
-              {{ Math.round((answeredCount() / 3) * 100) }}%
+                 [ngClass]="answeredCount() === questions.length ? 'border-[#00B39F] bg-[#00B39F]/10' : 'border-slate-200'">
+              {{ Math.round((answeredCount() / questions.length) * 100) }}%
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             Cuestionario de Bioseguridad
           </h1>
           <p class="text-sm md:text-base text-[#537571] max-w-xl mx-auto">
-            Responde estas 3 preguntas fundamentales para verificar tus conocimientos previos antes de iniciar la práctica física en el simulador.
+            Responde 5 preguntas seleccionadas al azar para verificar tus conocimientos previos antes de iniciar la práctica física en el simulador.
           </p>
         </div>
 
@@ -75,7 +75,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-lg border border-white/80 transition-all duration-300">
             <div class="flex items-start gap-4 mb-4">
               <div class="w-8 h-8 rounded-xl bg-[#00B39F] text-white flex items-center justify-center text-sm font-bold shrink-0 mt-0.5 shadow-sm">
-                {{ q.id }}
+                {{ qIdx + 1 }}
               </div>
               <div>
                 <span class="text-xs font-semibold text-[#00B39F] uppercase tracking-wider">{{ q.context }}</span>
@@ -132,8 +132,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
       <!-- Barra Inferior Fija / Navegación -->
       <div class="sticky bottom-6 mt-10 p-4 md:p-5 rounded-3xl bg-white/95 backdrop-blur-xl border border-white shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="text-xs md:text-sm text-[#537571] text-center sm:text-left">
-          @if (answeredCount() < 3) {
-            <span>Responde todas las preguntas para desbloquear la práctica. Faltan <strong class="text-[#FF6A4D]">{{ 3 - answeredCount() }}</strong>.</span>
+          @if (answeredCount() < questions.length) {
+            <span>Responde todas las preguntas para desbloquear la práctica. Faltan <strong class="text-[#FF6A4D]">{{ questions.length - answeredCount() }}</strong>.</span>
           } @else {
             <span class="text-[#008072] font-semibold flex items-center gap-1.5 justify-center sm:justify-start">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -156,10 +156,10 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           <button
             type="button"
             (click)="onContinue()"
-            [disabled]="answeredCount() < 3"
+            [disabled]="answeredCount() < questions.length"
             class="btn-primary px-8 py-3.5 text-sm md:text-base flex-1 sm:flex-initial disabled:opacity-40 disabled:cursor-not-allowed group shadow-lg"
           >
-            <span>Continuar ({{ answeredCount() }}/3)</span>
+            <span>Continuar ({{ answeredCount() }}/{{ questions.length }})</span>
             <svg class="w-4 h-4 ml-2 inline-block transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
@@ -206,7 +206,7 @@ export class DiagnosticoComponent {
   }
 
   onContinue(): void {
-    if (this.answeredCount() === 3) {
+    if (this.answeredCount() === this.questions.length) {
       this.router.navigate(['/inicio']);
     }
   }
