@@ -44,3 +44,6 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
+# Documentos internos
+CONTEXTO_PROYECTO.md
+
