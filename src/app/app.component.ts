@@ -17,6 +17,7 @@ export class App {
 
   readonly student = this.stateService.student;
   readonly studentName = computed(() => this.student()?.fullName);
+  readonly isLoggedIn = computed(() => !!this.student() && !!this.student()?.fullName);
   readonly currentUrl = computed(() => this.router.url);
 
   constructor() {

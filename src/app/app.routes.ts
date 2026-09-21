@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { studentAuthGuard } from './core/guards/student-auth.guard';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,7 @@ export const routes: Routes = [
   },
   {
     path: 'diagnostico',
+    canActivate: [studentAuthGuard],
     loadComponent: () =>
       import('./features/diagnostico/diagnostico.component').then(
         (m) => m.DiagnosticoComponent
@@ -24,6 +26,7 @@ export const routes: Routes = [
   },
   {
     path: 'inicio',
+    canActivate: [studentAuthGuard],
     loadComponent: () =>
       import('./features/inicio/inicio.component').then(
         (m) => m.InicioComponent
@@ -32,6 +35,7 @@ export const routes: Routes = [
   },
   {
     path: 'practica',
+    canActivate: [studentAuthGuard],
     loadComponent: () =>
       import('./features/practica/practica.component').then(
         (m) => m.PracticaComponent
@@ -40,6 +44,7 @@ export const routes: Routes = [
   },
   {
     path: 'resultado',
+    canActivate: [studentAuthGuard],
     loadComponent: () =>
       import('./features/resultado/resultado.component').then(
         (m) => m.ResultadoComponent

@@ -17,19 +17,42 @@ import { HandwashStep } from '../../core/models/handwash.models';
   imports: [CommonModule],
   template: `
     <div class="max-w-4xl mx-auto px-4 py-6 md:py-10 animate-fade-in">
-      <!-- Indicador de Progreso Superior (6 Pasos) -->
-      <div class="bg-white/80 backdrop-blur-md rounded-3xl p-5 md:p-6 mb-6 shadow-md border border-white/90">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-[#00B39F] animate-ping"></span>
-            <span class="text-xs md:text-sm font-bold text-[#0B2B29] tracking-wide uppercase">
-              Práctica Guiada • Paso {{ currentStepIndex() + 1 }} de 6
+      @if (!student()) {
+        <!-- Pantalla de bloqueo si no está autenticado -->
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white text-center max-w-xl mx-auto">
+          <div class="w-16 h-16 rounded-3xl bg-[#FF6A4D]/15 text-[#FF6A4D] flex items-center justify-center mx-auto mb-5 shadow-sm">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h2 class="font-heading text-2xl md:text-3xl text-[#0B2B29] mb-3">
+            Identificación Requerida
+          </h2>
+          <p class="text-sm md:text-base text-[#537571] mb-6 leading-relaxed">
+            Para iniciar el cronómetro y evaluar la práctica de los 6 pasos, primero debes registrar tus datos en el formulario de bienvenida.
+          </p>
+          <button
+            type="button"
+            (click)="goToBienvenida()"
+            class="btn-primary py-3.5 px-8 text-base shadow-lg"
+          >
+            Ir al Formulario de Registro
+          </button>
+        </div>
+      } @else {
+        <!-- Indicador de Progreso Superior (6 Pasos) -->
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl p-5 md:p-6 mb-6 shadow-md border border-white/90">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-[#00B39F] animate-ping"></span>
+              <span class="text-xs md:text-sm font-bold text-[#0B2B29] tracking-wide uppercase">
+                Práctica Guiada • Paso {{ currentStepIndex() + 1 }} de 6
+              </span>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#00B39F]/10 text-[#008072]">
+              Objetivo: 3 a 8 segundos
             </span>
           </div>
-          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#00B39F]/10 text-[#008072]">
-            Objetivo: 3 a 8 segundos
-          </span>
-        </div>
 
         <!-- 6 Puntos de progreso -->
         <div class="grid grid-cols-6 gap-2 md:gap-4">
@@ -226,6 +249,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
           </div>
         </div>
       }
+      }
     </div>
   `,
 })
@@ -233,6 +257,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
 
+  readonly student = this.stateService.student;
   readonly steps = this.stateService.steps;
   readonly currentStepIndex = signal(0);
   readonly currentSeconds = signal(0);
@@ -261,7 +286,15 @@ export class PracticaComponent implements OnInit, OnDestroy {
   private startTime: number = 0;
 
   ngOnInit(): void {
+    if (!this.student()) {
+      this.router.navigate(['/bienvenida']);
+      return;
+    }
     this.startStepTimer();
+  }
+
+  goToBienvenida(): void {
+    this.router.navigate(['/bienvenida']);
   }
 
   ngOnDestroy(): void {

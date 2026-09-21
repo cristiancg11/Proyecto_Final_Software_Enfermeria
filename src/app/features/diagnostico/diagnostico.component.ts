@@ -9,42 +9,65 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
   imports: [CommonModule],
   template: `
     <div class="max-w-4xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
-      <!-- Barra Superior / Contexto del Estudiante -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-white/70 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/80 shadow-sm">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-[#00B39F]/15 flex items-center justify-center text-[#00B39F] font-bold">
-            {{ studentInitials() }}
+      @if (!student()) {
+        <!-- Pantalla de bloqueo si no está autenticado -->
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white text-center max-w-xl mx-auto">
+          <div class="w-16 h-16 rounded-3xl bg-[#FF6A4D]/15 text-[#FF6A4D] flex items-center justify-center mx-auto mb-5 shadow-sm">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
           </div>
-          <div>
-            <div class="text-xs text-[#537571] font-semibold">Estudiante Evaluado</div>
-            <div class="text-sm font-bold text-[#0B2B29]">{{ studentName() }}</div>
+          <h2 class="font-heading text-2xl md:text-3xl text-[#0B2B29] mb-3">
+            Acceso Restringido
+          </h2>
+          <p class="text-sm md:text-base text-[#537571] mb-6 leading-relaxed">
+            Para ver las preguntas, seleccionar opciones y realizar la práctica, primero debes identificarte con tu nombre, código estudiantil y aceptar el consentimiento informado.
+          </p>
+          <button
+            type="button"
+            (click)="goToBienvenida()"
+            class="btn-primary py-3.5 px-8 text-base shadow-lg"
+          >
+            Ir al Formulario de Registro
+          </button>
+        </div>
+      } @else {
+        <!-- Barra Superior / Contexto del Estudiante -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-white/70 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/80 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#00B39F]/15 flex items-center justify-center text-[#00B39F] font-bold">
+              {{ studentInitials() }}
+            </div>
+            <div>
+              <div class="text-xs text-[#537571] font-semibold">Estudiante Evaluado</div>
+              <div class="text-sm font-bold text-[#0B2B29]">{{ studentName() }}</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <div class="text-xs text-[#537571] font-semibold">Progreso Diagnóstico</div>
+              <div class="text-sm font-bold text-[#008072]">{{ answeredCount() }} de 3 Preguntas</div>
+            </div>
+            <div class="w-12 h-12 rounded-full border-4 border-slate-100 flex items-center justify-center text-xs font-bold text-[#00B39F]"
+                 [ngClass]="answeredCount() === 3 ? 'border-[#00B39F] bg-[#00B39F]/10' : 'border-slate-200'">
+              {{ Math.round((answeredCount() / 3) * 100) }}%
+            </div>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <div class="text-right">
-            <div class="text-xs text-[#537571] font-semibold">Progreso Diagnóstico</div>
-            <div class="text-sm font-bold text-[#008072]">{{ answeredCount() }} de 3 Preguntas</div>
+        <!-- Encabezado de la Sección -->
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFE9DE] text-[#FF6A4D] text-xs font-bold mb-3 border border-[#FF6A4D]/20">
+            Evaluación Inicial de Conocimientos
           </div>
-          <div class="w-12 h-12 rounded-full border-4 border-slate-100 flex items-center justify-center text-xs font-bold text-[#00B39F]"
-               [ngClass]="answeredCount() === 3 ? 'border-[#00B39F] bg-[#00B39F]/10' : 'border-slate-200'">
-            {{ Math.round((answeredCount() / 3) * 100) }}%
-          </div>
+          <h1 class="font-heading text-3xl md:text-4xl text-[#0B2B29] mb-3">
+            Cuestionario de Bioseguridad
+          </h1>
+          <p class="text-sm md:text-base text-[#537571] max-w-xl mx-auto">
+            Responde estas 3 preguntas fundamentales para verificar tus conocimientos previos antes de iniciar la práctica física en el simulador.
+          </p>
         </div>
-      </div>
-
-      <!-- Encabezado de la Sección -->
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFE9DE] text-[#FF6A4D] text-xs font-bold mb-3 border border-[#FF6A4D]/20">
-          Evaluación Inicial de Conocimientos
-        </div>
-        <h1 class="font-heading text-3xl md:text-4xl text-[#0B2B29] mb-3">
-          Cuestionario de Bioseguridad
-        </h1>
-        <p class="text-sm md:text-base text-[#537571] max-w-xl mx-auto">
-          Responde estas 3 preguntas fundamentales para verificar tus conocimientos previos antes de iniciar la práctica física en el simulador.
-        </p>
-      </div>
 
       <!-- Lista de Preguntas -->
       <div class="space-y-8">
@@ -143,6 +166,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           </button>
         </div>
       </div>
+      }
     </div>
   `,
 })
