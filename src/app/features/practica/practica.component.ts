@@ -390,10 +390,13 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.palmsEvidence.set(evidence);
       if (evidence >= 1.5 && !this.palmsValidated()) {
         this.palmsValidated.set(true);
-        this.palmsFeedback.set(`${instruction} reconocido. Avanzando al siguiente paso…`);
-        this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
+        this.palmsFeedback.set(`${instruction} reconocido. Mantén la fricción hasta completar 3 segundos.`);
       } else if (!this.palmsValidated()) this.palmsFeedback.set(`¡Bien! Mantén el movimiento de ${instruction.toLowerCase()}.`);
     } else this.palmsFeedback.set(close ? `Realiza fricción continua para ${instruction.toLowerCase()}.` : `Acerca las manos para ${instruction.toLowerCase()}.`);
+    if (this.palmsValidated() && this.currentSeconds() >= 3 && this.autoAdvanceTimer === null) {
+      this.palmsFeedback.set(`${instruction} validado con tiempo óptimo. Avanzando al siguiente paso…`);
+      this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
+    }
     this.previousCenters = centers; this.previousFrameAt = now;
   }
 

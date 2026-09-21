@@ -166,6 +166,16 @@ header.sticky {
 
 footer { background: rgba(8, 11, 16, .82) !important; border-color: rgba(80, 231, 255, .13) !important; }
 
+/* Texto legible sobre las superficies oscuras del nuevo tema. */
+header .text-\[\#0B2B29\],
+header .text-\[\#537571\],
+footer .text-\[\#0B2B29\],
+footer .text-\[\#537571\] { color: #EAF4FF !important; }
+
+header .text-\[\#008072\],
+header .text-\[\#00B39F\],
+footer .text-\[\#87A3A0\] { color: #50E7FF !important; }
+
 /* Animations */
 @keyframes pulseSubtle {
   0%, 100% { transform: scale(1); }
