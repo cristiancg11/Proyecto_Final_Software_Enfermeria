@@ -1,12 +1,29 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component, computed, inject } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { HandwashStateService } from './core/services/handwash-state.service';
+import { filter } from 'rxjs';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.component.css',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
 })
 export class App {
-  protected readonly title = signal('manos-seguras');
+  private readonly router = inject(Router);
+  readonly stateService = inject(HandwashStateService);
+
+  readonly student = this.stateService.student;
+  readonly studentName = computed(() => this.student()?.fullName);
+  readonly currentUrl = computed(() => this.router.url);
+
+  constructor() {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+  }
 }
