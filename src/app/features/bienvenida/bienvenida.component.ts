@@ -32,7 +32,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
       </div>
 
       <!-- Tarjeta Principal del Formulario -->
-      <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 md:p-10 shadow-xl border border-white/80 transition-all duration-300 hover:shadow-2xl">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-10 shadow-xl border border-white/80 transition-all duration-300 hover:shadow-2xl">
         <div class="flex items-center gap-3 border-b border-slate-100 pb-5 mb-6">
           <div class="w-10 h-10 rounded-2xl bg-[#00B39F]/15 flex items-center justify-center text-[#00B39F]">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,15 +40,15 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             </svg>
           </div>
           <div>
-            <h2 class="font-heading text-xl md:text-2xl text-[#0B2B29]">Identificación del Estudiante</h2>
-            <p class="text-xs md:text-sm text-[#537571]">Ingresa tus datos para registrar tu progreso y generar tu certificado</p>
+            <h2 class="font-heading text-xl md:text-2xl text-slate-900 font-bold">Identificación del Estudiante</h2>
+            <p class="text-xs md:text-sm text-slate-600">Ingresa tus datos para registrar tu progreso y generar tu certificado</p>
           </div>
         </div>
 
         <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="space-y-6">
           <!-- Campo Nombre Completo -->
           <div>
-            <label for="fullName" class="block text-sm font-semibold text-[#0B2B29] mb-2">
+            <label for="fullName" class="block text-sm font-semibold text-slate-800 mb-2">
               Nombre Completo <span class="text-[#FF6A4D]">*</span>
             </label>
             <div class="relative">
@@ -57,7 +57,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                 type="text"
                 formControlName="fullName"
                 placeholder="Ej. Laura Marcela Ramírez Gómez"
-                class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-[#0B2B29] font-medium"
+                class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
                 [class.border-red-400]="fullNameInvalid"
               />
               <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
@@ -73,7 +73,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
           <!-- Campo Código Estudiantil -->
           <div>
-            <label for="studentCode" class="block text-sm font-semibold text-[#0B2B29] mb-2">
+            <label for="studentCode" class="block text-sm font-semibold text-slate-800 mb-2">
               Código Estudiantil o Documento <span class="text-[#FF6A4D]">*</span>
             </label>
             <div class="relative">
@@ -82,7 +82,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                 type="text"
                 formControlName="studentCode"
                 placeholder="Ej. ENF-2024-8849 o Documento de Identidad"
-                class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-[#0B2B29] font-medium"
+                class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
                 [class.border-red-400]="studentCodeInvalid"
               />
               <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
@@ -97,7 +97,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           </div>
 
           <!-- Consentimiento Informado -->
-          <div class="rounded-2xl border border-[#00B39F]/20 bg-[#CFFBF0]/20 p-4 md:p-5 transition-colors">
+          <div class="rounded-2xl border border-[#00B39F]/30 bg-[#CFFBF0]/25 p-4 md:p-5 transition-colors">
             <label class="flex items-start gap-3.5 cursor-pointer">
               <input
                 type="checkbox"
@@ -105,7 +105,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                 id="consentCheck"
                 class="mt-1 w-5 h-5 rounded text-[#00B39F] border-slate-300 focus:ring-[#00B39F] cursor-pointer transition accent-[#00B39F]"
               />
-              <div class="text-xs md:text-sm text-[#0B2B29] leading-relaxed">
+              <div class="text-xs md:text-sm text-slate-800 leading-relaxed">
                 <span class="font-bold text-[#008072]">Consentimiento Informado: </span>
                 Acepto participar voluntariamente en esta sesión pedagógica y de evaluación de bioseguridad. Comprendo que mis respuestas y tiempos de práctica se registrarán con fines de retroalimentación formativa y académica.
               </div>
@@ -133,39 +133,39 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
       <!-- Resumen de Características -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-        <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/60 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#00B39F]/15 flex items-center justify-center text-[#00B39F] shrink-0">
+        <div class="bg-[#0e1626]/85 backdrop-blur-md rounded-2xl p-4 border border-[#50E7FF]/25 shadow-lg flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#50E7FF]/15 flex items-center justify-center text-[#50E7FF] shrink-0">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div>
-            <h3 class="text-xs font-bold text-[#0B2B29]">Cronómetro en Vivo</h3>
-            <p class="text-[11px] text-[#537571]">Medición por paso (3-8s)</p>
+            <h3 class="text-xs font-bold text-[#F5F8FF]">Cronómetro en Vivo</h3>
+            <p class="text-[11px] text-[#A5C2DE]">Medición por paso (3-8s)</p>
           </div>
         </div>
 
-        <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/60 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#FF6A4D]/15 flex items-center justify-center text-[#FF6A4D] shrink-0">
+        <div class="bg-[#0e1626]/85 backdrop-blur-md rounded-2xl p-4 border border-[#50E7FF]/25 shadow-lg flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#FF6A4D]/15 flex items-center justify-center text-[#FF9D85] shrink-0">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
             </svg>
           </div>
           <div>
-            <h3 class="text-xs font-bold text-[#0B2B29]">Calificación Automática</h3>
-            <p class="text-[11px] text-[#537571]">Evaluación precisa sobre 10</p>
+            <h3 class="text-xs font-bold text-[#F5F8FF]">Calificación Automática</h3>
+            <p class="text-[11px] text-[#A5C2DE]">Evaluación precisa sobre 10</p>
           </div>
         </div>
 
-        <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/60 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#00B39F]/15 flex items-center justify-center text-[#00B39F] shrink-0">
+        <div class="bg-[#0e1626]/85 backdrop-blur-md rounded-2xl p-4 border border-[#50E7FF]/25 shadow-lg flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#50E7FF]/15 flex items-center justify-center text-[#50E7FF] shrink-0">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
           </div>
           <div>
-            <h3 class="text-xs font-bold text-[#0B2B29]">Técnica OMS</h3>
-            <p class="text-[11px] text-[#537571]">Protocolo clínico de 6 pasos</p>
+            <h3 class="text-xs font-bold text-[#F5F8FF]">Técnica OMS</h3>
+            <p class="text-[11px] text-[#A5C2DE]">Protocolo clínico de 6 pasos</p>
           </div>
         </div>
       </div>
