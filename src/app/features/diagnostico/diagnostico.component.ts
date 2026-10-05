@@ -33,24 +33,24 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
         </div>
       } @else {
         <!-- Barra Superior / Contexto del Estudiante -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-white/70 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/80 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-[#0e1626]/85 backdrop-blur-md px-6 py-4 rounded-2xl border border-[#50E7FF]/25 shadow-lg">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-[#00B39F]/15 flex items-center justify-center text-[#00B39F] font-bold">
+            <div class="w-10 h-10 rounded-xl bg-[#50E7FF]/15 flex items-center justify-center text-[#50E7FF] font-bold">
               {{ studentInitials() }}
             </div>
             <div>
-              <div class="text-xs text-[#537571] font-semibold">Estudiante Evaluado</div>
-              <div class="text-sm font-bold text-[#0B2B29]">{{ studentName() }}</div>
+              <div class="text-xs text-[#A5C2DE] font-semibold">Estudiante Evaluado</div>
+              <div class="text-sm font-bold text-[#F5F8FF]">{{ studentName() }}</div>
             </div>
           </div>
 
           <div class="flex items-center gap-3">
             <div class="text-right">
-              <div class="text-xs text-[#537571] font-semibold">Progreso Diagnóstico</div>
-              <div class="text-sm font-bold text-[#008072]">{{ answeredCount() }} de {{ questions.length }} Preguntas</div>
+              <div class="text-xs text-[#A5C2DE] font-semibold">Progreso Diagnóstico</div>
+              <div class="text-sm font-bold text-[#50E7FF]">{{ answeredCount() }} de {{ questions.length }} Preguntas</div>
             </div>
-            <div class="w-12 h-12 rounded-full border-4 border-slate-100 flex items-center justify-center text-xs font-bold text-[#00B39F]"
-                 [ngClass]="answeredCount() === questions.length ? 'border-[#00B39F] bg-[#00B39F]/10' : 'border-slate-200'">
+            <div class="w-12 h-12 rounded-full border-4 flex items-center justify-center text-xs font-bold"
+                 [ngClass]="answeredCount() === questions.length ? 'border-[#50E7FF] bg-[#50E7FF]/10 text-[#50E7FF]' : 'border-slate-600 text-[#C5D7E8]'">
               {{ Math.round((answeredCount() / questions.length) * 100) }}%
             </div>
           </div>
@@ -72,14 +72,14 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
       <!-- Lista de Preguntas -->
       <div class="space-y-8">
         @for (q of questions; track q.id; let qIdx = $index) {
-          <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-lg border border-white/80 transition-all duration-300">
+          <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-lg border border-white/80 transition-all duration-300">
             <div class="flex items-start gap-4 mb-4">
               <div class="w-8 h-8 rounded-xl bg-[#00B39F] text-white flex items-center justify-center text-sm font-bold shrink-0 mt-0.5 shadow-sm">
                 {{ qIdx + 1 }}
               </div>
               <div>
-                <span class="text-xs font-semibold text-[#00B39F] uppercase tracking-wider">{{ q.context }}</span>
-                <h3 class="text-base md:text-lg font-bold text-[#0B2B29] mt-1 leading-snug">
+                <span class="text-xs font-bold text-[#008072] uppercase tracking-wider">{{ q.context }}</span>
+                <h3 class="text-base md:text-lg font-bold text-slate-900 mt-1 leading-snug">
                   {{ q.question }}
                 </h3>
               </div>
@@ -102,15 +102,15 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     class="w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 transition-colors mt-0.5"
                     [ngClass]="{
                       'bg-[#00B39F] text-white': isSelected(q.id, optIdx),
-                      'bg-slate-100 text-[#537571] group-hover:bg-[#00B39F]/20 group-hover:text-[#00B39F]': !isSelected(q.id, optIdx)
+                      'bg-slate-100 text-slate-700 group-hover:bg-[#00B39F]/20 group-hover:text-[#008072]': !isSelected(q.id, optIdx)
                     }"
                   >
                     {{ optionLetters[optIdx] }}
                   </div>
 
                   <!-- Texto de la opción -->
-                  <div class="text-sm font-medium leading-relaxed grow"
-                       [ngClass]="isSelected(q.id, optIdx) ? 'text-[#0B2B29] font-semibold' : 'text-[#1E4845]'">
+                  <div class="text-sm leading-relaxed grow"
+                       [ngClass]="isSelected(q.id, optIdx) ? 'text-teal-950 font-bold' : 'text-slate-800 font-medium'">
                     {{ option }}
                   </div>
 
@@ -130,12 +130,12 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
       </div>
 
       <!-- Barra Inferior Fija / Navegación -->
-      <div class="sticky bottom-6 mt-10 p-4 md:p-5 rounded-3xl bg-white/95 backdrop-blur-xl border border-white shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="text-xs md:text-sm text-[#537571] text-center sm:text-left">
+      <div class="sticky bottom-6 mt-10 p-4 md:p-5 rounded-3xl bg-[#0e1626]/90 backdrop-blur-xl border border-[#50E7FF]/25 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs md:text-sm text-[#D1E0EE] text-center sm:text-left">
           @if (answeredCount() < questions.length) {
-            <span>Responde todas las preguntas para desbloquear la práctica. Faltan <strong class="text-[#FF6A4D]">{{ questions.length - answeredCount() }}</strong>.</span>
+            <span>Responde todas las preguntas para desbloquear la práctica. Faltan <strong class="text-[#FF9D85]">{{ questions.length - answeredCount() }}</strong>.</span>
           } @else {
-            <span class="text-[#008072] font-semibold flex items-center gap-1.5 justify-center sm:justify-start">
+            <span class="text-[#50E7FF] font-semibold flex items-center gap-1.5 justify-center sm:justify-start">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 0 000 16zm3.707-9.293a1 laid 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
               </svg>
