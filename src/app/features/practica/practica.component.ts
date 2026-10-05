@@ -28,10 +28,10 @@ import { HandwashStep } from '../../core/models/handwash.models';
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 class="font-heading text-2xl md:text-3xl text-[#0B2B29] mb-3">
+          <h2 class="font-heading text-2xl md:text-3xl text-slate-900 font-bold mb-3">
             Identificación Requerida
           </h2>
-          <p class="text-sm md:text-base text-[#537571] mb-6 leading-relaxed">
+          <p class="text-sm md:text-base text-slate-600 mb-6 leading-relaxed">
             Para iniciar el cronómetro y evaluar la práctica de los 6 pasos, primero debes registrar tus datos en el formulario de bienvenida.
           </p>
           <button
@@ -44,15 +44,15 @@ import { HandwashStep } from '../../core/models/handwash.models';
         </div>
       } @else {
         <!-- Indicador de Progreso Superior (6 Pasos) -->
-        <div class="bg-white/80 backdrop-blur-md rounded-3xl p-5 md:p-6 mb-6 shadow-md border border-white/90">
+        <div class="bg-[#0e1626]/85 backdrop-blur-md rounded-3xl p-5 md:p-6 mb-6 shadow-md border border-[#50E7FF]/25">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#00B39F] animate-ping"></span>
-              <span class="text-xs md:text-sm font-bold text-[#0B2B29] tracking-wide uppercase">
+              <span class="w-3 h-3 rounded-full bg-[#50E7FF] animate-ping"></span>
+              <span class="text-xs md:text-sm font-bold text-[#F5F8FF] tracking-wide uppercase">
                 Práctica Guiada • Paso {{ currentStepIndex() + 1 }} de 6
               </span>
             </div>
-            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#00B39F]/10 text-[#008072]">
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#50E7FF]/15 text-[#50E7FF] border border-[#50E7FF]/30">
               Objetivo: 3 a 8 segundos
             </span>
           </div>
@@ -64,9 +64,9 @@ import { HandwashStep } from '../../core/models/handwash.models';
               <div
                 class="w-8 h-8 md:w-10 md:h-10 rounded-2xl flex items-center justify-center font-bold text-xs md:text-sm transition-all duration-300"
                 [ngClass]="{
-                  'bg-[#00B39F] text-white ring-4 ring-[#00B39F]/20 scale-105 shadow-md': idx === currentStepIndex(),
-                  'bg-[#CFFBF0] text-[#008072]': idx < currentStepIndex(),
-                  'bg-slate-100 text-slate-400': idx > currentStepIndex()
+                  'bg-[#50E7FF] text-[#080B10] ring-4 ring-[#50E7FF]/30 scale-105 shadow-md': idx === currentStepIndex(),
+                  'bg-[#50E7FF]/20 text-[#50E7FF] border border-[#50E7FF]/40': idx < currentStepIndex(),
+                  'bg-slate-800 text-slate-400 border border-slate-700': idx > currentStepIndex()
                 }"
               >
                 @if (idx < currentStepIndex()) {
@@ -79,7 +79,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
               </div>
               <span
                 class="hidden md:block text-[11px] font-medium text-center truncate max-w-[80px]"
-                [ngClass]="idx === currentStepIndex() ? 'text-[#0B2B29] font-bold' : 'text-[#87A3A0]'"
+                [ngClass]="idx === currentStepIndex() ? 'text-[#F5F8FF] font-bold' : 'text-[#A5C2DE]'"
               >
                 {{ step.title }}
               </span>
@@ -98,7 +98,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
               Maniobra Oficial OMS #{{ currentStep().number }}
             </div>
 
-            <h2 class="font-heading text-3xl md:text-4xl text-[#0B2B29] leading-tight">
+            <h2 class="font-heading text-3xl md:text-4xl text-slate-900 font-bold leading-tight">
               {{ currentStep().title }}
             </h2>
 
@@ -106,12 +106,12 @@ import { HandwashStep } from '../../core/models/handwash.models';
               {{ currentStep().subtitle }}
             </p>
 
-            <p class="text-base text-[#1E4845] leading-relaxed bg-slate-50/80 p-4 rounded-2xl border border-slate-100">
+            <p class="text-base text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
               {{ currentStep().description }}
             </p>
 
             <!-- Clave Clínica -->
-            <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-[#CFFBF0]/30 border border-[#00B39F]/20 text-xs md:text-sm text-[#0B2B29]">
+            <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-[#CFFBF0]/30 border border-[#00B39F]/30 text-xs md:text-sm text-slate-800">
               <div class="w-6 h-6 rounded-lg bg-[#00B39F] text-white flex items-center justify-center shrink-0 mt-0.5">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -126,15 +126,15 @@ import { HandwashStep } from '../../core/models/handwash.models';
 
           <!-- Columna Derecha: Cronómetro y Visualizador -->
           <div class="lg:col-span-6 flex flex-col items-center justify-center text-center">
-            <div class="w-full mb-5 relative overflow-hidden rounded-2xl bg-[#0B2B29] aspect-[4/3]">
+            <div class="w-full mb-5 relative overflow-hidden rounded-2xl bg-[#080B10] aspect-[4/3] border border-cyan-500/20">
               <video #cameraVideo autoplay muted playsinline class="w-full h-full object-cover scale-x-[-1]"></video>
               <canvas #handOverlay class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
               @if (cameraActive()) {
-                <div class="absolute left-3 top-3 rounded-full bg-[#0B2B29]/80 px-3 py-1 text-[11px] font-bold text-white">
+                <div class="absolute left-3 top-3 rounded-full bg-[#080B10]/80 px-3 py-1 text-[11px] font-bold text-white border border-white/20">
                   {{ handsDetected() >= 2 ? '✓ Dos manos detectadas' : 'Muestra ambas manos' }}
                 </div>
                 @if (cameraActive()) {
-                  <div class="absolute bottom-3 left-3 right-3 rounded-xl bg-white/90 px-3 py-2 text-left text-[11px] text-[#0B2B29]">
+                  <div class="absolute bottom-3 left-3 right-3 rounded-xl bg-slate-900/90 backdrop-blur-md border border-[#50E7FF]/30 px-3 py-2 text-left text-[11px] text-[#F5F8FF]">
                     <b>{{ palmsValidated() ? '✓ Movimiento reconocido por cámara' : 'Reconociendo el movimiento: ' + palmsEvidence().toFixed(1) + ' / 1.5 s' }}</b>
                     <br>
                     @if (palmsValidated() && currentSeconds() < 3) {
@@ -144,12 +144,12 @@ import { HandwashStep } from '../../core/models/handwash.models';
                     }
                   </div>
                 }
-                <button type="button" (click)="stopCamera()" class="absolute right-3 top-3 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#0B2B29]">Apagar</button>
+                <button type="button" (click)="stopCamera()" class="absolute right-3 top-3 rounded-full bg-[#111A28] border border-white/20 px-3 py-1 text-[11px] font-bold text-[#F5F8FF]">Apagar</button>
               } @else {
                 <div class="absolute inset-0 flex flex-col items-center justify-center p-5 text-white">
-                  <p class="text-sm font-bold">Evaluación asistida por cámara</p>
-                  <p class="mt-1 text-xs text-white/70">El video se procesa en este dispositivo; no se guarda.</p>
-                  <button type="button" (click)="startCamera()" [disabled]="cameraLoading()" class="mt-4 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0B2B29]">{{ cameraLoading() ? 'Preparando…' : 'Activar cámara' }}</button>
+                  <p class="text-sm font-bold text-[#F5F8FF]">Evaluación asistida por cámara</p>
+                  <p class="mt-1 text-xs text-[#C5D7E8]">El video se procesa en este dispositivo; no se guarda.</p>
+                  <button type="button" (click)="startCamera()" [disabled]="cameraLoading()" class="mt-4 rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-900 shadow-md">{{ cameraLoading() ? 'Preparando…' : 'Activar cámara' }}</button>
                   @if (cameraError()) { <p class="mt-2 text-xs text-[#FFB6A6]">{{ cameraError() }}</p> }
                 </div>
               }
@@ -201,10 +201,10 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   </svg>
                 </div>
 
-                <div class="font-heading text-4xl md:text-5xl font-bold tracking-tight text-[#0B2B29]">
+                <div class="font-heading text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
                   {{ formattedTime() }}
                 </div>
-                <div class="text-[11px] font-bold uppercase tracking-wider text-[#537571] mt-1">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mt-1">
                   segundos
                 </div>
 
@@ -243,7 +243,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
             <button
               type="button"
               (click)="resetCurrentStepTimer()"
-              class="mt-3 text-xs text-[#537571] hover:text-[#0B2B29] font-medium flex items-center gap-1 transition"
+              class="mt-3 text-xs text-slate-500 hover:text-slate-900 font-medium flex items-center gap-1 transition"
             >
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -257,22 +257,22 @@ import { HandwashStep } from '../../core/models/handwash.models';
 
       <!-- Resumen de pasos ya completados -->
       @if (completedRecords().length > 0) {
-        <div class="mt-6 bg-white/70 backdrop-blur-md rounded-2xl p-4 border border-white/80">
-          <div class="text-xs font-bold text-[#0B2B29] mb-3 flex items-center gap-2">
-            <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="mt-6 bg-[#0e1626]/85 backdrop-blur-md rounded-2xl p-4 border border-[#50E7FF]/25 shadow-md">
+          <div class="text-xs font-bold text-[#F5F8FF] mb-3 flex items-center gap-2">
+            <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
             Tiempos registrados en esta sesión:
           </div>
           <div class="flex flex-wrap gap-2">
             @for (rec of completedRecords(); track rec.stepNumber) {
-              <div class="text-xs px-3 py-1.5 rounded-xl bg-white border border-slate-200/80 flex items-center gap-2">
-                <span class="font-bold text-[#0B2B29]">Paso {{ rec.stepNumber }}:</span>
+              <div class="text-xs px-3 py-1.5 rounded-xl bg-[#111A28] border border-[#50E7FF]/30 flex items-center gap-2 shadow-xs">
+                <span class="font-bold text-[#F5F8FF]">Paso {{ rec.stepNumber }}:</span>
                 <span class="font-semibold"
                       [ngClass]="{
-                        'text-[#008072]': rec.status === 'optimal',
-                        'text-[#FF6A4D]': rec.status === 'too-fast',
-                        'text-amber-600': rec.status === 'too-slow'
+                        'text-[#50E7FF]': rec.status === 'optimal',
+                        'text-[#FF9D85]': rec.status === 'too-fast',
+                        'text-amber-400': rec.status === 'too-slow'
                       }">
                   {{ rec.seconds }}s
                 </span>
