@@ -17,10 +17,10 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 class="font-heading text-2xl md:text-3xl text-[#0B2B29] mb-3">
+          <h2 class="font-heading text-2xl md:text-3xl text-slate-900 font-bold mb-3">
             Acceso Restringido
           </h2>
-          <p class="text-sm md:text-base text-[#537571] mb-6 leading-relaxed">
+          <p class="text-sm md:text-base text-slate-600 mb-6 leading-relaxed">
             Para ver las preguntas, seleccionar opciones y realizar la práctica, primero debes identificarte con tu nombre, código estudiantil y aceptar el consentimiento informado.
           </p>
           <button
@@ -58,13 +58,13 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
         <!-- Encabezado de la Sección -->
         <div class="text-center mb-8">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFE9DE] text-[#FF6A4D] text-xs font-bold mb-3 border border-[#FF6A4D]/20">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FF6A4D]/15 text-[#FF9D85] text-xs font-bold mb-3 border border-[#FF6A4D]/30 shadow-xs">
             Evaluación Inicial de Conocimientos
           </div>
-          <h1 class="font-heading text-3xl md:text-4xl text-[#0B2B29] mb-3">
+          <h1 class="font-heading text-3xl md:text-4xl text-[#F5F8FF] font-bold mb-3 drop-shadow-[0_2px_14px_rgba(80,231,255,0.2)]">
             Cuestionario de Bioseguridad
           </h1>
-          <p class="text-sm md:text-base text-[#537571] max-w-xl mx-auto">
+          <p class="text-sm md:text-base text-[#D1E0EE] max-w-xl mx-auto">
             Responde 5 preguntas seleccionadas al azar para verificar tus conocimientos previos antes de iniciar la práctica física en el simulador.
           </p>
         </div>
