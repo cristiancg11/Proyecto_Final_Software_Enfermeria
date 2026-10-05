@@ -25,15 +25,15 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
               </svg>
             </div>
             <div>
-              <span class="text-xs font-bold text-[#00B39F] uppercase tracking-wider">Informe de Desempeño Clínico</span>
-              <h2 class="font-heading text-2xl md:text-3xl text-[#0B2B29]">Evaluación Final de Bioseguridad</h2>
+              <span class="text-xs font-bold text-[#008072] uppercase tracking-wider">Informe de Desempeño Clínico</span>
+              <h2 class="font-heading text-2xl md:text-3xl text-slate-900 font-bold">Evaluación Final de Bioseguridad</h2>
             </div>
           </div>
 
-          <div class="text-xs text-[#537571] text-center sm:text-right bg-slate-50/80 px-4 py-2 rounded-xl border border-slate-100">
-            <div>Fecha: <strong class="text-[#0B2B29]">{{ currentDate | date:'dd/MM/yyyy, h:mm a' }}</strong></div>
+          <div class="text-xs text-slate-600 text-center sm:text-right bg-slate-50 px-4 py-2 rounded-xl border border-slate-200/80">
+            <div>Fecha: <strong class="text-slate-900">{{ currentDate | date:'dd/MM/yyyy, h:mm a' }}</strong></div>
             <div>Estudiante: <strong class="text-[#008072]">{{ studentName() }}</strong></div>
-            <div>Código: <span class="font-mono text-[#0B2B29]">{{ studentCode() }}</span></div>
+            <div>Código: <span class="font-mono text-slate-900 font-semibold">{{ studentCode() }}</span></div>
           </div>
         </div>
 
@@ -42,12 +42,12 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           
           <!-- Puntuación Principal sobre 10 -->
           <div class="md:col-span-5 bg-gradient-to-br from-[#E6FBF7] via-white to-[#FFF1EE] rounded-3xl p-6 md:p-8 text-center border border-[#00B39F]/20 shadow-lg relative">
-            <span class="text-xs font-bold uppercase tracking-widest text-[#537571] block mb-1">
+            <span class="text-xs font-bold uppercase tracking-widest text-slate-500 block mb-1">
               Calificación Obtenida
             </span>
-            <div class="font-heading text-6xl md:text-7xl font-extrabold tracking-tight text-[#0B2B29] my-2">
+            <div class="font-heading text-6xl md:text-7xl font-extrabold tracking-tight text-slate-900 my-2">
               {{ evaluation().overallScore.toFixed(1) }}
-              <span class="text-2xl md:text-3xl font-normal text-[#537571]">/10</span>
+              <span class="text-2xl md:text-3xl font-normal text-slate-500">/10</span>
             </div>
 
             <!-- Nivel de Desempeño Badge -->
@@ -69,26 +69,26 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
           <!-- Métricas Complementarias -->
           <div class="md:col-span-7 space-y-4">
-            <h3 class="font-heading text-xl text-[#0B2B29]">
+            <h3 class="font-heading text-xl text-slate-900 font-bold">
               {{ evaluation().performanceTitle }}
             </h3>
-            <p class="text-sm text-[#537571] leading-relaxed">
+            <p class="text-sm text-slate-600 leading-relaxed">
               {{ evaluation().performanceDescription }}
             </p>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-                <span class="text-[11px] font-bold text-[#537571] uppercase block">Tiempo Total</span>
+              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+                <span class="text-[11px] font-bold text-slate-500 uppercase block">Tiempo Total</span>
                 <span class="text-lg font-bold text-[#008072]">{{ evaluation().totalSeconds }}s</span>
               </div>
 
-              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-                <span class="text-[11px] font-bold text-[#537571] uppercase block">Pasos Óptimos</span>
-                <span class="text-lg font-bold text-[#0B2B29]">{{ optimalStepsCount() }} de 6</span>
+              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+                <span class="text-[11px] font-bold text-slate-500 uppercase block">Pasos Óptimos</span>
+                <span class="text-lg font-bold text-slate-900">{{ optimalStepsCount() }} de 6</span>
               </div>
 
-              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 col-span-2 sm:col-span-1">
-                <span class="text-[11px] font-bold text-[#537571] uppercase block">Quiz Diagnóstico</span>
+              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 col-span-2 sm:col-span-1">
+                <span class="text-[11px] font-bold text-slate-500 uppercase block">Quiz Diagnóstico</span>
                 <span class="text-lg font-bold text-[#FF6A4D]">{{ evaluation().quizScore }} de {{ evaluation().totalQuizQuestions }} Aciertos</span>
               </div>
             </div>
@@ -114,7 +114,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             (click)="windowPrint()"
             class="btn-secondary py-3.5 px-6 text-sm flex items-center gap-2 w-full sm:w-auto justify-center"
           >
-            <svg class="w-4 h-4 text-[#008072]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
             <span>Imprimir / Guardar Informe</span>
@@ -123,7 +123,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           <button
             type="button"
             (click)="restartAll()"
-            class="text-xs text-[#537571] hover:text-[#FF6A4D] font-semibold transition py-2"
+            class="text-xs text-slate-500 hover:text-[#FF6A4D] font-semibold transition py-2"
           >
             Nueva sesión de estudiante
           </button>
@@ -133,23 +133,23 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
       <!-- Desglose Clínico de los 6 Pasos -->
       <div class="mb-10">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="font-heading text-2xl text-[#0B2B29]">
+          <h3 class="font-heading text-2xl text-[#F5F8FF] font-bold drop-shadow-[0_2px_12px_rgba(80,231,255,0.2)]">
             Desglose Paso a Paso
           </h3>
-          <span class="text-xs font-medium text-[#537571]">
-            Rango esperado: <strong>3.0s — 8.0s</strong>
+          <span class="text-xs font-medium text-[#C5D7E8]">
+            Rango esperado: <strong class="text-[#50E7FF]">3.0s — 8.0s</strong>
           </span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           @for (rec of evaluation().records; track rec.stepNumber) {
-            <div class="bg-white/90 backdrop-blur-md rounded-2xl p-5 border border-white/80 shadow-md hover:shadow-lg transition-all duration-200">
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl p-5 border border-white/80 shadow-md hover:shadow-lg transition-all duration-200">
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2.5">
                   <div class="w-7 h-7 rounded-xl bg-[#00B39F] text-white font-bold text-xs flex items-center justify-center">
                     {{ rec.stepNumber }}
                   </div>
-                  <h4 class="text-sm font-bold text-[#0B2B29]">{{ rec.stepTitle }}</h4>
+                  <h4 class="text-sm font-bold text-slate-900">{{ rec.stepTitle }}</h4>
                 </div>
 
                 <!-- Estado Badge -->
@@ -170,19 +170,19 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
               </div>
 
               <!-- Tiempo y Puntuación -->
-              <div class="flex items-baseline justify-between text-xs py-2 px-3 rounded-xl bg-slate-50 mb-3">
+              <div class="flex items-baseline justify-between text-xs py-2 px-3 rounded-xl bg-slate-50 mb-3 border border-slate-100">
                 <div>
-                  <span class="text-[#537571]">Tiempo: </span>
-                  <strong class="text-sm text-[#0B2B29]">{{ rec.seconds }} s</strong>
+                  <span class="text-slate-500">Tiempo: </span>
+                  <strong class="text-sm text-slate-900">{{ rec.seconds }} s</strong>
                 </div>
                 <div>
-                  <span class="text-[#537571]">Puntos: </span>
+                  <span class="text-slate-500">Puntos: </span>
                   <strong class="text-sm text-[#008072]">{{ rec.score.toFixed(2) }} / 1.67</strong>
                 </div>
               </div>
 
               <!-- Feedback del Paso -->
-              <p class="text-xs text-[#1E4845] leading-relaxed">
+              <p class="text-xs text-slate-700 leading-relaxed">
                 {{ rec.feedback }}
               </p>
             </div>
@@ -191,24 +191,24 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
       </div>
 
       <!-- Revisión del Cuestionario Diagnóstico -->
-      <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/80 shadow-md">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/80 shadow-md">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-8 h-8 rounded-xl bg-[#FFE9DE] text-[#FF6A4D] flex items-center justify-center font-bold text-sm">
             ?
           </div>
-          <h3 class="font-heading text-xl text-[#0B2B29]">Revisión del Cuestionario Diagnóstico</h3>
+          <h3 class="font-heading text-xl text-slate-900 font-bold">Revisión del Cuestionario Diagnóstico</h3>
         </div>
 
         <div class="space-y-4">
           @for (q of questions; track q.id) {
-            <div class="p-4 rounded-2xl bg-slate-50/80 border border-slate-100 text-xs md:text-sm">
-              <div class="font-bold text-[#0B2B29] mb-1">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs md:text-sm">
+              <div class="font-bold text-slate-900 mb-1">
                 {{ q.id }}. {{ q.question }}
               </div>
               <div class="text-[#008072] font-semibold mt-1">
                 Respuesta correcta: {{ q.options[q.correctIndex] }}
               </div>
-              <p class="text-[#537571] mt-1 text-xs">
+              <p class="text-slate-600 mt-1 text-xs">
                 {{ q.rationale }}
               </p>
             </div>
