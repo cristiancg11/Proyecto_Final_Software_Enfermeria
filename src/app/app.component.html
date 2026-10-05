@@ -1,21 +1,21 @@
-<div class="min-h-screen flex flex-col justify-between selection:bg-[#00B39F]/20 selection:text-[#0B2B29]">
+<div class="min-h-screen flex flex-col justify-between selection:bg-[#00B39F]/20 selection:text-[#50E7FF]">
   <!-- Barra de Navegación Superior -->
-  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/60 shadow-sm transition-all">
+  <header class="sticky top-0 z-50 bg-[#080B10]/85 backdrop-blur-xl border-b border-[#50E7FF]/20 shadow-lg transition-all">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
       <!-- Logo y Título -->
       <a [routerLink]="isLoggedIn() ? '/inicio' : '/bienvenida'" class="flex items-center gap-3 group text-decoration-none">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#00B39F] to-[#CFFBF0] p-0.5 shadow-md group-hover:shadow-[#00B39F]/20 transition-all duration-300">
-          <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-[#00B39F]">
-            <svg class="w-5 h-5 text-[#00B39F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#00B39F] via-[#50E7FF] to-[#D9FF43] p-0.5 shadow-md group-hover:shadow-[#50E7FF]/30 transition-all duration-300">
+          <div class="w-full h-full bg-[#080B10] rounded-[14px] flex items-center justify-center text-[#50E7FF]">
+            <svg class="w-5 h-5 text-[#50E7FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
             </svg>
           </div>
         </div>
         <div>
-          <span class="font-heading text-xl md:text-2xl font-bold text-[#0B2B29] tracking-tight group-hover:text-[#008072] transition">
+          <span class="font-heading text-xl md:text-2xl font-bold text-[#F5F8FF] tracking-tight group-hover:text-[#50E7FF] transition drop-shadow-sm">
             Manos Seguras
           </span>
-          <span class="hidden sm:block text-[11px] font-semibold text-[#537571] uppercase tracking-wider -mt-1">
+          <span class="hidden sm:block text-[11px] font-semibold text-[#B4CDDE] uppercase tracking-wider -mt-1">
             Simulador de Enfermería • OMS
           </span>
         </div>
@@ -25,9 +25,9 @@
       <nav class="hidden md:flex items-center gap-1.5 text-xs font-semibold">
         <a
           routerLink="/bienvenida"
-          routerLinkActive="bg-[#00B39F]/15 text-[#008072] border-[#00B39F]/30"
+          routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="px-3.5 py-2 rounded-full text-[#537571] hover:text-[#0B2B29] hover:bg-white/60 transition border border-transparent"
+          class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
         >
           1. Registro
         </a>
@@ -35,53 +35,53 @@
         @if (isLoggedIn()) {
           <a
             routerLink="/diagnostico"
-            routerLinkActive="bg-[#00B39F]/15 text-[#008072] border-[#00B39F]/30"
-            class="px-3.5 py-2 rounded-full text-[#537571] hover:text-[#0B2B29] hover:bg-white/60 transition border border-transparent"
+            routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
+            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
             2. Diagnóstico
           </a>
           <a
             routerLink="/inicio"
-            routerLinkActive="bg-[#00B39F]/15 text-[#008072] border-[#00B39F]/30"
-            class="px-3.5 py-2 rounded-full text-[#537571] hover:text-[#0B2B29] hover:bg-white/60 transition border border-transparent"
+            routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
+            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
             3. Preparación
           </a>
           <a
             routerLink="/practica"
-            routerLinkActive="bg-[#00B39F]/15 text-[#008072] border-[#00B39F]/30"
-            class="px-3.5 py-2 rounded-full text-[#537571] hover:text-[#0B2B29] hover:bg-white/60 transition border border-transparent"
+            routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
+            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
             4. Práctica (6 Pasos)
           </a>
           <a
             routerLink="/resultado"
-            routerLinkActive="bg-[#00B39F]/15 text-[#008072] border-[#00B39F]/30"
-            class="px-3.5 py-2 rounded-full text-[#537571] hover:text-[#0B2B29] hover:bg-white/60 transition border border-transparent"
+            routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
+            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
             5. Resultados
           </a>
         } @else {
           <!-- Rutas bloqueadas con icono de candado cuando no hay login -->
-          <span class="px-3 py-2 text-slate-400 opacity-50 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             2. Diagnóstico
           </span>
-          <span class="px-3 py-2 text-slate-400 opacity-50 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             3. Preparación
           </span>
-          <span class="px-3 py-2 text-slate-400 opacity-50 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             4. Práctica
           </span>
-          <span class="px-3 py-2 text-slate-400 opacity-50 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
@@ -93,16 +93,16 @@
       <!-- Estado del Estudiante -->
       <div class="flex items-center gap-2">
         @if (studentName()) {
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-slate-200/80 shadow-xs">
-            <span class="w-2 h-2 rounded-full bg-[#00B39F] animate-pulse"></span>
-            <span class="text-xs font-bold text-[#0B2B29] truncate max-w-[120px] sm:max-w-[180px]">
+          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111A28] border border-[#50E7FF]/30 shadow-xs">
+            <span class="w-2 h-2 rounded-full bg-[#50E7FF] animate-pulse"></span>
+            <span class="text-xs font-bold text-[#F5F8FF] truncate max-w-[120px] sm:max-w-[180px]">
               {{ studentName() }}
             </span>
           </div>
         } @else {
           <a
             routerLink="/bienvenida"
-            class="text-xs font-bold px-4 py-2 rounded-full bg-[#00B39F]/10 hover:bg-[#00B39F]/20 text-[#008072] border border-[#00B39F]/20 transition"
+            class="text-xs font-bold px-4 py-2 rounded-full bg-[#50E7FF]/15 hover:bg-[#50E7FF]/25 text-[#50E7FF] border border-[#50E7FF]/30 transition"
           >
             Iniciar Sesión
           </a>
