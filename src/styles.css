@@ -29,6 +29,9 @@
   --color-primary: #D9FF43;
   --color-accent: #50E7FF;
   --color-ink: #F5F8FF;
+  --color-ink-light: #C5D7E8;
+  --color-ink-muted: #A5C2DE;
+  --color-ink-subtle: #89A9C4;
 }
 
 body {
@@ -167,20 +170,52 @@ header.sticky {
 footer { background: rgba(8, 11, 16, .82) !important; border-color: rgba(80, 231, 255, .13) !important; }
 
 /* Texto legible sobre las superficies oscuras del nuevo tema. */
+h1, h2, h3, h4, .font-heading {
+  color: #F5F8FF;
+}
+
+/* En tarjetas claras, garantizar legibilidad y alto contraste */
+.bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4,
+.bg-white\/90 h1, .bg-white\/90 h2, .bg-white\/90 h3, .bg-white\/90 h4,
+.bg-white\/95 h1, .bg-white\/95 h2, .bg-white\/95 h3, .bg-white\/95 h4 {
+  color: #0F172A;
+}
+
+/* Sustitución global para texto oscuro heredado sobre fondo oscuro */
+main > div > div > h1.text-\[\#0B2B29\],
+main > div > div > p.text-\[\#537571\],
+main h3.text-\[\#0B2B29\],
 header .text-\[\#0B2B29\],
 header .text-\[\#537571\],
 footer .text-\[\#0B2B29\],
-footer .text-\[\#537571\] { color: #EAF4FF !important; }
+footer .text-\[\#537571\] {
+  color: #F5F8FF !important;
+}
+
+main > div > div > p.text-\[\#537571\],
+footer .text-\[\#537571\],
+footer .text-\[\#87A3A0\] {
+  color: #C5D7E8 !important;
+}
 
 header .text-\[\#008072\],
-header .text-\[\#00B39F\],
-footer .text-\[\#87A3A0\] { color: #50E7FF !important; }
+header .text-\[\#00B39F\] {
+  color: #50E7FF !important;
+}
 
 /* Refuerzo de contraste para textos heredados dentro de la barra y el pie. */
-header a, header span, footer span { text-shadow: 0 1px 14px rgba(80, 231, 255, .16); }
-header nav a { color: #D9E8F7 !important; }
-header nav a:hover { color: #D9FF43 !important; }
-footer { color: #C9D9E8 !important; }
+header a, header span, footer span {
+  text-shadow: 0 1px 14px rgba(80, 231, 255, .16);
+}
+header nav a {
+  color: #D9E8F7 !important;
+}
+header nav a:hover {
+  color: #D9FF43 !important;
+}
+footer {
+  color: #C9D9E8 !important;
+}
 
 /* Animations */
 @keyframes pulseSubtle {
