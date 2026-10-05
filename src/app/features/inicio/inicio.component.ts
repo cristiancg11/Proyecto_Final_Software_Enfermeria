@@ -17,10 +17,10 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 class="font-heading text-2xl md:text-3xl text-[#0B2B29] mb-3">
+          <h2 class="font-heading text-2xl md:text-3xl text-slate-900 font-bold mb-3">
             Identificación Requerida
           </h2>
-          <p class="text-sm md:text-base text-[#537571] mb-6 leading-relaxed">
+          <p class="text-sm md:text-base text-slate-600 mb-6 leading-relaxed">
             Para acceder al simulador de lavado de manos clínico debes iniciar sesión y registrar tu consentimiento en la pantalla de bienvenida.
           </p>
           <button
@@ -33,25 +33,25 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
         </div>
       } @else {
         <!-- Tarjeta Hero Central -->
-        <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white/80 text-center relative overflow-hidden">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white/80 text-center relative overflow-hidden">
           <!-- Elementos decorativos de fondo -->
           <div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[#CFFBF0]/60 blur-3xl pointer-events-none"></div>
           <div class="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-[#FFE9DE]/60 blur-3xl pointer-events-none"></div>
 
           <!-- Tag Superior -->
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/20 text-[#008072] text-xs md:text-sm font-semibold mb-6">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00B39F]/15 border border-[#00B39F]/30 text-[#008072] text-xs md:text-sm font-bold mb-6">
             <span class="w-2 h-2 rounded-full bg-[#00B39F] animate-ping"></span>
-            Estudiante: {{ student()?.fullName }}
+            Estudiante: <span class="text-teal-950 font-bold">{{ student()?.fullName }}</span>
           </div>
 
           <!-- Título Principal -->
-          <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl text-[#0B2B29] tracking-tight mb-4">
+          <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl text-slate-900 font-extrabold tracking-tight mb-4">
             Manos Seguras
           </h1>
 
           <!-- Subtítulo / Descripción -->
-          <p class="text-base md:text-xl text-[#537571] max-w-2xl mx-auto leading-relaxed mb-8">
-            Bienvenido a la sesión de práctica supervisada. Ejecutarás los <strong class="text-[#0B2B29]">6 pasos oficiales</strong> de la técnica de lavado de manos clínico con cronometraje en tiempo real.
+          <p class="text-base md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-8">
+            Bienvenido a la sesión de práctica supervisada. Ejecutarás los <strong class="text-slate-900 font-bold">6 pasos oficiales</strong> de la técnica de lavado de manos clínico con cronometraje en tiempo real.
           </p>
 
           <!-- Ilustración Médica SVG -->
@@ -75,22 +75,22 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
           <!-- Tarjetas de Instrucciones Didácticas -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 text-left max-w-3xl mx-auto">
-            <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-100">
-              <div class="w-8 h-8 rounded-xl bg-[#00B39F]/15 text-[#00B39F] font-bold flex items-center justify-center text-sm mb-2">1</div>
-              <h4 class="text-sm font-bold text-[#0B2B29]">6 Pasos Oficiales</h4>
-              <p class="text-xs text-[#537571] mt-1">Recorrerás cada maniobra de frotación paso a paso de manera individual.</p>
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+              <div class="w-8 h-8 rounded-xl bg-[#00B39F]/15 text-[#008072] font-bold flex items-center justify-center text-sm mb-2">1</div>
+              <h4 class="text-sm font-bold text-slate-900">6 Pasos Oficiales</h4>
+              <p class="text-xs text-slate-600 mt-1">Recorrerás cada maniobra de frotación paso a paso de manera individual.</p>
             </div>
 
-            <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-100">
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 shadow-xs">
               <div class="w-8 h-8 rounded-xl bg-[#FF6A4D]/15 text-[#FF6A4D] font-bold flex items-center justify-center text-sm mb-2">2</div>
-              <h4 class="text-sm font-bold text-[#0B2B29]">Ritmo Ideal: 3 a 8s</h4>
-              <p class="text-xs text-[#537571] mt-1">El cronómetro evaluará si te mantienes en el tiempo óptimo por paso.</p>
+              <h4 class="text-sm font-bold text-slate-900">Ritmo Ideal: 3 a 8s</h4>
+              <p class="text-xs text-slate-600 mt-1">El cronómetro evaluará si te mantienes en el tiempo óptimo por paso.</p>
             </div>
 
-            <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-100">
-              <div class="w-8 h-8 rounded-xl bg-[#00B39F]/15 text-[#00B39F] font-bold flex items-center justify-center text-sm mb-2">3</div>
-              <h4 class="text-sm font-bold text-[#0B2B29]">Calificación sobre 10</h4>
-              <p class="text-xs text-[#537571] mt-1">Recibirás un desglose clínico detallado con retroalimentación instantánea.</p>
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+              <div class="w-8 h-8 rounded-xl bg-[#00B39F]/15 text-[#008072] font-bold flex items-center justify-center text-sm mb-2">3</div>
+              <h4 class="text-sm font-bold text-slate-900">Calificación sobre 10</h4>
+              <p class="text-xs text-slate-600 mt-1">Recibirás un desglose clínico detallado con retroalimentación instantánea.</p>
             </div>
           </div>
 
@@ -110,7 +110,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             <button
               type="button"
               (click)="goBack()"
-              class="btn-secondary py-3.5 px-6 text-sm text-[#537571] hover:text-[#0B2B29] w-full sm:w-auto"
+              class="btn-secondary py-3.5 px-6 text-sm text-[#F5F8FF] hover:text-[#50E7FF] w-full sm:w-auto"
             >
               Revisar Cuestionario
             </button>
