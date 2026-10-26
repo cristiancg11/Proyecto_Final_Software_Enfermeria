@@ -102,11 +102,14 @@ export class HandwashStateService {
       id: 1,
       number: 1,
       title: 'Palma con Palma',
+      titulo: 'Palma con Palma',
       subtitle: 'Fricción inicial y distribución del antiséptico',
       description:
         'Frota las palmas de las manos entre sí realizando movimientos circulares enérgicos para generar emulsión homogénea.',
       clinicalKey: 'Asegura la activación del antiséptico en toda la superficie palmar.',
       iconType: 'palms',
+      demoUrl:
+        'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-1.mp4',
       imageDemo: 'assets/images/pasos/paso-1.svg',
       targetArea: 'Superficie palmar bilateral completa',
@@ -117,11 +120,14 @@ export class HandwashStateService {
       id: 2,
       number: 2,
       title: 'Dorso de las Manos',
+      titulo: 'Dorso de las Manos',
       subtitle: 'Fricción de superficies dorsales',
       description:
         'Frota la palma de la mano derecha sobre el dorso de la mano izquierda entrelazando los dedos, y viceversa.',
       clinicalKey: 'Cubre la zona dorsal, habitualmente olvidada en el lavado descuidado.',
       iconType: 'dorsal',
+      demoUrl:
+        'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-2.mp4',
       imageDemo: 'assets/images/pasos/paso-2.svg',
       targetArea: 'Dorso cutáneo y articulaciones metacarpianas',
@@ -132,11 +138,14 @@ export class HandwashStateService {
       id: 3,
       number: 3,
       title: 'Espacios Interdigitales',
+      titulo: 'Espacios Interdigitales',
       subtitle: 'Palma con palma y dedos entrelazados',
       description:
         'Frota las palmas de las manos entre sí con los dedos fuertemente entrelazados, de la base a las puntas.',
       clinicalKey: 'Remueve colonias bacterianas que habitan entre los pliegues de los dedos.',
       iconType: 'interdigital',
+      demoUrl:
+        'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-3.mp4',
       imageDemo: 'assets/images/pasos/paso-3.svg',
       targetArea: 'Pliegues y hendiduras interdigitales',
@@ -147,11 +156,14 @@ export class HandwashStateService {
       id: 4,
       number: 4,
       title: 'Dorso de los Dedos',
+      titulo: 'Dorso de los Dedos',
       subtitle: 'Traba digital contra la palma opuesta',
       description:
         'Frota el dorso de los dedos contra la palma de la mano opuesta, manteniendo los dedos trabados entre sí en gancho.',
       clinicalKey: 'Desinfecta nudillos y articulaciones interfalángicas proximales.',
       iconType: 'fingers-locked',
+      demoUrl:
+        'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-4.mp4',
       imageDemo: 'assets/images/pasos/paso-4.svg',
       targetArea: 'Nudillos y falanges dorsales en gancho',
@@ -162,11 +174,14 @@ export class HandwashStateService {
       id: 5,
       number: 5,
       title: 'Limpieza de Pulgares',
+      titulo: 'Limpieza de Pulgares',
       subtitle: 'Frotación rotacional envolvente',
       description:
         'Rodea el pulgar izquierdo con la palma de la mano derecha en puño cerrado, frota con rotación completa, y repite.',
       clinicalKey: 'El pulgar es el dedo con mayor interacción y contacto con instrumental clínico.',
       iconType: 'thumbs',
+      demoUrl:
+        'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-5.mp4',
       imageDemo: 'assets/images/pasos/paso-5.svg',
       targetArea: 'Primer dedo (pulgar) bilateral y eminencia tenar',
@@ -177,11 +192,14 @@ export class HandwashStateService {
       id: 6,
       number: 6,
       title: 'Yemas y Uñas',
+      titulo: 'Yemas y Uñas',
       subtitle: 'Fricción ungueal concéntrica',
       description:
         'Frota la punta de los dedos y las uñas agrupadas contra la palma de la mano opuesta con rotación en espiral.',
       clinicalKey: 'La zona subungueal es el reservorio de mayor densidad de microorganismos patógenos.',
       iconType: 'nails',
+      demoUrl:
+        'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-6.mp4',
       imageDemo: 'assets/images/pasos/paso-6.svg',
       targetArea: 'Lechos ungueales, pulpejos y cuenco palmar',

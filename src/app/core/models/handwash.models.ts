@@ -23,10 +23,12 @@ export interface HandwashStep {
   id: number;
   number: number;
   title: string;
+  titulo?: string;
   subtitle: string;
   description: string;
   clinicalKey: string;
   iconType: 'palms' | 'dorsal' | 'interdigital' | 'fingers-locked' | 'thumbs' | 'nails';
+  demoUrl?: string;
   videoDemo?: string;
   imageDemo?: string;
   targetArea?: string;
