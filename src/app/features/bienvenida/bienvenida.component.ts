@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, AuthResponse } from '../../services/auth.service';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 
 @Component({
@@ -489,15 +489,8 @@ export class BienvenidaComponent {
     this.authService.registro(datosRegistro).subscribe({
       next: (res) => {
         this.cargando.set(false);
-        this.mensajeExito.set('¡Registro completado con éxito! Conectando con diagnóstico...');
-        this.stateService.setStudent({
-          fullName: res.usuario.nombre,
-          studentCode: res.usuario.codigoEstudiantil,
-          consent: res.usuario.consentimiento,
-        });
-        setTimeout(() => {
-          this.router.navigate(['/diagnostico']);
-        }, 350);
+        this.mensajeExito.set('¡Registro completado con éxito! Conectando...');
+        this.redirigirSegunRol(res);
       },
       error: (err) => {
         // Si el usuario ya existe en la base de datos (409 Conflict), intentamos login automático
@@ -535,14 +528,7 @@ export class BienvenidaComponent {
         next: (res) => {
           this.cargando.set(false);
           this.mensajeExito.set('¡Bienvenido de nuevo! Ingresando al sistema...');
-          this.stateService.setStudent({
-            fullName: res.usuario.nombre,
-            studentCode: res.usuario.codigoEstudiantil,
-            consent: res.usuario.consentimiento,
-          });
-          setTimeout(() => {
-            this.router.navigate(['/diagnostico']);
-          }, 350);
+          this.redirigirSegunRol(res);
         },
         error: (err) => {
           this.cargando.set(false);
@@ -563,14 +549,7 @@ export class BienvenidaComponent {
         next: (res) => {
           this.cargando.set(false);
           this.mensajeExito.set('¡Usuario ya registrado encontrado! Sesión iniciada.');
-          this.stateService.setStudent({
-            fullName: res.usuario.nombre,
-            studentCode: res.usuario.codigoEstudiantil,
-            consent: res.usuario.consentimiento,
-          });
-          setTimeout(() => {
-            this.router.navigate(['/diagnostico']);
-          }, 350);
+          this.redirigirSegunRol(res);
         },
         error: () => {
           this.cargando.set(false);
@@ -581,5 +560,22 @@ export class BienvenidaComponent {
           this.cambiarModo('login');
         },
       });
+  }
+
+  private redirigirSegunRol(res: AuthResponse): void {
+    const user = res.user || res.usuario;
+    this.stateService.setStudent({
+      fullName: user.nombre,
+      studentCode: user.codigoEstudiantil,
+      consent: user.consentimiento,
+    });
+
+    setTimeout(() => {
+      if (user.rol === 'DOCENTE') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/inicio']);
+      }
+    }, 350);
   }
 }

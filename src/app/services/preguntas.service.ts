@@ -164,4 +164,16 @@ export class PreguntasService {
       { headers: this.obtenerHeadersAuth() }
     );
   }
+
+  /**
+   * Elimina o desactiva una pregunta clínica (Solo Docentes)
+   * DELETE /api/preguntas/:id
+   */
+  eliminarPregunta(id: string): Observable<{ mensaje: string; accion: string }> {
+    return this.http.delete<{ mensaje: string; accion: string }>(
+      `${this.apiUrl}/preguntas/${id}`,
+      { headers: this.obtenerHeadersAuth() }
+    );
+  }
 }
+

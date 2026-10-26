@@ -91,8 +91,17 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
       { expiresIn: JWT_EXPIRES_IN as any }
     );
 
+    const userPayload = {
+      id: nuevoUsuario.id,
+      nombre: nuevoUsuario.nombre,
+      correo: nuevoUsuario.correo,
+      rol: nuevoUsuario.rol,
+      codigoEstudiantil: nuevoUsuario.codigoEstudiantil,
+    };
+
     res.status(201).json({
       mensaje: 'Registro exitoso en la plataforma Manos Seguras',
+      user: userPayload,
       usuario: nuevoUsuario,
       token,
     });
@@ -155,14 +164,19 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
       { expiresIn: JWT_EXPIRES_IN as any }
     );
 
+    const userPayload = {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      correo: usuario.correo,
+      rol: usuario.rol,
+      codigoEstudiantil: usuario.codigoEstudiantil,
+    };
+
     res.json({
       mensaje: 'Autenticación exitosa',
+      user: userPayload,
       usuario: {
-        id: usuario.id,
-        nombre: usuario.nombre,
-        codigoEstudiantil: usuario.codigoEstudiantil,
-        correo: usuario.correo,
-        rol: usuario.rol,
+        ...userPayload,
         consentimiento: usuario.consentimiento,
         fechaRegistro: usuario.fechaRegistro,
       },

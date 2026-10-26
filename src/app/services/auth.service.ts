@@ -31,6 +31,7 @@ export interface LoginCredenciales {
 export interface AuthResponse {
   mensaje: string;
   usuario: Usuario;
+  user?: Usuario;
   token: string;
 }
 
@@ -115,12 +116,13 @@ export class AuthService {
    * Guarda el JWT y los datos del usuario en localStorage y actualiza las Signals
    */
   private establecerSesion(res: AuthResponse): void {
+    const user = res.user || res.usuario;
     if (typeof window !== 'undefined') {
       localStorage.setItem('token', res.token);
-      localStorage.setItem('usuario', JSON.stringify(res.usuario));
+      localStorage.setItem('usuario', JSON.stringify(user));
     }
     this.token.set(res.token);
-    this.usuarioActual.set(res.usuario);
+    this.usuarioActual.set(user);
   }
 
   private obtenerTokenInicial(): string | null {

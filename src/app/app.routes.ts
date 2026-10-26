@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { studentAuthGuard } from './core/guards/student-auth.guard';
+import { docenteAuthGuard } from './core/guards/docente-auth.guard';
 
 export const routes: Routes = [
   {
@@ -14,6 +15,13 @@ export const routes: Routes = [
         (m) => m.BienvenidaComponent
       ),
     title: 'Manos Seguras — Registro y Consentimiento',
+  },
+  {
+    path: 'admin',
+    canActivate: [docenteAuthGuard],
+    loadComponent: () =>
+      import('./pages/admin/admin.component').then((m) => m.AdminComponent),
+    title: 'Manos Seguras — Panel de Supervisión Docente',
   },
   {
     path: 'diagnostico',
