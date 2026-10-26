@@ -6,16 +6,16 @@ export interface StudentInfo {
 }
 
 export interface DiagnosticQuestion {
-  id: number;
+  id: number | string;
   question: string;
   context: string;
   options: string[];
-  correctIndex: number;
-  rationale: string;
+  correctIndex?: number;
+  rationale?: string;
 }
 
 export interface DiagnosticAnswer {
-  questionId: number;
+  questionId: number | string;
   selectedOptionIndex: number;
 }
 

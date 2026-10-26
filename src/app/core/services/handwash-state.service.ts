@@ -92,8 +92,16 @@ export class HandwashStateService {
     },
   ];
 
+  private readonly _clinicalQuestions = signal<DiagnosticQuestion[]>(this.clinicalQuestions);
+
   get diagnosticQuestions(): DiagnosticQuestion[] {
-    return this.clinicalQuestions;
+    return this._clinicalQuestions();
+  }
+
+  setDiagnosticQuestions(questions: DiagnosticQuestion[]): void {
+    if (questions && questions.length > 0) {
+      this._clinicalQuestions.set(questions);
+    }
   }
 
   // Official 6 steps
@@ -216,8 +224,28 @@ export class HandwashStateService {
 
   // State Signals
   private readonly _student = signal<StudentInfo | null>(null);
-  private readonly _diagnosticAnswers = signal<{ [questionId: number]: number }>({});
+  private readonly _diagnosticAnswers = signal<{ [questionId: string | number]: number }>({});
+  private readonly _backendScore = signal<number | null>(null);
   private readonly _stepRecords = signal<StepTimeRecord[]>([]);
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      const rawUser = localStorage.getItem('usuario');
+      if (rawUser) {
+        try {
+          const user = JSON.parse(rawUser);
+          if (user && user.nombre) {
+            this._student.set({
+              fullName: user.nombre,
+              studentCode: user.codigoEstudiantil || '',
+              consent: !!user.consentimiento,
+              registeredAt: new Date(),
+            });
+          }
+        } catch {}
+      }
+    }
+  }
 
   // Public readonly accessors
   readonly student = this._student.asReadonly();
@@ -230,12 +258,15 @@ export class HandwashStateService {
     return this.diagnosticQuestions.every((q) => answers[q.id] !== undefined);
   });
 
-  // Diagnostic Quiz Score computed
+  // Diagnostic Quiz Score computed (usa score del backend si fue calificado allí, o aciertos locales)
   readonly diagnosticScore = computed(() => {
+    if (this._backendScore() !== null) {
+      return this._backendScore()!;
+    }
     const answers = this._diagnosticAnswers();
     let correctCount = 0;
     this.diagnosticQuestions.forEach((q) => {
-      if (answers[q.id] === q.correctIndex) {
+      if (q.correctIndex !== undefined && answers[q.id] === q.correctIndex) {
         correctCount++;
       }
     });
@@ -305,12 +336,17 @@ export class HandwashStateService {
     });
   }
 
-  setDiagnosticAnswer(questionId: number, optionIndex: number): void {
+  setDiagnosticAnswer(questionId: string | number, optionIndex: number): void {
     this._diagnosticAnswers.update((prev) => ({
       ...prev,
       [questionId]: optionIndex,
     }));
   }
+
+  setBackendScore(score: number): void {
+    this._backendScore.set(score);
+  }
+
 
   recordStepTime(stepNumber: number, seconds: number): StepTimeRecord {
     const step = this.steps.find((s) => s.number === stepNumber);

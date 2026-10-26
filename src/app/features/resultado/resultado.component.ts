@@ -206,11 +206,13 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                 {{ q.id }}. {{ q.question }}
               </div>
               <div class="text-[#008072] font-semibold mt-1">
-                Respuesta correcta: {{ q.options[q.correctIndex] }}
+                Respuesta correcta: {{ q.correctIndex !== undefined ? q.options[q.correctIndex] : 'Registrada en plataforma' }}
               </div>
-              <p class="text-slate-600 mt-1 text-xs">
-                {{ q.rationale }}
-              </p>
+              @if (q.rationale) {
+                <p class="text-slate-600 mt-1 text-xs">
+                  {{ q.rationale }}
+                </p>
+              }
             </div>
           }
         </div>
