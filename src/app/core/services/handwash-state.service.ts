@@ -111,7 +111,8 @@ export class HandwashStateService {
       demoUrl:
         'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-1.mp4',
-      imageDemo: 'assets/images/pasos/paso-1.svg',
+      imageDemo:
+        'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       targetArea: 'Superficie palmar bilateral completa',
       recommendedPressure: 'Firme y homogénea',
       movementPattern: 'Fricción circular continua de 360°',
@@ -129,7 +130,8 @@ export class HandwashStateService {
       demoUrl:
         'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-2.mp4',
-      imageDemo: 'assets/images/pasos/paso-2.svg',
+      imageDemo:
+        'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       targetArea: 'Dorso cutáneo y articulaciones metacarpianas',
       recommendedPressure: 'Firme y longitudinal (nudillos a muñeca)',
       movementPattern: 'Deslizamiento longitudinal de vaivén',
@@ -147,7 +149,8 @@ export class HandwashStateService {
       demoUrl:
         'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-3.mp4',
-      imageDemo: 'assets/images/pasos/paso-3.svg',
+      imageDemo:
+        'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       targetArea: 'Pliegues y hendiduras interdigitales',
       recommendedPressure: 'Profunda en la base articular',
       movementPattern: 'Fricción en peine recíproca',
@@ -165,7 +168,8 @@ export class HandwashStateService {
       demoUrl:
         'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-4.mp4',
-      imageDemo: 'assets/images/pasos/paso-4.svg',
+      imageDemo:
+        'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       targetArea: 'Nudillos y falanges dorsales en gancho',
       recommendedPressure: 'Traba firme con contra-presión palmar',
       movementPattern: 'Desplazamiento horizontal de vaivén',
@@ -183,7 +187,8 @@ export class HandwashStateService {
       demoUrl:
         'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-5.mp4',
-      imageDemo: 'assets/images/pasos/paso-5.svg',
+      imageDemo:
+        'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80',
       targetArea: 'Primer dedo (pulgar) bilateral y eminencia tenar',
       recommendedPressure: 'Envolvente circular de 360°',
       movementPattern: 'Rotación axial de puño cerrado',
@@ -201,7 +206,8 @@ export class HandwashStateService {
       demoUrl:
         'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       videoDemo: 'assets/animations/paso-6.mp4',
-      imageDemo: 'assets/images/pasos/paso-6.svg',
+      imageDemo:
+        'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80',
       targetArea: 'Lechos ungueales, pulpejos y cuenco palmar',
       recommendedPressure: 'Cónica y concentrada sobre la palma',
       movementPattern: 'Rotación en espiral concéntrica',

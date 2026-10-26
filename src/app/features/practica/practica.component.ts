@@ -403,23 +403,24 @@ export interface QualityAlert {
                 </p>
               </div>
 
-              <!-- REEMPLAZO FORZOSO: DEMOSTRACIÓN BIOMECÁNICA OFICIAL OMS -->
-              <div class="w-full h-56 rounded-2xl overflow-hidden bg-slate-900 border border-teal-500/30 shadow-inner relative flex items-center justify-center">
-                <!-- Imagen/GIF animado demostrativo de la técnica oficial -->
+              <!-- GUÍA ANATÓMICA: VISOR FOTOGRÁFICO CLÍNICO DE MANIOBRAS OMS -->
+              <div class="relative w-full h-64 rounded-2xl overflow-hidden bg-slate-900 border border-teal-500/30 shadow-lg flex items-center justify-center group my-3">
                 <img 
-                  [src]="pasoActual().demoUrl || 'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80'"
-                  src="https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80" 
-                  alt="Demostración técnica de lavado de manos" 
-                  class="w-full h-full object-cover"
+                  [src]="obtenerUrlPaso(pasoActual())" 
+                  [alt]="obtenerTituloPaso(pasoActual())" 
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div class="absolute bottom-2 left-2 bg-teal-600/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
-                  Demostración Biomecánica
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 flex flex-col justify-end p-3">
+                  <div class="flex items-center gap-2 bg-teal-500/90 text-white text-xs font-bold px-3 py-1 rounded-full w-fit shadow-md backdrop-blur-sm">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                    Maniobra OMS • Técnica Real
+                  </div>
                 </div>
               </div>
 
               <!-- INSTRUCCIÓN TEXTUAL CLARA Y DETALLADA -->
               <div class="space-y-3">
-                <p class="text-slate-700 text-sm font-medium leading-relaxed mt-4">
+                <p class="text-slate-700 text-sm font-medium leading-relaxed mt-3">
                   {{ currentStep().description }}
                 </p>
 
@@ -646,6 +647,35 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
   iniciarCamara(): Promise<void> {
     return this.startCamera();
+  }
+
+  obtenerUrlPaso(indiceOPaso?: any): string {
+    const demos = [
+      'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80', // Paso 1: Palmas
+      'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80', // Paso 2: Dorso
+      'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80', // Paso 3: Entrelazado
+      'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80', // Paso 4: Dedos trabados
+      'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80', // Paso 5: Pulgares
+      'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80'  // Paso 6: Yemas
+    ];
+    let idx = this.currentStepIndex();
+    if (typeof indiceOPaso === 'number') {
+      idx = indiceOPaso;
+    } else if (indiceOPaso && typeof indiceOPaso === 'object') {
+      if (typeof indiceOPaso.number === 'number') {
+        idx = indiceOPaso.number - 1;
+      } else if (typeof indiceOPaso.id === 'number') {
+        idx = indiceOPaso.id - 1;
+      }
+    }
+    return demos[idx] || demos[0];
+  }
+
+  obtenerTituloPaso(paso?: any): string {
+    if (paso && typeof paso === 'object') {
+      return paso.titulo || paso.title || `Maniobra OMS #${paso.number ?? ''}`;
+    }
+    return this.currentStep().title;
   }
 
   @ViewChild('cameraVideo') private cameraVideo?: ElementRef<HTMLVideoElement>;
