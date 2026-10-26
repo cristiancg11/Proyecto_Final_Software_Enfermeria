@@ -1,0 +1,94 @@
+// Prisma Schema para la plataforma educativa "Manos Seguras"
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Rol {
+  ESTUDIANTE
+  DOCENTE
+}
+
+enum TipoDiagnostico {
+  PRE
+  POST
+}
+
+model Usuario {
+  id                  String                @id @default(uuid())
+  nombre              String
+  codigoEstudiantil   String                @unique
+  correo              String                @unique
+  password            String
+  rol                 Rol                   @default(ESTUDIANTE)
+  consentimiento      Boolean               @default(false)
+  fechaRegistro       DateTime              @default(now())
+  intentosPractica    IntentoPractica[]
+  intentosDiagnostico IntentoDiagnostico[]
+  preguntasCreadas    Pregunta[]            // Preguntas creadas si es docente
+}
+
+model Pregunta {
+  id            String                @id @default(uuid())
+  enunciado     String
+  justificacion String?
+  activa        Boolean               @default(true)
+  creadaPorId   String
+  creadaPor     Usuario               @relation(fields: [creadaPorId], references: [id])
+  opciones      OpcionRespuesta[]
+  respuestas    RespuestaEstudiante[]
+  createdAt     DateTime              @default(now())
+}
+
+model OpcionRespuesta {
+  id         String                @id @default(uuid())
+  preguntaId String
+  pregunta   Pregunta              @relation(fields: [preguntaId], references: [id], onDelete: Cascade)
+  texto      String
+  esCorrecta Boolean               @default(false)
+  respuestas RespuestaEstudiante[]
+}
+
+model IntentoDiagnostico {
+  id         String                @id @default(uuid())
+  usuarioId  String
+  usuario    Usuario               @relation(fields: [usuarioId], references: [id])
+  tipo       TipoDiagnostico
+  puntaje    Float
+  respuestas RespuestaEstudiante[]
+  createdAt  DateTime              @default(now())
+}
+
+model RespuestaEstudiante {
+  id                   String             @id @default(uuid())
+  intentoId            String
+  intento              IntentoDiagnostico @relation(fields: [intentoId], references: [id], onDelete: Cascade)
+  preguntaId           String
+  pregunta             Pregunta           @relation(fields: [preguntaId], references: [id])
+  opcionSeleccionadaId String
+  opcionSeleccionada   OpcionRespuesta    @relation(fields: [opcionSeleccionadaId], references: [id])
+}
+
+model IntentoPractica {
+  id               String       @id @default(uuid())
+  usuarioId        String
+  usuario          Usuario      @relation(fields: [usuarioId], references: [id])
+  calificacion     Float        // Puntaje sobre 10
+  aprobado         Boolean
+  detallePasosJson Json         // Guarda tiempo y score de calidad de frotado de cada paso
+  createdAt        DateTime     @default(now())
+  certificado      Certificado?
+}
+
+model Certificado {
+  id                 String          @id @default(uuid())
+  codigoVerificacion String          @unique @default(cuid())
+  intentoPracticaId  String          @unique
+  intentoPractica    IntentoPractica @relation(fields: [intentoPracticaId], references: [id])
+  fechaEmision       DateTime        @default(now())
+}
