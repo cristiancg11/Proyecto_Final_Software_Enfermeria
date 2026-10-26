@@ -10,9 +10,18 @@ import {
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
+import {
+  DrawingUtils,
+  FilesetResolver,
+  HandLandmarker,
+} from '@mediapipe/tasks-vision';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 import { HandwashStep } from '../../core/models/handwash.models';
+
+export interface QualityAlert {
+  type: 'hands-missing' | 'hands-apart' | 'still';
+  message: string;
+}
 
 @Component({
   selector: 'app-practica',
@@ -68,7 +77,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
                     <span class="text-[#00B39F] font-bold">Paso {{ currentStepIndex() + 1 }} de 6</span>
                   </h1>
                   <p class="text-xs text-[#0B2B29]/70 hidden sm:block">
-                    Protocolo oficial OMS de fricción biomecánica de manos
+                    Evaluación por Calidad de Técnica Biomecánica • Protocolo OMS
                   </p>
                 </div>
               </div>
@@ -78,7 +87,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
                 <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>Objetivo OMS: 3 a 8 segundos por paso</span>
+                <span>Frotado Activo Requerido: 3 a 8 segundos</span>
               </div>
             </div>
 
@@ -129,13 +138,13 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   class="w-full h-full object-cover scale-x-[-1]"
                 ></video>
 
-                <!-- Canvas de Detección de Puntos Faciales/Manos MediaPipe -->
+                <!-- Canvas de Detección MediaPipe con dimensiones nativas y scale-x-[-1] sincronizado -->
                 <canvas
                   #handOverlay
-                  class="absolute inset-0 w-full h-full pointer-events-none z-10"
+                  class="absolute inset-0 w-full h-full pointer-events-none z-10 scale-x-[-1] object-cover"
                 ></canvas>
 
-                <!-- BADGE FLOTANTE: ESQUINA SUPERIOR IZQUIERDA (Paso Actual Píldora) -->
+                <!-- BADGE FLOTANTE: ESQUINA SUPERIOR IZQUIERDA -->
                 <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
                   <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/60 shadow-lg text-[#0B2B29]">
                     <span class="w-6 h-6 rounded-full bg-[#00B39F] text-white text-xs font-black flex items-center justify-center shadow-xs">
@@ -150,8 +159,9 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   </div>
                 </div>
 
-                <!-- BADGE FLOTANTE: ESQUINA SUPERIOR DERECHA (Manos Detectadas e Interruptor) -->
+                <!-- BADGE FLOTANTE: ESQUINA SUPERIOR DERECHA (Indicadores en vivo) -->
                 <div class="absolute top-4 right-4 z-20 flex items-center gap-2">
+                  <!-- Indicador de detección de ambas manos -->
                   <div
                     class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 shadow-lg backdrop-blur-md border"
                     [ngClass]="handsDetected() >= 2
@@ -166,6 +176,14 @@ import { HandwashStep } from '../../core/models/handwash.models';
                       Manos detectadas: {{ handsDetected() }}/2
                     </span>
                   </div>
+
+                  <!-- Indicador de Frotado Activo -->
+                  @if (cameraActive() && isTechniqueActive()) {
+                    <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#00B39F]/90 border border-white/40 text-white text-xs font-extrabold shadow-lg backdrop-blur-md animate-pulse">
+                      <span class="w-2 h-2 rounded-full bg-white"></span>
+                      <span>Frotando</span>
+                    </div>
+                  }
 
                   @if (cameraActive()) {
                     <button
@@ -182,6 +200,30 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   }
                 </div>
 
+                <!-- AVISO VISUAL FLOTANTE CENTRAL CUANDO SE CONGELA EL PROGRESO -->
+                @if (cameraActive() && activeAlert()) {
+                  <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-25 px-4 animate-fade-in">
+                    <div
+                      class="px-6 py-3.5 rounded-full font-black text-sm sm:text-base shadow-2xl border-2 border-white/60 backdrop-blur-md flex items-center gap-3 transition-all transform scale-105"
+                      [ngClass]="{
+                        'bg-[#FF6A4D]/95 text-white shadow-[#FF6A4D]/40 animate-pulse': activeAlert()?.type === 'hands-missing' || activeAlert()?.type === 'still',
+                        'bg-amber-500/95 text-white shadow-amber-500/40': activeAlert()?.type === 'hands-apart'
+                      }"
+                    >
+                      @if (activeAlert()?.type === 'still') {
+                        <svg class="w-5 h-5 text-white animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                      } @else {
+                        <svg class="w-5 h-5 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      }
+                      <span>{{ activeAlert()?.message }}</span>
+                    </div>
+                  </div>
+                }
+
                 <!-- OVERLAY CUANDO LA CÁMARA ESTÁ APAGADA -->
                 @if (!cameraActive()) {
                   <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-white bg-slate-950/90 backdrop-blur-sm z-15">
@@ -195,7 +237,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
                       Evaluación Biomecánica Asistida
                     </h3>
                     <p class="text-xs sm:text-sm text-slate-300 max-w-md mb-6 leading-relaxed">
-                      Activa tu cámara web para reconocimiento computacional de manos y cálculo automático de fricción aséptica con MediaPipe AI.
+                      Activa tu cámara web para reconocimiento de manos (21 puntos clave por mano) y medición de frotado efectivo en tiempo real.
                     </p>
 
                     <button
@@ -231,7 +273,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   </div>
                 }
 
-                <!-- BARRA INFERIOR FLOTANTE: PROGRESO DE TÉCNICA COMPLETADA -->
+                <!-- BARRA INFERIOR FLOTANTE: PROGRESO DE TÉCNICA -->
                 <div class="absolute bottom-4 left-4 right-4 z-20 bg-slate-950/85 backdrop-blur-xl rounded-2xl p-3.5 sm:p-4 border border-white/20 shadow-2xl text-white">
                   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                     <div class="flex items-center gap-2.5 min-w-0">
@@ -241,30 +283,32 @@ import { HandwashStep } from '../../core/models/handwash.models';
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
-                      } @else {
+                      } @else if (isTechniqueActive()) {
                         <div class="w-6 h-6 rounded-full bg-[#00B39F]/20 text-[#00B39F] flex items-center justify-center shrink-0 border border-[#00B39F]/40 animate-pulse">
                           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                           </svg>
                         </div>
+                      } @else {
+                        <div class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/40">
+                          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
                       }
                       <span class="text-xs sm:text-sm font-semibold truncate text-[#F5F8FF]">
                         @if (cameraActive()) {
-                          @if (palmsValidated() && currentSeconds() < 3) {
-                            Fricción reconocida. Mantén el movimiento hasta alcanzar 3.0s mínimos.
-                          } @else {
-                            {{ palmsFeedback() }}
-                          }
+                          {{ palmsFeedback() }}
                         } @else {
                           Realiza la maniobra frente a la pantalla y registra el tiempo transcurrido.
                         }
                       </span>
                     </div>
 
-                    <!-- Indicador porcentaje de técnica -->
+                    <!-- Indicador porcentaje de técnica y estado -->
                     <div class="shrink-0 flex items-center gap-2 self-end sm:self-auto px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-bold">
                       <span class="text-slate-300">Técnica:</span>
-                      <span [ngClass]="palmsValidated() ? 'text-emerald-400 font-extrabold' : 'text-[#00B39F]'">
+                      <span [ngClass]="palmsValidated() ? 'text-emerald-400 font-extrabold' : isTechniqueActive() ? 'text-[#00B39F] font-bold' : 'text-amber-400 font-medium'">
                         {{ techniqueProgressPercent() }}%
                       </span>
                     </div>
@@ -274,7 +318,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   <div class="w-full h-2.5 bg-white/15 rounded-full overflow-hidden p-0.5 border border-white/10">
                     <div
                       class="h-full rounded-full transition-all duration-300"
-                      [ngClass]="palmsValidated() ? 'bg-gradient-to-r from-emerald-400 to-[#00B39F]' : 'bg-gradient-to-r from-[#FF6A4D] via-[#00B39F] to-emerald-400'"
+                      [ngClass]="palmsValidated() ? 'bg-gradient-to-r from-emerald-400 to-[#00B39F]' : isTechniqueActive() ? 'bg-gradient-to-r from-[#00B39F] to-emerald-400' : 'bg-[#FF6A4D]/80'"
                       [style.width.%]="techniqueProgressPercent()"
                     ></div>
                   </div>
@@ -306,27 +350,25 @@ import { HandwashStep } from '../../core/models/handwash.models';
                 </p>
               </div>
 
-              <!-- VECTOR / ILUSTRACIÓN CLÍNICA DEL PASO ACTIVO -->
+              <!-- VECTOR / ILUSTRACIÓN CLÍNICA DEL PASO ACTIVO (SINCRONIZADO CON CURRENTSTEP) -->
               <div class="relative h-44 sm:h-48 rounded-2xl bg-gradient-to-br from-[#CFFBF0]/50 via-white to-[#FFE9DE]/50 border border-[#00B39F]/20 p-4 flex items-center justify-center overflow-hidden shadow-inner group">
-                <div class="absolute top-2.5 left-3 text-[10px] font-extrabold uppercase tracking-wider text-[#008072] px-2 py-0.5 rounded-md bg-[#00B39F]/10 border border-[#00B39F]/20">
-                  Guía Anatómica
+                <div class="absolute top-2.5 left-3 text-[10px] font-extrabold uppercase tracking-wider text-[#008072] px-2 py-0.5 rounded-md bg-[#00B39F]/10 border border-[#00B39F]/20 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F]"></span>
+                  <span>Guía Anatómica • Paso {{ currentStep().number }}</span>
                 </div>
 
-                <!-- VECTORES SVG ESPECÍFICOS SEGÚN EL PASO -->
+                <!-- VECTORES SVG SINCRONIZADOS SEGÚN EL PASO -->
                 @switch (currentStep().iconType) {
                   @case ('palms') {
                     <!-- Paso 1: Palma con Palma -->
                     <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
                       <circle cx="60" cy="60" r="48" fill="#CFFBF0" fill-opacity="0.3" stroke="#00B39F" stroke-dasharray="4 4" stroke-width="1.5" />
-                      <!-- Mano Izquierda -->
                       <path d="M42 75C37 68 37 54 41 45C42 43 45 43 46 45C47 48 48 53 49 55" stroke="#0B2B29" stroke-width="2.5" stroke-linecap="round"/>
                       <path d="M48 45C49 39 52 38 54 40C55 42 56 48 56 52" stroke="#0B2B29" stroke-width="2.5" stroke-linecap="round"/>
                       <path d="M55 44C57 39 60 39 61 42C62 45 62 50 62 55" stroke="#0B2B29" stroke-width="2.5" stroke-linecap="round"/>
                       <path d="M62 49C64 45 67 46 68 49C69 52 68 59 66 68C64 77 56 86 48 86C42 86 38 81 40 76" stroke="#0B2B29" stroke-width="2.5" stroke-linecap="round"/>
-                      <!-- Flechas circulares de fricción -->
                       <path d="M72 32C84 37 92 48 92 60C92 76 78 88 62 88" stroke="#00B39F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M76 26L71 32L77 38" stroke="#00B39F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                      <!-- Burbujas asépticas -->
                       <circle cx="76" cy="60" r="6" fill="#CFFBF0" stroke="#00B39F" stroke-width="2"/>
                       <circle cx="86" cy="74" r="4" fill="#FFE9DE" stroke="#FF6A4D" stroke-width="1.5"/>
                       <circle cx="34" cy="38" r="3" fill="#00B39F"/>
@@ -335,12 +377,9 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   @case ('dorsal') {
                     <!-- Paso 2: Dorso de las Manos -->
                     <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <!-- Base mano inferior -->
                       <rect x="30" y="45" width="45" height="35" rx="10" transform="rotate(-15 30 45)" fill="#CFFBF0" fill-opacity="0.3" stroke="#0B2B29" stroke-width="2.5"/>
-                      <!-- Mano superior cruzada sobre el dorso -->
                       <rect x="42" y="32" width="45" height="36" rx="10" transform="rotate(25 42 32)" fill="#FFE9DE" fill-opacity="0.4" stroke="#00B39F" stroke-width="3"/>
                       <path d="M46 36L44 20M54 38L55 18M64 42L68 20M73 48L80 26" stroke="#00B39F" stroke-width="2.5" stroke-linecap="round"/>
-                      <!-- Flechas bidireccionales de deslizamiento -->
                       <path d="M28 30L34 22M34 22L42 28M34 22L20 40" stroke="#FF6A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M92 84L86 92M86 92L78 86M86 92L100 74" stroke="#FF6A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -348,13 +387,11 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   @case ('interdigital') {
                     <!-- Paso 3: Espacios Interdigitales -->
                     <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <!-- Dedos entrelazados alternos -->
                       <path d="M38 85V40C38 36 43 36 43 40V75" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
                       <path d="M47 75V35C47 31 52 31 52 35V75" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
                       <path d="M56 75V38C56 34 61 34 61 38V75" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
                       <path d="M65 75V33C65 29 70 29 70 33V75" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
                       <path d="M74 75V42C74 38 79 38 79 42V85" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
-                      <!-- Fricción vertical entre dedos -->
                       <path d="M52 22L52 14M52 14L48 18M52 14L56 18" stroke="#FF6A4D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M65 14L65 22M65 22L61 18M65 22L69 18" stroke="#FF6A4D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       <circle cx="60" cy="55" r="3" fill="#FF6A4D"/>
@@ -365,11 +402,9 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   @case ('fingers-locked') {
                     <!-- Paso 4: Dorso de los Dedos Trabados -->
                     <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <!-- Traba de dedos nudillos curvados -->
                       <path d="M38 48C38 40 48 40 52 48C56 56 64 56 68 48C72 40 82 40 82 48V68C82 76 72 76 68 68C64 60 56 60 52 68C48 76 38 76 38 68V48Z" fill="#CFFBF0" fill-opacity="0.4" stroke="#0B2B29" stroke-width="2.5"/>
                       <path d="M45 42H75" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
                       <path d="M45 74H75" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <!-- Flechas opuestas laterales -->
                       <path d="M26 58H16M16 58L21 53M16 58L21 63" stroke="#FF6A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M94 58H104M104 58L99 53M104 58L99 63" stroke="#FF6A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -377,13 +412,10 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   @case ('thumbs') {
                     <!-- Paso 5: Limpieza de Pulgares -->
                     <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <!-- Pulgar vertical central -->
                       <rect x="52" y="32" width="16" height="52" rx="8" fill="#FFE9DE" stroke="#0B2B29" stroke-width="2.5"/>
-                      <!-- Mano envolvente con rotación -->
                       <path d="M36 50C36 42 46 42 54 44" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
                       <path d="M36 62C36 54 46 54 54 56" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
                       <path d="M36 74C36 66 46 66 54 68" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <!-- Flecha orbital de rotación -->
                       <path d="M78 45C86 52 86 64 78 72C72 78 62 80 50 78" stroke="#FF6A4D" stroke-width="3" stroke-linecap="round"/>
                       <path d="M82 40L78 45L84 49" stroke="#FF6A4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                       <circle cx="60" cy="40" r="3" fill="#00B39F"/>
@@ -392,11 +424,8 @@ import { HandwashStep } from '../../core/models/handwash.models';
                   @case ('nails') {
                     <!-- Paso 6: Yemas y Uñas en Palma -->
                     <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <!-- Palma plana receptora -->
                       <ellipse cx="60" cy="74" rx="36" ry="18" fill="#CFFBF0" fill-opacity="0.4" stroke="#0B2B29" stroke-width="2.5"/>
-                      <!-- Yemas convergentes desde arriba -->
                       <path d="M52 30L56 60M60 26L60 62M68 30L64 60M46 36L54 58M74 36L66 58" stroke="#00B39F" stroke-width="2.5" stroke-linecap="round"/>
-                      <!-- Círculo concéntrico de frotación en la palma -->
                       <circle cx="60" cy="72" r="9" stroke="#FF6A4D" stroke-width="2" stroke-dasharray="3 3"/>
                       <path d="M68 66L72 72L66 74" stroke="#FF6A4D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -424,7 +453,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
                 </div>
               </div>
 
-              <!-- CRONÓMETRO VISUAL CIRCULAR Y TIEMPO EFECTIVO -->
+              <!-- CRONÓMETRO VISUAL CIRCULAR Y TIEMPO EFECTIVO DE FROTADO -->
               <div class="flex flex-col items-center justify-center pt-2">
                 <div class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center mb-3">
                   <!-- Círculo SVG de Fondo -->
@@ -464,7 +493,7 @@ import { HandwashStep } from '../../core/models/handwash.models';
                       {{ formattedTime() }}
                     </div>
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mt-0.5">
-                      Segundos
+                      Segundos Efectivos
                     </span>
 
                     <!-- Badge de Estado del Ritmo OMS -->
@@ -618,9 +647,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly cameraLoading = signal(false);
   readonly cameraError = signal('');
   readonly handsDetected = signal(0);
+  readonly handsTogether = signal(false);
+  readonly handsRubbing = signal(false);
+  readonly wristDistance = signal(0);
   readonly palmsEvidence = signal(0);
   readonly palmsValidated = signal(false);
-  readonly palmsFeedback = signal('Acerca las palmas y frota continuamente frente a la cámara.');
+  readonly palmsFeedback = signal('Coloca ambas manos en el encuadre para comenzar.');
 
   @ViewChild('cameraVideo') private cameraVideo?: ElementRef<HTMLVideoElement>;
   @ViewChild('handOverlay') private handOverlay?: ElementRef<HTMLCanvasElement>;
@@ -629,23 +661,39 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly isLastStep = computed(() => this.currentStepIndex() === this.steps.length - 1);
   readonly completedRecords = this.stateService.stepRecords;
 
-  // Porcentajes de técnica y tiempo calculados con Signals
-  readonly techniqueProgressPercent = computed(() => {
-    return Math.min(100, Math.round((this.palmsEvidence() / 1.5) * 100));
+  // Condición de técnica activa: ambas manos detectadas + juntas + frotado activo
+  readonly isTechniqueActive = computed(() => {
+    return this.handsDetected() >= 2 && this.handsTogether() && this.handsRubbing();
   });
 
-  readonly timeProgressPercent = computed(() => {
-    return Math.min(100, Math.round((this.currentSeconds() / 8.0) * 100));
+  // Aviso flotante sobre el video según la calidad de técnica
+  readonly activeAlert = computed<QualityAlert | null>(() => {
+    if (!this.cameraActive()) return null;
+    if (this.handsDetected() < 2) {
+      return { type: 'hands-missing', message: 'Coloca ambas manos en el encuadre' };
+    }
+    if (!this.handsTogether()) {
+      return { type: 'hands-apart', message: 'Junta las manos para frotar' };
+    }
+    if (!this.handsRubbing()) {
+      return { type: 'still', message: '⚠️ Frota activamente las manos' };
+    }
+    return null;
+  });
+
+  // Porcentaje de progreso de técnica para el paso actual (0% a 100%)
+  readonly techniqueProgressPercent = computed(() => {
+    return Math.min(100, Math.round((this.currentSeconds() / 3.0) * 100));
   });
 
   // SVG circular timer config
   readonly radius = 52;
   readonly circumference = 2 * Math.PI * this.radius;
 
-  // Computed visual circle offset (mapea 0 a 10 segundos al perímetro del círculo)
+  // Computed visual circle offset (mapea 0 a 8 segundos al perímetro del círculo)
   readonly strokeDashoffset = computed(() => {
     const s = this.currentSeconds();
-    const progress = Math.min(1, s / 10);
+    const progress = Math.min(1, s / 8);
     return this.circumference * (1 - progress);
   });
 
@@ -655,13 +703,17 @@ export class PracticaComponent implements OnInit, OnDestroy {
   });
 
   private timerInterval: any = null;
-  private startTime: number = 0;
   private stream: MediaStream | null = null;
   private detector: HandLandmarker | null = null;
+  private drawingUtils: DrawingUtils | null = null;
   private animationFrame: number | null = null;
-  private previousCenters: { x: number; y: number }[] | null = null;
-  private previousFrameAt: number | null = null;
   private autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // Variables biomecánicas para cálculo de delta de frotado y proximidad
+  private previousKeyPoints: { x: number; y: number }[][] | null = null;
+  private previousFrameAt: number | null = null;
+  private smoothedMotion: number = 0;
+  private effectiveSeconds: number = 0;
 
   ngOnInit(): void {
     if (!this.student()) {
@@ -692,6 +744,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       if (!video) throw new Error('Visor no disponible');
       video.srcObject = this.stream;
       await video.play();
+
       if (!this.detector) {
         const vision = await FilesetResolver.forVisionTasks(
           'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
@@ -705,6 +758,9 @@ export class PracticaComponent implements OnInit, OnDestroy {
           numHands: 2,
         });
       }
+
+      // Detenemos el cronómetro por intervalo ciego para que la cámara gobierne el progreso
+      this.stopTimer();
       this.cameraActive.set(true);
       this.detectHands();
     } catch (error) {
@@ -725,100 +781,203 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.animationFrame = null;
     this.cameraActive.set(false);
     this.handsDetected.set(0);
-    this.resetPalmsEvidence();
+    this.handsTogether.set(false);
+    this.handsRubbing.set(false);
+    this.resetBiomechanicalState();
     this.releaseStream();
+
     const canvas = this.handOverlay?.nativeElement;
-    canvas?.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
+    if (canvas) {
+      const context = canvas.getContext('2d');
+      context?.clearRect(0, 0, canvas.width, canvas.height);
+    }
   }
 
   private detectHands(): void {
     const video = this.cameraVideo?.nativeElement;
     if (!video || !this.detector || !this.cameraActive()) return;
-    const result = this.detector.detectForVideo(video, performance.now());
-    this.handsDetected.set(result.landmarks.length);
-    this.evaluatePalms(result.landmarks);
-    this.drawLandmarks(result.landmarks);
+
+    // Solo procesar si el video tiene dimensiones nativas válidas
+    if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
+      const now = performance.now();
+      const result = this.detector.detectForVideo(video, now);
+
+      this.evaluateTechnique(result.landmarks, now);
+      this.drawLandmarks(result.landmarks);
+    }
+
     this.animationFrame = requestAnimationFrame(() => this.detectHands());
   }
 
-  private evaluatePalms(landmarks: { x: number; y: number }[][]): void {
-    const now = performance.now();
+  /**
+   * Medición por Calidad de Técnica:
+   * 1. Presencia de ambas manos (>= 2).
+   * 2. Proximidad euclidiana entre muñecas (landmark 0).
+   * 3. Delta de desplazamiento de puntas de dedos [4, 8, 12, 16, 20].
+   * El cronómetro SOLO suma tiempo cuando se cumplen las tres condiciones.
+   */
+  private evaluateTechnique(landmarks: { x: number; y: number }[][], now: number): void {
+    const elapsed = this.previousFrameAt ? Math.min(0.12, (now - this.previousFrameAt) / 1000) : 0;
+    this.previousFrameAt = now;
     const instruction = this.currentStep().title;
+
+    // a) Validar presencia de ambas manos
+    this.handsDetected.set(landmarks.length);
+
     if (landmarks.length < 2) {
-      this.palmsFeedback.set(`${instruction}: muestra ambas manos frente a la cámara.`);
-      this.previousCenters = null;
-      this.previousFrameAt = now;
-      return;
+      this.handsTogether.set(false);
+      this.handsRubbing.set(false);
+      this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre.`);
+      this.previousKeyPoints = null;
+      return; // Progreso congelado
     }
-    const centers = landmarks
+
+    // b) Proximidad de manos: calcular distancia euclidiana entre muñecas (landmark 0)
+    const wrist0 = landmarks[0][0];
+    const wrist1 = landmarks[1][0];
+    const wristDistance = Math.hypot(wrist0.x - wrist1.x, wrist0.y - wrist1.y);
+    this.wristDistance.set(Math.round(wristDistance * 100) / 100);
+
+    // Complementar con la distancia entre los centros de palma (muñeca 0 + base de dedo medio 9)
+    const palm0 = {
+      x: (landmarks[0][0].x + landmarks[0][9].x) / 2,
+      y: (landmarks[0][0].y + landmarks[0][9].y) / 2,
+    };
+    const palm1 = {
+      x: (landmarks[1][0].x + landmarks[1][9].x) / 2,
+      y: (landmarks[1][0].y + landmarks[1][9].y) / 2,
+    };
+    const palmDistance = Math.hypot(palm0.x - palm1.x, palm0.y - palm1.y);
+
+    const threshold = this.currentProximityThreshold();
+    const areHandsTogether = wristDistance < threshold || palmDistance < threshold;
+    this.handsTogether.set(areHandsTogether);
+
+    if (!areHandsTogether) {
+      this.handsRubbing.set(false);
+      this.palmsFeedback.set(`Junta las manos para realizar la técnica de ${instruction.toLowerCase()}.`);
+      this.previousKeyPoints = null;
+      return; // Progreso congelado
+    }
+
+    // c) Detección de frotado/movimiento: calcular delta de desplazamiento en puntas de dedos
+    const keyIndices = [4, 8, 12, 16, 20];
+    const currentKeyPoints: { x: number; y: number }[][] = landmarks
       .slice(0, 2)
-      .map((hand) => ({ x: (hand[0].x + hand[9].x) / 2, y: (hand[0].y + hand[9].y) / 2 }));
-    const close =
-      Math.hypot(centers[0].x - centers[1].x, centers[0].y - centers[1].y) <
-      this.currentDistanceThreshold();
-    const movement = this.previousCenters
-      ? (Math.hypot(centers[0].x - this.previousCenters[0].x, centers[0].y - this.previousCenters[0].y) +
-          Math.hypot(centers[1].x - this.previousCenters[1].x, centers[1].y - this.previousCenters[1].y)) /
-        2
-      : 0;
-    const elapsed = this.previousFrameAt ? Math.min(0.15, (now - this.previousFrameAt) / 1000) : 0;
-    if (close && movement > 0.004) {
-      const evidence = Math.min(1.5, this.palmsEvidence() + elapsed);
-      this.palmsEvidence.set(evidence);
-      if (evidence >= 1.5 && !this.palmsValidated()) {
-        this.palmsValidated.set(true);
-        this.palmsFeedback.set(
-          `¡${instruction} reconocido! Mantén la fricción continua hasta completar 3 segundos.`
-        );
-      } else if (!this.palmsValidated()) {
-        this.palmsFeedback.set(`¡Bien! Mantén el movimiento de ${instruction.toLowerCase()}.`);
+      .map((hand) => keyIndices.map((idx) => ({ x: hand[idx].x, y: hand[idx].y })));
+
+    let deltaMovement = 0;
+    let sampleCount = 0;
+
+    if (this.previousKeyPoints && this.previousKeyPoints.length >= 2) {
+      for (let h = 0; h < 2; h++) {
+        for (let i = 0; i < keyIndices.length; i++) {
+          const p1 = currentKeyPoints[h][i];
+          const p0 = this.previousKeyPoints[h][i];
+          if (p1 && p0) {
+            deltaMovement += Math.hypot(p1.x - p0.x, p1.y - p0.y);
+            sampleCount++;
+          }
+        }
       }
-    } else {
-      this.palmsFeedback.set(
-        close
-          ? `Realiza fricción continua para ${instruction.toLowerCase()}.`
-          : `Acerca las manos para realizar ${instruction.toLowerCase()}.`
-      );
     }
-    if (this.palmsValidated() && this.currentSeconds() >= 3 && this.autoAdvanceTimer === null) {
+    this.previousKeyPoints = currentKeyPoints;
+
+    const avgMovement = sampleCount > 0 ? deltaMovement / sampleCount : 0;
+    // Filtro exponencial para evitar falsos positivos por ruido
+    this.smoothedMotion = this.smoothedMotion * 0.65 + avgMovement * 0.35;
+
+    // Umbral de frotado activo por encima del temblor estático
+    const isRubbing = this.smoothedMotion > 0.0035;
+    this.handsRubbing.set(isRubbing);
+
+    if (!isRubbing) {
+      this.palmsFeedback.set(`⚠️ Frota activamente las manos.`);
+      return; // Progreso congelado si las manos están quietas
+    }
+
+    // CONDICIÓN CUMPLIDA: Manos juntas y frotado continuo detectado
+    this.effectiveSeconds += elapsed;
+    const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
+    if (this.currentSeconds() !== roundedSeconds) {
+      this.currentSeconds.set(roundedSeconds);
+    }
+
+    const evidence = Math.min(3.0, this.palmsEvidence() + elapsed);
+    this.palmsEvidence.set(evidence);
+
+    if (evidence >= 1.5 && !this.palmsValidated()) {
+      this.palmsValidated.set(true);
+    }
+
+    if (this.effectiveSeconds < 3.0) {
       this.palmsFeedback.set(
-        `¡${instruction} validado en tiempo óptimo! Avanzando automáticamente...`
+        `¡Fricción continua en ${instruction}! Mantén el frotado activo hasta 3.0s mínimos.`
       );
+    } else {
+      this.palmsFeedback.set(`✓ ¡Excelente técnica y tiempo óptimo alcanzado (${roundedSeconds}s)!`);
+    }
+
+    // Avance automático al alcanzar técnica validada y tiempo óptimo (>= 3s)
+    if (this.palmsValidated() && this.effectiveSeconds >= 3.0 && this.autoAdvanceTimer === null) {
       this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
     }
-    this.previousCenters = centers;
-    this.previousFrameAt = now;
   }
 
+  /**
+   * Renderizado nítido sobre el <canvas> usando DrawingUtils:
+   * - Dimensiones sincronizadas con videoWidth y videoHeight.
+   * - Conectores turquesa #00B39F con lineWidth = 4.
+   * - Puntos blancos con borde acento coral #FF6A4D y radio = 5.
+   */
   private drawLandmarks(landmarks: { x: number; y: number }[][]): void {
     const canvas = this.handOverlay?.nativeElement;
     const video = this.cameraVideo?.nativeElement;
-    if (!canvas || !video || !video.videoWidth) return;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    if (!canvas || !video || !video.videoWidth || !video.videoHeight) return;
+
+    // 1. Asegurar correspondencia exacta de resolución nativa para evitar desajustes
+    if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+    }
+
     const context = canvas.getContext('2d');
     if (!context) return;
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = '#00B39F';
+
+    if (!this.drawingUtils) {
+      this.drawingUtils = new DrawingUtils(context);
+    }
+
     for (const hand of landmarks) {
-      for (const point of hand) {
-        context.beginPath();
-        context.arc((1 - point.x) * canvas.width, point.y * canvas.height, 4, 0, Math.PI * 2);
-        context.fill();
-      }
+      // Dibujar 21 conexiones con DrawingUtils: turquesa #00B39F con lineWidth = 4
+      this.drawingUtils.drawConnectors(hand as any, HandLandmarker.HAND_CONNECTIONS, {
+        color: '#00B39F',
+        lineWidth: 4,
+      });
+
+      // Dibujar los 21 landmarks: blanco con borde coral #FF6A4D, radio 5
+      this.drawingUtils.drawLandmarks(hand as any, {
+        color: '#FF6A4D',
+        fillColor: '#FFFFFF',
+        lineWidth: 2,
+        radius: 5,
+      });
     }
   }
 
-  private resetPalmsEvidence(): void {
-    this.palmsEvidence.set(0);
-    this.palmsValidated.set(false);
-    this.palmsFeedback.set('Acerca las palmas y frota continuamente frente a la cámara.');
-    this.previousCenters = null;
-    this.previousFrameAt = null;
+  private currentProximityThreshold(): number {
+    return [0.42, 0.46, 0.42, 0.44, 0.4, 0.42][this.currentStepIndex()] ?? 0.42;
   }
 
-  private currentDistanceThreshold(): number {
-    return [0.34, 0.43, 0.34, 0.38, 0.3, 0.32][this.currentStepIndex()] ?? 0.34;
+  private resetBiomechanicalState(): void {
+    this.palmsEvidence.set(0);
+    this.palmsValidated.set(false);
+    this.palmsFeedback.set('Coloca ambas manos en el encuadre para comenzar.');
+    this.previousKeyPoints = null;
+    this.previousFrameAt = null;
+    this.smoothedMotion = 0;
+    this.effectiveSeconds = 0;
   }
 
   private releaseStream(): void {
@@ -830,13 +989,19 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
   private startStepTimer(): void {
     this.stopTimer();
-    this.startTime = Date.now();
+    this.effectiveSeconds = 0;
     this.currentSeconds.set(0);
+    this.resetBiomechanicalState();
 
-    this.timerInterval = setInterval(() => {
-      const elapsedMs = Date.now() - this.startTime;
-      this.currentSeconds.set(Math.round((elapsedMs / 1000) * 10) / 10);
-    }, 100);
+    // Solo si la cámara está inactiva, mantener cronómetro manual como respaldo
+    if (!this.cameraActive()) {
+      const startTime = Date.now();
+      this.timerInterval = setInterval(() => {
+        const elapsedMs = Date.now() - startTime;
+        this.effectiveSeconds = Math.round((elapsedMs / 1000) * 10) / 10;
+        this.currentSeconds.set(this.effectiveSeconds);
+      }, 100);
+    }
   }
 
   private stopTimer(): void {
@@ -868,7 +1033,6 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.router.navigate(['/resultado']);
     } else {
       this.currentStepIndex.update((idx) => idx + 1);
-      this.resetPalmsEvidence();
       this.startStepTimer();
     }
   }
