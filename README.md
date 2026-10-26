@@ -1,59 +1,52 @@
-# ManosSeguras
+# Manos Seguras • Plataforma de Bioseguridad y Lavado de Manos OMS
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+Plataforma educativa y de evaluación clínica interactiva para el entrenamiento de la técnica estandarizada de higiene de manos según la Organización Mundial de la Salud (OMS). Desarrollada como proyecto de grado para la Facultad de Enfermería de la Universidad Cooperativa de Colombia (UCC).
 
-## Development server
+---
 
-To start a local development server, run:
+## 🛠️ Arquitectura Fullstack
 
+### Frontend
+- **Framework**: Angular (Standalone Components, Signals reactivos, `provideHttpClient(withFetch())`).
+- **Diseño**: Tailwind CSS con paleta clínica institucional y glassmorphism.
+- **Servicios**:
+  - `AuthService`: Gestión de sesión, persistencia de token JWT y reactividad con Signals.
+  - `PreguntasService`: Integración con API REST para cuestionarios diagnósticos y banco clínico.
+  - `HandwashStateService`: Estado global biomecánico y de evaluación.
+
+### Backend
+- **Servidor**: Node.js + Express con TypeScript.
+- **ORM**: Prisma ORM con PostgreSQL (alojado en Supabase).
+- **Seguridad**: Autenticación JWT (`bcryptjs` + `jsonwebtoken`), control de acceso basado en roles (`ESTUDIANTE`, `DOCENTE`), validación de esquemas con `Zod` y CORS configurado.
+- **Rutas API**:
+  - `/api/auth/registro`, `/api/auth/login`, `/api/auth/me`
+  - `/api/preguntas/estudiante`, `/api/preguntas/docente`, `/api/preguntas`, `/api/preguntas/diagnostico`
+  - `/api/practicas/intento`, `/api/practicas/historial`
+
+---
+
+## 🚀 Puesta en Marcha
+
+### 1. Backend API (http://localhost:3000/api)
 ```bash
-ng serve
+cd backend
+npm install
+# Configurar DATABASE_URL y DIRECT_URL en backend/.env (usar .env.example como guía)
+npx prisma generate
+npx prisma db push
+npx ts-node src/seed.ts   # Carga docente inicial y preguntas OMS
+npm run dev               # Inicia servidor Express en el puerto 3000
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### 2. Frontend Angular (http://localhost:4200)
 ```bash
-ng generate component component-name
+npm install
+npm start                 # Inicia ng serve en el puerto 4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 🧪 Pruebas y Compilación
+- **Frontend Build**: `npm run build`
+- **Backend Lint/TypeCheck**: `cd backend && npm run build`
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
