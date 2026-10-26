@@ -4,7 +4,7 @@ dotenv.config();
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { authRouter } from './routes/auth.routes';
-import { preguntasRouter } from './routes/preguntas.routes';
+import { preguntaRouter } from './routes/pregunta.routes';
 import { practicasRouter } from './routes/practicas.routes';
 
 const app = express();
@@ -56,7 +56,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 
 // Rutas de la API
 app.use('/api/auth', authRouter);
-app.use('/api/preguntas', preguntasRouter);
+app.use('/api/preguntas', preguntaRouter);
 app.use('/api/practicas', practicasRouter);
 
 // Manejador de rutas no encontradas (404)
