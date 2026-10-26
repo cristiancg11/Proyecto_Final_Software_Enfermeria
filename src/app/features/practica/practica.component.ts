@@ -177,7 +177,56 @@ export interface QualityAlert {
 
             <!-- ÁREA PRINCIPAL DE LA CÁMARA (COLUMNA PROTAGONISTA 67%) -->
             <div class="xl:col-span-8 flex flex-col gap-4">
-              <div class="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-2 border-white/60 flex items-center justify-center group">
+
+              <!-- CONTENEDOR PREVIO A LA CÁMARA: TUTORIAL BIOMECÁNICO INTERACTIVO -->
+              <div *ngIf="!camaraActiva" class="relative w-full h-[450px] rounded-3xl overflow-hidden bg-slate-950 flex flex-col items-center justify-center border border-teal-500/30 shadow-2xl">
+                <!-- Video/Animación Demostrativa del Paso Activo -->
+                <img 
+                  [src]="pasoActual().demoUrl || 'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=1000&q=80'"
+                  src="https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=1000&q=80" 
+                  alt="Demostración técnica de lavado" 
+                  class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen scale-105 transition-all duration-700"
+                />
+
+                <!-- Capa de información y control sobre la demostración -->
+                <div class="relative z-10 flex flex-col items-center text-center p-6 max-w-lg bg-slate-900/80 backdrop-blur-md rounded-2xl border border-teal-500/40 shadow-xl mx-4">
+                  <span class="px-3 py-1 rounded-full bg-teal-500/20 text-[#00B39F] text-xs font-bold uppercase tracking-wider mb-2 border border-teal-500/30">
+                    Tutorial Biomecánico • Paso Activo
+                  </span>
+                  <h3 class="text-white text-xl font-bold mb-2">
+                    Observa la técnica de frotado antes de iniciar
+                  </h3>
+                  <p class="text-slate-300 text-xs mb-5">
+                    Revisa la posición de los dedos y palmas. Al pulsar el botón, se activará la cámara web para evaluar tu movimiento en vivo.
+                  </p>
+                  
+                  <button 
+                    type="button"
+                    (click)="iniciarCamara()" 
+                    [disabled]="cameraLoading()"
+                    class="px-6 py-3 rounded-full bg-[#00B39F] hover:bg-[#FF6A4D] text-white font-bold text-sm shadow-lg shadow-teal-500/30 transition-all transform hover:scale-105 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                    @if (cameraLoading()) {
+                      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                      </svg>
+                      <span>Inicializando Visor...</span>
+                    } @else {
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                      <span>Activar Cámara y Comenzar Práctica</span>
+                    }
+                  </button>
+
+                  @if (cameraError()) {
+                    <div class="mt-4 px-4 py-2 rounded-2xl bg-red-500/20 border border-red-500/40 text-red-200 text-xs font-semibold max-w-sm">
+                      {{ cameraError() }}
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- CONTENEDOR EN VIVO DE LA CÁMARA (SE MUESTRA AL ACTIVAR LA CÁMARA) -->
+              <div [class.hidden]="!camaraActiva" class="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-2 border-white/60 flex items-center justify-center group">
 
                 <!-- Video Stream con inversión de espejo -->
                 <video
@@ -274,54 +323,7 @@ export interface QualityAlert {
                   </div>
                 }
 
-                <!-- OVERLAY CUANDO LA CÁMARA ESTÁ APAGADA -->
-                @if (!cameraActive()) {
-                  <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-white bg-slate-950/90 backdrop-blur-sm z-15">
-                    <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-[#00B39F]/30 via-[#50E7FF]/20 to-transparent border border-[#00B39F]/40 flex items-center justify-center mb-4 shadow-xl shadow-[#00B39F]/10">
-                      <svg class="w-9 h-9 sm:w-10 sm:h-10 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                    </div>
 
-                    <h3 class="font-heading text-xl sm:text-2xl font-extrabold text-[#F5F8FF] mb-2">
-                      Evaluación Biomecánica Asistida
-                    </h3>
-                    <p class="text-xs sm:text-sm text-slate-300 max-w-md mb-6 leading-relaxed">
-                      Activa tu cámara web para reconocimiento de manos (21 puntos clave por mano) y medición de frotado efectivo en tiempo real.
-                    </p>
-
-                    <button
-                      type="button"
-                      (click)="startCamera()"
-                      [disabled]="cameraLoading()"
-                      class="px-8 py-3.5 rounded-full bg-[#00B39F] hover:bg-[#009988] text-white font-extrabold text-sm shadow-xl hover:shadow-[#00B39F]/30 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2.5 cursor-pointer"
-                    >
-                      @if (cameraLoading()) {
-                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                        </svg>
-                        <span>Inicializando Visor...</span>
-                      } @else {
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Activar Cámara en Vivo</span>
-                      }
-                    </button>
-
-                    @if (cameraError()) {
-                      <div class="mt-4 px-4 py-2 rounded-2xl bg-red-500/20 border border-red-500/40 text-red-200 text-xs font-semibold max-w-sm">
-                        {{ cameraError() }}
-                      </div>
-                    }
-
-                    <span class="mt-4 text-[11px] text-slate-400">
-                      Privacidad garantizada: El procesamiento de visión ocurre localmente en tu equipo.
-                    </span>
-                  </div>
-                }
 
                 <!-- BARRA INFERIOR FLOTANTE: PROGRESO DE TÉCNICA -->
                 <div class="absolute bottom-4 left-4 right-4 z-20 bg-slate-950/85 backdrop-blur-xl rounded-2xl p-3.5 sm:p-4 border border-white/20 shadow-2xl text-white">
@@ -636,6 +638,15 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly palmsValidated = signal(false);
   readonly palmsFeedback = signal('Coloca ambas manos en el encuadre para comenzar.');
   readonly videoDemoError = signal(false);
+
+  // Alias compatibles con la plantilla de demostración
+  get camaraActiva(): boolean {
+    return this.cameraActive();
+  }
+
+  iniciarCamara(): Promise<void> {
+    return this.startCamera();
+  }
 
   @ViewChild('cameraVideo') private cameraVideo?: ElementRef<HTMLVideoElement>;
   @ViewChild('handOverlay') private handOverlay?: ElementRef<HTMLCanvasElement>;
