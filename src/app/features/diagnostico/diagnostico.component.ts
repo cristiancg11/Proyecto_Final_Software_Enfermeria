@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 
@@ -8,165 +8,273 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="max-w-4xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
-      @if (!student()) {
-        <!-- Pantalla de bloqueo si no está autenticado -->
-        <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 shadow-2xl border border-white text-center max-w-xl mx-auto">
-          <div class="w-16 h-16 rounded-3xl bg-[#FF6A4D]/15 text-[#FF6A4D] flex items-center justify-center mx-auto mb-5 shadow-sm">
-            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </div>
-          <h2 class="font-heading text-2xl md:text-3xl text-slate-900 font-bold mb-3">
-            Acceso Restringido
-          </h2>
-          <p class="text-sm md:text-base text-slate-600 mb-6 leading-relaxed">
-            Para ver las preguntas, seleccionar opciones y realizar la práctica, primero debes identificarte con tu nombre, código estudiantil y aceptar el consentimiento informado.
-          </p>
-          <button
-            type="button"
-            (click)="goToBienvenida()"
-            class="btn-primary py-3.5 px-8 text-base shadow-lg"
-          >
-            Ir al Formulario de Registro
-          </button>
-        </div>
-      } @else {
-        <!-- Barra Superior / Contexto del Estudiante -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-[#0e1626]/85 backdrop-blur-md px-6 py-4 rounded-2xl border border-[#50E7FF]/25 shadow-lg">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-[#50E7FF]/15 flex items-center justify-center text-[#50E7FF] font-bold">
-              {{ studentInitials() }}
-            </div>
-            <div>
-              <div class="text-xs text-[#A5C2DE] font-semibold">Estudiante Evaluado</div>
-              <div class="text-sm font-bold text-[#F5F8FF]">{{ studentName() }}</div>
-            </div>
-          </div>
+    <!-- Contenedor Maestro con Degradado Menta a Durazno -->
+    <div class="min-h-screen py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#CFFBF0] via-[#E8FCF7] to-[#FFE9DE] text-[#0B2B29] relative overflow-hidden">
+      <!-- Efectos y Resplandores Ambientales -->
+      <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#00B39F]/15 blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#FF6A4D]/15 blur-3xl pointer-events-none"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-white/20 blur-3xl pointer-events-none"></div>
 
-          <div class="flex items-center gap-3">
-            <div class="text-right">
-              <div class="text-xs text-[#A5C2DE] font-semibold">Progreso Diagnóstico</div>
-              <div class="text-sm font-bold text-[#50E7FF]">{{ answeredCount() }} de {{ questions.length }} Preguntas</div>
+      <div class="max-w-4xl mx-auto relative z-10">
+        @if (!student()) {
+          <!-- Pantalla de Bloqueo / Identificación Requerida -->
+          <div class="max-w-xl mx-auto my-12 bg-white/90 backdrop-blur-md rounded-3xl p-8 sm:p-12 shadow-2xl border border-white/50 text-center animate-fade-in">
+            <div class="w-20 h-20 rounded-3xl bg-[#FF6A4D]/15 text-[#FF6A4D] flex items-center justify-center mx-auto mb-6 shadow-sm border border-[#FF6A4D]/30">
+              <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
             </div>
-            <div class="w-12 h-12 rounded-full border-4 flex items-center justify-center text-xs font-bold"
-                 [ngClass]="answeredCount() === questions.length ? 'border-[#50E7FF] bg-[#50E7FF]/10 text-[#50E7FF]' : 'border-slate-600 text-[#C5D7E8]'">
-              {{ Math.round((answeredCount() / questions.length) * 100) }}%
-            </div>
+            <span class="inline-block px-3.5 py-1 rounded-full bg-[#FF6A4D]/10 text-[#FF6A4D] font-bold text-xs uppercase tracking-wider mb-3">
+              Acceso Restringido
+            </span>
+            <h2 class="font-heading text-3xl font-extrabold text-[#0B2B29] mb-3">
+              Identificación Requerida
+            </h2>
+            <p class="text-sm md:text-base text-[#0B2B29]/75 mb-8 leading-relaxed">
+              Para acceder a la evaluación diagnóstica de bioseguridad y registrar tu puntaje inicial, primero debes identificarte con tu nombre y código estudiantil.
+            </p>
+            <button
+              type="button"
+              (click)="goToBienvenida()"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#00B39F] hover:bg-[#009988] text-white font-bold text-base shadow-xl hover:shadow-[#00B39F]/30 transition-all duration-300 active:scale-95 cursor-pointer"
+            >
+              <span>Ir al Registro de Estudiantes</span>
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
           </div>
-        </div>
-
-        <!-- Encabezado de la Sección -->
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FF6A4D]/15 text-[#FF9D85] text-xs font-bold mb-3 border border-[#FF6A4D]/30 shadow-xs">
-            Evaluación Inicial de Conocimientos
-          </div>
-          <h1 class="font-heading text-3xl md:text-4xl text-[#F5F8FF] font-bold mb-3 drop-shadow-[0_2px_14px_rgba(80,231,255,0.2)]">
-            Cuestionario de Bioseguridad
-          </h1>
-          <p class="text-sm md:text-base text-[#D1E0EE] max-w-xl mx-auto">
-            Responde 5 preguntas seleccionadas al azar para verificar tus conocimientos previos antes de iniciar la práctica física en el simulador.
-          </p>
-        </div>
-
-      <!-- Lista de Preguntas -->
-      <div class="space-y-8">
-        @for (q of questions; track q.id; let qIdx = $index) {
-          <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-lg border border-white/80 transition-all duration-300">
-            <div class="flex items-start gap-4 mb-4">
-              <div class="w-8 h-8 rounded-xl bg-[#00B39F] text-white flex items-center justify-center text-sm font-bold shrink-0 mt-0.5 shadow-sm">
-                {{ qIdx + 1 }}
+        } @else {
+          <!-- Contexto Superior del Estudiante -->
+          <div class="bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-5 mb-6 shadow-xl border border-white/50 animate-fade-in flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#00B39F] to-[#008072] text-white font-black text-sm flex items-center justify-center shadow-md">
+                {{ studentInitials() }}
               </div>
               <div>
-                <span class="text-xs font-bold text-[#008072] uppercase tracking-wider">{{ q.context }}</span>
-                <h3 class="text-base md:text-lg font-bold text-slate-900 mt-1 leading-snug">
-                  {{ q.question }}
-                </h3>
+                <span class="text-[11px] font-bold text-[#008072] uppercase tracking-wider block">
+                  Estudiante Evaluado
+                </span>
+                <span class="text-sm sm:text-base font-extrabold text-[#0B2B29] leading-tight block">
+                  {{ studentName() }}
+                </span>
+                <span class="text-xs text-slate-500 font-medium">
+                  Cód: {{ studentCode() }}
+                </span>
               </div>
             </div>
 
-            <!-- Opciones -->
-            <div class="grid grid-cols-1 gap-3 mt-5">
-              @for (option of q.options; track $index; let optIdx = $index) {
+            <div class="flex items-center gap-3 self-end sm:self-auto">
+              <div class="text-right">
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                  Aciertos Acumulados
+                </span>
+                <span class="text-sm font-black text-[#008072]">
+                  {{ diagnosticScore() }} de {{ questions.length }} correctas
+                </span>
+              </div>
+              <div class="w-10 h-10 rounded-2xl bg-[#00B39F]/10 border border-[#00B39F]/30 text-[#008072] flex items-center justify-center font-black text-xs shadow-xs">
+                {{ Math.round((diagnosticScore() / questions.length) * 100) }}%
+              </div>
+            </div>
+          </div>
+
+          <!-- BARRA DE PROGRESO SUPERIOR: PREGUNTA X DE 5 -->
+          <div class="bg-white/90 backdrop-blur-md rounded-3xl p-5 sm:p-6 mb-6 shadow-xl border border-white/50 animate-fade-in">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-3 h-3 rounded-full bg-[#00B39F] animate-ping"></span>
+                <span class="font-heading text-lg sm:text-xl font-black text-[#0B2B29] tracking-tight">
+                  Pregunta {{ currentQuestionIndex() + 1 }} de {{ questions.length }}
+                </span>
+              </div>
+
+              <!-- Badge con estado del avance total -->
+              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/25 text-[#008072] text-xs font-bold shadow-xs">
+                <span>Progreso: {{ answeredCount() }}/{{ questions.length }} respondidas</span>
+              </div>
+            </div>
+
+            <!-- Barra de Progreso Lineal -->
+            <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+              <div
+                class="h-full rounded-full bg-gradient-to-r from-[#00B39F] via-[#009988] to-[#008072] transition-all duration-300"
+                [style.width.%]="progressPercent()"
+              ></div>
+            </div>
+
+            <!-- Stepper de 5 preguntas clínicas -->
+            <div class="grid grid-cols-5 gap-2 sm:gap-4 mt-4 pt-2 border-t border-slate-100">
+              @for (q of questions; track q.id; let idx = $index) {
                 <button
                   type="button"
-                  (click)="selectOption(q.id, optIdx)"
-                  class="w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-start gap-3.5 group cursor-pointer"
+                  (click)="jumpToQuestion(idx)"
+                  class="flex flex-col items-center gap-1 group cursor-pointer focus:outline-none"
+                  [attr.aria-label]="'Ir a pregunta ' + (idx + 1)"
+                >
+                  <div
+                    class="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center font-extrabold text-xs sm:text-sm transition-all duration-200 shadow-sm"
+                    [ngClass]="{
+                      'bg-gradient-to-r from-[#00B39F] to-[#009988] text-white ring-4 ring-[#00B39F]/25 scale-110 shadow-md': idx === currentQuestionIndex(),
+                      'bg-[#00B39F] text-white': idx !== currentQuestionIndex() && isQuestionAnswered(q.id),
+                      'bg-slate-100 text-slate-400 border border-slate-200/90 group-hover:border-[#00B39F]/40 group-hover:text-slate-700': idx !== currentQuestionIndex() && !isQuestionAnswered(q.id)
+                    }"
+                  >
+                    @if (isQuestionAnswered(q.id) && idx !== currentQuestionIndex()) {
+                      <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                      </svg>
+                    } @else {
+                      {{ idx + 1 }}
+                    }
+                  </div>
+                  <span
+                    class="text-[10px] font-bold truncate max-w-full hidden sm:block transition-colors"
+                    [ngClass]="idx === currentQuestionIndex() ? 'text-[#008072] font-black' : isQuestionAnswered(q.id) ? 'text-[#0B2B29]' : 'text-slate-400'"
+                  >
+                    Caso {{ idx + 1 }}
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- TARJETA PRINCIPAL DEL CASO CLÍNICO -->
+          <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-2xl border border-white/50 text-[#0B2B29] relative overflow-hidden animate-fade-in">
+            <!-- Contexto Clínico OMS -->
+            <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+              <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFE9DE] text-[#FF6A4D] font-extrabold text-xs border border-[#FF6A4D]/20 shadow-xs">
+                <svg class="w-3.5 h-3.5 text-[#FF6A4D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span>{{ currentQuestion().context }}</span>
+              </span>
+
+              <span class="text-xs font-extrabold text-slate-400">
+                Pregunta {{ currentQuestionIndex() + 1 }} de {{ questions.length }}
+              </span>
+            </div>
+
+            <!-- Enunciado de la Pregunta -->
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-10 h-10 rounded-2xl bg-[#00B39F] text-white flex items-center justify-center font-black text-base shrink-0 shadow-sm mt-0.5">
+                {{ currentQuestionIndex() + 1 }}
+              </div>
+              <h2 class="font-heading text-xl sm:text-2xl md:text-3xl font-extrabold text-[#0B2B29] leading-snug">
+                {{ currentQuestion().question }}
+              </h2>
+            </div>
+
+            <!-- BOTONES DE RESPUESTA ESTILIZADOS CON TAILWIND -->
+            <div class="grid grid-cols-1 gap-3.5 mt-6">
+              @for (option of currentQuestion().options; track $index; let optIdx = $index) {
+                <button
+                  type="button"
+                  (click)="selectOption(optIdx)"
+                  class="w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 flex items-start gap-4 cursor-pointer group relative overflow-hidden"
                   [ngClass]="{
-                    'border-[#00B39F] bg-[#00B39F]/10 shadow-sm ring-2 ring-[#00B39F]/20': isSelected(q.id, optIdx),
-                    'border-slate-200/90 bg-white hover:border-[#00B39F]/40 hover:bg-slate-50/80': !isSelected(q.id, optIdx)
+                    'border-[#00B39F] bg-[#00B39F]/10 ring-2 ring-[#00B39F]/25 shadow-lg shadow-[#00B39F]/15 scale-[1.01]': isSelected(optIdx),
+                    'border-slate-200/90 bg-white/80 hover:border-[#00B39F]/50 hover:bg-slate-50/90 hover:scale-[1.005] shadow-xs': !isSelected(optIdx)
                   }"
                 >
-                  <!-- Letra / Badge -->
+                  <!-- Letra identificadora (A, B, C, D) -->
                   <div
-                    class="w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 transition-colors mt-0.5"
+                    class="w-8 h-8 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center shrink-0 transition-colors mt-0.5 shadow-xs"
                     [ngClass]="{
-                      'bg-[#00B39F] text-white': isSelected(q.id, optIdx),
-                      'bg-slate-100 text-slate-700 group-hover:bg-[#00B39F]/20 group-hover:text-[#008072]': !isSelected(q.id, optIdx)
+                      'bg-[#00B39F] text-white shadow-xs': isSelected(optIdx),
+                      'bg-slate-100 text-slate-700 group-hover:bg-[#00B39F]/20 group-hover:text-[#008072]': !isSelected(optIdx)
                     }"
                   >
                     {{ optionLetters[optIdx] }}
                   </div>
 
                   <!-- Texto de la opción -->
-                  <div class="text-sm leading-relaxed grow"
-                       [ngClass]="isSelected(q.id, optIdx) ? 'text-teal-950 font-bold' : 'text-slate-800 font-medium'">
+                  <div
+                    class="text-sm sm:text-base leading-relaxed grow transition-colors"
+                    [ngClass]="isSelected(optIdx) ? 'text-[#0B2B29] font-extrabold' : 'text-slate-800 font-semibold group-hover:text-[#0B2B29]'"
+                  >
                     {{ option }}
                   </div>
 
-                  <!-- Icono de selección -->
-                  <div class="shrink-0 mt-0.5" *ngIf="isSelected(q.id, optIdx)">
-                    <div class="w-5 h-5 rounded-full bg-[#00B39F] text-white flex items-center justify-center">
-                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <!-- Checkmark de selección -->
+                  @if (isSelected(optIdx)) {
+                    <div class="w-6 h-6 rounded-full bg-[#00B39F] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs animate-fade-in">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                  </div>
+                  }
+                </button>
+              }
+            </div>
+
+            <!-- BARRA DE NAVEGACIÓN Y BOTÓN DE AVANCE -->
+            <div class="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <!-- Botón Anterior -->
+              <button
+                type="button"
+                (click)="prevQuestion()"
+                [disabled]="currentQuestionIndex() === 0"
+                class="w-full sm:w-auto px-6 py-3 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>Pregunta Anterior</span>
+              </button>
+
+              <!-- Mensaje de estado -->
+              <div class="text-xs sm:text-sm text-center">
+                @if (isCurrentQuestionAnswered()) {
+                  <span class="text-[#008072] font-extrabold flex items-center gap-1.5 justify-center">
+                    <svg class="w-4 h-4 text-[#00B39F]" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Respuesta registrada. Avanza a la siguiente pregunta.</span>
+                  </span>
+                } @else {
+                  <span class="text-[#FF6A4D] font-bold">
+                    * Selecciona una opción para habilitar el avance
+                  </span>
+                }
+              </div>
+
+              <!-- Botón Siguiente / Finalizar (Deshabilitado hasta marcar una opción) -->
+              @if (!isLastQuestion()) {
+                <button
+                  type="button"
+                  (click)="nextQuestion()"
+                  [disabled]="!isCurrentQuestionAnswered()"
+                  class="w-full sm:w-auto px-8 py-3.5 rounded-full font-extrabold text-sm sm:text-base text-white shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer"
+                  [ngClass]="!isCurrentQuestionAnswered()
+                    ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none'
+                    : 'bg-[#00B39F] hover:bg-[#009988] hover:shadow-[#00B39F]/30 hover:scale-105 active:scale-95'"
+                >
+                  <span>Siguiente Pregunta</span>
+                  <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  (click)="finishDiagnostic()"
+                  [disabled]="!isCurrentQuestionAnswered() || answeredCount() < questions.length"
+                  class="w-full sm:w-auto px-8 py-3.5 rounded-full font-black text-sm sm:text-base text-white shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer"
+                  [ngClass]="!isCurrentQuestionAnswered() || answeredCount() < questions.length
+                    ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none'
+                    : 'bg-gradient-to-r from-[#00B39F] to-[#008072] hover:brightness-105 hover:shadow-[#00B39F]/30 hover:scale-105 active:scale-95'"
+                >
+                  <span>Completar Diagnóstico e Ir a Preparación</span>
+                  <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
                 </button>
               }
             </div>
           </div>
         }
       </div>
-
-      <!-- Barra Inferior Fija / Navegación -->
-      <div class="sticky bottom-6 mt-10 p-4 md:p-5 rounded-3xl bg-[#0e1626]/90 backdrop-blur-xl border border-[#50E7FF]/25 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="text-xs md:text-sm text-[#D1E0EE] text-center sm:text-left">
-          @if (answeredCount() < questions.length) {
-            <span>Responde todas las preguntas para desbloquear la práctica. Faltan <strong class="text-[#FF9D85]">{{ questions.length - answeredCount() }}</strong>.</span>
-          } @else {
-            <span class="text-[#50E7FF] font-semibold flex items-center gap-1.5 justify-center sm:justify-start">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 0 000 16zm3.707-9.293a1 laid 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-              </svg>
-              ¡Cuestionario completado! Listo para pasar a la bienvenida de práctica.
-            </span>
-          }
-        </div>
-
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-          <button
-            type="button"
-            (click)="goToBienvenida()"
-            class="btn-secondary px-5 py-3 text-sm flex-1 sm:flex-initial"
-          >
-            Atrás
-          </button>
-
-          <button
-            type="button"
-            (click)="onContinue()"
-            [disabled]="answeredCount() < questions.length"
-            class="btn-primary px-8 py-3.5 text-sm md:text-base flex-1 sm:flex-initial disabled:opacity-40 disabled:cursor-not-allowed group shadow-lg"
-          >
-            <span>Continuar ({{ answeredCount() }}/{{ questions.length }})</span>
-            <svg class="w-4 h-4 ml-2 inline-block transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </button>
-        </div>
-      </div>
-      }
     </div>
   `,
 })
@@ -179,7 +287,36 @@ export class DiagnosticoComponent {
   readonly questions = this.stateService.diagnosticQuestions;
 
   readonly student = this.stateService.student;
+  readonly answers = this.stateService.diagnosticAnswers;
+  readonly diagnosticScore = this.stateService.diagnosticScore;
+
+  // Signal del índice de la pregunta activa (0 a 4)
+  readonly currentQuestionIndex = signal(0);
+
+  // Pregunta activa computada
+  readonly currentQuestion = computed(() => this.questions[this.currentQuestionIndex()]);
+
+  // Cantidad total de preguntas respondidas
+  readonly answeredCount = computed(() => Object.keys(this.answers()).length);
+
+  // Porcentaje del progreso de preguntas (20%, 40%, 60%, 80%, 100%)
+  readonly progressPercent = computed(() => {
+    return Math.round(((this.currentQuestionIndex() + 1) / this.questions.length) * 100);
+  });
+
+  // Valida si la pregunta actual ya tiene una opción elegida
+  readonly isCurrentQuestionAnswered = computed(() => {
+    const qId = this.currentQuestion().id;
+    return this.answers()[qId] !== undefined;
+  });
+
+  // Determina si estamos en la última pregunta (pregunta 5)
+  readonly isLastQuestion = computed(() => {
+    return this.currentQuestionIndex() === this.questions.length - 1;
+  });
+
   readonly studentName = computed(() => this.student()?.fullName || 'Estudiante');
+  readonly studentCode = computed(() => this.student()?.studentCode || 'No registrado');
   readonly studentInitials = computed(() => {
     const name = this.student()?.fullName || 'E';
     return name
@@ -190,23 +327,45 @@ export class DiagnosticoComponent {
       .join('');
   });
 
-  readonly answers = this.stateService.diagnosticAnswers;
-  readonly answeredCount = computed(() => Object.keys(this.answers()).length);
-
-  isSelected(questionId: number, optionIndex: number): boolean {
-    return this.answers()[questionId] === optionIndex;
+  isSelected(optionIndex: number): boolean {
+    const qId = this.currentQuestion().id;
+    return this.answers()[qId] === optionIndex;
   }
 
-  selectOption(questionId: number, optionIndex: number): void {
-    this.stateService.setDiagnosticAnswer(questionId, optionIndex);
+  isQuestionAnswered(questionId: number): boolean {
+    return this.answers()[questionId] !== undefined;
+  }
+
+  selectOption(optionIndex: number): void {
+    const qId = this.currentQuestion().id;
+    this.stateService.setDiagnosticAnswer(qId, optionIndex);
+  }
+
+  nextQuestion(): void {
+    if (this.currentQuestionIndex() < this.questions.length - 1) {
+      this.currentQuestionIndex.update((idx) => idx + 1);
+    }
+  }
+
+  prevQuestion(): void {
+    if (this.currentQuestionIndex() > 0) {
+      this.currentQuestionIndex.update((idx) => idx - 1);
+    }
+  }
+
+  jumpToQuestion(index: number): void {
+    if (index >= 0 && index < this.questions.length) {
+      this.currentQuestionIndex.set(index);
+    }
   }
 
   goToBienvenida(): void {
     this.router.navigate(['/bienvenida']);
   }
 
-  onContinue(): void {
+  finishDiagnostic(): void {
     if (this.answeredCount() === this.questions.length) {
+      // El puntaje ya queda sincronizado reactivamente en stateService.diagnosticScore
       this.router.navigate(['/inicio']);
     }
   }

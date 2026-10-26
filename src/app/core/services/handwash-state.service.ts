@@ -13,64 +13,88 @@ import {
   providedIn: 'root',
 })
 export class HandwashStateService {
-  // Questions Catalog
-  private readonly questionBank: DiagnosticQuestion[] = [
+  // Banco de 5 Preguntas Clínicas Estandarizadas OMS
+  private readonly clinicalQuestions: DiagnosticQuestion[] = [
     {
       id: 1,
       question:
-        '¿Cuál es el momento primordial para realizar la higiene de manos en la atención clínica según los 5 Momentos de la OMS?',
-      context: 'Fundamentos de bioseguridad en entornos hospitalarios',
+        'Antes de realizar una punción venosa periférica a un paciente canalizado, ¿cuál es la acción de higiene de manos estrictamente indicada según los 5 momentos de la OMS?',
+      context: '5 Momentos OMS • Tarea Aséptica / Limpia',
       options: [
-        'Únicamente al finalizar el turno de guardia médica o de enfermería.',
-        'Antes de tocar al paciente y antes de realizar una tarea limpia o aséptica.',
-        'Solamente cuando las manos presenten suciedad visible o restos biológicos.',
-        'Exclusivamente después de manipular residuos biopeligrosos.',
+        'Lavado con agua y jabón solo si hay suciedad visible, de lo contrario fricción con preparado de base alcohólica.',
+        'Lavado exclusivo con clorhexidina al 4% durante 2 minutos continuos.',
+        'Es suficiente con la postura de guantes estériles sin higiene previa.',
+        'Fricción de manos únicamente después de retirar la aguja del paciente.',
       ],
-      correctIndex: 1,
+      correctIndex: 0,
       rationale:
-        'La OMS establece como momentos prioritarios el contacto previo al paciente y la realización de tareas limpias/asépticas para evitar la transmisión cruzada de patógenos.',
+        'Corresponde al Momento 2 (Antes de realizar una tarea aséptica/limpia). Si las manos no están visiblemente sucias, la fricción con base alcohólica es el estándar preferido por su rapidez y eficacia antimicrobiana.',
     },
     {
       id: 2,
       question:
-        '¿Cuál es el tiempo total recomendado por la OMS para un lavado de manos clínico con agua y jabón?',
-      context: 'Duración y efectividad del procedimiento antiséptico',
+        '¿Cuál es el tiempo mínimo requerido para una fricción efectiva con solución alcohólica según el protocolo estandarizado de la OMS?',
+      context: 'Protocolo Estandarizado OMS • Tiempo de Fricción',
       options: [
-        'De 10 a 15 segundos con secado al aire.',
-        'De 40 a 60 segundos para garantizar la fricción mecánica completa de todas las superficies.',
-        'Mínimo 5 minutos frotando con cepillos de cerdas quirúrgicas.',
-        'Exactamente 20 segundos aplicando solución alcohólica sobre agua fría.',
+        '10 a 15 segundos.',
+        '20 a 30 segundos.',
+        '40 a 60 segundos.',
+        '90 segundos completos.',
       ],
       correctIndex: 1,
       rationale:
-        'El lavado clínico completo con agua y jabón requiere entre 40 y 60 segundos; una fricción menor a 40 segundos no elimina eficazmente la flora transitoria.',
+        'La fricción con alcohol glicerinado debe durar entre 20 y 30 segundos cubriendo todos los pasos, a diferencia del lavado con agua y jabón que requiere entre 40 y 60 segundos.',
     },
     {
       id: 3,
       question:
-        '¿Qué requisito previo es obligatorio antes de comenzar el protocolo de lavado de manos clínico?',
-      context: 'Preparación del profesional de enfermería',
+        'Durante la atención a un paciente con diarrea confirmada por Clostridioides difficile, ¿cuál método de higiene de manos es obligatorio tras el contacto?',
+      context: 'Bioseguridad Hospitalaria • Esporas Bacterianas',
       options: [
-        'Aplicar abundante crema humectante o protectora.',
-        'Colocarse guantes de látex antes de abrir la llave del agua.',
-        'Retirar anillos, reloj, pulseras y tener uñas cortas, limpias y sin esmalte.',
-        'Lavar los codos con antiséptico yodado previo a las palmas.',
+        'Fricción con solución hidroalcohólica al 70%.',
+        'Lavado con agua y jabón común o antimicrobiano.',
+        'Uso de gel antibacterial seguido de secado con toalla de tela.',
+        'Solo retiro cuidadoso de guantes sin necesidad de lavado inmediato.',
       ],
-      correctIndex: 2,
+      correctIndex: 1,
       rationale:
-        'Las joyas y el esmalte acumulan microorganismos patógenos y microfisuras que impiden una antisepsia eficaz en el área asistencial.',
+        'Las esporas de Clostridioides difficile son resistentes a la acción bactericida del alcohol; se requiere la acción mecánica del agua y jabón para arrastrarlas físicamente.',
     },
-    { id: 4, question: '¿Cuándo se recomienda preferir la fricción con preparación alcohólica?', context: 'Selección del método de higiene', options: ['Cuando las manos no están visiblemente sucias.', 'Solo después de usar guantes estériles.', 'Únicamente al final del turno.', 'Cuando hay sangre visible en las manos.'], correctIndex: 0, rationale: 'La preparación alcohólica es el método preferido cuando las manos no están visiblemente sucias, por su rapidez y eficacia.' },
-    { id: 5, question: '¿Qué se debe hacer inmediatamente después de quitarse los guantes?', context: 'Uso seguro de guantes', options: ['Aplicar crema humectante.', 'Realizar higiene de manos.', 'Colocar un nuevo par de guantes.', 'Desinfectar solo las uñas.'], correctIndex: 1, rationale: 'Los guantes no sustituyen la higiene de manos; pueden contaminarse al retirarlos o tener microperforaciones.' },
-    { id: 6, question: '¿Cuál es la acción correcta antes de una tarea aséptica?', context: 'Prevención de infecciones', options: ['Higiene de manos antes de preparar o manipular material limpio.', 'Usar doble guante sin higiene previa.', 'Esperar hasta terminar el procedimiento.', 'Lavar únicamente la mano dominante.'], correctIndex: 0, rationale: 'La higiene antes de una tarea aséptica evita llevar microorganismos al paciente o al material estéril.' },
-    { id: 7, question: '¿Por qué se recomienda mantener las uñas cortas?', context: 'Preparación de manos', options: ['Para usar mejor el reloj clínico.', 'Porque bajo las uñas se acumulan microorganismos.', 'Para reducir el consumo de jabón.', 'Porque acelera el secado de guantes.'], correctIndex: 1, rationale: 'Las zonas subungueales son reservorios frecuentes de microorganismos y son difíciles de limpiar correctamente.' },
-    { id: 8, question: 'Después de tocar el entorno del paciente, ¿qué corresponde hacer?', context: '5 Momentos OMS', options: ['Higiene de manos antes de atender otro paciente.', 'Retirar el uniforme.', 'Usar guantes estériles de inmediato.', 'Esperar al final de la jornada.'], correctIndex: 0, rationale: 'La higiene tras tocar el entorno del paciente previene la transmisión cruzada entre superficies y pacientes.' },
-    { id: 9, question: '¿Qué superficie suele omitirse durante un lavado apresurado?', context: 'Técnica de fricción', options: ['La frente.', 'El antebrazo completo.', 'Pulgares, yemas y espacios interdigitales.', 'Los hombros.'], correctIndex: 2, rationale: 'Pulgares, yemas, uñas y espacios interdigitales son zonas de difícil acceso que requieren movimientos específicos.' },
-    { id: 10, question: '¿Cuál es el objetivo principal de la fricción durante la higiene de manos?', context: 'Fundamento de la técnica', options: ['Perfumar las manos.', 'Remover flora transitoria de las superficies de la mano.', 'Reemplazar el uso de agua.', 'Aumentar la temperatura de la piel.'], correctIndex: 1, rationale: 'La fricción mecánica permite desprender la flora transitoria de todas las superficies de las manos.' },
+    {
+      id: 4,
+      question:
+        "En la técnica de 6 pasos de la OMS, ¿cuál es el objetivo primordial del paso de 'rotación de los pulgares atrapándolos con la palma opuesta'?",
+      context: 'Técnica de 6 Pasos OMS • Biomecánica Digital',
+      options: [
+        'Friccionar la articulación de la muñeca.',
+        'Descontaminar la zona tenar y el primer dedo, frecuentemente omitidos en el frotado general.',
+        'Limpiar el lecho ungueal y las cutículas.',
+        'Retirar la flora transitoria del dorso de la mano.',
+      ],
+      correctIndex: 1,
+      rationale:
+        'Los pulgares y sus pliegues interdigitales son una de las áreas anatómicas que con mayor frecuencia se omiten cuando se realiza fricción simple palma contra palma.',
+    },
+    {
+      id: 5,
+      question:
+        'Tras ajustar la bomba de infusión y acomodar la barandilla de la cama de un paciente (sin contacto físico directo con su piel), ¿es obligatorio higienizarse las manos?',
+      context: '5 Momentos OMS • Entorno Asistencial',
+      options: [
+        'No, porque no hubo contacto con fluidos ni con el cuerpo del paciente.',
+        'Sí, corresponde al Momento 5 (Después del contacto con el entorno del paciente).',
+        'Solo si se va a salir inmediatamente del pabellón de hospitalización.',
+        'Únicamente si el paciente se encuentra bajo aislamiento por gotas.',
+      ],
+      correctIndex: 1,
+      rationale:
+        'El entorno inmediato del paciente se contamina con la misma flora del paciente; por tanto, el Momento 5 exige desinfección al abandonar la unidad o cambiar de actividad.',
+    },
   ];
 
-  private activeDiagnosticQuestions: DiagnosticQuestion[] = this.pickRandomQuestions(5);
-  get diagnosticQuestions(): DiagnosticQuestion[] { return this.activeDiagnosticQuestions; }
+  get diagnosticQuestions(): DiagnosticQuestion[] {
+    return this.clinicalQuestions;
+  }
 
   // Official 6 steps
   readonly steps: HandwashStep[] = [
@@ -220,7 +244,6 @@ export class HandwashStateService {
 
   // State Mutators
   setStudent(student: StudentInfo): void {
-    this.activeDiagnosticQuestions = this.pickRandomQuestions(5);
     this._diagnosticAnswers.set({});
     this._student.set({
       ...student,
@@ -294,7 +317,4 @@ export class HandwashStateService {
     this._stepRecords.set([]);
   }
 
-  private pickRandomQuestions(count: number): DiagnosticQuestion[] {
-    return [...this.questionBank].sort(() => Math.random() - 0.5).slice(0, count);
-  }
 }
