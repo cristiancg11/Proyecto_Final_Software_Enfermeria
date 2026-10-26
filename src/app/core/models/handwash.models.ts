@@ -27,6 +27,11 @@ export interface HandwashStep {
   description: string;
   clinicalKey: string;
   iconType: 'palms' | 'dorsal' | 'interdigital' | 'fingers-locked' | 'thumbs' | 'nails';
+  videoDemo?: string;
+  imageDemo?: string;
+  targetArea?: string;
+  recommendedPressure?: string;
+  movementPattern?: string;
 }
 
 export type StepPaceStatus = 'optimal' | 'too-fast' | 'too-slow';

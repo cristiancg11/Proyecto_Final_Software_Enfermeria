@@ -27,6 +27,56 @@ export interface QualityAlert {
   selector: 'app-practica',
   standalone: true,
   imports: [CommonModule],
+  styles: [`
+    @keyframes rubPalmsLeft {
+      0%, 100% { transform: translate(-3px, -3px) rotate(-3deg); }
+      50% { transform: translate(3px, 3px) rotate(3deg); }
+    }
+    @keyframes rubPalmsRight {
+      0%, 100% { transform: translate(3px, 3px) rotate(3deg); }
+      50% { transform: translate(-3px, -3px) rotate(-3deg); }
+    }
+    @keyframes rubDorsalTop {
+      0%, 100% { transform: translateY(-8px) rotate(14deg); }
+      50% { transform: translateY(8px) rotate(16deg); }
+    }
+    @keyframes rubInterdigitalLeft {
+      0%, 100% { transform: translateY(-4px); }
+      50% { transform: translateY(4px); }
+    }
+    @keyframes rubInterdigitalRight {
+      0%, 100% { transform: translateY(4px); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes rubHookLock {
+      0%, 100% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+    }
+    @keyframes rubThumbFist {
+      0%, 100% { transform: rotate(-7deg) scale(0.98); }
+      50% { transform: rotate(7deg) scale(1.02); }
+    }
+    @keyframes rubNailsCluster {
+      0% { transform: rotate(0deg) translate(0px, 0px); }
+      25% { transform: rotate(12deg) translate(3px, -2px); }
+      50% { transform: rotate(0deg) translate(0px, 3px); }
+      75% { transform: rotate(-12deg) translate(-3px, -2px); }
+      100% { transform: rotate(0deg) translate(0px, 0px); }
+    }
+    @keyframes arrowPulse {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+    .anim-rub-palms-left { animation: rubPalmsLeft 1.8s ease-in-out infinite; transform-origin: 110px 140px; }
+    .anim-rub-palms-right { animation: rubPalmsRight 1.8s ease-in-out infinite; transform-origin: 190px 140px; }
+    .anim-rub-dorsal-top { animation: rubDorsalTop 1.6s ease-in-out infinite; transform-origin: 160px 140px; }
+    .anim-rub-interdigital-left { animation: rubInterdigitalLeft 1.4s ease-in-out infinite; }
+    .anim-rub-interdigital-right { animation: rubInterdigitalRight 1.4s ease-in-out infinite; }
+    .anim-rub-hook-lock { animation: rubHookLock 1.5s ease-in-out infinite; }
+    .anim-rub-thumb-fist { animation: rubThumbFist 1.8s ease-in-out infinite; transform-origin: 215px 135px; }
+    .anim-rub-nails-cluster { animation: rubNailsCluster 2s linear infinite; transform-origin: 160px 150px; }
+    .anim-arrow-pulse { animation: arrowPulse 1.4s ease-in-out infinite; transform-origin: center; }
+  `],
   template: `
     <!-- Contenedor Maestro con Degradado Suave Menta a Durazno -->
     <div class="min-h-screen py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#CFFBF0] via-[#E8FCF7] to-[#FFE9DE] text-[#0B2B29] relative overflow-hidden">
@@ -350,87 +400,210 @@ export interface QualityAlert {
                 </p>
               </div>
 
-              <!-- VECTOR / ILUSTRACIÓN CLÍNICA DEL PASO ACTIVO (SINCRONIZADO CON CURRENTSTEP) -->
-              <div class="relative h-44 sm:h-48 rounded-2xl bg-gradient-to-br from-[#CFFBF0]/50 via-white to-[#FFE9DE]/50 border border-[#00B39F]/20 p-4 flex items-center justify-center overflow-hidden shadow-inner group">
-                <div class="absolute top-2.5 left-3 text-[10px] font-extrabold uppercase tracking-wider text-[#008072] px-2 py-0.5 rounded-md bg-[#00B39F]/10 border border-[#00B39F]/20 flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F]"></span>
-                  <span>Guía Anatómica • Paso {{ currentStep().number }}</span>
+              <!-- RECUADRO GUÍA ANATÓMICA: VISOR ANIMADO DE MANOS EN MOVIMIENTO BIOMECÁNICO -->
+              <div class="relative min-h-[260px] sm:min-h-[290px] rounded-2xl bg-gradient-to-br from-[#CFFBF0]/60 via-white to-[#FFE9DE]/60 border-2 border-[#00B39F]/30 p-3 sm:p-4 flex flex-col items-center justify-between overflow-hidden shadow-inner group">
+                
+                <!-- Encabezado superior de la Guía Anatómica -->
+                <div class="w-full flex items-center justify-between mb-1.5 z-10">
+                  <span class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[#008072] px-2.5 py-1 rounded-full bg-white/90 border border-[#00B39F]/30 shadow-xs">
+                    <span class="w-2 h-2 rounded-full bg-[#00B39F] animate-ping"></span>
+                    <span>Guía Anatómica • Paso {{ currentStep().number }} de 6</span>
+                  </span>
+                  <span class="text-[10px] font-extrabold text-[#FF6A4D] px-2 py-0.5 rounded-full bg-[#FFE9DE] border border-[#FF6A4D]/25 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#FF6A4D] animate-pulse"></span>
+                    <span>Manos en Bucle</span>
+                  </span>
                 </div>
 
-                <!-- VECTORES SVG SINCRONIZADOS SEGÚN EL PASO -->
-                @switch (currentStep().iconType) {
-                  @case ('palms') {
-                    <!-- Paso 1: Palma con Palma -->
-                    <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <circle cx="60" cy="60" r="48" fill="#CFFBF0" fill-opacity="0.3" stroke="#00B39F" stroke-dasharray="4 4" stroke-width="1.5" />
-                      <path d="M42 75C37 68 37 54 41 45C42 43 45 43 46 45C47 48 48 53 49 55" stroke="#0B2B29" stroke-width="2.5" stroke-linecap="round"/>
-                      <path d="M48 45C49 39 52 38 54 40C55 42 56 48 56 52" stroke="#0B2B29" stroke-width="2.5" stroke-linecap="round"/>
-                      <path d="M55 44C57 39 60 39 61 42C62 45 62 50 62 55" stroke="#0B2B29" stroke-width="2.5" stroke-linecap="round"/>
-                      <path d="M62 49C64 45 67 46 68 49C69 52 68 59 66 68C64 77 56 86 48 86C42 86 38 81 40 76" stroke="#0B2B29" stroke-width="2.5" stroke-linecap="round"/>
-                      <path d="M72 32C84 37 92 48 92 60C92 76 78 88 62 88" stroke="#00B39F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M76 26L71 32L77 38" stroke="#00B39F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                      <circle cx="76" cy="60" r="6" fill="#CFFBF0" stroke="#00B39F" stroke-width="2"/>
-                      <circle cx="86" cy="74" r="4" fill="#FFE9DE" stroke="#FF6A4D" stroke-width="1.5"/>
-                      <circle cx="34" cy="38" r="3" fill="#00B39F"/>
-                    </svg>
+                <!-- Visor Central: Video Clip en Bucle o Render Anatómico Vectorial Animado -->
+                <div class="relative w-full h-44 sm:h-48 flex items-center justify-center my-auto">
+                  @if (!videoDemoError() && currentStep().videoDemo) {
+                    <video
+                      #guideVideo
+                      [src]="currentStep().videoDemo"
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                      class="w-full h-full object-contain rounded-xl shadow-xs"
+                      (error)="onVideoDemoError()"
+                    ></video>
+                  } @else {
+                    <!-- MANOS CLÍNICAS ANATÓMICAS CON MICRO-ANIMACIONES DE MOVIMIENTO REAL -->
+                    @switch (currentStep().iconType) {
+                      @case ('palms') {
+                        <!-- Paso 1: Frotado Palma con Palma -->
+                        <svg class="w-full h-full max-h-44 sm:max-h-48" viewBox="0 0 320 260" fill="none">
+                          <circle cx="160" cy="130" r="85" stroke="#00B39F" stroke-width="1.8" stroke-dasharray="5 5" stroke-opacity="0.4"/>
+                          <circle cx="160" cy="130" r="105" stroke="#FF6A4D" stroke-width="1.2" stroke-dasharray="4 6" stroke-opacity="0.3"/>
+                          <!-- Mano Izquierda en Órbita -->
+                          <g class="anim-rub-palms-left">
+                            <path d="M105 210 C100 175, 102 145, 108 120 C110 105, 116 90, 120 62 C122 52, 132 52, 134 62 L138 100 C140 85, 148 80, 152 90 L154 112 C156 102, 162 100, 166 110 L168 128 C172 122, 178 124, 178 134 C178 158, 168 185, 148 210 Z" fill="#FDBA74" stroke="#0B2B29" stroke-width="3" stroke-linejoin="round"/>
+                            <path d="M170 140 C182 135, 194 138, 198 146 C202 155, 192 165, 180 168 L165 170" stroke="#0B2B29" stroke-width="2.5" fill="#FED7AA"/>
+                            <path d="M118 138 C130 144, 145 142, 156 135" stroke="#C2410C" stroke-width="2" stroke-linecap="round"/>
+                          </g>
+                          <!-- Mano Derecha en Contra-Órbita -->
+                          <g class="anim-rub-palms-right">
+                            <path d="M215 210 C215 185, 218 160, 212 135 C208 120, 202 108, 196 82 C192 70, 182 72, 180 84 L176 110 C172 95, 164 96, 162 110 L158 125 C152 120, 146 125, 146 136 C146 160, 158 185, 178 210 Z" fill="#FBBF24" fill-opacity="0.88" stroke="#008072" stroke-width="3" stroke-linejoin="round"/>
+                            <path d="M150 155 C138 150, 126 154, 122 162 C118 172, 130 180, 145 182 L158 180" stroke="#008072" stroke-width="2.5" fill="#FDE68A"/>
+                            <path d="M194 142 C182 147, 170 144, 162 138" stroke="#B45309" stroke-width="2" stroke-linecap="round"/>
+                          </g>
+                          <!-- Flechas de rotación -->
+                          <g class="anim-arrow-pulse">
+                            <path d="M125 70 C150 52, 188 54, 212 72" stroke="#00B39F" stroke-width="3.5" stroke-linecap="round"/>
+                            <polygon points="216,76 214,64 202,70" fill="#00B39F"/>
+                            <path d="M195 190 C170 208, 132 206, 108 188" stroke="#FF6A4D" stroke-width="3.5" stroke-linecap="round"/>
+                            <polygon points="104,182 106,196 118,190" fill="#FF6A4D"/>
+                          </g>
+                        </svg>
+                      }
+                      @case ('dorsal') {
+                        <!-- Paso 2: Palma Derecha sobre Dorso Izquierdo -->
+                        <svg class="w-full h-full max-h-44 sm:max-h-48" viewBox="0 0 320 260" fill="none">
+                          <g class="hand-dorsum">
+                            <path d="M125 215 C122 185, 124 158, 128 130 L124 72 C124 60, 135 60, 135 72 L138 120 L144 58 C144 46, 155 46, 155 58 L156 115 L162 62 C162 50, 173 50, 173 62 L171 120 L179 78 C179 68, 189 68, 189 80 L183 135 C186 160, 184 188, 176 215 Z" fill="#FED7AA" stroke="#0B2B29" stroke-width="3.2" stroke-linejoin="round"/>
+                            <path d="M130 130 C132 142, 136 165, 140 185" stroke="#EA580C" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.5"/>
+                            <path d="M145 125 C147 140, 149 165, 151 185" stroke="#EA580C" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.5"/>
+                            <path d="M160 125 C160 140, 158 165, 156 185" stroke="#EA580C" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.5"/>
+                          </g>
+                          <g class="anim-rub-dorsal-top">
+                            <path d="M106 175 C100 145, 110 122, 124 105 C132 94, 146 86, 164 82 C188 82, 208 92, 222 116 C230 130, 226 152, 218 175 Z" fill="#FBBF24" fill-opacity="0.88" stroke="#008072" stroke-width="3.2" stroke-linejoin="round"/>
+                            <path d="M136 94 C134 68, 138 48, 140 35 C142 26, 152 27, 152 36 L148 90" stroke="#008072" stroke-width="2.8" stroke-linecap="round" fill="#FDE68A"/>
+                            <path d="M156 86 C156 62, 160 40, 164 28 C166 18, 176 20, 176 30 L172 85" stroke="#008072" stroke-width="2.8" stroke-linecap="round" fill="#FDE68A"/>
+                            <path d="M178 90 C180 70, 186 50, 190 40 C192 32, 202 33, 202 43 L194 92" stroke="#008072" stroke-width="2.8" stroke-linecap="round" fill="#FDE68A"/>
+                          </g>
+                          <g class="anim-arrow-pulse">
+                            <path d="M78 150 L78 95" stroke="#00B39F" stroke-width="3.5" stroke-linecap="round"/>
+                            <polygon points="78,86 73,98 83,98" fill="#00B39F"/>
+                            <path d="M242 95 L242 150" stroke="#FF6A4D" stroke-width="3.5" stroke-linecap="round"/>
+                            <polygon points="242,158 237,146 247,146" fill="#FF6A4D"/>
+                          </g>
+                        </svg>
+                      }
+                      @case ('interdigital') {
+                        <!-- Paso 3: Dedos Entrelazados Palma con Palma -->
+                        <svg class="w-full h-full max-h-44 sm:max-h-48" viewBox="0 0 320 260" fill="none">
+                          <g class="anim-rub-interdigital-left">
+                            <path d="M80 215 C85 178, 90 145, 100 122 C110 98, 120 95, 120 110 L120 152 C115 175, 105 198, 100 215 Z" fill="#FED7AA" stroke="#0B2B29" stroke-width="3" stroke-linejoin="round"/>
+                            <path d="M110 128 L110 65 C110 54, 121 54, 121 65 L121 128" fill="#FED7AA" stroke="#0B2B29" stroke-width="2.8" stroke-linecap="round"/>
+                            <path d="M144 128 L144 40 C144 28, 155 28, 155 40 L155 128" fill="#FED7AA" stroke="#0B2B29" stroke-width="2.8" stroke-linecap="round"/>
+                            <path d="M178 128 L178 50 C178 38, 189 38, 189 50 L189 128" fill="#FED7AA" stroke="#0B2B29" stroke-width="2.8" stroke-linecap="round"/>
+                          </g>
+                          <g class="anim-rub-interdigital-right">
+                            <path d="M240 215 C235 178, 230 145, 220 122 C210 98, 200 95, 200 110 L200 152 C205 175, 215 198, 220 215 Z" fill="#FBBF24" stroke="#008072" stroke-width="3" stroke-linejoin="round"/>
+                            <path d="M127 128 L127 52 C127 40, 138 40, 138 52 L138 128" fill="#FBBF24" stroke="#008072" stroke-width="2.8" stroke-linecap="round"/>
+                            <path d="M161 128 L161 38 C161 26, 172 26, 172 38 L172 128" fill="#FBBF24" stroke="#008072" stroke-width="2.8" stroke-linecap="round"/>
+                            <path d="M195 128 L195 62 C195 50, 206 50, 206 62 L206 128" fill="#FBBF24" stroke="#008072" stroke-width="2.8" stroke-linecap="round"/>
+                          </g>
+                          <circle cx="124" cy="90" r="4.5" fill="#00B39F" fill-opacity="0.8"/>
+                          <circle cx="141" cy="80" r="4.5" fill="#FF6A4D" fill-opacity="0.8"/>
+                          <circle cx="158" cy="76" r="4.5" fill="#00B39F" fill-opacity="0.8"/>
+                          <circle cx="175" cy="80" r="4.5" fill="#FF6A4D" fill-opacity="0.8"/>
+                          <circle cx="192" cy="90" r="4.5" fill="#00B39F" fill-opacity="0.8"/>
+                          <g class="anim-arrow-pulse">
+                            <path d="M133 32 L133 16" stroke="#FF6A4D" stroke-width="3" stroke-linecap="round"/>
+                            <polygon points="133,9 129,20 137,20" fill="#FF6A4D"/>
+                            <path d="M183 16 L183 32" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
+                            <polygon points="183,39 179,28 187,28" fill="#00B39F"/>
+                          </g>
+                        </svg>
+                      }
+                      @case ('fingers-locked') {
+                        <!-- Paso 4: Dedos Trabados en Gancho -->
+                        <svg class="w-full h-full max-h-44 sm:max-h-48" viewBox="0 0 320 260" fill="none">
+                          <g class="anim-rub-hook-lock">
+                            <path d="M50 105 C75 105, 98 110, 112 115 L112 165 C98 170, 75 175, 50 175 Z" fill="#FED7AA" stroke="#0B2B29" stroke-width="3" stroke-linejoin="round"/>
+                            <path d="M270 105 C245 105, 222 110, 208 115 L208 165 C222 170, 245 175, 270 175 Z" fill="#FBBF24" stroke="#008072" stroke-width="3" stroke-linejoin="round"/>
+                            <path d="M112 98 C135 94, 162 94, 172 104 C180 112, 176 126, 162 126 L125 126" fill="#FED7AA" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M112 118 C135 114, 166 114, 176 124 C184 132, 180 144, 166 144 L125 144" fill="#FED7AA" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M112 138 C135 134, 166 134, 176 142 C184 150, 180 162, 166 162 L125 162" fill="#FED7AA" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M112 158 C130 156, 156 156, 166 164 C174 172, 170 182, 158 182 L125 182" fill="#FED7AA" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M208 104 C185 100, 158 100, 148 108 C140 116, 144 128, 158 128 L195 128" fill="#FBBF24" stroke="#008072" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M208 124 C185 120, 154 120, 144 128 C136 136, 140 148, 154 148 L195 148" fill="#FBBF24" stroke="#008072" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M208 144 C185 140, 154 140, 144 148 C136 156, 140 168, 154 168 L195 168" fill="#FBBF24" stroke="#008072" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M208 164 C190 162, 162 162, 152 170 C144 178, 148 186, 162 186 L195 186" fill="#FBBF24" stroke="#008072" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="174" cy="112" r="3.5" fill="#FFFFFF" stroke="#FF6A4D" stroke-width="1.5"/>
+                            <circle cx="178" cy="132" r="3.5" fill="#FFFFFF" stroke="#FF6A4D" stroke-width="1.5"/>
+                            <circle cx="178" cy="150" r="3.5" fill="#FFFFFF" stroke="#FF6A4D" stroke-width="1.5"/>
+                            <circle cx="144" cy="116" r="3.5" fill="#FFFFFF" stroke="#00B39F" stroke-width="1.5"/>
+                            <circle cx="140" cy="136" r="3.5" fill="#FFFFFF" stroke="#00B39F" stroke-width="1.5"/>
+                            <circle cx="140" cy="154" r="3.5" fill="#FFFFFF" stroke="#00B39F" stroke-width="1.5"/>
+                          </g>
+                          <g class="anim-arrow-pulse">
+                            <path d="M105 60 L62 60" stroke="#00B39F" stroke-width="3.5" stroke-linecap="round"/>
+                            <polygon points="54,60 66,54 66,66" fill="#00B39F"/>
+                            <path d="M215 60 L258 60" stroke="#FF6A4D" stroke-width="3.5" stroke-linecap="round"/>
+                            <polygon points="266,60 254,54 254,66" fill="#FF6A4D"/>
+                          </g>
+                        </svg>
+                      }
+                      @case ('thumbs') {
+                        <!-- Paso 5: Fricción del Pulgar Atrapado -->
+                        <svg class="w-full h-full max-h-44 sm:max-h-48" viewBox="0 0 320 260" fill="none">
+                          <g class="hand-thumb">
+                            <path d="M90 220 C95 185, 100 155, 108 132 L124 132 C118 160, 114 190, 118 220 Z" fill="#FED7AA" stroke="#0B2B29" stroke-width="3" stroke-linejoin="round"/>
+                            <path d="M112 135 C118 112, 126 82, 134 56 C138 44, 150 44, 152 56 L148 112" fill="#FED7AA" stroke="#0B2B29" stroke-width="3.2" stroke-linecap="round"/>
+                            <path d="M136 58 C138 52, 146 52, 148 58" stroke="#0B2B29" stroke-width="2" fill="#FFE4D6"/>
+                          </g>
+                          <g class="anim-rub-thumb-fist">
+                            <path d="M230 215 C216 190, 212 168, 204 150 L222 138 C232 160, 240 185, 250 215 Z" fill="#FBBF24" stroke="#008072" stroke-width="3" stroke-linejoin="round"/>
+                            <path d="M206 92 C188 82, 142 82, 128 96 C122 104, 128 118, 146 118 L194 114" fill="#FBBF24" stroke="#008072" stroke-width="3.2" stroke-linecap="round"/>
+                            <path d="M202 110 C184 102, 142 102, 130 114 C124 122, 130 134, 148 134 L194 130" fill="#FBBF24" stroke="#008072" stroke-width="3.2" stroke-linecap="round"/>
+                            <path d="M198 128 C180 122, 146 122, 136 134 C130 142, 138 152, 154 152 L194 146" fill="#FBBF24" stroke="#008072" stroke-width="3.2" stroke-linecap="round"/>
+                            <path d="M192 146 C178 142, 152 142, 142 152 C138 160, 146 168, 164 168 L192 162" fill="#FBBF24" stroke="#008072" stroke-width="3.2" stroke-linecap="round"/>
+                          </g>
+                          <g class="anim-arrow-pulse">
+                            <path d="M106 72 C118 54, 162 52, 178 70" stroke="#00B39F" stroke-width="3.5" stroke-linecap="round"/>
+                            <polygon points="184,76 180,64 170,70" fill="#00B39F"/>
+                            <path d="M178 168 C162 186, 118 184, 102 166" stroke="#FF6A4D" stroke-width="3.5" stroke-linecap="round"/>
+                            <polygon points="96,160 100,172 110,166" fill="#FF6A4D"/>
+                          </g>
+                        </svg>
+                      }
+                      @case ('nails') {
+                        <!-- Paso 6: Yemas y Uñas en Palma -->
+                        <svg class="w-full h-full max-h-44 sm:max-h-48" viewBox="0 0 320 260" fill="none">
+                          <g class="hand-palmar-cup">
+                            <path d="M125 225 C125 200, 116 182, 108 165" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M195 225 C195 200, 204 182, 212 165" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M88 172 C84 150, 96 132, 120 132 C135 132, 145 138, 160 140 C175 138, 185 132, 200 132 C224 132, 236 150, 232 172 C228 198, 195 212, 160 212 C125 212, 92 198, 88 172 Z" fill="#FED7AA" stroke="#0B2B29" stroke-width="3.2" stroke-linejoin="round"/>
+                            <circle cx="160" cy="158" r="15" stroke="#00B39F" stroke-width="1.8" stroke-dasharray="3 3"/>
+                            <circle cx="160" cy="158" r="26" stroke="#FF6A4D" stroke-width="1.5" stroke-dasharray="4 4"/>
+                          </g>
+                          <g class="anim-rub-nails-cluster">
+                            <path d="M144 25 L146 65" stroke="#008072" stroke-width="2.8" stroke-linecap="round"/>
+                            <path d="M176 25 L174 65" stroke="#008072" stroke-width="2.8" stroke-linecap="round"/>
+                            <path d="M136 60 C132 78, 142 110, 150 144 L170 144 C178 110, 188 78, 184 60 Z" fill="#FBBF24" stroke="#008072" stroke-width="3" stroke-linejoin="round"/>
+                            <ellipse cx="150" cy="144" rx="4.5" ry="5.5" fill="#FFFFFF" stroke="#008072" stroke-width="2"/>
+                            <ellipse cx="157" cy="141" rx="4.5" ry="5.5" fill="#FFFFFF" stroke="#008072" stroke-width="2"/>
+                            <ellipse cx="163" cy="146" rx="4.5" ry="5.5" fill="#FFFFFF" stroke="#008072" stroke-width="2"/>
+                            <ellipse cx="169" cy="141" rx="4.5" ry="5.5" fill="#FFFFFF" stroke="#008072" stroke-width="2"/>
+                            <ellipse cx="174" cy="145" rx="4.5" ry="5.5" fill="#FFFFFF" stroke="#008072" stroke-width="2"/>
+                          </g>
+                          <g class="anim-arrow-pulse">
+                            <path d="M146 120 C162 114, 182 118, 190 132" stroke="#FF6A4D" stroke-width="3" stroke-linecap="round"/>
+                            <polygon points="192,138 194,126 182,130" fill="#FF6A4D"/>
+                            <path d="M174 185 C156 190, 135 184, 130 172" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
+                            <polygon points="128,166 126,178 138,174" fill="#00B39F"/>
+                          </g>
+                        </svg>
+                      }
+                    }
                   }
-                  @case ('dorsal') {
-                    <!-- Paso 2: Dorso de las Manos -->
-                    <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <rect x="30" y="45" width="45" height="35" rx="10" transform="rotate(-15 30 45)" fill="#CFFBF0" fill-opacity="0.3" stroke="#0B2B29" stroke-width="2.5"/>
-                      <rect x="42" y="32" width="45" height="36" rx="10" transform="rotate(25 42 32)" fill="#FFE9DE" fill-opacity="0.4" stroke="#00B39F" stroke-width="3"/>
-                      <path d="M46 36L44 20M54 38L55 18M64 42L68 20M73 48L80 26" stroke="#00B39F" stroke-width="2.5" stroke-linecap="round"/>
-                      <path d="M28 30L34 22M34 22L42 28M34 22L20 40" stroke="#FF6A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M92 84L86 92M86 92L78 86M86 92L100 74" stroke="#FF6A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  }
-                  @case ('interdigital') {
-                    <!-- Paso 3: Espacios Interdigitales -->
-                    <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <path d="M38 85V40C38 36 43 36 43 40V75" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M47 75V35C47 31 52 31 52 35V75" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M56 75V38C56 34 61 34 61 38V75" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M65 75V33C65 29 70 29 70 33V75" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M74 75V42C74 38 79 38 79 42V85" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M52 22L52 14M52 14L48 18M52 14L56 18" stroke="#FF6A4D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M65 14L65 22M65 22L61 18M65 22L69 18" stroke="#FF6A4D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <circle cx="60" cy="55" r="3" fill="#FF6A4D"/>
-                      <circle cx="43" cy="58" r="2.5" fill="#00B39F"/>
-                      <circle cx="70" cy="58" r="2.5" fill="#00B39F"/>
-                    </svg>
-                  }
-                  @case ('fingers-locked') {
-                    <!-- Paso 4: Dorso de los Dedos Trabados -->
-                    <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <path d="M38 48C38 40 48 40 52 48C56 56 64 56 68 48C72 40 82 40 82 48V68C82 76 72 76 68 68C64 60 56 60 52 68C48 76 38 76 38 68V48Z" fill="#CFFBF0" fill-opacity="0.4" stroke="#0B2B29" stroke-width="2.5"/>
-                      <path d="M45 42H75" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M45 74H75" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M26 58H16M16 58L21 53M16 58L21 63" stroke="#FF6A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M94 58H104M104 58L99 53M104 58L99 63" stroke="#FF6A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  }
-                  @case ('thumbs') {
-                    <!-- Paso 5: Limpieza de Pulgares -->
-                    <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <rect x="52" y="32" width="16" height="52" rx="8" fill="#FFE9DE" stroke="#0B2B29" stroke-width="2.5"/>
-                      <path d="M36 50C36 42 46 42 54 44" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M36 62C36 54 46 54 54 56" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M36 74C36 66 46 66 54 68" stroke="#00B39F" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M78 45C86 52 86 64 78 72C72 78 62 80 50 78" stroke="#FF6A4D" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M82 40L78 45L84 49" stroke="#FF6A4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                      <circle cx="60" cy="40" r="3" fill="#00B39F"/>
-                    </svg>
-                  }
-                  @case ('nails') {
-                    <!-- Paso 6: Yemas y Uñas en Palma -->
-                    <svg class="w-32 h-32 text-[#00B39F] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 120 120" fill="none">
-                      <ellipse cx="60" cy="74" rx="36" ry="18" fill="#CFFBF0" fill-opacity="0.4" stroke="#0B2B29" stroke-width="2.5"/>
-                      <path d="M52 30L56 60M60 26L60 62M68 30L64 60M46 36L54 58M74 36L66 58" stroke="#00B39F" stroke-width="2.5" stroke-linecap="round"/>
-                      <circle cx="60" cy="72" r="9" stroke="#FF6A4D" stroke-width="2" stroke-dasharray="3 3"/>
-                      <path d="M68 66L72 72L66 74" stroke="#FF6A4D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  }
-                }
+                </div>
+
+                <!-- Chips flotantes de datos biomecánicos -->
+                <div class="w-full mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] font-bold text-slate-600">
+                  <div class="flex items-center gap-1 truncate">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F]"></span>
+                    <span class="text-slate-400">Área:</span>
+                    <span class="text-[#0B2B29] font-black truncate">{{ currentStep().targetArea }}</span>
+                  </div>
+                  <div class="hidden sm:flex items-center gap-1 text-[#FF6A4D] shrink-0 font-extrabold">
+                    <span>⚡ {{ currentStep().recommendedPressure }}</span>
+                  </div>
+                </div>
+
               </div>
 
               <!-- INSTRUCCIÓN TEXTUAL CLARA Y DETALLADA -->
@@ -653,6 +826,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly palmsEvidence = signal(0);
   readonly palmsValidated = signal(false);
   readonly palmsFeedback = signal('Coloca ambas manos en el encuadre para comenzar.');
+  readonly videoDemoError = signal(false);
 
   @ViewChild('cameraVideo') private cameraVideo?: ElementRef<HTMLVideoElement>;
   @ViewChild('handOverlay') private handOverlay?: ElementRef<HTMLCanvasElement>;
@@ -1012,7 +1186,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   resetCurrentStepTimer(): void {
+    this.videoDemoError.set(false);
     this.startStepTimer();
+  }
+
+  onVideoDemoError(): void {
+    this.videoDemoError.set(true);
   }
 
   completeStep(): void {
@@ -1033,6 +1212,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.router.navigate(['/resultado']);
     } else {
       this.currentStepIndex.update((idx) => idx + 1);
+      this.videoDemoError.set(false);
       this.startStepTimer();
     }
   }
