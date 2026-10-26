@@ -420,7 +420,7 @@ export interface QualityAlert {
 
               <!-- INSTRUCCIÓN TEXTUAL CLARA Y DETALLADA -->
               <div class="space-y-3">
-                <p class="text-slate-700 text-sm font-medium leading-relaxed mt-3">
+                <p class="text-[#0B2B29] text-slate-800 text-sm font-semibold leading-relaxed mt-3">
                   {{ currentStep().description }}
                 </p>
 

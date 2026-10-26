@@ -1,95 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 280" width="100%" height="100%" fill="none">
-  <!-- Fondo y Gradientes Clínicos -->
-  <defs>
-    <linearGradient id="bgGrad1" x1="0" y1="0" x2="320" y2="280" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#E8FCF7" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="#FFF4EE" stop-opacity="0.8"/>
-    </linearGradient>
-    <linearGradient id="skinGradLeft" x1="60" y1="40" x2="160" y2="240" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FED7AA"/>
-      <stop offset="50%" stop-color="#FDBA74"/>
-      <stop offset="100%" stop-color="#FB923C"/>
-    </linearGradient>
-    <linearGradient id="skinGradRight" x1="160" y1="40" x2="260" y2="240" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FDE68A"/>
-      <stop offset="50%" stop-color="#FBBF24"/>
-      <stop offset="100%" stop-color="#F59E0B"/>
-    </linearGradient>
-    <filter id="shadow1" x="-10%" y="-10%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0B2B29" flood-opacity="0.12"/>
-    </filter>
-  </defs>
-
-  <!-- Base de apoyo visual -->
-  <rect width="320" height="280" rx="24" fill="url(#bgGrad1)"/>
-  
-  <!-- Círculo de fricción de fondo -->
-  <circle cx="160" cy="140" r="85" stroke="#00B39F" stroke-width="2.5" stroke-dasharray="6 6" stroke-opacity="0.45"/>
-  <circle cx="160" cy="140" r="105" stroke="#FF6A4D" stroke-width="1.5" stroke-dasharray="4 8" stroke-opacity="0.35"/>
-
-  <!-- Grupo Manos Frotado Palma con Palma -->
-  <g class="hands-group" filter="url(#shadow1)">
-    <!-- Mano Izquierda (Palma interior) -->
-    <g class="hand-left" transform="translate(110, 140) rotate(-8) translate(-110, -140)">
-      <!-- Muñeca y Eminencia Hipotenar -->
-      <path d="M96 230 C96 210, 92 185, 96 160 C98 145, 102 135, 106 120" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
-      <path d="M142 230 C142 210, 140 185, 146 165 C150 152, 154 142, 158 132" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
-      
-      <!-- Palma sólida rellena -->
-      <path d="M96 220 C94 180, 96 150, 102 125 C104 110, 110 95, 114 65 C116 55, 126 55, 128 65 L132 105 C134 90, 142 85, 146 95 L148 118 C150 108, 156 105, 160 115 L162 135 C166 128, 172 130, 172 140 C172 165, 162 195, 142 220 Z" 
-            fill="url(#skinGradLeft)" fill-opacity="0.9" stroke="#0B2B29" stroke-width="3.5" stroke-linejoin="round"/>
-      
-      <!-- Dedos detallados (Meñique, Anular, Medio, Índice) -->
-      <!-- Dedo Meñique -->
-      <path d="M102 130 C100 105, 102 85, 106 68 C108 58, 118 60, 118 70 L118 120" stroke="#0B2B29" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <!-- Dedo Anular -->
-      <path d="M118 110 C120 85, 122 60, 126 46 C128 36, 138 38, 138 48 L136 112" stroke="#0B2B29" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <!-- Dedo Medio -->
-      <path d="M136 105 C138 75, 142 50, 146 38 C148 28, 158 30, 158 40 L154 115" stroke="#0B2B29" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <!-- Dedo Índice -->
-      <path d="M154 115 C158 90, 162 68, 166 52 C168 44, 176 46, 176 56 L170 125" stroke="#0B2B29" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <!-- Pulgar en abducción suave -->
-      <path d="M165 145 C178 140, 192 142, 196 150 C200 160, 188 172, 176 175 L160 178" stroke="#0B2B29" stroke-width="3" stroke-linecap="round" fill="#FDBA74"/>
-      
-      <!-- Pliegues palmares de flexión -->
-      <path d="M112 145 C124 150, 140 148, 152 140" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-opacity="0.6"/>
-      <path d="M116 165 C130 170, 148 162, 156 155" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-opacity="0.6"/>
-    </g>
-
-    <!-- Mano Derecha (Palma opuesta en contacto íntimo) -->
-    <g class="hand-right" transform="translate(190, 140) rotate(10) translate(-190, -140)">
-      <!-- Palma contralateral con tono armónico -->
-      <path d="M216 230 C216 205, 220 180, 214 155 C210 140, 204 125, 198 100 C194 85, 184 88, 182 102 L178 125 C174 110, 166 112, 164 125 L160 140 C154 135, 148 140, 148 152 C148 175, 160 200, 180 225 Z" 
-            fill="url(#skinGradRight)" fill-opacity="0.85" stroke="#008072" stroke-width="3.5" stroke-linejoin="round"/>
-      
-      <!-- Pulgar derecho contralateral -->
-      <path d="M152 165 C138 160, 126 164, 122 172 C118 182, 130 190, 145 192 L158 190" stroke="#008072" stroke-width="3" stroke-linecap="round" fill="#FBBF24"/>
-      
-      <!-- Pliegues de flexión contralateral -->
-      <path d="M195 150 C182 155, 170 152, 162 145" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-opacity="0.6"/>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="400" height="300" rx="20" fill="#0B2B29"/>
+  <!-- Manos enfrentadas frotando palmas -->
+  <g fill="#00B39F" opacity="0.9">
+    <!-- Mano Izquierda -->
+    <path d="M150,230 C150,210 160,160 165,140 C168,130 175,130 178,140 C182,155 185,180 185,210 Z"/>
+    <path d="M165,140 C168,110 175,90 182,90 C188,90 192,110 190,140 Z"/>
+    <path d="M178,140 C182,100 190,80 198,80 C205,80 208,100 205,140 Z"/>
+    <path d="M190,145 C195,115 202,100 210,100 C216,100 218,115 215,150 Z"/>
+    <path d="M140,190 C125,175 115,170 110,175 C105,180 112,195 125,205 C140,215 150,225 150,230 Z"/>
+    <!-- Palma base -->
+    <path d="M140,190 C155,170 215,170 220,210 C220,240 160,250 140,230 Z" fill="#CFFBF0" opacity="0.3"/>
   </g>
-
-  <!-- Flechas Circulares de Fricción Rotacional (Animación Visual) -->
-  <g class="friction-arrows">
-    <!-- Flecha Superior Horaria en Turquesa -->
-    <path d="M120 80 C145 62, 185 64, 210 82" stroke="#00B39F" stroke-width="4" stroke-linecap="round"/>
-    <polygon points="214,86 212,72 198,78" fill="#00B39F"/>
-    
-    <!-- Flecha Inferior Antihoraria en Coral -->
-    <path d="M200 215 C175 232, 135 230, 110 212" stroke="#FF6A4D" stroke-width="4" stroke-linecap="round"/>
-    <polygon points="106,206 108,220 122,214" fill="#FF6A4D"/>
-  </g>
-
-  <!-- Micro-gotas de Antiséptico / Espuma Emulsionada -->
-  <circle cx="160" cy="130" r="5" fill="#00B39F" fill-opacity="0.7"/>
-  <circle cx="145" cy="115" r="3.5" fill="#CFFBF0" stroke="#00B39F" stroke-width="1.5"/>
-  <circle cx="178" cy="148" r="4" fill="#FF6A4D" fill-opacity="0.7"/>
-  <circle cx="165" cy="165" r="3" fill="#FFE9DE" stroke="#FF6A4D" stroke-width="1.5"/>
-
-  <!-- Etiqueta Biomecánica Inferior -->
-  <rect x="50" y="244" width="220" height="26" rx="13" fill="#FFFFFF" fill-opacity="0.92" stroke="#00B39F" stroke-width="1.2"/>
-  <text x="160" y="261" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#0B2B29" text-anchor="middle">
-    Fricción Circular Palma contra Palma (360°)
-  </text>
+  <!-- Flechas curvas de fricción circular -->
+  <path d="M140,120 A60,60 0 1,1 260,180" fill="none" stroke="#FF6A4D" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 6"/>
+  <polygon points="265,190 270,170 250,175" fill="#FF6A4D"/>
+  <text x="200" y="275" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#CFFBF0" text-anchor="middle">Fricción Circular Palma con Palma</text>
 </svg>
