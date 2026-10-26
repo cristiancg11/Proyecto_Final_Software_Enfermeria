@@ -383,8 +383,9 @@ export interface QualityAlert {
               <!-- Encabezado del Paso Actual -->
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFE9DE] text-[#FF6A4D] text-xs font-extrabold border border-[#FF6A4D]/20 shadow-xs">
-                    Maniobra OMS #{{ currentStep().number }}
+                  <!-- • GUÍA ANATÓMICA • PASO 1 -->
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-extrabold border border-teal-200/80 shadow-xs">
+                    • GUÍA ANATÓMICA • PASO {{ currentStepIndex() + 1 }}
                   </span>
                   <span class="text-xs font-bold text-slate-400">
                     Paso {{ currentStepIndex() + 1 }} de 6
@@ -395,45 +396,41 @@ export interface QualityAlert {
                   {{ currentStep().title }}
                 </h2>
 
-                <p class="text-xs sm:text-sm font-bold text-[#008072]">
+                <p class="text-slate-700 text-sm font-semibold">
                   {{ currentStep().subtitle }}
                 </p>
               </div>
 
-              <!-- GUÍA ANATÓMICA • DEMOSTRACIÓN BIOMECÁNICA OMS CON IMAGEN/ANIMACIÓN REAL -->
-              <div class="relative w-full h-64 rounded-2xl overflow-hidden bg-slate-900 border border-teal-500/30 shadow-lg flex items-center justify-center group">
-                <!-- Imagen / Animación de las manos ejecutando la técnica -->
+              <!-- REEMPLAZO FORZOSO: DEMOSTRACIÓN BIOMECÁNICA OFICIAL OMS -->
+              <div class="w-full h-56 rounded-2xl overflow-hidden bg-slate-900 border border-teal-500/30 shadow-inner relative flex items-center justify-center">
+                <!-- Imagen/GIF animado demostrativo de la técnica oficial -->
                 <img 
-                  [src]="pasoActual().demoUrl" 
-                  [alt]="pasoActual().titulo || pasoActual().title" 
-                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  [src]="pasoActual().demoUrl || 'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80'"
+                  src="https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80" 
+                  alt="Demostración técnica de lavado de manos" 
+                  class="w-full h-full object-cover"
                 />
-                
-                <!-- Overlay oscuro con badge de técnica activa -->
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 flex flex-col justify-end p-3 pointer-events-none">
-                  <div class="flex items-center gap-2 bg-teal-500/90 text-white text-xs font-bold px-3 py-1 rounded-full w-fit shadow-md">
-                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                    <span>Técnica Biomecánica OMS: {{ pasoActual().title }}</span>
-                  </div>
+                <div class="absolute bottom-2 left-2 bg-teal-600/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+                  Demostración Biomecánica
                 </div>
               </div>
 
               <!-- INSTRUCCIÓN TEXTUAL CLARA Y DETALLADA -->
               <div class="space-y-3">
-                <p class="text-xs sm:text-sm text-[#0B2B29]/85 leading-relaxed bg-slate-50/80 p-4 rounded-2xl border border-slate-200/60 shadow-xs">
+                <p class="text-slate-700 text-sm font-medium leading-relaxed mt-4">
                   {{ currentStep().description }}
                 </p>
 
                 <!-- Clave Clínica Aséptica -->
-                <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-[#CFFBF0]/40 border border-[#00B39F]/30 text-xs text-[#0B2B29]">
-                  <div class="w-6 h-6 rounded-lg bg-[#00B39F] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-teal-50/70 border border-teal-200/60 text-xs text-slate-800">
+                  <div class="w-6 h-6 rounded-lg bg-teal-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
-                    <span class="font-extrabold text-[#008072]">Relevancia Clínica: </span>
-                    <span>{{ currentStep().clinicalKey }}</span>
+                    <span class="font-extrabold text-teal-800">Relevancia Clínica: </span>
+                    <span class="text-slate-700">{{ currentStep().clinicalKey }}</span>
                   </div>
                 </div>
               </div>
