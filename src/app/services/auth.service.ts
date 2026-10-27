@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
 export interface Usuario {
@@ -33,6 +33,19 @@ export interface AuthResponse {
   usuario: Usuario;
   user?: Usuario;
   token: string;
+}
+
+export interface ActualizarPerfilDatos {
+  nombre?: string;
+  correo?: string;
+  passwordActual?: string;
+  passwordNuevo?: string;
+}
+
+export interface ActualizarPerfilResponse {
+  mensaje: string;
+  user: Usuario;
+  usuario: Usuario;
 }
 
 @Injectable({
@@ -110,6 +123,32 @@ export class AuthService {
     }
     this.token.set(null);
     this.usuarioActual.set(null);
+  }
+
+  /**
+   * Actualiza el perfil institucional y/o contraseña del usuario autenticado
+   * PUT /api/auth/perfil
+   */
+  actualizarPerfil(datos: ActualizarPerfilDatos): Observable<ActualizarPerfilResponse> {
+    const token = this.token();
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return this.http
+      .put<ActualizarPerfilResponse>(`${this.apiUrl}/auth/perfil`, datos, { headers })
+      .pipe(
+        tap((res) => {
+          const user = res.user || res.usuario;
+          if (user) {
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('usuario', JSON.stringify(user));
+            }
+            this.usuarioActual.set(user);
+          }
+        })
+      );
   }
 
   /**

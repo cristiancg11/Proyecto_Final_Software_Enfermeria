@@ -230,3 +230,119 @@ export const obtenerPerfil = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ error: 'Error al consultar el perfil de usuario.' });
   }
 };
+
+const ActualizarPerfilSchema = z.object({
+  nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').optional(),
+  correo: z.string().email('Correo electrónico no válido').optional(),
+  passwordActual: z.string().optional(),
+  passwordNuevo: z.string().min(6, 'La nueva contraseña debe tener al menos 6 caracteres').optional(),
+});
+
+/**
+ * Controlador para actualizar datos de perfil y cambio de contraseña
+ * PUT /api/auth/perfil
+ */
+export const actualizarPerfil = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ error: 'No autenticado' });
+      return;
+    }
+
+    const data = ActualizarPerfilSchema.parse(req.body);
+
+    const usuario = await prisma.usuario.findUnique({
+      where: { id: req.user.id },
+    });
+
+    if (!usuario) {
+      res.status(404).json({ error: 'Usuario no encontrado' });
+      return;
+    }
+
+    const updateData: { nombre?: string; correo?: string; password?: string } = {};
+
+    if (data.nombre && data.nombre.trim() !== '') {
+      updateData.nombre = data.nombre.trim();
+    }
+
+    if (data.correo && data.correo.trim() !== '') {
+      const correoNormalizado = data.correo.trim().toLowerCase();
+      if (correoNormalizado !== usuario.correo) {
+        // Verificar si el nuevo correo ya está en uso por otro usuario
+        const existe = await prisma.usuario.findFirst({
+          where: {
+            correo: correoNormalizado,
+            NOT: { id: req.user.id },
+          },
+        });
+        if (existe) {
+          res.status(409).json({ error: 'El correo electrónico ya está registrado por otro usuario.' });
+          return;
+        }
+        updateData.correo = correoNormalizado;
+      }
+    }
+
+    // Si envía cambio de contraseña
+    if (data.passwordNuevo) {
+      if (!data.passwordActual) {
+        res.status(400).json({ error: 'Debes proporcionar tu contraseña actual para cambiarla.' });
+        return;
+      }
+
+      // 1. Validar que passwordActual coincida con el hash de la base de datos
+      const passwordValida = await bcrypt.compare(data.passwordActual, usuario.password);
+      if (!passwordValida) {
+        res.status(400).json({ error: 'La contraseña actual es incorrecta' });
+        return;
+      }
+
+      // 2. Hashear la nueva contraseña y actualizar
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(data.passwordNuevo, salt);
+    }
+
+    // Actualizar registro en Usuario
+    const usuarioActualizado = await prisma.usuario.update({
+      where: { id: req.user.id },
+      data: updateData,
+      select: {
+        id: true,
+        nombre: true,
+        codigoEstudiantil: true,
+        correo: true,
+        rol: true,
+        consentimiento: true,
+        fechaRegistro: true,
+      },
+    });
+
+    const userPayload = {
+      id: usuarioActualizado.id,
+      nombre: usuarioActualizado.nombre,
+      correo: usuarioActualizado.correo,
+      rol: usuarioActualizado.rol,
+      codigoEstudiantil: usuarioActualizado.codigoEstudiantil,
+    };
+
+    res.json({
+      mensaje: data.passwordNuevo
+        ? 'Contraseña actualizada correctamente'
+        : 'Datos de perfil actualizados exitosamente',
+      user: userPayload,
+      usuario: usuarioActualizado,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        error: 'Datos de actualización inválidos',
+        detalles: error.errors.map((e) => ({ campo: e.path.join('.'), mensaje: e.message })),
+      });
+      return;
+    }
+    console.error('Error en actualizarPerfil:', error);
+    res.status(500).json({ error: 'Error interno al actualizar el perfil.' });
+  }
+};
+

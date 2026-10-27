@@ -3,6 +3,7 @@ import {
   registrarUsuario,
   loginUsuario,
   obtenerPerfil,
+  actualizarPerfil,
 } from '../controllers/auth.controller';
 import { autenticarToken } from '../middlewares/auth.middleware';
 
@@ -17,3 +18,7 @@ authRouter.post('/login', loginUsuario);
 
 // Perfil del usuario autenticado
 authRouter.get('/me', autenticarToken, obtenerPerfil);
+
+// Actualización de perfil y cambio de contraseña
+authRouter.put('/perfil', autenticarToken, actualizarPerfil);
+

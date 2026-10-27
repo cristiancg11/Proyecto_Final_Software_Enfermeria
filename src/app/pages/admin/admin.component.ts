@@ -83,9 +83,9 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
         </div>
       </div>
 
-      <!-- MENSAJES DE ESTADO -->
+      <!-- MENSAJES DE ESTADO (TOASTS) -->
       @if (mensajeExito()) {
-        <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold flex items-center justify-between animate-fade-in">
+        <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold flex items-center justify-between animate-fade-in shadow-xs">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -97,7 +97,7 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
       }
 
       @if (mensajeError()) {
-        <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm font-semibold flex items-center justify-between animate-fade-in">
+        <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm font-semibold flex items-center justify-between animate-fade-in shadow-xs">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -108,8 +108,9 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
         </div>
       }
 
-      <!-- PESTAÑAS DE NAVEGACIÓN DOCENTE -->
-      <div class="flex items-center gap-2 sm:gap-4 mb-6 border-b border-slate-200 pb-3">
+      <!-- PESTAÑAS DE NAVEGACIÓN DOCENTE (3 PESTAÑAS) -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 border-b border-slate-200 pb-3">
+        <!-- Pestaña 1 -->
         <button
           type="button"
           (click)="pestanaActiva.set('practicas')"
@@ -125,6 +126,7 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
           </span>
         </button>
 
+        <!-- Pestaña 2 -->
         <button
           type="button"
           (click)="pestanaActiva.set('preguntas')"
@@ -138,6 +140,19 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
           <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'preguntas' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
             {{ preguntas().length }}
           </span>
+        </button>
+
+        <!-- Pestaña 3: Mi Perfil & Seguridad -->
+        <button
+          type="button"
+          (click)="pestanaActiva.set('perfil')"
+          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
+          [ngClass]="pestanaActiva() === 'perfil' ? 'bg-[#00B39F] text-white shadow-md' : 'bg-white/80 text-slate-700 hover:bg-white'"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span>3. Mi Perfil & Seguridad</span>
         </button>
       </div>
 
@@ -491,6 +506,203 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
       }
 
       <!-- ============================================================== -->
+      <!-- PESTAÑA 3: MI PERFIL & SEGURIDAD                               -->
+      <!-- ============================================================== -->
+      @if (pestanaActiva() === 'perfil') {
+        <div class="space-y-8 animate-fade-in">
+          <!-- Tarjeta de Resumen del Docente -->
+          <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 flex flex-col sm:flex-row items-center gap-6">
+            <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#00B39F] to-[#008072] text-white flex items-center justify-center text-3xl font-black shadow-lg shrink-0">
+              {{ docenteNombre().charAt(0).toUpperCase() }}
+            </div>
+            <div class="grow text-center sm:text-left">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/30 text-[#008072] text-xs font-black mb-2">
+                <span>{{ docenteRol() }} INSTITUCIONAL UCC</span>
+              </div>
+              <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">
+                {{ docenteNombre() }}
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+                {{ docenteCorreo() }} • Código Asignado: <strong class="text-slate-800">{{ docenteCodigo() }}</strong>
+              </p>
+            </div>
+          </div>
+
+          <!-- Grid de Formularios: Datos de Contacto y Cambio de Contraseña -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Formulario 1: Datos Personales y Contacto -->
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
+              <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
+                <div class="w-10 h-10 rounded-2xl bg-[#00B39F]/15 text-[#00B39F] flex items-center justify-center font-bold">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-heading text-lg font-bold text-slate-900">Datos de Perfil</h4>
+                  <p class="text-xs text-slate-500">Actualiza tu nombre y correo institucional</p>
+                </div>
+              </div>
+
+              <form [formGroup]="formPerfil" (ngSubmit)="guardarPerfil()" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    Nombre Completo *
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="nombre"
+                    placeholder="Ej. Docente de Enfermería UCC"
+                    class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    Correo Electrónico Institucional *
+                  </label>
+                  <input
+                    type="email"
+                    formControlName="correo"
+                    placeholder="docente@ucc.edu.co"
+                    class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                  />
+                </div>
+
+                <div class="pt-3">
+                  <button
+                    type="submit"
+                    [disabled]="formPerfil.invalid || actualizandoPerfil()"
+                    class="w-full btn-primary py-3.5 text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-md"
+                  >
+                    @if (actualizandoPerfil()) {
+                      <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                      </svg>
+                      <span>Guardando Cambios...</span>
+                    } @else {
+                      <span>Guardar Datos de Perfil</span>
+                    }
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Formulario 2: Cambio de Contraseña -->
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
+              <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
+                <div class="w-10 h-10 rounded-2xl bg-[#FF6A4D]/15 text-[#FF6A4D] flex items-center justify-center font-bold">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-heading text-lg font-bold text-slate-900">Seguridad de la Cuenta</h4>
+                  <p class="text-xs text-slate-500">Actualiza tu contraseña periódicamente</p>
+                </div>
+              </div>
+
+              <form [formGroup]="formPassword" (ngSubmit)="guardarPassword()" class="space-y-4">
+                <!-- Contraseña Actual -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    Contraseña Actual *
+                  </label>
+                  <div class="relative">
+                    <input
+                      [type]="verPasswordActual() ? 'text' : 'password'"
+                      formControlName="passwordActual"
+                      placeholder="Ingresa tu contraseña actual"
+                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                    />
+                    <button
+                      type="button"
+                      (click)="verPasswordActual.set(!verPasswordActual())"
+                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Nueva Contraseña -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    Nueva Contraseña (mínimo 6 caracteres) *
+                  </label>
+                  <div class="relative">
+                    <input
+                      [type]="verPasswordNuevo() ? 'text' : 'password'"
+                      formControlName="passwordNuevo"
+                      placeholder="Ingresa la nueva contraseña"
+                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                    />
+                    <button
+                      type="button"
+                      (click)="verPasswordNuevo.set(!verPasswordNuevo())"
+                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Confirmar Nueva Contraseña -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    Confirmar Nueva Contraseña *
+                  </label>
+                  <div class="relative">
+                    <input
+                      [type]="verPasswordConfirmar() ? 'text' : 'password'"
+                      formControlName="passwordConfirmar"
+                      placeholder="Repite la nueva contraseña"
+                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                    />
+                    <button
+                      type="button"
+                      (click)="verPasswordConfirmar.set(!verPasswordConfirmar())"
+                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="pt-3">
+                  <button
+                    type="submit"
+                    [disabled]="formPassword.invalid || actualizandoPassword()"
+                    class="w-full btn-primary py-3.5 text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-md"
+                  >
+                    @if (actualizandoPassword()) {
+                      <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                      </svg>
+                      <span>Actualizando Contraseña...</span>
+                    } @else {
+                      <span>Actualizar Contraseña</span>
+                    }
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ============================================================== -->
       <!-- MODAL DE DETALLE BIOMECÁNICO PASO A PASO (1 AL 6)               -->
       <!-- ============================================================== -->
       @if (modalDetalleAbierto() && practicaSeleccionada()) {
@@ -607,11 +819,17 @@ export class AdminComponent implements OnInit {
 
   readonly optionLetters = ['A', 'B', 'C', 'D'];
 
-  readonly pestanaActiva = signal<'practicas' | 'preguntas'>('practicas');
+  readonly pestanaActiva = signal<'practicas' | 'preguntas' | 'perfil'>('practicas');
   readonly busqueda = signal<string>('');
   readonly cargandoPracticas = signal<boolean>(false);
   readonly cargandoPreguntas = signal<boolean>(false);
   readonly guardandoPregunta = signal<boolean>(false);
+  readonly actualizandoPerfil = signal<boolean>(false);
+  readonly actualizandoPassword = signal<boolean>(false);
+
+  readonly verPasswordActual = signal<boolean>(false);
+  readonly verPasswordNuevo = signal<boolean>(false);
+  readonly verPasswordConfirmar = signal<boolean>(false);
 
   readonly practicas = signal<PracticaEstudianteDocente[]>([]);
   readonly preguntas = signal<PreguntaDocente[]>([]);
@@ -623,6 +841,8 @@ export class AdminComponent implements OnInit {
 
   readonly docenteNombre = computed(() => this.authService.usuarioActual()?.nombre || 'Docente UCC');
   readonly docenteCodigo = computed(() => this.authService.usuarioActual()?.codigoEstudiantil || 'DOC-UCC');
+  readonly docenteCorreo = computed(() => this.authService.usuarioActual()?.correo || 'docente@ucc.edu.co');
+  readonly docenteRol = computed(() => this.authService.usuarioActual()?.rol || 'DOCENTE');
 
   readonly practicasFiltradas = computed(() => {
     const q = this.busqueda().toLowerCase().trim();
@@ -650,8 +870,28 @@ export class AdminComponent implements OnInit {
     correctaIndex: new FormControl<number>(0, [Validators.required]),
   });
 
+  // Formulario reactivo para actualización de perfil
+  readonly formPerfil = new FormGroup({
+    nombre: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    correo: new FormControl('', [Validators.required, Validators.email]),
+  });
+
+  // Formulario reactivo para cambio de contraseña
+  readonly formPassword = new FormGroup({
+    passwordActual: new FormControl('', [Validators.required, Validators.minLength(1)]),
+    passwordNuevo: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    passwordConfirmar: new FormControl('', [Validators.required, Validators.minLength(6)]),
+  });
+
   ngOnInit(): void {
     this.recargarDatos();
+    const u = this.authService.usuarioActual();
+    if (u) {
+      this.formPerfil.patchValue({
+        nombre: u.nombre,
+        correo: u.correo,
+      });
+    }
   }
 
   recargarDatos(): void {
@@ -768,6 +1008,69 @@ export class AdminComponent implements OnInit {
         this.mensajeError.set(err.error?.error || 'Error al eliminar la pregunta clínica.');
       },
     });
+  }
+
+  guardarPerfil(): void {
+    if (this.formPerfil.invalid) {
+      this.formPerfil.markAllAsTouched();
+      return;
+    }
+
+    const { nombre, correo } = this.formPerfil.getRawValue();
+    this.actualizandoPerfil.set(true);
+    this.mensajeError.set(null);
+    this.mensajeExito.set(null);
+
+    this.authService
+      .actualizarPerfil({
+        nombre: nombre?.trim() || undefined,
+        correo: correo?.trim().toLowerCase() || undefined,
+      })
+      .subscribe({
+        next: (res) => {
+          this.actualizandoPerfil.set(false);
+          this.mensajeExito.set(res.mensaje || 'Datos de perfil actualizados exitosamente');
+        },
+        error: (err) => {
+          this.actualizandoPerfil.set(false);
+          this.mensajeError.set(err.error?.error || 'Error al actualizar datos de perfil.');
+        },
+      });
+  }
+
+  guardarPassword(): void {
+    if (this.formPassword.invalid) {
+      this.formPassword.markAllAsTouched();
+      return;
+    }
+
+    const { passwordActual, passwordNuevo, passwordConfirmar } = this.formPassword.getRawValue();
+
+    if (passwordNuevo !== passwordConfirmar) {
+      this.mensajeError.set('La nueva contraseña y su confirmación no coinciden.');
+      return;
+    }
+
+    this.actualizandoPassword.set(true);
+    this.mensajeError.set(null);
+    this.mensajeExito.set(null);
+
+    this.authService
+      .actualizarPerfil({
+        passwordActual: passwordActual || '',
+        passwordNuevo: passwordNuevo || '',
+      })
+      .subscribe({
+        next: (res) => {
+          this.actualizandoPassword.set(false);
+          this.mensajeExito.set(res.mensaje || 'Contraseña actualizada correctamente');
+          this.formPassword.reset();
+        },
+        error: (err) => {
+          this.actualizandoPassword.set(false);
+          this.mensajeError.set(err.error?.error || 'Error al cambiar la contraseña.');
+        },
+      });
   }
 
   logout(): void {
