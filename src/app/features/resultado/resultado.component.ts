@@ -177,13 +177,21 @@ import { PracticasService, RegistrarPracticaResponse } from '../../services/prac
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 border-t border-slate-100 mt-8">
           <button
             type="button"
-            (click)="repeatPractice()"
+            (click)="repeatEvaluation()"
             class="btn-primary py-4 px-8 text-base flex items-center gap-3 w-full sm:w-auto shadow-lg hover:scale-105 group"
           >
             <svg class="w-5 h-5 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            <span>Repetir Práctica</span>
+            <span>Repetir Evaluación Práctica</span>
+          </button>
+
+          <button
+            type="button"
+            (click)="repeatPractice()"
+            class="btn-secondary py-3.5 px-6 text-sm flex items-center gap-2 w-full sm:w-auto justify-center"
+          >
+            <span>Práctica con Video</span>
           </button>
 
           <button
@@ -370,6 +378,11 @@ export class ResultadoComponent {
           console.error('Error al persistir intento de práctica:', err);
         },
       });
+  }
+
+  repeatEvaluation(): void {
+    this.stateService.resetPractice();
+    this.router.navigate(['/evaluacion-practica']);
   }
 
   repeatPractice(): void {

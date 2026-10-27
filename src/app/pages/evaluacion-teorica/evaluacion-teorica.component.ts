@@ -43,7 +43,7 @@ interface PreguntaEvaluacion {
               <div>
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00B39F]/20 text-[#50E7FF] text-xs font-bold mb-1 border border-[#00B39F]/30">
                   <span class="w-2 h-2 rounded-full bg-[#50E7FF] animate-pulse"></span>
-                  <span>Fase 4 • Post-Test Clínico Docente</span>
+                  <span>Fase 5 • Post-Test Clínico Docente</span>
                 </div>
                 <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight">
                   Evaluación Teórica de Bioseguridad y 5 Momentos OMS

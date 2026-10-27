@@ -59,6 +59,15 @@ export const routes: Routes = [
     title: 'Manos Seguras — Práctica de 6 Pasos OMS',
   },
   {
+    path: 'evaluacion-practica',
+    canActivate: [studentAuthGuard],
+    loadComponent: () =>
+      import('./pages/evaluacion-practica/evaluacion-practica.component').then(
+        (m) => m.EvaluacionPracticaComponent
+      ),
+    title: 'Manos Seguras — Evaluación Práctica Autónoma',
+  },
+  {
     path: 'evaluacion-teorica',
     canActivate: [studentAuthGuard],
     loadComponent: () =>

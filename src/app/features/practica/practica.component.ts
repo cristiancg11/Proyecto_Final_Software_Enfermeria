@@ -223,12 +223,25 @@ export interface QualityAlert {
                 </div>
               </div>
 
-              <!-- Badge Objetivo de Tiempo -->
-              <div class="self-start sm:self-auto inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/25 text-[#008072] text-xs font-bold shadow-xs">
-                <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Frotado Activo Requerido: 3 a 8 segundos</span>
+              <!-- Badge Objetivo de Tiempo y Acceso Directo a Evaluacion Practica -->
+              <div class="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/25 text-[#008072] text-xs font-bold shadow-xs">
+                  <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Frotado Requerido: 3 a 8s</span>
+                </div>
+
+                <button
+                  type="button"
+                  (click)="irAEvaluacionPractica()"
+                  class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-black shadow-md hover:shadow-orange-500/25 transition-all cursor-pointer active:scale-95"
+                >
+                  <span>Ir a Evaluación Práctica</span>
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
               </div>
             </div>
 
@@ -604,7 +617,7 @@ export interface QualityAlert {
                     @if (cameraActive() && !palmsValidated()) {
                       Frotando frente a la cámara...
                     } @else if (isLastStep()) {
-                      Continuar a Evaluación Teórica
+                      Ir a Evaluación Práctica
                     } @else {
                       Avanzar al Siguiente Paso
                     }
@@ -1132,11 +1145,18 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
     if (this.isLastStep()) {
       this.stopTimer();
-      this.router.navigate(['/evaluacion-teorica']);
+      this.stopCamera();
+      this.router.navigate(['/evaluacion-practica']);
     } else {
       this.currentStepIndex.update((idx) => idx + 1);
       this.videoDemoError.set(false);
       this.startStepTimer();
     }
+  }
+
+  irAEvaluacionPractica(): void {
+    this.stopTimer();
+    this.stopCamera();
+    this.router.navigate(['/evaluacion-practica']);
   }
 }

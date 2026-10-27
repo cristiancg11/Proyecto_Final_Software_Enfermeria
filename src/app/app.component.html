@@ -27,69 +27,82 @@
           <a
             routerLink="/introduccion"
             routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+            class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
             1. Introducción
           </a>
           <a
             routerLink="/preparacion"
             routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+            class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
             2. Preparación
           </a>
           <a
             routerLink="/practica"
             routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+            class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
             3. Práctica Asistida
           </a>
           <a
+            routerLink="/evaluacion-practica"
+            routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
+            class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+          >
+            4. Evaluación Práctica
+          </a>
+          <a
             routerLink="/evaluacion-teorica"
             routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+            class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
-            4. Evaluación Teórica
+            5. Evaluación Teórica
           </a>
           <a
             routerLink="/resultado"
             routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-            class="px-3.5 py-2 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+            class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
           >
-            5. Resultados
+            6. Resultados
           </a>
         } @else {
           <!-- Rutas bloqueadas cuando no hay login -->
-          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-2.5 py-1.5 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             1. Introducción
           </span>
-          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-2.5 py-1.5 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             2. Preparación
           </span>
-          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-2.5 py-1.5 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            3. Práctica Asistida
+            3. Práctica
           </span>
-          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-2.5 py-1.5 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            4. Evaluación
+            4. Ev. Práctica
           </span>
-          <span class="px-3 py-2 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
+          <span class="px-2.5 py-1.5 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            5. Resultados
+            5. Ev. Teórica
+          </span>
+          <span class="px-2.5 py-1.5 text-slate-400 opacity-60 flex items-center gap-1 cursor-not-allowed select-none">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            6. Resultados
           </span>
         }
       </nav>
