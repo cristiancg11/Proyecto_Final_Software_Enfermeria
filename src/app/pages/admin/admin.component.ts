@@ -245,7 +245,9 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
                     <th class="py-3.5 px-4">Estudiante</th>
                     <th class="py-3.5 px-4">Código</th>
                     <th class="py-3.5 px-4">Fecha / Hora</th>
-                    <th class="py-3.5 px-4 text-center">Calificación</th>
+                    <th class="py-3.5 px-3 text-center">Nota Práctica (/10)</th>
+                    <th class="py-3.5 px-3 text-center">Nota Cuestionario (/10)</th>
+                    <th class="py-3.5 px-3 text-center">Nota Final Consolidada (/10)</th>
                     <th class="py-3.5 px-4 text-center">Estado</th>
                     <th class="py-3.5 px-4 text-right">Acción</th>
                   </tr>
@@ -260,20 +262,30 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
                       <td class="py-3.5 px-4 font-mono font-bold text-slate-700">
                         {{ p.codigo }}
                       </td>
-                      <td class="py-3.5 px-4 text-slate-600">
+                      <td class="py-3.5 px-4 text-slate-600 text-xs">
                         {{ p.fecha | date:'dd/MM/yyyy HH:mm' }}
                       </td>
-                      <td class="py-3.5 px-4 text-center">
+                      <td class="py-3.5 px-3 text-center">
+                        <span class="inline-block px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-800 border border-slate-200">
+                          {{ (p.notaPractica !== undefined ? p.notaPractica : p.calificacion).toFixed(1) }} / 10
+                        </span>
+                      </td>
+                      <td class="py-3.5 px-3 text-center">
+                        <span class="inline-block px-2.5 py-1 rounded-xl text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                          {{ (p.notaTeorica !== undefined ? p.notaTeorica : 0).toFixed(1) }} / 10
+                        </span>
+                      </td>
+                      <td class="py-3.5 px-3 text-center">
                         <span class="inline-block px-3 py-1 rounded-full text-xs font-black shadow-xs"
-                              [ngClass]="p.calificacion >= 7.0 ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'">
-                          {{ p.calificacion.toFixed(1) }} / 10
+                              [ngClass]="(p.notaFinal !== undefined ? p.notaFinal : p.calificacion) >= 6.0 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-red-100 text-red-800 border border-red-300'">
+                          {{ (p.notaFinal !== undefined ? p.notaFinal : p.calificacion).toFixed(1) }} / 10
                         </span>
                       </td>
                       <td class="py-3.5 px-4 text-center">
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
                               [ngClass]="p.aprobado ? 'bg-[#CFFBF0] text-[#008072] border border-[#00B39F]/30' : 'bg-[#FFE9DE] text-[#FF6A4D] border border-[#FF6A4D]/30'">
                           <span class="w-1.5 h-1.5 rounded-full" [ngClass]="p.aprobado ? 'bg-[#00B39F]' : 'bg-[#FF6A4D]'"></span>
-                          {{ p.estado }}
+                          {{ p.aprobado ? 'Aprobado' : 'Reprobado' }}
                         </span>
                       </td>
                       <td class="py-3.5 px-4 text-right">
@@ -755,22 +767,47 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
               </button>
             </div>
 
-            <!-- Resumen de Calificación -->
-            <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs sm:text-sm">
-              <div class="flex items-center gap-3">
-                <span class="text-slate-500 font-semibold">Calificación Obtenida:</span>
-                <span class="text-base font-black px-3 py-1 rounded-full shadow-xs"
-                      [ngClass]="(practicaSeleccionada()?.calificacion || 0) >= 7.0 ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'">
-                  {{ practicaSeleccionada()?.calificacion?.toFixed(1) }} / 10
-                </span>
+            <!-- Resumen de Calificación Consolidada -->
+            <div class="p-4 bg-slate-50 border-b border-slate-200 text-xs sm:text-sm space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="p-2.5 rounded-xl bg-white border border-slate-200">
+                  <div class="text-[11px] font-bold text-slate-500 uppercase">Nota Práctica (60%)</div>
+                  <div class="text-base font-extrabold text-slate-800">
+                    {{ (practicaSeleccionada()?.notaPractica !== undefined ? practicaSeleccionada()?.notaPractica : practicaSeleccionada()?.calificacion)?.toFixed(1) }} / 10
+                  </div>
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-white border border-blue-100">
+                  <div class="text-[11px] font-bold text-blue-700 uppercase">Nota Cuestionario (40%)</div>
+                  <div class="text-base font-extrabold text-blue-900">
+                    {{ (practicaSeleccionada()?.notaTeorica !== undefined ? practicaSeleccionada()?.notaTeorica : 0)?.toFixed(1) }} / 10
+                  </div>
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-white border"
+                     [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'border-emerald-300 bg-emerald-50/50' : 'border-red-300 bg-red-50/50'">
+                  <div class="text-[11px] font-bold uppercase"
+                       [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'text-emerald-800' : 'text-red-800'">
+                    Nota Final Consolidada
+                  </div>
+                  <div class="text-base font-black"
+                       [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'text-emerald-700' : 'text-red-700'">
+                    {{ ((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0).toFixed(1) }} / 10
+                  </div>
+                </div>
               </div>
 
               @if (practicaSeleccionada()?.certificado) {
-                <div class="flex items-center gap-1.5 text-xs text-[#008072] font-bold">
-                  <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" />
-                  </svg>
-                  <span>Certificado: {{ practicaSeleccionada()?.certificado?.codigoVerificacion }}</span>
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-[#008072] font-bold">
+                  <div class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" />
+                    </svg>
+                    <span>Certificado Emitido: <strong>{{ practicaSeleccionada()?.certificado?.codigoVerificacion }}</strong></span>
+                  </div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-black uppercase">
+                    Competencia Aprobada
+                  </span>
                 </div>
               }
             </div>
@@ -1299,13 +1336,24 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    const encabezados = ['Estudiante', 'Código', 'Correo', 'Calificación', 'Estado', 'Fecha'];
+    const encabezados = [
+      'Estudiante',
+      'Código',
+      'Correo',
+      'Nota Práctica (/10)',
+      'Nota Cuestionario (/10)',
+      'Nota Final Consolidada (/10)',
+      'Estado',
+      'Fecha',
+    ];
     const filas = lista.map((p) => [
       `"${(p.nombre || '').replace(/"/g, '""')}"`,
       `"${(p.codigo || '').replace(/"/g, '""')}"`,
       `"${(p.correo || '').replace(/"/g, '""')}"`,
-      (p.calificacion || 0).toFixed(1),
-      `"${(p.estado || (p.aprobado ? 'Aprobado' : 'Requiere práctica')).replace(/"/g, '""')}"`,
+      (p.notaPractica !== undefined ? p.notaPractica : p.calificacion || 0).toFixed(1),
+      (p.notaTeorica !== undefined ? p.notaTeorica : 0).toFixed(1),
+      (p.notaFinal !== undefined ? p.notaFinal : p.calificacion || 0).toFixed(1),
+      `"${(p.aprobado ? 'Aprobado' : 'Reprobado').replace(/"/g, '""')}"`,
       `"${new Date(p.fecha).toLocaleString('es-CO')}"`,
     ]);
 

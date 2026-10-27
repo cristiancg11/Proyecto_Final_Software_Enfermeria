@@ -227,6 +227,8 @@ export class HandwashStateService {
   private readonly _diagnosticAnswers = signal<{ [questionId: string | number]: number }>({});
   private readonly _backendScore = signal<number | null>(null);
   private readonly _stepRecords = signal<StepTimeRecord[]>([]);
+  private readonly _notaTeorica = signal<number>(0);
+  private readonly _retroalimentacionTeorica = signal<any[]>([]);
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -251,6 +253,8 @@ export class HandwashStateService {
   readonly student = this._student.asReadonly();
   readonly diagnosticAnswers = this._diagnosticAnswers.asReadonly();
   readonly stepRecords = this._stepRecords.asReadonly();
+  readonly notaTeoricaSignal = this._notaTeorica.asReadonly();
+  readonly retroalimentacionTeorica = this._retroalimentacionTeorica.asReadonly();
 
   // Diagnostics completion signal
   readonly isDiagnosticComplete = computed(() => {
@@ -273,50 +277,46 @@ export class HandwashStateService {
     return correctCount;
   });
 
-  // Evaluation computation
+  // Evaluation computation con consolidación de Nota Práctica + Nota Teórica
   readonly evaluationResult = computed<EvaluationResult>(() => {
     const student = this._student();
     const records = this._stepRecords();
     const quizScore = this.diagnosticScore();
 
-    if (records.length === 0) {
-      return {
-        student,
-        overallScore: 0,
-        totalSeconds: 0,
-        records: [],
-        performanceLevel: 'needs-practice',
-        performanceTitle: 'Sin datos de práctica',
-        performanceDescription: 'Completa la sesión de práctica para obtener tu evaluación.',
-        quizScore,
-        totalQuizQuestions: this.diagnosticQuestions.length,
-      };
-    }
+    const sumScores = records.reduce((acc, r) => acc + r.score, 0);
+    const notaPractica = Math.min(10, Math.max(0, Math.round(sumScores * 10) / 10));
+    const notaTeorica = this._notaTeorica();
+
+    // Promedio ponderado: 60% práctica con cámara + 40% cuestionario teórico
+    const notaFinal = records.length > 0
+      ? Math.round(((notaPractica * 0.6) + (notaTeorica * 0.4)) * 10) / 10
+      : notaTeorica;
 
     const totalSeconds = records.reduce((acc, r) => acc + r.seconds, 0);
-    const sumScores = records.reduce((acc, r) => acc + r.score, 0);
-    const roundedOverall = Math.min(10, Math.max(0, Math.round(sumScores * 10) / 10));
 
     let performanceLevel: 'excellent' | 'good' | 'needs-practice' = 'needs-practice';
     let performanceTitle = 'Requiere Refuerzo Práctico';
     let performanceDescription =
       'Es fundamental practicar manteniendo un ritmo controlado. El rango ideal para cada movimiento es de 3 a 8 segundos para asegurar una adecuada desinfección sin apresuramientos.';
 
-    if (roundedOverall >= 9.0) {
+    if (notaFinal >= 8.5) {
       performanceLevel = 'excellent';
-      performanceTitle = '¡Excelente Técnica Quirúrgica y Clínica!';
+      performanceTitle = '¡Excelente Competencia Clínica!';
       performanceDescription =
-        'Has demostrado un dominio excepcional de la biomecánica y los tiempos recomendados por la OMS. Tu técnica garantiza una reducción óptima de la carga bacteriana.';
-    } else if (roundedOverall >= 7.0) {
+        'Has demostrado un dominio sobresaliente de la biomecánica, tiempos OMS y los fundamentos teóricos de bioseguridad.';
+    } else if (notaFinal >= 6.0) {
       performanceLevel = 'good';
       performanceTitle = 'Buen Desempeño Clínico';
       performanceDescription =
-        'Tu técnica es segura y cumple con los estándares asistenciales. Revisa los pasos señalados para calibrar con mayor precisión el tiempo en cada maniobra.';
+        'Tu técnica y conocimientos son seguros y cumplen con los estándares asistenciales hospitalarios.';
     }
 
     return {
       student,
-      overallScore: roundedOverall,
+      overallScore: notaFinal,
+      notaPractica,
+      notaTeorica,
+      notaFinal,
       totalSeconds: Math.round(totalSeconds * 10) / 10,
       records,
       performanceLevel,
@@ -324,6 +324,7 @@ export class HandwashStateService {
       performanceDescription,
       quizScore,
       totalQuizQuestions: this.diagnosticQuestions.length,
+      retroalimentacionTeorica: this._retroalimentacionTeorica(),
     };
   });
 
@@ -397,6 +398,11 @@ export class HandwashStateService {
     return record;
   }
 
+  setEvaluacionTeorica(nota: number, retro: any[] = []): void {
+    this._notaTeorica.set(nota);
+    this._retroalimentacionTeorica.set(retro);
+  }
+
   resetPractice(): void {
     this._stepRecords.set([]);
   }
@@ -405,6 +411,7 @@ export class HandwashStateService {
     this._student.set(null);
     this._diagnosticAnswers.set({});
     this._stepRecords.set([]);
+    this._notaTeorica.set(0);
+    this._retroalimentacionTeorica.set([]);
   }
-
 }

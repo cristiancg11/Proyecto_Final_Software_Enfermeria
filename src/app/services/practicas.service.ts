@@ -20,6 +20,9 @@ export interface PracticaEstudianteDocente {
   correo: string;
   fecha: string | Date;
   calificacion: number;
+  notaPractica?: number;
+  notaTeorica?: number;
+  notaFinal?: number;
   aprobado: boolean;
   estado: string;
   certificado?: {
@@ -36,8 +39,11 @@ export interface PracticasDocenteResponse {
 }
 
 export interface RegistrarPracticaDto {
-  calificacion: number;
-  aprobado: boolean;
+  calificacion?: number;
+  notaPractica?: number;
+  notaTeorica?: number;
+  notaFinal?: number;
+  aprobado?: boolean;
   detallePasosJson: any;
   usuarioId?: string;
   correo?: string;

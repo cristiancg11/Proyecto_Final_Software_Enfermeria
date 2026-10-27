@@ -50,15 +50,6 @@ export const routes: Routes = [
     redirectTo: 'preparacion',
   },
   {
-    path: 'diagnostico',
-    canActivate: [studentAuthGuard],
-    loadComponent: () =>
-      import('./features/diagnostico/diagnostico.component').then(
-        (m) => m.DiagnosticoComponent
-      ),
-    title: 'Manos Seguras — Diagnóstico de Bioseguridad',
-  },
-  {
     path: 'practica',
     canActivate: [studentAuthGuard],
     loadComponent: () =>
@@ -68,6 +59,19 @@ export const routes: Routes = [
     title: 'Manos Seguras — Práctica de 6 Pasos OMS',
   },
   {
+    path: 'evaluacion-teorica',
+    canActivate: [studentAuthGuard],
+    loadComponent: () =>
+      import('./pages/evaluacion-teorica/evaluacion-teorica.component').then(
+        (m) => m.EvaluacionTeoricaComponent
+      ),
+    title: 'Manos Seguras — Evaluación Teórica Post-Práctica',
+  },
+  {
+    path: 'diagnostico',
+    redirectTo: 'evaluacion-teorica',
+  },
+  {
     path: 'resultado',
     canActivate: [studentAuthGuard],
     loadComponent: () =>
@@ -75,6 +79,10 @@ export const routes: Routes = [
         (m) => m.ResultadoComponent
       ),
     title: 'Manos Seguras — Resultados y Calificación',
+  },
+  {
+    path: 'resultados',
+    redirectTo: 'resultado',
   },
   {
     path: 'validar/:codigo',

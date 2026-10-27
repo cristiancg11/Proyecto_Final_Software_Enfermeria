@@ -68,13 +68,24 @@ export interface EnviarDiagnosticoDto {
   respuestas: { preguntaId: string; opcionSeleccionadaId: string }[];
 }
 
+export interface RetroalimentacionPregunta {
+  preguntaId: string;
+  enunciado: string;
+  justificacion: string;
+  opcionSeleccionada: { id: string; texto: string } | null;
+  opcionCorrecta: { id: string; texto: string } | null;
+  esCorrecta: boolean;
+}
+
 export interface EnviarDiagnosticoResponse {
   mensaje: string;
   intentoId: string;
   tipo: 'PRE' | 'POST';
   puntaje: number;
+  calificacion10?: number;
   aciertos: number;
   totalPreguntas: number;
+  retroalimentacion?: RetroalimentacionPregunta[];
 }
 
 @Injectable({

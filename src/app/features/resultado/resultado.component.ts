@@ -38,59 +38,91 @@ import { PracticasService, RegistrarPracticaResponse } from '../../services/prac
           </div>
         </div>
 
-        <!-- Bloque Central de Calificación -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center mb-8">
+        <!-- Bloque Central de Calificación: 3 Métricas Consolidadas -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch mb-8">
           
-          <!-- Puntuación Principal sobre 10 -->
-          <div class="md:col-span-5 bg-gradient-to-br from-[#E6FBF7] via-white to-[#FFF1EE] rounded-3xl p-6 md:p-8 text-center border border-[#00B39F]/20 shadow-lg relative">
-            <span class="text-xs font-bold uppercase tracking-widest text-slate-500 block mb-1">
-              Calificación Obtenida
-            </span>
-            <div class="font-heading text-6xl md:text-7xl font-extrabold tracking-tight text-slate-900 my-2">
-              {{ evaluation().overallScore.toFixed(1) }}
-              <span class="text-2xl md:text-3xl font-normal text-slate-500">/10</span>
+          <!-- Puntuación Consolidada sobre 10 -->
+          <div class="md:col-span-5 bg-gradient-to-br from-[#E6FBF7] via-white to-[#FFF1EE] rounded-3xl p-6 text-center border border-[#00B39F]/20 shadow-lg flex flex-col justify-between relative">
+            <div>
+              <span class="text-[11px] font-black uppercase tracking-widest text-[#008072] block mb-1">
+                Calificación Final Consolidada
+              </span>
+              <div class="font-heading text-5xl sm:text-6xl font-black tracking-tight text-slate-900 my-2">
+                {{ evaluation().overallScore.toFixed(1) }}
+                <span class="text-2xl font-normal text-slate-400">/10</span>
+              </div>
             </div>
 
             <!-- Nivel de Desempeño Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs md:text-sm font-bold mt-2 shadow-sm"
+            <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold shadow-sm mx-auto"
                  [ngClass]="{
-                   'bg-[#00B39F] text-white': evaluation().performanceLevel === 'excellent',
-                   'bg-[#CFFBF0] text-[#008072] border border-[#00B39F]/30': evaluation().performanceLevel === 'good',
-                   'bg-[#FFE9DE] text-[#FF6A4D] border border-[#FF6A4D]/30': evaluation().performanceLevel === 'needs-practice'
+                   'bg-[#00B39F] text-white': evaluation().overallScore >= 8.5,
+                   'bg-[#CFFBF0] text-[#008072] border border-[#00B39F]/40': evaluation().overallScore >= 6.0 && evaluation().overallScore < 8.5,
+                   'bg-[#FFE9DE] text-[#FF6A4D] border border-[#FF6A4D]/40': evaluation().overallScore < 6.0
                  }">
-              @if (evaluation().performanceLevel === 'excellent') {
-                <span>★ Técnica Sobresaliente</span>
-              } @else if (evaluation().performanceLevel === 'good') {
-                <span>✓ Técnica Adecuada</span>
+              @if (evaluation().overallScore >= 8.5) {
+                <span>★ Desempeño Sobresaliente (Aprobado)</span>
+              } @else if (evaluation().overallScore >= 6.0) {
+                <span>✓ Competencia Aséptica Acreditada (Aprobado)</span>
               } @else {
-                <span>⚠ Requiere Práctica</span>
+                <span>⚠ Requiere Refuerzo y Práctica (Reprobado)</span>
               }
+            </div>
+
+            <div class="text-[11px] text-slate-500 font-medium mt-3 border-t border-slate-100 pt-2">
+              Ponderación oficial: 60% Técnica Biomecánica + 40% Evaluación Teórica
             </div>
           </div>
 
-          <!-- Métricas Complementarias -->
-          <div class="md:col-span-7 space-y-4">
-            <h3 class="font-heading text-xl text-slate-900 font-bold">
-              {{ evaluation().performanceTitle }}
-            </h3>
-            <p class="text-sm text-slate-600 leading-relaxed">
-              {{ evaluation().performanceDescription }}
-            </p>
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
-                <span class="text-[11px] font-bold text-slate-500 uppercase block">Tiempo Total</span>
-                <span class="text-lg font-bold text-[#008072]">{{ evaluation().totalSeconds }}s</span>
+          <!-- Desglose de las 2 Evaluaciones (Práctica + Teórica) -->
+          <div class="md:col-span-7 flex flex-col justify-between space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              
+              <!-- Tarjeta 1: Nota Práctica -->
+              <div class="bg-gradient-to-br from-[#E8FCF7] to-white p-4 sm:p-5 rounded-2xl border border-[#00B39F]/30 shadow-xs flex flex-col justify-between">
+                <div>
+                  <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#00B39F]/15 text-[#008072] font-black text-[10px] uppercase mb-1">
+                    60% Ponderación
+                  </span>
+                  <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">1. Práctica Biomecánica</h4>
+                  <p class="text-[11px] text-slate-600">6 pasos asistidos por cámara y MediaPipe</p>
+                </div>
+                <div class="mt-3 flex items-baseline justify-between border-t border-[#00B39F]/10 pt-2">
+                  <span class="text-xs text-slate-500 font-semibold">Desempeño:</span>
+                  <span class="text-2xl font-black text-[#008072]">
+                    {{ (evaluation().notaPractica ?? 0).toFixed(1) }} <span class="text-xs text-slate-400">/ 10</span>
+                  </span>
+                </div>
               </div>
 
-              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
-                <span class="text-[11px] font-bold text-slate-500 uppercase block">Pasos Óptimos</span>
-                <span class="text-lg font-bold text-slate-900">{{ optimalStepsCount() }} de 6</span>
+              <!-- Tarjeta 2: Nota Teórica -->
+              <div class="bg-gradient-to-br from-[#EFF6FF] to-white p-4 sm:p-5 rounded-2xl border border-sky-300 shadow-xs flex flex-col justify-between">
+                <div>
+                  <span class="inline-block px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 font-black text-[10px] uppercase mb-1">
+                    40% Ponderación
+                  </span>
+                  <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">2. Cuestionario Teórico</h4>
+                  <p class="text-[11px] text-slate-600">Fundamentos y 5 Momentos OMS</p>
+                </div>
+                <div class="mt-3 flex items-baseline justify-between border-t border-sky-100 pt-2">
+                  <span class="text-xs text-slate-500 font-semibold">Desempeño:</span>
+                  <span class="text-2xl font-black text-sky-700">
+                    {{ (evaluation().notaTeorica ?? 0).toFixed(1) }} <span class="text-xs text-slate-400">/ 10</span>
+                  </span>
+                </div>
               </div>
 
-              <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 col-span-2 sm:col-span-1">
-                <span class="text-[11px] font-bold text-slate-500 uppercase block">Quiz Diagnóstico</span>
-                <span class="text-lg font-bold text-[#FF6A4D]">{{ evaluation().quizScore }} de {{ evaluation().totalQuizQuestions }} Aciertos</span>
+            </div>
+
+            <!-- Métricas Secundarias -->
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-center">
+                <span class="text-[10px] font-bold text-slate-500 uppercase block">Tiempo en Cámara</span>
+                <span class="text-base font-extrabold text-[#008072]">{{ evaluation().totalSeconds }}s</span>
+              </div>
+              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-center">
+                <span class="text-[10px] font-bold text-slate-500 uppercase block">Pasos Óptimos</span>
+                <span class="text-base font-extrabold text-slate-900">{{ optimalStepsCount() }} de 6</span>
               </div>
             </div>
           </div>
@@ -303,17 +335,27 @@ export class ResultadoComponent {
     if (!evalData.records || evalData.records.length === 0) return;
 
     this.intentoGuardado = true;
-    const aprobado = evalData.overallScore >= 7.0;
+    const notaPractica = evalData.notaPractica !== undefined ? evalData.notaPractica : 0;
+    const notaTeorica = evalData.notaTeorica !== undefined ? evalData.notaTeorica : 0;
+    const notaFinal = evalData.notaFinal !== undefined ? evalData.notaFinal : evalData.overallScore;
+    const aprobado = notaFinal >= 6.0;
 
     this.practicasService
       .registrarPractica({
-        calificacion: evalData.overallScore,
+        calificacion: notaFinal,
+        notaPractica,
+        notaTeorica,
+        notaFinal,
         aprobado,
         detallePasosJson: {
+          notaPractica,
+          notaTeorica,
+          notaFinal,
           records: evalData.records,
           totalSeconds: evalData.totalSeconds,
           performanceLevel: evalData.performanceLevel,
           student: this.student(),
+          retroalimentacionTeorica: evalData.retroalimentacionTeorica || [],
         },
       })
       .subscribe({

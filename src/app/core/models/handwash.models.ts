@@ -50,6 +50,9 @@ export interface StepTimeRecord {
 export interface EvaluationResult {
   student: StudentInfo | null;
   overallScore: number; // Out of 10 (1 decimal)
+  notaPractica?: number;
+  notaTeorica?: number;
+  notaFinal?: number;
   totalSeconds: number;
   records: StepTimeRecord[];
   performanceLevel: 'excellent' | 'good' | 'needs-practice';
@@ -57,4 +60,5 @@ export interface EvaluationResult {
   performanceDescription: string;
   quizScore: number;
   totalQuizQuestions: number;
+  retroalimentacionTeorica?: any[];
 }

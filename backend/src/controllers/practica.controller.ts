@@ -4,14 +4,17 @@ import { prisma } from '../lib/prisma';
 
 const RegistrarPracticaSchema = z.object({
   usuarioId: z.string().uuid('ID de estudiante no válido').optional(),
-  calificacion: z.number().min(0).max(10, 'La calificación debe estar entre 0 y 10'),
-  aprobado: z.boolean(),
+  calificacion: z.number().min(0).max(10, 'La calificación debe estar entre 0 y 10').optional(),
+  notaPractica: z.number().min(0).max(10).optional(),
+  notaTeorica: z.number().min(0).max(10).optional(),
+  notaFinal: z.number().min(0).max(10).optional(),
+  aprobado: z.boolean().optional(),
   detallePasosJson: z.any(),
 });
 
 /**
  * GET /api/practicas/docente
- * Consulta todas las prácticas realizadas por estudiantes con su detalle biomecánico y certificado.
+ * Consulta todas las prácticas realizadas por estudiantes con desglose de nota práctica, cuestionario y nota final consolidada.
  * Protegido: autenticarToken + requerirDocente
  */
 export const obtenerPracticasDocente = async (req: Request, res: Response): Promise<void> => {
@@ -39,25 +42,43 @@ export const obtenerPracticasDocente = async (req: Request, res: Response): Prom
       },
     });
 
-    const practicas = intentos.map((intento) => ({
-      id: intento.id,
-      estudianteId: intento.usuarioId,
-      nombre: intento.usuario.nombre,
-      codigo: intento.usuario.codigoEstudiantil,
-      correo: intento.usuario.correo,
-      fecha: intento.createdAt,
-      calificacion: intento.calificacion,
-      aprobado: intento.aprobado,
-      estado: intento.aprobado ? 'Aprobado' : 'Requiere práctica',
-      certificado: intento.certificado
-        ? {
-            id: intento.certificado.id,
-            codigoVerificacion: intento.certificado.codigoVerificacion,
-            fechaEmision: intento.certificado.fechaEmision,
-          }
-        : null,
-      detallePasos: intento.detallePasosJson,
-    }));
+    const practicas = intentos.map((intento) => {
+      const detalle = (intento.detallePasosJson || {}) as any;
+      const notaFinal = intento.calificacion;
+      const notaPractica = detalle.notaPractica !== undefined
+        ? Number(detalle.notaPractica)
+        : (Array.isArray(detalle.records) && detalle.records.length > 0
+            ? Math.min(10, Math.round((detalle.records.reduce((acc: number, r: any) => acc + (r.score || 0), 0)) * 10) / 10)
+            : notaFinal);
+      const notaTeorica = detalle.notaTeorica !== undefined
+        ? Number(detalle.notaTeorica)
+        : (detalle.quizScore !== undefined && detalle.totalQuizQuestions
+            ? Math.round((detalle.quizScore / detalle.totalQuizQuestions) * 100) / 10
+            : 0);
+
+      return {
+        id: intento.id,
+        estudianteId: intento.usuarioId,
+        nombre: intento.usuario.nombre,
+        codigo: intento.usuario.codigoEstudiantil,
+        correo: intento.usuario.correo,
+        fecha: intento.createdAt,
+        calificacion: notaFinal,
+        notaPractica,
+        notaTeorica,
+        notaFinal,
+        aprobado: intento.aprobado,
+        estado: intento.aprobado ? 'Aprobado' : 'Requiere práctica',
+        certificado: intento.certificado
+          ? {
+              id: intento.certificado.id,
+              codigoVerificacion: intento.certificado.codigoVerificacion,
+              fechaEmision: intento.certificado.fechaEmision,
+            }
+          : null,
+        detallePasos: intento.detallePasosJson,
+      };
+    });
 
     res.json({
       total: practicas.length,
@@ -118,6 +139,31 @@ export const registrarPractica = async (req: Request, res: Response): Promise<vo
       return;
     }
 
+    // Calcular consolidación de notas (60% práctica + 40% teórica)
+    const detalle = (data.detallePasosJson || {}) as any;
+    const notaPractica = data.notaPractica !== undefined
+      ? data.notaPractica
+      : (detalle.notaPractica !== undefined ? Number(detalle.notaPractica) : (data.calificacion || 0));
+
+    const notaTeorica = data.notaTeorica !== undefined
+      ? data.notaTeorica
+      : (detalle.notaTeorica !== undefined ? Number(detalle.notaTeorica) : 0);
+
+    const notaFinalCalculada = Math.round(((notaPractica * 0.6) + (notaTeorica * 0.4)) * 10) / 10;
+    const notaFinal = data.notaFinal !== undefined
+      ? data.notaFinal
+      : (data.calificacion !== undefined ? data.calificacion : notaFinalCalculada);
+
+    const esAprobado = data.aprobado !== undefined ? data.aprobado : (notaFinal >= 6.0);
+
+    const detalleConsolidado = {
+      ...detalle,
+      notaPractica,
+      notaTeorica,
+      notaFinal,
+      aprobado: esAprobado,
+    };
+
     // Generar código institucional único para el certificado si es aprobado
     const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
     const codigoCertificadoGenerado = `UCC-MS-${new Date().getFullYear()}-${randomCode}`;
@@ -125,10 +171,10 @@ export const registrarPractica = async (req: Request, res: Response): Promise<vo
     const intento = await prisma.intentoPractica.create({
       data: {
         usuarioId,
-        calificacion: data.calificacion,
-        aprobado: data.aprobado,
-        detallePasosJson: data.detallePasosJson,
-        ...(data.aprobado
+        calificacion: notaFinal,
+        aprobado: esAprobado,
+        detallePasosJson: detalleConsolidado,
+        ...(esAprobado
           ? {
               certificado: {
                 create: {

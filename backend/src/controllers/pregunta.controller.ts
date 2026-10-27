@@ -245,7 +245,7 @@ export const registrarDiagnostico = async (req: Request, res: Response): Promise
       return;
     }
 
-    // Consultar opciones seleccionadas para calificar
+    // Consultar opciones seleccionadas para calificar y las preguntas completas con su justificación
     const opcionIds = respuestas.map((r) => r.opcionSeleccionadaId);
     const opcionesSeleccionadas = await prisma.opcionRespuesta.findMany({
       where: { id: { in: opcionIds } },
@@ -254,6 +254,7 @@ export const registrarDiagnostico = async (req: Request, res: Response): Promise
     const aciertos = opcionesSeleccionadas.filter((o) => o.esCorrecta).length;
     const totalPreguntas = respuestas.length;
     const puntaje = Math.round((aciertos / totalPreguntas) * 100 * 10) / 10; // 0 - 100%
+    const calificacion10 = Math.round((aciertos / totalPreguntas) * 10 * 10) / 10; // 0 - 10
 
     const intento = await prisma.intentoDiagnostico.create({
       data: {
@@ -272,13 +273,40 @@ export const registrarDiagnostico = async (req: Request, res: Response): Promise
       },
     });
 
+    // Cargar preguntas con opciones para generar la retroalimentación pedagógica
+    const preguntasIds = respuestas.map((r) => r.preguntaId);
+    const preguntasCompletas = await prisma.pregunta.findMany({
+      where: { id: { in: preguntasIds } },
+      include: {
+        opciones: true,
+      },
+    });
+
+    const retroalimentacion = preguntasCompletas.map((p) => {
+      const respUser = respuestas.find((r) => r.preguntaId === p.id);
+      const opcionUser = p.opciones.find((o) => o.id === respUser?.opcionSeleccionadaId);
+      const opcionCorrecta = p.opciones.find((o) => o.esCorrecta);
+      const esCorrecta = !!opcionUser?.esCorrecta;
+
+      return {
+        preguntaId: p.id,
+        enunciado: p.enunciado,
+        justificacion: p.justificacion || 'Protocolo estandarizado OMS de higiene de manos.',
+        opcionSeleccionada: opcionUser ? { id: opcionUser.id, texto: opcionUser.texto } : null,
+        opcionCorrecta: opcionCorrecta ? { id: opcionCorrecta.id, texto: opcionCorrecta.texto } : null,
+        esCorrecta,
+      };
+    });
+
     res.status(201).json({
-      mensaje: `Diagnóstico ${tipo} calificado y registrado exitosamente.`,
+      mensaje: `Evaluación ${tipo} calificada y registrada exitosamente.`,
       intentoId: intento.id,
       tipo,
       puntaje,
+      calificacion10,
       aciertos,
       totalPreguntas,
+      retroalimentacion,
     });
   } catch (error) {
     console.error('Error en registrarDiagnostico:', error);

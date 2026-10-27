@@ -604,7 +604,7 @@ export interface QualityAlert {
                     @if (cameraActive() && !palmsValidated()) {
                       Frotando frente a la cámara...
                     } @else if (isLastStep()) {
-                      Finalizar y Calificar Práctica
+                      Continuar a Evaluación Teórica
                     } @else {
                       Avanzar al Siguiente Paso
                     }
@@ -1132,7 +1132,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
     if (this.isLastStep()) {
       this.stopTimer();
-      this.router.navigate(['/resultado']);
+      this.router.navigate(['/evaluacion-teorica']);
     } else {
       this.currentStepIndex.update((idx) => idx + 1);
       this.videoDemoError.set(false);
