@@ -17,6 +17,10 @@ export const routes: Routes = [
     title: 'Manos Seguras — Registro y Consentimiento',
   },
   {
+    path: 'login',
+    redirectTo: 'bienvenida',
+  },
+  {
     path: 'admin',
     canActivate: [docenteAuthGuard],
     loadComponent: () =>

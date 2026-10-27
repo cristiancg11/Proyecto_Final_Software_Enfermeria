@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HandwashStateService } from './core/services/handwash-state.service';
 import { AuthService } from './services/auth.service';
@@ -25,14 +25,26 @@ export class App {
   readonly isLoggedIn = computed(
     () => this.authService.estaAutenticado() || (!!this.student() && !!this.student()?.fullName)
   );
-  readonly currentUrl = computed(() => this.router.url);
+  readonly rutaActual = signal<string>(this.router.url);
 
   constructor() {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
+      .subscribe((event: any) => {
+        this.rutaActual.set(event.urlAfterRedirects || this.router.url);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
+  }
+
+  esRutaLogin(): boolean {
+    const ruta = this.rutaActual() || this.router.url;
+    return (
+      ruta === '/' ||
+      ruta === '/bienvenida' ||
+      ruta === '/login' ||
+      ruta.startsWith('/bienvenida') ||
+      ruta.startsWith('/login')
+    );
   }
 
   cerrarSesion(): void {
