@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PracticasService, PracticaEstudianteDocente, DetallePasoBiomecanico } from '../../services/practicas.service';
 import { PreguntasService, PreguntaDocente } from '../../services/preguntas.service';
+import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.service';
 
 @Component({
   selector: 'app-admin',
@@ -74,7 +75,7 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
         </div>
 
         <!-- TARJETAS DE MÉTRICAS GLOBALES -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-white/15">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 mt-6 pt-6 border-t border-white/15">
           <div class="bg-black/30 rounded-2xl p-3.5 border border-white/10">
             <span class="text-[11px] font-semibold text-[#A5C2DE] block">Total Prácticas</span>
             <span class="text-2xl font-black text-white">{{ practicas().length }}</span>
@@ -90,6 +91,16 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
           <div class="bg-black/30 rounded-2xl p-3.5 border border-white/10">
             <span class="text-[11px] font-semibold text-[#C5D7E8] block">Banco de Preguntas</span>
             <span class="text-2xl font-black text-[#50E7FF]">{{ preguntas().length }}</span>
+          </div>
+          <div class="bg-black/30 rounded-2xl p-3.5 border border-white/10">
+            <span class="text-[11px] font-semibold text-[#D9FF43] block">Satisfacción Plataforma</span>
+            <span class="text-2xl font-black text-[#D9FF43]">
+              {{ promedioSatisfaccion() > 0 ? (promedioSatisfaccion().toFixed(1) + ' / 5') : '—' }}
+            </span>
+          </div>
+          <div class="bg-black/30 rounded-2xl p-3.5 border border-white/10">
+            <span class="text-[11px] font-semibold text-[#50E7FF] block">Encuestas Diligenciadas</span>
+            <span class="text-2xl font-black text-[#50E7FF]">{{ totalEncuestas() }}</span>
           </div>
         </div>
       </div>
@@ -153,7 +164,23 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
           </span>
         </button>
 
-        <!-- Pestaña 3: Mi Perfil & Seguridad -->
+        <!-- Pestaña 3: Encuestas de Usabilidad y Calidad -->
+        <button
+          type="button"
+          (click)="pestanaActiva.set('encuestas')"
+          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
+          [ngClass]="pestanaActiva() === 'encuestas' ? 'bg-[#00B39F] text-white shadow-md' : 'bg-white/80 text-slate-700 hover:bg-white'"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
+          <span>3. Evaluación de la Plataforma</span>
+          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'encuestas' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+            {{ totalEncuestas() }}
+          </span>
+        </button>
+
+        <!-- Pestaña 4: Mi Perfil & Seguridad -->
         <button
           type="button"
           (click)="pestanaActiva.set('perfil')"
@@ -163,7 +190,7 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-          <span>3. Mi Perfil & Seguridad</span>
+          <span>4. Mi Perfil & Seguridad</span>
         </button>
       </div>
 
@@ -542,7 +569,166 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
       }
 
       <!-- ============================================================== -->
-      <!-- PESTAÑA 3: MI PERFIL & SEGURIDAD                               -->
+      <!-- PESTAÑA 3: EVALUACIÓN Y USABILIDAD DE LA PLATAFORMA            -->
+      <!-- ============================================================== -->
+      @if (pestanaActiva() === 'encuestas') {
+        <div class="space-y-6 animate-fade-in">
+          
+          <!-- Tarjeta de Desglose de Promedios por Categoría -->
+          <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
+              <div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00B39F]/10 text-[#008072] text-xs font-black uppercase mb-1">
+                  <span>Instrumento de Calidad Docente</span>
+                </span>
+                <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  Percepción Pedagógica y Usabilidad de la Plataforma
+                </h2>
+                <p class="text-xs text-slate-600 mt-0.5">
+                  Métricas de satisfacción recopiladas de los estudiantes antes de emitir su certificación oficial.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                (click)="exportarResultadosCSV()"
+                class="px-4 py-2.5 rounded-2xl bg-[#008072] hover:bg-[#00B39F] text-white text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow-sm self-start sm:self-auto"
+              >
+                <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Exportar Reporte Completo (CSV/Excel)</span>
+              </button>
+            </div>
+
+            <!-- 4 Tarjetas de Promedios Específicos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              
+              <div class="bg-gradient-to-br from-[#E8FCF7] to-white p-5 rounded-2xl border border-[#00B39F]/20 shadow-xs flex flex-col justify-between">
+                <span class="text-xs font-bold text-slate-600 block mb-1">1. Facilidad de Navegación</span>
+                <div class="flex items-baseline justify-between mt-2">
+                  <span class="text-3xl font-black text-[#008072]">
+                    {{ promedioFacilidad() > 0 ? (promedioFacilidad() | number:'1.1-1') : '—' }}
+                  </span>
+                  <span class="text-xs text-slate-400 font-bold">/ 5.0</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+                  <div class="bg-[#00B39F] h-full rounded-full" [style.width.%]="(promedioFacilidad() / 5) * 100"></div>
+                </div>
+              </div>
+
+              <div class="bg-gradient-to-br from-sky-50 to-white p-5 rounded-2xl border border-sky-200 shadow-xs flex flex-col justify-between">
+                <span class="text-xs font-bold text-slate-600 block mb-1">2. Utilidad Guías y Videos</span>
+                <div class="flex items-baseline justify-between mt-2">
+                  <span class="text-3xl font-black text-sky-700">
+                    {{ promedioGuia() > 0 ? (promedioGuia() | number:'1.1-1') : '—' }}
+                  </span>
+                  <span class="text-xs text-slate-400 font-bold">/ 5.0</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+                  <div class="bg-sky-500 h-full rounded-full" [style.width.%]="(promedioGuia() / 5) * 100"></div>
+                </div>
+              </div>
+
+              <div class="bg-gradient-to-br from-amber-50 to-white p-5 rounded-2xl border border-amber-200 shadow-xs flex flex-col justify-between">
+                <span class="text-xs font-bold text-slate-600 block mb-1">3. Claridad Visión por Cámara</span>
+                <div class="flex items-baseline justify-between mt-2">
+                  <span class="text-3xl font-black text-amber-700">
+                    {{ promedioCamara() > 0 ? (promedioCamara() | number:'1.1-1') : '—' }}
+                  </span>
+                  <span class="text-xs text-slate-400 font-bold">/ 5.0</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+                  <div class="bg-amber-500 h-full rounded-full" [style.width.%]="(promedioCamara() / 5) * 100"></div>
+                </div>
+              </div>
+
+              <div class="bg-gradient-to-br from-rose-50 to-white p-5 rounded-2xl border border-rose-200 shadow-xs flex flex-col justify-between">
+                <span class="text-xs font-bold text-slate-600 block mb-1">4. Recomendación Formativa</span>
+                <div class="flex items-baseline justify-between mt-2">
+                  <span class="text-3xl font-black text-rose-700">
+                    {{ promedioRecomendacion() > 0 ? (promedioRecomendacion() | number:'1.1-1') : '—' }}
+                  </span>
+                  <span class="text-xs text-slate-400 font-bold">/ 5.0</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+                  <div class="bg-rose-500 h-full rounded-full" [style.width.%]="(promedioRecomendacion() / 5) * 100"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Tabla de Encuestas de Estudiantes -->
+          <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
+            <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
+              <span>Registros Individuales de Encuesta</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+                {{ encuestas().length }}
+              </span>
+            </h3>
+
+            @if (cargandoEncuestas()) {
+              <div class="py-12 text-center">
+                <svg class="animate-spin h-8 w-8 text-[#00B39F] mx-auto mb-3" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <p class="text-sm text-slate-600">Cargando encuestas de satisfacción...</p>
+              </div>
+            } @else if (encuestas().length === 0) {
+              <div class="py-12 text-center border-2 border-dashed border-slate-200 rounded-2xl">
+                <p class="text-sm font-bold text-slate-700 mb-1">No hay encuestas registradas aún</p>
+                <p class="text-xs text-slate-500">
+                  Las valoraciones aparecerán automáticamente cuando los estudiantes completen la encuesta tras la evaluación teórica.
+                </p>
+              </div>
+            } @else {
+              <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                <table class="w-full text-left text-xs sm:text-sm">
+                  <thead class="bg-slate-50 text-slate-700 font-extrabold uppercase text-[11px] border-b border-slate-200">
+                    <tr>
+                      <th class="py-3 px-4">Estudiante</th>
+                      <th class="py-3 px-4">Código</th>
+                      <th class="py-3 px-3 text-center">Navegación</th>
+                      <th class="py-3 px-3 text-center">Guías/Video</th>
+                      <th class="py-3 px-3 text-center">Cámara AI</th>
+                      <th class="py-3 px-3 text-center">Recom.</th>
+                      <th class="py-3 px-3 text-center">Promedio</th>
+                      <th class="py-3 px-4">Comentarios y Sugerencias</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100">
+                    @for (enc of encuestas(); track enc.id) {
+                      <tr class="hover:bg-slate-50/70 transition">
+                        <td class="py-3.5 px-4 font-bold text-slate-900">{{ enc.nombre }}</td>
+                        <td class="py-3.5 px-4 font-mono text-xs text-slate-600">{{ enc.codigo }}</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-slate-800">{{ enc.facilidadUso }} / 5</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-slate-800">{{ enc.utilidadGuia }} / 5</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-slate-800">{{ enc.claridadFeed }} / 5</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-slate-800">{{ enc.recomendacion }} / 5</td>
+                        <td class="py-3.5 px-3 text-center">
+                          <span class="inline-block px-2.5 py-1 rounded-full font-black text-xs"
+                            [ngClass]="enc.promedioIndividual >= 4 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'">
+                            {{ enc.promedioIndividual.toFixed(1) }} ★
+                          </span>
+                        </td>
+                        <td class="py-3.5 px-4 text-xs text-slate-600 max-w-xs">
+                          {{ enc.comentarios || 'Sin comentarios adicionales.' }}
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+
+        </div>
+      }
+
+      <!-- ============================================================== -->
+      <!-- PESTAÑA 4: MI PERFIL & SEGURIDAD                               -->
       <!-- ============================================================== -->
       @if (pestanaActiva() === 'perfil') {
         <div class="space-y-8 animate-fade-in">
@@ -1015,14 +1201,16 @@ export class AdminComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly practicasService = inject(PracticasService);
   private readonly preguntasService = inject(PreguntasService);
+  private readonly encuestaService = inject(EncuestaService);
   private readonly router = inject(Router);
 
   readonly optionLetters = ['A', 'B', 'C', 'D'];
 
-  readonly pestanaActiva = signal<'practicas' | 'preguntas' | 'perfil'>('practicas');
+  readonly pestanaActiva = signal<'practicas' | 'preguntas' | 'encuestas' | 'perfil'>('practicas');
   readonly busqueda = signal<string>('');
   readonly cargandoPracticas = signal<boolean>(false);
   readonly cargandoPreguntas = signal<boolean>(false);
+  readonly cargandoEncuestas = signal<boolean>(false);
   readonly guardandoPregunta = signal<boolean>(false);
   readonly actualizandoPerfil = signal<boolean>(false);
   readonly actualizandoPassword = signal<boolean>(false);
@@ -1033,6 +1221,14 @@ export class AdminComponent implements OnInit {
 
   readonly practicas = signal<PracticaEstudianteDocente[]>([]);
   readonly preguntas = signal<PreguntaDocente[]>([]);
+  readonly encuestas = signal<EncuestaDocenteItem[]>([]);
+  readonly totalEncuestas = signal<number>(0);
+  readonly promedioSatisfaccion = signal<number>(0);
+  readonly promedioFacilidad = signal<number>(0);
+  readonly promedioGuia = signal<number>(0);
+  readonly promedioCamara = signal<number>(0);
+  readonly promedioRecomendacion = signal<number>(0);
+
   readonly modalDetalleAbierto = signal<boolean>(false);
   readonly practicaSeleccionada = signal<PracticaEstudianteDocente | null>(null);
 
@@ -1109,6 +1305,27 @@ export class AdminComponent implements OnInit {
   recargarDatos(): void {
     this.cargarPracticas();
     this.cargarPreguntas();
+    this.cargarEncuestas();
+  }
+
+  cargarEncuestas(): void {
+    this.cargandoEncuestas.set(true);
+    this.encuestaService.obtenerEncuestasDocente().subscribe({
+      next: (res) => {
+        this.encuestas.set(res.encuestas || []);
+        this.totalEncuestas.set(res.total || 0);
+        this.promedioSatisfaccion.set(res.promedioGeneral || 0);
+        this.promedioFacilidad.set(res.promedioFacilidadUso || 0);
+        this.promedioGuia.set(res.promedioUtilidadGuia || 0);
+        this.promedioCamara.set(res.promedioClaridadFeed || 0);
+        this.promedioRecomendacion.set(res.promedioRecomendacion || 0);
+        this.cargandoEncuestas.set(false);
+      },
+      error: (err) => {
+        this.cargandoEncuestas.set(false);
+        console.warn('Aviso al cargar encuestas docente:', err);
+      },
+    });
   }
 
   cargarPracticas(): void {
@@ -1336,6 +1553,12 @@ export class AdminComponent implements OnInit {
       return;
     }
 
+    const encuestasMap = new Map<string, EncuestaDocenteItem>();
+    for (const e of this.encuestas()) {
+      if (e.codigo) encuestasMap.set(e.codigo.toLowerCase().trim(), e);
+      if (e.estudianteId) encuestasMap.set(e.estudianteId, e);
+    }
+
     const encabezados = [
       'Estudiante',
       'Código',
@@ -1345,17 +1568,32 @@ export class AdminComponent implements OnInit {
       'Nota Final Consolidada (/10)',
       'Estado',
       'Fecha',
+      'Satisfacción General (/5)',
+      'Facilidad de Uso (/5)',
+      'Utilidad Guía (/5)',
+      'Claridad Cámara (/5)',
+      'Recomendación (/5)',
+      'Comentarios de Usabilidad',
     ];
-    const filas = lista.map((p) => [
-      `"${(p.nombre || '').replace(/"/g, '""')}"`,
-      `"${(p.codigo || '').replace(/"/g, '""')}"`,
-      `"${(p.correo || '').replace(/"/g, '""')}"`,
-      (p.notaPractica !== undefined ? p.notaPractica : p.calificacion || 0).toFixed(1),
-      (p.notaTeorica !== undefined ? p.notaTeorica : 0).toFixed(1),
-      (p.notaFinal !== undefined ? p.notaFinal : p.calificacion || 0).toFixed(1),
-      `"${(p.aprobado ? 'Aprobado' : 'Reprobado').replace(/"/g, '""')}"`,
-      `"${new Date(p.fecha).toLocaleString('es-CO')}"`,
-    ]);
+    const filas = lista.map((p) => {
+      const enc = encuestasMap.get((p.codigo || '').toLowerCase().trim()) || encuestasMap.get(p.estudianteId);
+      return [
+        `"${(p.nombre || '').replace(/"/g, '""')}"`,
+        `"${(p.codigo || '').replace(/"/g, '""')}"`,
+        `"${(p.correo || '').replace(/"/g, '""')}"`,
+        (p.notaPractica !== undefined ? p.notaPractica : p.calificacion || 0).toFixed(1),
+        (p.notaTeorica !== undefined ? p.notaTeorica : 0).toFixed(1),
+        (p.notaFinal !== undefined ? p.notaFinal : p.calificacion || 0).toFixed(1),
+        `"${(p.aprobado ? 'Aprobado' : 'Reprobado').replace(/"/g, '""')}"`,
+        `"${new Date(p.fecha).toLocaleString('es-CO')}"`,
+        enc ? enc.promedioIndividual.toFixed(1) : 'Sin encuesta',
+        enc ? enc.facilidadUso.toString() : '—',
+        enc ? enc.utilidadGuia.toString() : '—',
+        enc ? enc.claridadFeed.toString() : '—',
+        enc ? enc.recomendacion.toString() : '—',
+        enc && enc.comentarios ? `"${enc.comentarios.replace(/"/g, '""')}"` : '""',
+      ];
+    });
 
     const csvContent = '\uFEFF' + [encabezados.join(','), ...filas.map((f) => f.join(','))].join('\r\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

@@ -77,6 +77,15 @@ export const routes: Routes = [
     title: 'Manos Seguras — Evaluación Teórica Post-Práctica',
   },
   {
+    path: 'encuesta',
+    canActivate: [studentAuthGuard],
+    loadComponent: () =>
+      import('./pages/encuesta/encuesta.component').then(
+        (m) => m.EncuestaComponent
+      ),
+    title: 'Manos Seguras — Evaluación de la Plataforma',
+  },
+  {
     path: 'diagnostico',
     redirectTo: 'evaluacion-teorica',
   },

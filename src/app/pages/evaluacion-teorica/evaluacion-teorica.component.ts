@@ -304,10 +304,10 @@ interface PreguntaEvaluacion {
             <div class="text-center pt-4 pb-8">
               <button
                 type="button"
-                (click)="continuarAResultados()"
+                (click)="continuarAEncuesta()"
                 class="px-10 py-4 rounded-full bg-[#00B39F] hover:bg-[#008072] text-white font-black text-base shadow-xl shadow-teal-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer inline-flex items-center gap-3"
               >
-                <span>Ver Calificación Consolidada y Certificado QR</span>
+                <span>Continuar a Evaluación de la Plataforma</span>
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
@@ -489,6 +489,10 @@ export class EvaluacionTeoricaComponent implements OnInit {
     this.totalAciertos.set(aciertos);
     this.retroalimentacion.set(retro);
     this.stateService.setEvaluacionTeorica(notaFinal, retro);
+  }
+
+  continuarAEncuesta(): void {
+    this.router.navigate(['/encuesta']);
   }
 
   continuarAResultados(): void {

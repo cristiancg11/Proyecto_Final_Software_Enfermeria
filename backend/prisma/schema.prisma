@@ -32,6 +32,7 @@ model Usuario {
   intentosPractica    IntentoPractica[]
   intentosDiagnostico IntentoDiagnostico[]
   preguntasCreadas    Pregunta[]            // Preguntas creadas si es docente
+  encuestas           EncuestaPlataforma[]
 }
 
 model Pregunta {
@@ -92,4 +93,16 @@ model Certificado {
   intentoPracticaId  String          @unique
   intentoPractica    IntentoPractica @relation(fields: [intentoPracticaId], references: [id])
   fechaEmision       DateTime        @default(now())
+}
+
+model EncuestaPlataforma {
+  id             String   @id @default(uuid())
+  usuarioId      String
+  usuario        Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  facilidadUso   Int      // Calificación 1 a 5
+  utilidadGuia   Int      // Calificación 1 a 5 (videos e instrucciones)
+  claridadFeed   Int      // Calificación 1 a 5 (detección de cámara)
+  recomendacion  Int      // Calificación 1 a 5
+  comentarios    String?  // Opcional
+  createdAt      DateTime @default(now())
 }
