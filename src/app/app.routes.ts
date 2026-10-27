@@ -28,6 +28,28 @@ export const routes: Routes = [
     title: 'Manos Seguras — Panel de Supervisión Docente',
   },
   {
+    path: 'introduccion',
+    canActivate: [studentAuthGuard],
+    loadComponent: () =>
+      import('./pages/introduccion/introduccion.component').then(
+        (m) => m.IntroduccionComponent
+      ),
+    title: 'Manos Seguras — Introducción Clínica y Fundamentos OMS',
+  },
+  {
+    path: 'preparacion',
+    canActivate: [studentAuthGuard],
+    loadComponent: () =>
+      import('./features/inicio/inicio.component').then(
+        (m) => m.InicioComponent
+      ),
+    title: 'Manos Seguras — Preparación para la Práctica',
+  },
+  {
+    path: 'inicio',
+    redirectTo: 'preparacion',
+  },
+  {
     path: 'diagnostico',
     canActivate: [studentAuthGuard],
     loadComponent: () =>
@@ -35,15 +57,6 @@ export const routes: Routes = [
         (m) => m.DiagnosticoComponent
       ),
     title: 'Manos Seguras — Diagnóstico de Bioseguridad',
-  },
-  {
-    path: 'inicio',
-    canActivate: [studentAuthGuard],
-    loadComponent: () =>
-      import('./features/inicio/inicio.component').then(
-        (m) => m.InicioComponent
-      ),
-    title: 'Manos Seguras — Preparación para la Práctica',
   },
   {
     path: 'practica',

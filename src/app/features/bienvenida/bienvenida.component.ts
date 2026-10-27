@@ -798,7 +798,7 @@ export class BienvenidaComponent {
       if (user.rol === 'DOCENTE') {
         this.router.navigate(['/admin']);
       } else {
-        this.router.navigate(['/inicio']);
+        this.router.navigate(['/introduccion']);
       }
     }, 350);
   }
