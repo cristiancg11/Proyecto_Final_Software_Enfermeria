@@ -67,6 +67,10 @@ export interface QualityAlert {
       0%, 100% { opacity: 0.8; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.08); }
     }
+    @keyframes waterRipple {
+      0%, 100% { transform: translateY(0px) scale(1); opacity: 0.9; }
+      50% { transform: translateY(4px) scale(1.05); opacity: 1; }
+    }
     .anim-rub-palms-left { animation: rubPalmsLeft 1.8s ease-in-out infinite; transform-origin: 110px 140px; }
     .anim-rub-palms-right { animation: rubPalmsRight 1.8s ease-in-out infinite; transform-origin: 190px 140px; }
     .anim-rub-dorsal-top { animation: rubDorsalTop 1.6s ease-in-out infinite; transform-origin: 160px 140px; }
@@ -76,6 +80,7 @@ export interface QualityAlert {
     .anim-rub-thumb-fist { animation: rubThumbFist 1.8s ease-in-out infinite; transform-origin: 215px 135px; }
     .anim-rub-nails-cluster { animation: rubNailsCluster 2s linear infinite; transform-origin: 160px 150px; }
     .anim-arrow-pulse { animation: arrowPulse 1.4s ease-in-out infinite; transform-origin: center; }
+    .anim-water-ripple { animation: waterRipple 2s ease-in-out infinite; }
   `],
   template: `
     <!-- Contenedor Maestro con Degradado Suave Menta a Durazno -->
@@ -115,6 +120,92 @@ export interface QualityAlert {
             </button>
           </div>
         } @else {
+
+          <!-- 3. PREVIO DE APERTURA DE GRIFO (MODAL O TARJETA INTRODUCTORIA DE 5 SEGUNDOS) -->
+          @if (mostrarFaseInicial()) {
+            <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+              <div class="max-w-xl w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-teal-500/30 text-center relative overflow-hidden">
+                <!-- Decoración ambiental -->
+                <div class="absolute -top-20 -right-20 w-44 h-44 rounded-full bg-[#00B39F]/15 blur-2xl pointer-events-none"></div>
+                <div class="absolute -bottom-20 -left-20 w-44 h-44 rounded-full bg-sky-500/15 blur-2xl pointer-events-none"></div>
+
+                <!-- Ilustración / Animación de Apertura de Grifo y Aplicación de Jabón -->
+                <div class="relative w-24 h-24 mx-auto mb-5 rounded-3xl bg-gradient-to-br from-teal-50 to-sky-100 border border-teal-200/80 flex items-center justify-center shadow-inner">
+                  <svg class="w-14 h-14 text-[#008072] anim-water-ripple" viewBox="0 0 64 64" fill="none">
+                    <!-- Grifo hospitalario -->
+                    <path d="M14 26H30C34.4183 26 38 29.5817 38 34V38" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M22 26V18M26 18H18" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                    <path d="M10 22H14V30H10C8.89543 30 8 29.1046 8 28V24C8 22.8954 8.89543 22 10 22Z" fill="currentColor"/>
+                    <!-- Chorro de agua corriente fluida -->
+                    <path d="M38 38V48" stroke="#38BDF8" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="2 3" class="animate-pulse"/>
+                    <!-- Gotas de agua y espuma antiséptica -->
+                    <circle cx="34" cy="52" r="3" fill="#00B39F" class="animate-bounce"/>
+                    <circle cx="43" cy="49" r="2.5" fill="#38BDF8" class="animate-ping"/>
+                    <circle cx="38" cy="56" r="3.5" fill="#2DD4BF" opacity="0.8"/>
+                    <!-- Manos en cuenco aséptico -->
+                    <path d="M20 56C25 58 39 60 46 54" stroke="#0B2B29" stroke-width="3" stroke-linecap="round"/>
+                  </svg>
+                  <span class="absolute -top-1 -right-1 flex h-4 w-4">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-4 w-4 bg-[#00B39F]"></span>
+                  </span>
+                </div>
+
+                <!-- Badge de Estado Inicial -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-bold mb-3 shadow-xs">
+                  <span class="w-2 h-2 rounded-full bg-[#00B39F] animate-pulse"></span>
+                  <span>Fase Inicial • Protocolo Aséptico OMS</span>
+                </div>
+
+                <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-[#0B2B29] mb-3 leading-tight">
+                  Humedece tus manos y aplica suficiente jabón
+                </h2>
+
+                <p class="text-sm text-slate-600 mb-6 leading-relaxed">
+                  Antes de iniciar el frotado mecánico de los 6 pasos, abre el grifo con el codo, humedece completamente tus manos con agua corriente y dosifica de 3 a 5 ml de jabón o antiséptico para cubrir toda la superficie palmar.
+                </p>
+
+                <!-- Instrucciones Rápidas de Seguridad -->
+                <div class="bg-slate-50 rounded-2xl p-4 mb-6 text-left border border-slate-200/80 text-xs space-y-2.5">
+                  <div class="flex items-center gap-2.5 text-slate-700">
+                    <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 font-bold flex items-center justify-center shrink-0">1</span>
+                    <span>Abre el grifo regulando una temperatura agradable y caudal moderado.</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 text-slate-700">
+                    <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 font-bold flex items-center justify-center shrink-0">2</span>
+                    <span>Moja ambas palmas, dorsos y muñecas sin sacudir.</span>
+                  </div>
+                  <div class="flex items-center gap-2.5 text-slate-700">
+                    <span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 font-bold flex items-center justify-center shrink-0">3</span>
+                    <span>Presiona el dispensador para obtener suficiente espuma o antiséptico.</span>
+                  </div>
+                </div>
+
+                <!-- Temporizador orientativo y Botón de Inicio Mecánico -->
+                <div class="space-y-3">
+                  <button
+                    type="button"
+                    (click)="iniciarFrotadoMecanico()"
+                    class="w-full py-4 px-8 rounded-full bg-gradient-to-r from-[#00B39F] to-[#008072] hover:from-[#009988] hover:to-[#006e62] text-white font-extrabold text-base sm:text-lg shadow-xl shadow-teal-500/25 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer"
+                  >
+                    <span>Iniciar Frotado Mecánico</span>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </button>
+
+                  <p class="text-[11px] text-slate-400 font-medium">
+                    @if (segundosGrifo() > 0) {
+                      Tiempo sugerido de preparación: <span class="font-bold text-teal-700">{{ segundosGrifo() }} segundos restantes</span>
+                    } @else {
+                      <span class="font-bold text-[#008072]">¡Listo para el paso 1! Pulsa para activar la cámara web.</span>
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+
           <!-- BARRA SUPERIOR DE PROGRESO DE LOS 6 PASOS -->
           <div class="bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-6 mb-6 shadow-xl border border-white/50 animate-fade-in">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
@@ -172,287 +263,111 @@ export interface QualityAlert {
             </div>
           </div>
 
-          <!-- GRID PRINCIPAL (Cámara 67-70% / Guía Clínica 30-33%) -->
-          <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-start">
+          <!-- 1. ESTRUCTURA VISUAL SPLIT-SCREEN (GRID 2 COLUMNAS DE IGUAL JERARQUÍA) -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
 
-            <!-- ÁREA PRINCIPAL DE LA CÁMARA (COLUMNA PROTAGONISTA 67%) -->
-            <div class="xl:col-span-8 flex flex-col gap-4">
-
-              <!-- CONTENEDOR PREVIO A LA CÁMARA: TUTORIAL BIOMECÁNICO INTERACTIVO -->
-              <div *ngIf="!camaraActiva" class="relative w-full h-[450px] rounded-3xl overflow-hidden bg-slate-950 flex flex-col items-center justify-center border border-teal-500/30 shadow-2xl">
-                <!-- Video/Animación Demostrativa del Paso Activo -->
-                <img 
-                  [src]="pasoActual().demoUrl || 'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=1000&q=80'"
-                  src="https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=1000&q=80" 
-                  alt="Demostración técnica de lavado" 
-                  class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen scale-105 transition-all duration-700"
-                />
-
-                <!-- Capa de información y control sobre la demostración -->
-                <div class="relative z-10 flex flex-col items-center text-center p-6 max-w-lg bg-slate-900/80 backdrop-blur-md rounded-2xl border border-teal-500/40 shadow-xl mx-4">
-                  <span class="px-3 py-1 rounded-full bg-teal-500/20 text-[#00B39F] text-xs font-bold uppercase tracking-wider mb-2 border border-teal-500/30">
-                    Tutorial Biomecánico • Paso Activo
-                  </span>
-                  <h3 class="text-white text-xl font-bold mb-2">
-                    Observa la técnica de frotado antes de iniciar
-                  </h3>
-                  <p class="text-slate-300 text-xs mb-5">
-                    Revisa la posición de los dedos y palmas. Al pulsar el botón, se activará la cámara web para evaluar tu movimiento en vivo.
-                  </p>
-                  
-                  <button 
-                    type="button"
-                    (click)="iniciarCamara()" 
-                    [disabled]="cameraLoading()"
-                    class="px-6 py-3 rounded-full bg-[#00B39F] hover:bg-[#FF6A4D] text-white font-bold text-sm shadow-lg shadow-teal-500/30 transition-all transform hover:scale-105 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                    @if (cameraLoading()) {
-                      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                      </svg>
-                      <span>Inicializando Visor...</span>
-                    } @else {
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                      <span>Activar Cámara y Comenzar Práctica</span>
-                    }
-                  </button>
-
-                  @if (cameraError()) {
-                    <div class="mt-4 px-4 py-2 rounded-2xl bg-red-500/20 border border-red-500/40 text-red-200 text-xs font-semibold max-w-sm">
-                      {{ cameraError() }}
-                    </div>
-                  }
-                </div>
-              </div>
-
-              <!-- CONTENEDOR EN VIVO DE LA CÁMARA (SE MUESTRA AL ACTIVAR LA CÁMARA) -->
-              <div [class.hidden]="!camaraActiva" class="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-2 border-white/60 flex items-center justify-center group">
-
-                <!-- Video Stream con inversión de espejo -->
-                <video
-                  #cameraVideo
-                  autoplay
-                  muted
-                  playsinline
-                  class="w-full h-full object-cover scale-x-[-1]"
-                ></video>
-
-                <!-- Canvas de Detección MediaPipe con dimensiones nativas y scale-x-[-1] sincronizado -->
-                <canvas
-                  #handOverlay
-                  class="absolute inset-0 w-full h-full pointer-events-none z-10 scale-x-[-1] object-cover"
-                ></canvas>
-
-                <!-- BADGE FLOTANTE: ESQUINA SUPERIOR IZQUIERDA -->
-                <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
-                  <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/60 shadow-lg text-[#0B2B29]">
-                    <span class="w-6 h-6 rounded-full bg-[#00B39F] text-white text-xs font-black flex items-center justify-center shadow-xs">
-                      {{ currentStepIndex() + 1 }}
-                    </span>
-                    <span class="text-xs sm:text-sm font-extrabold tracking-tight">
-                      Paso {{ currentStepIndex() + 1 }} de 6:
-                    </span>
-                    <span class="text-xs sm:text-sm font-bold text-[#008072] max-w-[140px] sm:max-w-xs truncate">
-                      {{ currentStep().title }}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- BADGE FLOTANTE: ESQUINA SUPERIOR DERECHA (Indicadores en vivo) -->
-                <div class="absolute top-4 right-4 z-20 flex items-center gap-2">
-                  <!-- Indicador de detección de ambas manos -->
-                  <div
-                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 shadow-lg backdrop-blur-md border"
-                    [ngClass]="handsDetected() >= 2
-                      ? 'bg-emerald-500/90 border-emerald-400 text-white shadow-emerald-500/25'
-                      : 'bg-[#FF6A4D]/90 border-[#FF6A4D] text-white shadow-[#FF6A4D]/25'"
-                  >
-                    <span
-                      class="w-2.5 h-2.5 rounded-full"
-                      [ngClass]="handsDetected() >= 2 ? 'bg-white animate-pulse' : 'bg-white/80'"
-                    ></span>
-                    <span class="tracking-wide">
-                      Manos detectadas: {{ handsDetected() }}/2
-                    </span>
-                  </div>
-
-                  <!-- Indicador de Frotado Activo -->
-                  @if (cameraActive() && isTechniqueActive()) {
-                    <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#00B39F]/90 border border-white/40 text-white text-xs font-extrabold shadow-lg backdrop-blur-md animate-pulse">
-                      <span class="w-2 h-2 rounded-full bg-white"></span>
-                      <span>Frotando</span>
-                    </div>
-                  }
-
-                  @if (cameraActive()) {
-                    <button
-                      type="button"
-                      (click)="stopCamera()"
-                      class="px-3.5 py-2 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 backdrop-blur-md text-xs font-semibold shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
-                      title="Apagar Cámara"
-                    >
-                      <svg class="w-3.5 h-3.5 text-[#FF6A4D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                      </svg>
-                      <span class="hidden sm:inline">Apagar</span>
-                    </button>
-                  }
-                </div>
-
-                <!-- AVISO VISUAL FLOTANTE CENTRAL CUANDO SE CONGELA EL PROGRESO -->
-                @if (cameraActive() && activeAlert()) {
-                  <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-25 px-4 animate-fade-in">
-                    <div
-                      class="px-6 py-3.5 rounded-full font-black text-sm sm:text-base shadow-2xl border-2 border-white/60 backdrop-blur-md flex items-center gap-3 transition-all transform scale-105"
-                      [ngClass]="{
-                        'bg-[#FF6A4D]/95 text-white shadow-[#FF6A4D]/40 animate-pulse': activeAlert()?.type === 'hands-missing' || activeAlert()?.type === 'still',
-                        'bg-amber-500/95 text-white shadow-amber-500/40': activeAlert()?.type === 'hands-apart'
-                      }"
-                    >
-                      @if (activeAlert()?.type === 'still') {
-                        <svg class="w-5 h-5 text-white animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                      } @else {
-                        <svg class="w-5 h-5 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                      }
-                      <span>{{ activeAlert()?.message }}</span>
-                    </div>
-                  </div>
-                }
-
-
-
-                <!-- BARRA INFERIOR FLOTANTE: PROGRESO DE TÉCNICA -->
-                <div class="absolute bottom-4 left-4 right-4 z-20 bg-slate-950/85 backdrop-blur-xl rounded-2xl p-3.5 sm:p-4 border border-white/20 shadow-2xl text-white">
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                      @if (palmsValidated()) {
-                        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/40">
-                          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                      } @else if (isTechniqueActive()) {
-                        <div class="w-6 h-6 rounded-full bg-[#00B39F]/20 text-[#00B39F] flex items-center justify-center shrink-0 border border-[#00B39F]/40 animate-pulse">
-                          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                        </div>
-                      } @else {
-                        <div class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/40">
-                          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                      }
-                      <span class="text-xs sm:text-sm font-semibold truncate text-[#F5F8FF]">
-                        @if (cameraActive()) {
-                          {{ palmsFeedback() }}
-                        } @else {
-                          Realiza la maniobra frente a la pantalla y registra el tiempo transcurrido.
-                        }
-                      </span>
-                    </div>
-
-                    <!-- Indicador porcentaje de técnica y estado -->
-                    <div class="shrink-0 flex items-center gap-2 self-end sm:self-auto px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-bold">
-                      <span class="text-slate-300">Técnica:</span>
-                      <span [ngClass]="palmsValidated() ? 'text-emerald-400 font-extrabold' : isTechniqueActive() ? 'text-[#00B39F] font-bold' : 'text-amber-400 font-medium'">
-                        {{ techniqueProgressPercent() }}%
-                      </span>
-                    </div>
-                  </div>
-
-                  <!-- Barra de progreso lineal -->
-                  <div class="w-full h-2.5 bg-white/15 rounded-full overflow-hidden p-0.5 border border-white/10">
-                    <div
-                      class="h-full rounded-full transition-all duration-300"
-                      [ngClass]="palmsValidated() ? 'bg-gradient-to-r from-emerald-400 to-[#00B39F]' : isTechniqueActive() ? 'bg-gradient-to-r from-[#00B39F] to-emerald-400' : 'bg-[#FF6A4D]/80'"
-                      [style.width.%]="techniqueProgressPercent()"
-                    ></div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <!-- PANEL LATERAL DE GUÍA CLÍNICA (COLUMNA 33%) -->
-            <div class="xl:col-span-4 bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xl border border-white/50 flex flex-col justify-between space-y-6 animate-fade-in">
+            <!-- PANEL IZQUIERDO: "Demostración Guía del Paso" -->
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-xl border border-white/60 flex flex-col justify-between space-y-5 animate-fade-in">
               
-              <!-- Encabezado del Paso Actual -->
-              <div class="space-y-3">
+              <!-- Encabezado del Panel Izquierdo -->
+              <div class="space-y-2">
                 <div class="flex items-center justify-between">
-                  <!-- • GUÍA ANATÓMICA • PASO 1 -->
                   <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-extrabold border border-teal-200/80 shadow-xs">
-                    • GUÍA ANATÓMICA • PASO {{ currentStepIndex() + 1 }}
+                    <span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+                    Demostración Guía del Paso
                   </span>
-                  <span class="text-xs font-bold text-slate-400">
-                    Paso {{ currentStepIndex() + 1 }} de 6
+                  <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                    Paso Activo: <strong class="text-teal-700">{{ currentStepIndex() + 1 }}</strong> de 6
                   </span>
                 </div>
 
-                <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-[#0B2B29] leading-tight">
-                  {{ currentStep().title }}
+                <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-[#0B2B29] leading-tight">
+                  {{ currentClinicalTitle() }}
                 </h2>
 
-                <p class="text-slate-700 text-sm font-semibold">
+                <p class="text-xs sm:text-sm text-slate-600 font-medium">
                   {{ currentStep().subtitle }}
                 </p>
               </div>
 
-              <!-- GUÍA ANATÓMICA: VISOR FOTOGRÁFICO CLÍNICO DE MANIOBRAS OMS -->
-              <div class="relative w-full h-64 rounded-2xl overflow-hidden bg-slate-900 border border-teal-500/30 shadow-lg flex items-center justify-center group my-3">
-                <img 
-                  [src]="obtenerUrlPaso(pasoActual())" 
-                  [alt]="obtenerTituloPaso(pasoActual())" 
-                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 flex flex-col justify-end p-3">
-                  <div class="flex items-center gap-2 bg-teal-500/90 text-white text-xs font-bold px-3 py-1 rounded-full w-fit shadow-md backdrop-blur-sm">
-                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                    Maniobra OMS • Técnica Real
+              <!-- Contenedor con reproductor de video o recurso multimedia en bucle con fallback SVG animado -->
+              <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl overflow-hidden bg-slate-950 border border-teal-500/30 shadow-lg flex items-center justify-center group">
+                <!-- Video Guía en bucle si existe el recurso .mp4 -->
+                <video
+                  #demoVideo
+                  *ngIf="!videoDemoError()"
+                  [src]="videoUrl()"
+                  (error)="onVideoDemoError()"
+                  autoplay
+                  loop
+                  muted
+                  playsinline
+                  class="w-full h-full object-cover rounded-2xl"
+                ></video>
+
+                <!-- Fallback Visual SVG Elegante con Animación de Movimiento Biomecánico -->
+                <div *ngIf="videoDemoError()" class="relative w-full h-full flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-900 to-slate-950">
+                  <img
+                    [src]="svgFallbackUrl()"
+                    [alt]="currentClinicalTitle()"
+                    class="max-h-[85%] max-w-[85%] object-contain filter drop-shadow-xl transition-all duration-500 group-hover:scale-105"
+                  />
+                  <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none px-2">
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/80 border border-teal-500/40 text-[10px] sm:text-xs font-bold text-teal-300 backdrop-blur-md">
+                      <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+                      <span>Ilustración Anatómica OMS</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-medium bg-black/50 px-2 py-0.5 rounded-md">
+                      Guía Sincronizada Paso {{ currentStepIndex() + 1 }}
+                    </span>
                   </div>
+                </div>
+
+                <!-- Badge flotante superior -->
+                <div class="absolute top-3 left-3 z-10 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-teal-500/30 text-[11px] font-bold text-teal-300">
+                  <svg class="w-3.5 h-3.5 text-teal-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                  </svg>
+                  <span>Referencia Biomecánica Oficial</span>
                 </div>
               </div>
 
-              <!-- INSTRUCCIÓN TEXTUAL CLARA Y DETALLADA -->
+              <!-- Breve indicación de técnica y clave clínica -->
               <div class="space-y-3">
-                <p class="text-[#0B2B29] text-slate-800 text-sm font-semibold leading-relaxed mt-3">
-                  {{ currentStep().description }}
-                </p>
+                <div class="p-3.5 rounded-2xl bg-teal-50/80 border border-teal-200/80 text-slate-800 text-xs sm:text-sm">
+                  <div class="flex items-start gap-2.5">
+                    <div class="w-6 h-6 rounded-lg bg-[#00B39F] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <span class="font-extrabold text-teal-900">Indicación de Técnica: </span>
+                      <span class="text-slate-700 font-medium">{{ currentTechniqueInstruction() }}</span>
+                    </div>
+                  </div>
+                </div>
 
-                <!-- Clave Clínica Aséptica -->
-                <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-teal-50/70 border border-teal-200/60 text-xs text-slate-800">
-                  <div class="w-6 h-6 rounded-lg bg-teal-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <!-- Relevancia Clínica -->
+                <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/70 text-xs text-slate-700">
+                  <div class="w-5 h-5 rounded-md bg-slate-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
-                    <span class="font-extrabold text-teal-800">Relevancia Clínica: </span>
-                    <span class="text-slate-700">{{ currentStep().clinicalKey }}</span>
+                    <span class="font-bold text-slate-900">Objetivo Clínico: </span>
+                    <span>{{ currentStep().clinicalKey }}</span>
                   </div>
                 </div>
               </div>
 
-              <!-- CRONÓMETRO VISUAL CIRCULAR Y TIEMPO EFECTIVO DE FROTADO -->
-              <div class="flex flex-col items-center justify-center pt-2">
-                <div class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center mb-3">
-                  <!-- Círculo SVG de Fondo -->
+              <!-- Cronómetro visual circular y tiempo de fricción -->
+              <div class="flex items-center justify-around pt-2 border-t border-slate-100">
+                <!-- Círculo SVG -->
+                <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center shrink-0">
                   <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 120 120">
-                    <circle
-                      cx="60"
-                      cy="60"
-                      r="52"
-                      class="text-slate-100"
-                      stroke-width="8"
-                      stroke="currentColor"
-                      fill="transparent"
-                    />
-                    <!-- Arco de Progreso Dinámico según segundos -->
+                    <circle cx="60" cy="60" r="52" class="text-slate-100" stroke-width="8" stroke="currentColor" fill="transparent" />
                     <circle
                       cx="60"
                       cy="60"
@@ -471,63 +386,219 @@ export interface QualityAlert {
                       class="transition-all duration-150"
                     />
                   </svg>
-
-                  <!-- Lectura Digital Central -->
                   <div class="absolute flex flex-col items-center justify-center text-center">
-                    <div class="font-heading text-4xl sm:text-5xl font-black tracking-tight text-[#0B2B29]">
-                      {{ formattedTime() }}
+                    <div class="font-heading text-2xl sm:text-3xl font-black tracking-tight text-[#0B2B29]">
+                      {{ formattedTime() }}s
                     </div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mt-0.5">
-                      Segundos Efectivos
+                    <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                      Fricción
                     </span>
-
-                    <!-- Badge de Estado del Ritmo OMS -->
-                    <div
-                      class="mt-2 text-[11px] font-extrabold px-3 py-1 rounded-full border shadow-xs transition-colors"
-                      [ngClass]="{
-                        'bg-[#FFE9DE] text-[#FF6A4D] border-[#FF6A4D]/30': currentSeconds() < 3.0,
-                        'bg-[#CFFBF0] text-[#008072] border-[#00B39F]/40 animate-pulse': currentSeconds() >= 3.0 && currentSeconds() <= 8.0,
-                        'bg-amber-100 text-amber-800 border-amber-300': currentSeconds() > 8.0
-                      }"
-                    >
-                      @if (currentSeconds() < 3.0) {
-                        <span>Fricción Insuficiente (&lt;3s)</span>
-                      } @else if (currentSeconds() <= 8.0) {
-                        <span>✓ Rango Óptimo OMS</span>
-                      } @else {
-                        <span>Tiempo Extenso (&gt;8s)</span>
-                      }
-                    </div>
                   </div>
                 </div>
 
-                <!-- Barra lineal de referencia del rango 3 a 8s -->
-                <div class="w-full max-w-xs space-y-1 text-center">
-                  <div class="flex justify-between text-[10px] font-bold text-slate-400 px-1">
-                    <span>0s</span>
-                    <span class="text-[#008072]">3s (Mín)</span>
-                    <span class="text-[#008072]">8s (Máx)</span>
-                    <span>10s+</span>
+                <!-- Indicador de Ritmo OMS y Botón Reinicio -->
+                <div class="flex flex-col items-start gap-2 max-w-[210px]">
+                  <span class="text-[11px] font-bold text-slate-500">Ritmo de Fricción OMS:</span>
+                  <div
+                    class="text-[11px] font-extrabold px-3 py-1 rounded-full border shadow-xs"
+                    [ngClass]="{
+                      'bg-[#FFE9DE] text-[#FF6A4D] border-[#FF6A4D]/30': currentSeconds() < 3.0,
+                      'bg-[#CFFBF0] text-[#008072] border-[#00B39F]/40 animate-pulse': currentSeconds() >= 3.0 && currentSeconds() <= 8.0,
+                      'bg-amber-100 text-amber-800 border-amber-300': currentSeconds() > 8.0
+                    }"
+                  >
+                    @if (currentSeconds() < 3.0) {
+                      <span>Fricción Insuficiente (&lt;3s)</span>
+                    } @else if (currentSeconds() <= 8.0) {
+                      <span>✓ Rango Óptimo OMS (3-8s)</span>
+                    } @else {
+                      <span>Tiempo Extenso (&gt;8s)</span>
+                    }
                   </div>
-                  <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden flex border border-slate-200">
-                    <div class="w-[30%] bg-[#FF6A4D]/30 border-r border-white"></div>
-                    <div class="w-[50%] bg-[#00B39F]/40 border-r border-white"></div>
-                    <div class="w-[20%] bg-amber-400/30"></div>
-                  </div>
+
+                  <button
+                    type="button"
+                    (click)="resetCurrentStepTimer()"
+                    class="px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-600 hover:text-[#0B2B29] bg-white border border-slate-200 hover:border-slate-300 shadow-xs flex items-center gap-1.5 cursor-pointer mt-1"
+                  >
+                    <svg class="w-3 h-3 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Reiniciar cronómetro</span>
+                  </button>
                 </div>
               </div>
 
-              <!-- BOTONES DE CONTROL ESTILO PÍLDORA -->
-              <div class="space-y-3 pt-2">
-                <!-- Botón Principal: Siguiente Paso / Finalizar -->
+            </div>
+
+            <!-- PANEL DERECHO: "Tu Ejecución en Vivo" -->
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-xl border border-white/60 flex flex-col justify-between space-y-4 animate-fade-in">
+
+              <!-- Encabezado del Panel Derecho -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-extrabold border border-emerald-200/80 shadow-xs">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    Tu Ejecución en Vivo
+                  </span>
+                  <span class="text-xs font-semibold text-slate-500 hidden sm:inline">
+                    Tracking MediaPipe AI
+                  </span>
+                </div>
+
+                <!-- Indicador de detección de ambas manos -->
+                <div
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all duration-300 border shadow-xs"
+                  [ngClass]="handsDetected() >= 2
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                    : 'bg-[#FFE9DE] text-[#FF6A4D] border-[#FF6A4D]/40'"
+                >
+                  <span
+                    class="w-2 h-2 rounded-full"
+                    [ngClass]="handsDetected() >= 2 ? 'bg-emerald-500 animate-pulse' : 'bg-[#FF6A4D]'"
+                  ></span>
+                  <span>Manos detectadas: {{ handsDetected() }}/2</span>
+                </div>
+              </div>
+
+              <!-- Contenedor del Feed de Cámara Web Amplio con Canvas Superpuesto -->
+              <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 flex items-center justify-center group">
+                
+                <!-- Video Stream con inversión de espejo -->
+                <video
+                  #cameraVideo
+                  autoplay
+                  muted
+                  playsinline
+                  class="w-full h-full object-cover scale-x-[-1]"
+                ></video>
+
+                <!-- Canvas de Detección MediaPipe con dimensiones nativas y scale-x-[-1] -->
+                <canvas
+                  #handOverlay
+                  class="absolute inset-0 w-full h-full pointer-events-none z-10 scale-x-[-1] object-cover"
+                ></canvas>
+
+                <!-- Overlay cuando la cámara está inactiva -->
+                @if (!cameraActive()) {
+                  <div class="absolute inset-0 z-20 bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center text-white">
+                    <div class="w-14 h-14 rounded-2xl bg-teal-500/20 text-[#00B39F] border border-teal-500/30 flex items-center justify-center mb-3">
+                      <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h4 class="font-extrabold text-base mb-1">Cámara en Espera</h4>
+                    <p class="text-xs text-slate-300 max-w-xs mb-4">
+                      Ubica tus manos frente a la cámara para que MediaPipe detecte los 21 puntos articulares.
+                    </p>
+                    <button
+                      type="button"
+                      (click)="iniciarCamara()"
+                      [disabled]="cameraLoading()"
+                      class="px-5 py-2.5 rounded-full bg-[#00B39F] hover:bg-[#009988] text-white font-bold text-xs shadow-lg shadow-teal-500/30 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      @if (cameraLoading()) {
+                        <span>Iniciando Visor...</span>
+                      } @else {
+                        <span>Activar Cámara</span>
+                      }
+                    </button>
+                  </div>
+                }
+
+                <!-- Badges Flotantes Dentro de la Cámara -->
+                @if (cameraActive()) {
+                  <!-- Top Left: Indicador del paso en vivo -->
+                  <div class="absolute top-3 left-3 z-20">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-white/20 text-white text-xs font-bold shadow-md">
+                      <span class="w-5 h-5 rounded-full bg-[#00B39F] text-white text-[11px] font-black flex items-center justify-center">
+                        {{ currentStepIndex() + 1 }}
+                      </span>
+                      <span>En vivo: {{ currentStep().title }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Top Right: Feedback de Alineación / Frotado -->
+                  <div class="absolute top-3 right-3 z-20 flex items-center gap-2">
+                    @if (handsTogether() && handsRubbing()) {
+                      <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/90 text-white text-xs font-extrabold shadow-md backdrop-blur-md animate-pulse">
+                        <span class="w-2 h-2 rounded-full bg-white"></span>
+                        <span>Alineación correcta</span>
+                      </div>
+                    } @else if (handsDetected() >= 2) {
+                      <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/90 text-white text-xs font-bold shadow-md backdrop-blur-md">
+                        <span>Manos juntas requeridas</span>
+                      </div>
+                    }
+
+                    <button
+                      type="button"
+                      (click)="stopCamera()"
+                      class="p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white border border-white/20 backdrop-blur-md transition-all cursor-pointer"
+                      title="Pausar Cámara"
+                    >
+                      <svg class="w-3.5 h-3.5 text-[#FF6A4D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- Alerta flotante central cuando la técnica se detiene -->
+                  @if (activeAlert()) {
+                    <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-25 px-4 animate-fade-in">
+                      <div
+                        class="px-5 py-2.5 rounded-full font-black text-xs sm:text-sm shadow-2xl border-2 border-white/60 backdrop-blur-md flex items-center gap-2 transition-all transform scale-105"
+                        [ngClass]="{
+                          'bg-[#FF6A4D]/95 text-white shadow-[#FF6A4D]/40 animate-pulse': activeAlert()?.type === 'hands-missing' || activeAlert()?.type === 'still',
+                          'bg-amber-500/95 text-white shadow-amber-500/40': activeAlert()?.type === 'hands-apart'
+                        }"
+                      >
+                        <span>{{ activeAlert()?.message }}</span>
+                      </div>
+                    </div>
+                  }
+                }
+
+              </div>
+
+              <!-- Barra de progreso del paso actual y porcentaje -->
+              <div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80 space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2">
+                    <span class="font-extrabold text-[#0B2B29]">Progreso de Fricción:</span>
+                    <span class="text-slate-500 font-semibold">{{ formattedTime() }}s / 3.0s objetivo</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-bold text-xs"
+                    [ngClass]="palmsValidated() ? 'bg-emerald-100 text-emerald-800' : isTechniqueActive() ? 'bg-teal-100 text-teal-800' : 'bg-slate-200 text-slate-700'">
+                    <span>{{ techniqueProgressPercent() }}%</span>
+                  </div>
+                </div>
+
+                <!-- Barra lineal de progreso -->
+                <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden p-0.5">
+                  <div
+                    class="h-full rounded-full transition-all duration-300"
+                    [ngClass]="palmsValidated() ? 'bg-gradient-to-r from-emerald-400 to-[#00B39F]' : isTechniqueActive() ? 'bg-gradient-to-r from-[#00B39F] to-emerald-400' : 'bg-[#FF6A4D]/80'"
+                    [style.width.%]="techniqueProgressPercent()"
+                  ></div>
+                </div>
+
+                <!-- Feedback textual en vivo -->
+                <p class="text-xs text-slate-600 font-medium truncate pt-0.5">
+                  {{ palmsFeedback() }}
+                </p>
+              </div>
+
+              <!-- Botones de Acción de la Cámara / Paso -->
+              <div class="pt-1">
                 <button
                   type="button"
                   (click)="completeStep()"
                   [disabled]="cameraActive() && !palmsValidated()"
-                  class="w-full py-4 px-6 rounded-full font-extrabold text-base sm:text-lg text-white shadow-xl transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group"
+                  class="w-full py-3.5 px-6 rounded-full font-extrabold text-sm sm:text-base text-white shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group"
                   [ngClass]="cameraActive() && !palmsValidated()
                     ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none'
-                    : 'bg-[#00B39F] hover:bg-[#009988] hover:shadow-[#00B39F]/30 hover:scale-[1.02] active:scale-[0.98]'"
+                    : 'bg-[#00B39F] hover:bg-[#009988] hover:shadow-[#00B39F]/30 hover:scale-[1.01] active:scale-[0.99]'"
                 >
                   <span>
                     @if (cameraActive() && !palmsValidated()) {
@@ -535,27 +606,13 @@ export interface QualityAlert {
                     } @else if (isLastStep()) {
                       Finalizar y Calificar Práctica
                     } @else {
-                      Paso Completado
+                      Avanzar al Siguiente Paso
                     }
                   </span>
-                  <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </button>
-
-                <!-- Botón Secundario Píldora: Reiniciar Tiempo -->
-                <div class="flex items-center justify-center gap-3">
-                  <button
-                    type="button"
-                    (click)="resetCurrentStepTimer()"
-                    class="px-4 py-2 rounded-full text-xs font-bold text-slate-600 hover:text-[#0B2B29] bg-white border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <svg class="w-3.5 h-3.5 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    <span>Reiniciar cronómetro</span>
-                  </button>
-                </div>
               </div>
 
             </div>
@@ -640,42 +697,48 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly palmsFeedback = signal('Coloca ambas manos en el encuadre para comenzar.');
   readonly videoDemoError = signal(false);
 
-  // Alias compatibles con la plantilla de demostración
+  // Previo de Apertura de Grifo
+  readonly mostrarFaseInicial = signal(true);
+  readonly segundosGrifo = signal(5);
+  private grifoInterval: any = null;
+
+  // 2. SINCRONIZACIÓN DINÁMICA DEL RECURSO GUÍA
+  readonly videoUrl = computed(() => `assets/videos/paso${this.currentStepIndex() + 1}.mp4`);
+  readonly svgFallbackUrl = computed(() => `assets/images/pasos/paso-${this.currentStepIndex() + 1}.svg`);
+
+  readonly clinicalTitles: string[] = [
+    'Paso 1: Frotar palmas entre sí',
+    'Paso 2: Palma derecha sobre dorso izquierdo y viceversa',
+    'Paso 3: Frotar palmas con dedos entrelazados',
+    'Paso 4: Frotar dorso de dedos contra la palma opuesta',
+    'Paso 5: Frotación rotacional de los pulgares',
+    'Paso 6: Frotado concéntrico de yemas y uñas sobre la palma',
+  ];
+
+  readonly techniqueInstructions: string[] = [
+    'Realiza movimientos circulares constantes cubriendo toda la superficie palmar.',
+    'Frota firmemente la palma sobre el dorso de la otra mano entrelazando los dedos, luego alterna.',
+    'Mantén las palmas enfrentadas y desliza los dedos entrelazados de la base a las puntas.',
+    'Traba los dedos en gancho contra la palma opuesta realizando un movimiento de vaivén horizontal.',
+    'Rodea el pulgar con la palma opuesta y realiza giros completos de 360 grados en rotación.',
+    'Agrupa las yemas de los dedos sobre la palma cóncava opuesta con movimientos circulares en espiral.',
+  ];
+
+  readonly currentClinicalTitle = computed(() => {
+    return this.clinicalTitles[this.currentStepIndex()] || this.currentStep().title;
+  });
+
+  readonly currentTechniqueInstruction = computed(() => {
+    return this.techniqueInstructions[this.currentStepIndex()] || this.currentStep().description;
+  });
+
+  // Alias compatibles
   get camaraActiva(): boolean {
     return this.cameraActive();
   }
 
   iniciarCamara(): Promise<void> {
     return this.startCamera();
-  }
-
-  obtenerUrlPaso(indiceOPaso?: any): string {
-    const demos = [
-      'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80', // Paso 1: Palmas
-      'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80', // Paso 2: Dorso
-      'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80', // Paso 3: Entrelazado
-      'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80', // Paso 4: Dedos trabados
-      'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80', // Paso 5: Pulgares
-      'https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=600&q=80'  // Paso 6: Yemas
-    ];
-    let idx = this.currentStepIndex();
-    if (typeof indiceOPaso === 'number') {
-      idx = indiceOPaso;
-    } else if (indiceOPaso && typeof indiceOPaso === 'object') {
-      if (typeof indiceOPaso.number === 'number') {
-        idx = indiceOPaso.number - 1;
-      } else if (typeof indiceOPaso.id === 'number') {
-        idx = indiceOPaso.id - 1;
-      }
-    }
-    return demos[idx] || demos[0];
-  }
-
-  obtenerTituloPaso(paso?: any): string {
-    if (paso && typeof paso === 'object') {
-      return paso.titulo || paso.title || `Maniobra OMS #${paso.number ?? ''}`;
-    }
-    return this.currentStep().title;
   }
 
   @ViewChild('cameraVideo') private cameraVideo?: ElementRef<HTMLVideoElement>;
@@ -745,7 +808,33 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.router.navigate(['/bienvenida']);
       return;
     }
+    // Iniciar cuenta regresiva orientativa de apertura de grifo (5 segundos)
+    this.mostrarFaseInicial.set(true);
+    this.segundosGrifo.set(5);
+    this.iniciarCuentaRegresivaGrifo();
+  }
+
+  private iniciarCuentaRegresivaGrifo(): void {
+    if (this.grifoInterval) clearInterval(this.grifoInterval);
+    this.grifoInterval = setInterval(() => {
+      const act = this.segundosGrifo();
+      if (act > 0) {
+        this.segundosGrifo.set(act - 1);
+      } else {
+        clearInterval(this.grifoInterval);
+        this.grifoInterval = null;
+      }
+    }, 1000);
+  }
+
+  iniciarFrotadoMecanico(): void {
+    if (this.grifoInterval) {
+      clearInterval(this.grifoInterval);
+      this.grifoInterval = null;
+    }
+    this.mostrarFaseInicial.set(false);
     this.startStepTimer();
+    this.startCamera();
   }
 
   goToBienvenida(): void {
@@ -753,6 +842,10 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.grifoInterval) {
+      clearInterval(this.grifoInterval);
+      this.grifoInterval = null;
+    }
     this.stopTimer();
     this.stopCamera();
   }
@@ -822,7 +915,6 @@ export class PracticaComponent implements OnInit, OnDestroy {
     const video = this.cameraVideo?.nativeElement;
     if (!video || !this.detector || !this.cameraActive()) return;
 
-    // Solo procesar si el video tiene dimensiones nativas válidas
     if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
       const now = performance.now();
       const result = this.detector.detectForVideo(video, now);
@@ -834,13 +926,6 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.animationFrame = requestAnimationFrame(() => this.detectHands());
   }
 
-  /**
-   * Medición por Calidad de Técnica:
-   * 1. Presencia de ambas manos (>= 2).
-   * 2. Proximidad euclidiana entre muñecas (landmark 0).
-   * 3. Delta de desplazamiento de puntas de dedos [4, 8, 12, 16, 20].
-   * El cronómetro SOLO suma tiempo cuando se cumplen las tres condiciones.
-   */
   private evaluateTechnique(landmarks: { x: number; y: number }[][], now: number): void {
     const elapsed = this.previousFrameAt ? Math.min(0.12, (now - this.previousFrameAt) / 1000) : 0;
     this.previousFrameAt = now;
@@ -854,16 +939,15 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.handsRubbing.set(false);
       this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre.`);
       this.previousKeyPoints = null;
-      return; // Progreso congelado
+      return;
     }
 
-    // b) Proximidad de manos: calcular distancia euclidiana entre muñecas (landmark 0)
+    // b) Proximidad de manos: distancia euclidiana entre muñecas (0) y centro de palmas
     const wrist0 = landmarks[0][0];
     const wrist1 = landmarks[1][0];
     const wristDistance = Math.hypot(wrist0.x - wrist1.x, wrist0.y - wrist1.y);
     this.wristDistance.set(Math.round(wristDistance * 100) / 100);
 
-    // Complementar con la distancia entre los centros de palma (muñeca 0 + base de dedo medio 9)
     const palm0 = {
       x: (landmarks[0][0].x + landmarks[0][9].x) / 2,
       y: (landmarks[0][0].y + landmarks[0][9].y) / 2,
@@ -882,10 +966,10 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.handsRubbing.set(false);
       this.palmsFeedback.set(`Junta las manos para realizar la técnica de ${instruction.toLowerCase()}.`);
       this.previousKeyPoints = null;
-      return; // Progreso congelado
+      return;
     }
 
-    // c) Detección de frotado/movimiento: calcular delta de desplazamiento en puntas de dedos
+    // c) Detección de frotado/movimiento
     const keyIndices = [4, 8, 12, 16, 20];
     const currentKeyPoints: { x: number; y: number }[][] = landmarks
       .slice(0, 2)
@@ -909,16 +993,14 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.previousKeyPoints = currentKeyPoints;
 
     const avgMovement = sampleCount > 0 ? deltaMovement / sampleCount : 0;
-    // Filtro exponencial para evitar falsos positivos por ruido
     this.smoothedMotion = this.smoothedMotion * 0.65 + avgMovement * 0.35;
 
-    // Umbral de frotado activo por encima del temblor estático
     const isRubbing = this.smoothedMotion > 0.0035;
     this.handsRubbing.set(isRubbing);
 
     if (!isRubbing) {
       this.palmsFeedback.set(`⚠️ Frota activamente las manos.`);
-      return; // Progreso congelado si las manos están quietas
+      return;
     }
 
     // CONDICIÓN CUMPLIDA: Manos juntas y frotado continuo detectado
@@ -949,18 +1031,11 @@ export class PracticaComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Renderizado nítido sobre el <canvas> usando DrawingUtils:
-   * - Dimensiones sincronizadas con videoWidth y videoHeight.
-   * - Conectores turquesa #00B39F con lineWidth = 4.
-   * - Puntos blancos con borde acento coral #FF6A4D y radio = 5.
-   */
   private drawLandmarks(landmarks: { x: number; y: number }[][]): void {
     const canvas = this.handOverlay?.nativeElement;
     const video = this.cameraVideo?.nativeElement;
     if (!canvas || !video || !video.videoWidth || !video.videoHeight) return;
 
-    // 1. Asegurar correspondencia exacta de resolución nativa para evitar desajustes
     if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -975,13 +1050,11 @@ export class PracticaComponent implements OnInit, OnDestroy {
     }
 
     for (const hand of landmarks) {
-      // Dibujar 21 conexiones con DrawingUtils: turquesa #00B39F con lineWidth = 4
       this.drawingUtils.drawConnectors(hand as any, HandLandmarker.HAND_CONNECTIONS, {
         color: '#00B39F',
         lineWidth: 4,
       });
 
-      // Dibujar los 21 landmarks: blanco con borde coral #FF6A4D, radio 5
       this.drawingUtils.drawLandmarks(hand as any, {
         color: '#FF6A4D',
         fillColor: '#FFFFFF',
@@ -1018,7 +1091,6 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.currentSeconds.set(0);
     this.resetBiomechanicalState();
 
-    // Solo si la cámara está inactiva, mantener cronómetro manual como respaldo
     if (!this.cameraActive()) {
       const startTime = Date.now();
       this.timerInterval = setInterval(() => {

@@ -1,0 +1,9 @@
+Directorio reservado para los videos demostrativos clínicos de los 6 pasos OMS:
+- paso1.mp4: Frotado palma con palma
+- paso2.mp4: Palma derecha sobre dorso izquierdo y viceversa
+- paso3.mp4: Frotado interdigital con dedos entrelazados
+- paso4.mp4: Dorso de los dedos contra la palma opuesta
+- paso5.mp4: Rotación envolvente de los pulgares
+- paso6.mp4: Frotación concéntrica de yemas y uñas sobre la palma
+
+Si un archivo no está presente, la plataforma activa automáticamente el fallback visual anatómico vectorial en SVG ubicado en assets/images/pasos/.
