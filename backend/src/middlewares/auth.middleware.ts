@@ -72,3 +72,26 @@ export const requerirDocente = (
 
   next();
 };
+
+/**
+ * Middleware opcional para verificar token si está presente, sin bloquear si no lo está
+ */
+export const autenticarTokenOpcional = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as JwtUserPayload;
+      req.user = decoded;
+    } catch {
+      // Token ausente, expirado o inválido; continuar sin req.user
+    }
+  }
+
+  next();
+};

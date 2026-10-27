@@ -37,7 +37,18 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
             </div>
           </div>
 
-          <div class="flex items-center gap-3">
+          <div class="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              (click)="abrirModalDocente()"
+              class="px-4 py-2.5 rounded-2xl bg-[#00B39F] hover:bg-[#008072] text-white text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow-md"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+              </svg>
+              <span>+ Registrar Docente</span>
+            </button>
+
             <button
               type="button"
               (click)="recargarDatos()"
@@ -187,8 +198,21 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
               }
             </div>
 
-            <div class="text-xs text-slate-500 font-semibold text-right">
-              Mostrando <strong class="text-slate-900">{{ practicasFiltradas().length }}</strong> de {{ practicas().length }} prácticas registradas
+            <div class="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                (click)="exportarResultadosCSV()"
+                class="px-4 py-2.5 rounded-2xl bg-[#008072] hover:bg-[#00B39F] text-white text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow-sm"
+              >
+                <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Exportar Resultados (CSV/Excel)</span>
+              </button>
+
+              <div class="text-xs text-slate-500 font-semibold text-right">
+                Mostrando <strong class="text-slate-900">{{ practicasFiltradas().length }}</strong> de {{ practicas().length }} prácticas registradas
+              </div>
             </div>
           </div>
 
@@ -808,6 +832,145 @@ import { PreguntasService, PreguntaDocente } from '../../services/preguntas.serv
           </div>
         </div>
       }
+
+      <!-- ============================================================== -->
+      <!-- MODAL PARA REGISTRO DE NUEVO DOCENTE                           -->
+      <!-- ============================================================== -->
+      @if (modalDocenteAbierto()) {
+        <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-white overflow-hidden text-slate-800">
+            <!-- Encabezado del Modal -->
+            <div class="bg-gradient-to-r from-[#0B2B29] to-[#008072] p-6 text-white flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-[#50E7FF]">
+                  <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-white">Añadir Nuevo Docente</h3>
+                  <p class="text-xs text-emerald-100">Crear credenciales para personal académico o supervisor</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                (click)="cerrarModalDocente()"
+                class="text-white/80 hover:text-white font-bold text-2xl transition cursor-pointer"
+              >
+                &times;
+              </button>
+            </div>
+
+            <!-- Formulario del Modal -->
+            <form [formGroup]="formNuevoDocente" (ngSubmit)="guardarNuevoDocente()" class="p-6 space-y-4">
+              <!-- Nombre -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Nombre Completo <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  formControlName="nombre"
+                  placeholder="Ej: Dra. María Fernanda Gómez"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
+                />
+                @if (formNuevoDocente.get('nombre')?.touched && formNuevoDocente.get('nombre')?.invalid) {
+                  <span class="text-[11px] text-red-500 mt-1 block font-medium">El nombre completo es requerido.</span>
+                }
+              </div>
+
+              <!-- Correo Institucional -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Correo Institucional <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  formControlName="correo"
+                  placeholder="docente.enfermeria@ucc.edu.co"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
+                />
+                @if (formNuevoDocente.get('correo')?.touched && formNuevoDocente.get('correo')?.invalid) {
+                  <span class="text-[11px] text-red-500 mt-1 block font-medium">Ingrese un correo electrónico válido.</span>
+                }
+              </div>
+
+              <!-- Contraseña Temporal -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Contraseña Temporal <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <input
+                    [type]="verPasswordDocente() ? 'text' : 'password'"
+                    formControlName="password"
+                    placeholder="Mínimo 6 caracteres"
+                    class="w-full px-4 py-2.5 pr-10 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
+                  />
+                  <button
+                    type="button"
+                    (click)="verPasswordDocente.set(!verPasswordDocente())"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    @if (verPasswordDocente()) {
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                      </svg>
+                    } @else {
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    }
+                  </button>
+                </div>
+                @if (formNuevoDocente.get('password')?.touched && formNuevoDocente.get('password')?.invalid) {
+                  <span class="text-[11px] text-red-500 mt-1 block font-medium">La contraseña debe tener al menos 6 caracteres.</span>
+                }
+              </div>
+
+              <!-- Código Docente (Opcional) -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Código Institucional <span class="text-slate-400 font-normal lowercase">(opcional, ej. DOC-2026)</span>
+                </label>
+                <input
+                  type="text"
+                  formControlName="codigoEstudiantil"
+                  placeholder="Se generará automáticamente si se omite"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none font-mono"
+                />
+              </div>
+
+              <!-- Botones del Modal -->
+              <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  (click)="cerrarModalDocente()"
+                  class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  [disabled]="registrandoDocente() || formNuevoDocente.invalid"
+                  class="px-6 py-2.5 rounded-xl bg-[#00B39F] hover:bg-[#008072] text-white text-xs font-bold transition cursor-pointer shadow-md disabled:opacity-50 flex items-center gap-2"
+                >
+                  @if (registrandoDocente()) {
+                    <svg class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span>Guardando...</span>
+                  } @else {
+                    <span>Registrar Docente</span>
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
     </div>
   `,
 })
@@ -881,6 +1044,18 @@ export class AdminComponent implements OnInit {
     passwordActual: new FormControl('', [Validators.required, Validators.minLength(1)]),
     passwordNuevo: new FormControl('', [Validators.required, Validators.minLength(6)]),
     passwordConfirmar: new FormControl('', [Validators.required, Validators.minLength(6)]),
+  });
+
+  // Modal y Formulario reactivo para registrar nuevo docente
+  readonly modalDocenteAbierto = signal<boolean>(false);
+  readonly registrandoDocente = signal<boolean>(false);
+  readonly verPasswordDocente = signal<boolean>(false);
+
+  readonly formNuevoDocente = new FormGroup({
+    nombre: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    correo: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    codigoEstudiantil: new FormControl(''),
   });
 
   ngOnInit(): void {
@@ -1071,6 +1246,84 @@ export class AdminComponent implements OnInit {
           this.mensajeError.set(err.error?.error || 'Error al cambiar la contraseña.');
         },
       });
+  }
+
+  abrirModalDocente(): void {
+    this.formNuevoDocente.reset();
+    this.verPasswordDocente.set(false);
+    this.modalDocenteAbierto.set(true);
+  }
+
+  cerrarModalDocente(): void {
+    this.modalDocenteAbierto.set(false);
+    this.formNuevoDocente.reset();
+  }
+
+  guardarNuevoDocente(): void {
+    if (this.formNuevoDocente.invalid) {
+      this.formNuevoDocente.markAllAsTouched();
+      return;
+    }
+
+    const { nombre, correo, password, codigoEstudiantil } = this.formNuevoDocente.getRawValue();
+    this.registrandoDocente.set(true);
+    this.mensajeError.set(null);
+    this.mensajeExito.set(null);
+
+    this.authService
+      .registrarDocentePorAdmin({
+        nombre: nombre || '',
+        correo: correo || '',
+        password: password || '',
+        codigoEstudiantil: codigoEstudiantil?.trim() || undefined,
+      })
+      .subscribe({
+        next: (res) => {
+          this.registrandoDocente.set(false);
+          this.mensajeExito.set(
+            `¡Docente "${res.usuario?.nombre || nombre}" registrado exitosamente con rol DOCENTE!`
+          );
+          this.cerrarModalDocente();
+        },
+        error: (err) => {
+          this.registrandoDocente.set(false);
+          this.mensajeError.set(err.error?.error || 'Error al registrar el nuevo docente institucional.');
+        },
+      });
+  }
+
+  exportarResultadosCSV(): void {
+    const lista = this.practicasFiltradas();
+    if (!lista || lista.length === 0) {
+      this.mensajeError.set('No hay registros de prácticas para exportar en este momento.');
+      return;
+    }
+
+    const encabezados = ['Estudiante', 'Código', 'Correo', 'Calificación', 'Estado', 'Fecha'];
+    const filas = lista.map((p) => [
+      `"${(p.nombre || '').replace(/"/g, '""')}"`,
+      `"${(p.codigo || '').replace(/"/g, '""')}"`,
+      `"${(p.correo || '').replace(/"/g, '""')}"`,
+      (p.calificacion || 0).toFixed(1),
+      `"${(p.estado || (p.aprobado ? 'Aprobado' : 'Requiere práctica')).replace(/"/g, '""')}"`,
+      `"${new Date(p.fecha).toLocaleString('es-CO')}"`,
+    ]);
+
+    const csvContent = '\uFEFF' + [encabezados.join(','), ...filas.map((f) => f.join(','))].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute(
+      'download',
+      `Resultados_Practicas_Manos_Seguras_${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    this.mensajeExito.set('Archivo CSV generado y descargado exitosamente.');
   }
 
   logout(): void {

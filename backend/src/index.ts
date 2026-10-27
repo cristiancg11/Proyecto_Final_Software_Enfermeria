@@ -6,6 +6,7 @@ import cors from 'cors';
 import { authRouter } from './routes/auth.routes';
 import { preguntaRouter } from './routes/pregunta.routes';
 import { practicasRouter } from './routes/practicas.routes';
+import { verificarCertificado } from './controllers/practica.controller';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -58,6 +59,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 app.use('/api/auth', authRouter);
 app.use('/api/preguntas', preguntaRouter);
 app.use('/api/practicas', practicasRouter);
+app.get('/api/certificados/validar/:codigo', verificarCertificado);
 
 // Manejador de rutas no encontradas (404)
 app.use((req: Request, res: Response) => {

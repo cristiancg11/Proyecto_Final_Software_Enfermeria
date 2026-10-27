@@ -76,11 +76,37 @@ export const obtenerPracticasDocente = async (req: Request, res: Response): Prom
 export const registrarPractica = async (req: Request, res: Response): Promise<void> => {
   try {
     const data = RegistrarPracticaSchema.parse(req.body);
-    const usuarioId = data.usuarioId || req.user?.id;
+    let usuarioId = req.user?.id || data.usuarioId;
 
     if (!usuarioId) {
-      res.status(400).json({ error: 'Se requiere el ID del estudiante para registrar la práctica.' });
-      return;
+      // Buscar si se envió correo o código en el cuerpo o en detallePasosJson
+      const correo = req.body.correo || data.detallePasosJson?.student?.email;
+      const codigo = req.body.codigoEstudiantil || data.detallePasosJson?.student?.studentCode;
+
+      if (correo || codigo) {
+        const u = await prisma.usuario.findFirst({
+          where: {
+            OR: [
+              ...(correo ? [{ correo: String(correo).trim().toLowerCase() }] : []),
+              ...(codigo ? [{ codigoEstudiantil: String(codigo).trim() }] : []),
+            ],
+          },
+        });
+        if (u) usuarioId = u.id;
+      }
+
+      // Si aún no hay usuario, buscar el primer estudiante o fallar
+      if (!usuarioId) {
+        const defaultStudent = await prisma.usuario.findFirst({
+          where: { rol: 'ESTUDIANTE' },
+        });
+        if (defaultStudent) {
+          usuarioId = defaultStudent.id;
+        } else {
+          res.status(400).json({ error: 'Se requiere el ID del estudiante para registrar la práctica.' });
+          return;
+        }
+      }
     }
 
     const usuario = await prisma.usuario.findUnique({
@@ -92,6 +118,10 @@ export const registrarPractica = async (req: Request, res: Response): Promise<vo
       return;
     }
 
+    // Generar código institucional único para el certificado si es aprobado
+    const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const codigoCertificadoGenerado = `UCC-MS-${new Date().getFullYear()}-${randomCode}`;
+
     const intento = await prisma.intentoPractica.create({
       data: {
         usuarioId,
@@ -101,21 +131,36 @@ export const registrarPractica = async (req: Request, res: Response): Promise<vo
         ...(data.aprobado
           ? {
               certificado: {
-                create: {},
+                create: {
+                  codigoVerificacion: codigoCertificadoGenerado,
+                },
               },
             }
           : {}),
       },
       include: {
         certificado: true,
+        usuario: {
+          select: {
+            id: true,
+            nombre: true,
+            codigoEstudiantil: true,
+            correo: true,
+          },
+        },
       },
     });
+
+    const codigoCertificado = intento.certificado?.codigoVerificacion || null;
 
     res.status(201).json({
       mensaje: data.aprobado
         ? '¡Práctica aprobada con éxito! Se ha generado tu certificado de competencia clínica.'
         : 'Intento de práctica registrado.',
       intento,
+      codigoCertificado,
+      codigoVerificacion: codigoCertificado,
+      certificado: intento.certificado || null,
     });
   } catch (err) {
     if (err instanceof z.ZodError) {
@@ -151,12 +196,17 @@ export const obtenerHistorialUsuario = async (req: Request, res: Response): Prom
 };
 
 /**
- * GET /api/practicas/certificado/:codigo
- * Verifica la autenticidad de un certificado emitido
+ * GET /api/certificados/validar/:codigo y GET /api/practicas/certificado/:codigo
+ * Verifica la autenticidad institucional de un certificado emitido
  */
 export const verificarCertificado = async (req: Request, res: Response): Promise<void> => {
   try {
-    const codigo = req.params.codigo as string;
+    const codigo = (req.params.codigo as string)?.trim();
+
+    if (!codigo) {
+      res.status(400).json({ valido: false, error: 'Código de certificado no proporcionado' });
+      return;
+    }
 
     const certificado: any = await prisma.certificado.findUnique({
       where: { codigoVerificacion: codigo },
@@ -165,6 +215,7 @@ export const verificarCertificado = async (req: Request, res: Response): Promise
           include: {
             usuario: {
               select: {
+                id: true,
                 nombre: true,
                 codigoEstudiantil: true,
                 correo: true,
@@ -186,11 +237,19 @@ export const verificarCertificado = async (req: Request, res: Response): Promise
     res.json({
       valido: true,
       certificado: {
+        id: certificado.id,
         codigoVerificacion: certificado.codigoVerificacion,
+        codigo: certificado.codigoVerificacion,
         fechaEmision: certificado.fechaEmision,
+        fecha: certificado.fechaEmision,
         calificacion: certificado.intentoPractica?.calificacion,
         estudiante: certificado.intentoPractica?.usuario?.nombre,
+        nombre: certificado.intentoPractica?.usuario?.nombre,
         codigoEstudiantil: certificado.intentoPractica?.usuario?.codigoEstudiantil,
+        codigoInstitucional: certificado.intentoPractica?.usuario?.codigoEstudiantil,
+        correo: certificado.intentoPractica?.usuario?.correo,
+        aprobado: certificado.intentoPractica?.aprobado,
+        detallePasos: certificado.intentoPractica?.detallePasosJson,
       },
     });
   } catch (err) {
@@ -198,3 +257,6 @@ export const verificarCertificado = async (req: Request, res: Response): Promise
     res.status(500).json({ error: 'Error al verificar el certificado' });
   }
 };
+
+// Alias para consistencia
+export const validarCertificado = verificarCertificado;

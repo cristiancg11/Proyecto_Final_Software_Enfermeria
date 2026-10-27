@@ -11,7 +11,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 // Esquema de validación para registro
 const RegistroSchema = z.object({
   nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
-  codigoEstudiantil: z.string().min(4, 'El código debe tener al menos 4 caracteres'),
+  codigoEstudiantil: z.string().min(2, 'El código debe tener al menos 2 caracteres').optional(),
   correo: z.string().email('Correo electrónico no válido'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
   rol: z.nativeEnum(Rol).optional().default(Rol.ESTUDIANTE),
@@ -37,7 +37,11 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
     const data = RegistroSchema.parse(req.body);
 
     const correoNormalizado = data.correo.trim().toLowerCase();
-    const codigoNormalizado = data.codigoEstudiantil.trim();
+    const codigoNormalizado =
+      data.codigoEstudiantil?.trim() ||
+      (data.rol === Rol.DOCENTE
+        ? `DOC-${Math.floor(1000 + Math.random() * 9000)}`
+        : `EST-${Math.floor(1000 + Math.random() * 9000)}`);
 
     // Validar si ya existe un usuario con ese correo o código estudiantil
     const usuarioExistente = await prisma.usuario.findFirst({

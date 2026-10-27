@@ -86,6 +86,38 @@ export class AuthService {
   }
 
   /**
+   * Permite al docente o administrador activo registrar un nuevo docente institucional
+   * sin cerrar ni sobrescribir su propia sesión activa.
+   * POST /api/auth/registro
+   */
+  registrarDocentePorAdmin(datos: {
+    nombre: string;
+    correo: string;
+    password: string;
+    codigoEstudiantil?: string;
+  }): Observable<AuthResponse> {
+    let headers = new HttpHeaders();
+    const token = this.token();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}/auth/registro`,
+      {
+        nombre: datos.nombre.trim(),
+        codigoEstudiantil:
+          datos.codigoEstudiantil?.trim() || `DOC-${Math.floor(1000 + Math.random() * 9000)}`,
+        correo: datos.correo.trim().toLowerCase(),
+        password: datos.password,
+        rol: 'DOCENTE',
+        consentimiento: true,
+      },
+      { headers }
+    );
+  }
+
+  /**
    * Inicia sesión con correo/código y contraseña
    * POST /api/auth/login
    */

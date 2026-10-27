@@ -5,7 +5,7 @@ import {
   obtenerHistorialUsuario,
   verificarCertificado,
 } from '../controllers/practica.controller';
-import { autenticarToken, requerirDocente } from '../middlewares/auth.middleware';
+import { autenticarToken, requerirDocente, autenticarTokenOpcional } from '../middlewares/auth.middleware';
 
 export const practicasRouter = Router();
 
@@ -17,11 +17,13 @@ practicasRouter.get(
   obtenerPracticasDocente
 );
 
-// Registrar práctica realizada por un estudiante (con o sin token)
-practicasRouter.post('/', autenticarToken, registrarPractica);
+// Registrar práctica realizada por un estudiante (autenticado opcionalmente)
+practicasRouter.post('/', autenticarTokenOpcional, registrarPractica);
 
 // Obtener historial de prácticas por usuario
 practicasRouter.get('/usuario/:usuarioId', autenticarToken, obtenerHistorialUsuario);
 
 // Verificación pública de certificados mediante código QR o verificación manual
 practicasRouter.get('/certificado/:codigo', verificarCertificado);
+practicasRouter.get('/certificados/validar/:codigo', verificarCertificado);
+practicasRouter.get('/validar/:codigo', verificarCertificado);

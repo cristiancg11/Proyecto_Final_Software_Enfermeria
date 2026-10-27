@@ -60,6 +60,14 @@ export const routes: Routes = [
     title: 'Manos Seguras — Resultados y Calificación',
   },
   {
+    path: 'validar/:codigo',
+    loadComponent: () =>
+      import('./pages/validar-certificado/validar-certificado.component').then(
+        (m) => m.ValidarCertificadoComponent
+      ),
+    title: 'Manos Seguras — Verificación Oficial de Certificado',
+  },
+  {
     path: '**',
     redirectTo: 'bienvenida',
   },

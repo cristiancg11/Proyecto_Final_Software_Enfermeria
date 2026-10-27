@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
+import { PracticasService, RegistrarPracticaResponse } from '../../services/practicas.service';
 
 @Component({
   selector: 'app-resultado',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   template: `
     <div class="max-w-4xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
       <!-- Certificado / Tarjeta de Calificación Principal -->
@@ -96,8 +97,52 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
         </div>
 
+        <!-- Tarjeta de Certificado Oficial Emitido y Validación QR -->
+        @if (codigoCertificado()) {
+          <div class="mt-8 bg-gradient-to-r from-[#0B2B29] via-[#0E2824] to-[#091E1C] rounded-3xl p-6 md:p-8 border border-[#00B39F]/40 shadow-xl text-white relative overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div class="space-y-2 text-center md:text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00B39F]/20 text-[#50E7FF] text-xs font-black uppercase tracking-wider">
+                  <span>✓ Certificado Institucional Emitido</span>
+                </div>
+                <h3 class="text-xl md:text-2xl font-black text-white">
+                  Acreditación de Competencia Clínica OMS
+                </h3>
+                <p class="text-xs text-[#C5D7E8] max-w-lg leading-relaxed">
+                  Tu técnica ha sido acreditada y registrada en la base de datos institucional. Puedes verificar la autenticidad escaneando el código QR o ingresando al enlace directo.
+                </p>
+                <div class="pt-1">
+                  <span class="text-xs text-slate-400 block">Código Único de Validación:</span>
+                  <span class="font-mono text-sm md:text-base font-black text-[#50E7FF] bg-black/40 px-3 py-1.5 rounded-xl border border-white/10 inline-block mt-1 select-all">
+                    {{ codigoCertificado() }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Código QR y Botón de Validación -->
+              <div class="flex flex-col items-center shrink-0 bg-white p-3 rounded-2xl shadow-lg border border-white/20">
+                <img
+                  [src]="qrCodeUrl()"
+                  alt="QR Verificación Certificado"
+                  class="w-28 h-28 object-contain rounded-lg"
+                />
+                <a
+                  [routerLink]="['/validar', codigoCertificado()]"
+                  target="_blank"
+                  class="mt-2 text-[11px] font-extrabold text-[#008072] hover:text-[#00B39F] transition flex items-center gap-1"
+                >
+                  <span>Abrir Verificación</span>
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        }
+
         <!-- Botones de Acción Inmediata -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 border-t border-slate-100">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 border-t border-slate-100 mt-8">
           <button
             type="button"
             (click)="repeatPractice()"
@@ -223,18 +268,67 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 export class ResultadoComponent {
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
+  private readonly practicasService = inject(PracticasService);
 
   readonly currentDate = new Date();
   readonly questions = this.stateService.diagnosticQuestions;
   readonly student = this.stateService.student;
   readonly evaluation = this.stateService.evaluationResult;
+  readonly codigoCertificado = signal<string | null>(null);
+  private intentoGuardado = false;
 
   readonly studentName = computed(() => this.student()?.fullName || 'Estudiante Evaluado');
   readonly studentCode = computed(() => this.student()?.studentCode || 'No registrado');
 
+  readonly qrCodeUrl = computed(() => {
+    const cod = this.codigoCertificado();
+    if (!cod) return '';
+    const fullUrl = typeof window !== 'undefined'
+      ? `${window.location.origin}/validar/${encodeURIComponent(cod)}`
+      : `http://localhost:4200/validar/${encodeURIComponent(cod)}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(fullUrl)}`;
+  });
+
   readonly optimalStepsCount = computed(() => {
     return this.evaluation().records.filter((r) => r.status === 'optimal').length;
   });
+
+  constructor() {
+    this.guardarIntentoPractica();
+  }
+
+  private guardarIntentoPractica(): void {
+    if (this.intentoGuardado) return;
+    const evalData = this.evaluation();
+    if (!evalData.records || evalData.records.length === 0) return;
+
+    this.intentoGuardado = true;
+    const aprobado = evalData.overallScore >= 7.0;
+
+    this.practicasService
+      .registrarPractica({
+        calificacion: evalData.overallScore,
+        aprobado,
+        detallePasosJson: {
+          records: evalData.records,
+          totalSeconds: evalData.totalSeconds,
+          performanceLevel: evalData.performanceLevel,
+          student: this.student(),
+        },
+      })
+      .subscribe({
+        next: (res: RegistrarPracticaResponse) => {
+          if (res.codigoCertificado) {
+            this.codigoCertificado.set(res.codigoCertificado);
+          } else if (res.certificado?.codigoVerificacion) {
+            this.codigoCertificado.set(res.certificado.codigoVerificacion);
+          }
+        },
+        error: (err: unknown) => {
+          console.error('Error al persistir intento de práctica:', err);
+        },
+      });
+  }
 
   repeatPractice(): void {
     this.stateService.resetPractice();

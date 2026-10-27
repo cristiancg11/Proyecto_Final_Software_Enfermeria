@@ -35,6 +35,47 @@ export interface PracticasDocenteResponse {
   practicas: PracticaEstudianteDocente[];
 }
 
+export interface RegistrarPracticaDto {
+  calificacion: number;
+  aprobado: boolean;
+  detallePasosJson: any;
+  usuarioId?: string;
+  correo?: string;
+  codigoEstudiantil?: string;
+}
+
+export interface RegistrarPracticaResponse {
+  mensaje: string;
+  intento: any;
+  codigoCertificado: string | null;
+  codigoVerificacion?: string | null;
+  certificado?: {
+    id: string;
+    codigoVerificacion: string;
+    fechaEmision: string | Date;
+  } | null;
+}
+
+export interface ValidarCertificadoResponse {
+  valido: boolean;
+  certificado?: {
+    id?: string;
+    codigoVerificacion: string;
+    codigo?: string;
+    fechaEmision: string | Date;
+    fecha?: string | Date;
+    calificacion?: number;
+    nombre?: string;
+    estudiante?: string;
+    codigoEstudiantil?: string;
+    codigoInstitucional?: string;
+    correo?: string;
+    aprobado?: boolean;
+    detallePasos?: any;
+  };
+  error?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -60,6 +101,29 @@ export class PracticasService {
     return this.http.get<PracticasDocenteResponse>(
       `${this.apiUrl}/practicas/docente`,
       { headers: this.obtenerHeadersAuth() }
+    );
+  }
+
+  /**
+   * Guarda el intento de práctica de lavado de manos del estudiante y genera certificado si aprueba
+   * POST /api/practicas
+   */
+  registrarPractica(datos: RegistrarPracticaDto): Observable<RegistrarPracticaResponse> {
+    return this.http.post<RegistrarPracticaResponse>(
+      `${this.apiUrl}/practicas`,
+      datos,
+      { headers: this.obtenerHeadersAuth() }
+    );
+  }
+
+  /**
+   * Valida públicamente la autenticidad de un certificado emitido
+   * GET /api/certificados/validar/:codigo
+   */
+  validarCertificado(codigo: string): Observable<ValidarCertificadoResponse> {
+    const codigoLimpio = encodeURIComponent(codigo.trim());
+    return this.http.get<ValidarCertificadoResponse>(
+      `${this.apiUrl}/certificados/validar/${codigoLimpio}`
     );
   }
 }
