@@ -787,11 +787,12 @@ export class BienvenidaComponent {
   }
 
   private redirigirSegunRol(res: AuthResponse): void {
-    const user = res.user || res.usuario;
+    const user = res.usuario || res.user;
+    const consentimiento = user?.consentimiento !== undefined ? !!user.consentimiento : true;
     this.stateService.setStudent({
       fullName: user.nombre,
-      studentCode: user.codigoEstudiantil,
-      consent: user.consentimiento,
+      studentCode: user.codigoEstudiantil || '',
+      consent: consentimiento,
     });
 
     setTimeout(() => {
@@ -800,6 +801,6 @@ export class BienvenidaComponent {
       } else {
         this.router.navigate(['/introduccion']);
       }
-    }, 350);
+    }, 250);
   }
 }

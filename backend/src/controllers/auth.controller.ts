@@ -101,6 +101,7 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
       correo: nuevoUsuario.correo,
       rol: nuevoUsuario.rol,
       codigoEstudiantil: nuevoUsuario.codigoEstudiantil,
+      consentimiento: nuevoUsuario.consentimiento,
     };
 
     res.status(201).json({
@@ -174,6 +175,7 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
       correo: usuario.correo,
       rol: usuario.rol,
       codigoEstudiantil: usuario.codigoEstudiantil,
+      consentimiento: usuario.consentimiento,
     };
 
     res.json({

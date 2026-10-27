@@ -187,7 +187,11 @@ export class AuthService {
    * Guarda el JWT y los datos del usuario en localStorage y actualiza las Signals
    */
   private establecerSesion(res: AuthResponse): void {
-    const user = res.user || res.usuario;
+    const rawUser = res.usuario || res.user;
+    const user: Usuario = {
+      ...rawUser,
+      consentimiento: rawUser.consentimiento !== undefined ? !!rawUser.consentimiento : true,
+    };
     if (typeof window !== 'undefined') {
       localStorage.setItem('token', res.token);
       localStorage.setItem('usuario', JSON.stringify(user));

@@ -238,7 +238,7 @@ export class HandwashStateService {
             this._student.set({
               fullName: user.nombre,
               studentCode: user.codigoEstudiantil || '',
-              consent: !!user.consentimiento,
+              consent: user.consentimiento !== undefined ? !!user.consentimiento : true,
               registeredAt: new Date(),
             });
           }
