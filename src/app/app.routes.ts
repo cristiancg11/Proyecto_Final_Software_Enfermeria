@@ -40,10 +40,10 @@ export const routes: Routes = [
     path: 'preparacion',
     canActivate: [studentAuthGuard],
     loadComponent: () =>
-      import('./features/inicio/inicio.component').then(
-        (m) => m.InicioComponent
+      import('./pages/preparacion/preparacion.component').then(
+        (m) => m.PreparacionComponent
       ),
-    title: 'Manos Seguras — Preparación para la Práctica',
+    title: 'Manos Seguras — Preparación Previa Obligatoria',
   },
   {
     path: 'inicio',
