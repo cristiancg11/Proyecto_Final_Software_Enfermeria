@@ -18,77 +18,77 @@ export class HandwashStateService {
     {
       id: 1,
       question:
-        'Antes de realizar una punción venosa periférica a un paciente canalizado, ¿cuál es la acción de higiene de manos estrictamente indicada según los 5 momentos de la OMS?',
-      context: '5 Momentos OMS • Tarea Aséptica / Limpia',
+        'Caso Clínico 1: El profesional de enfermería ingresa a la unidad de un paciente hospitalizado para valorar signos vitales y realizar exploración física rutinaria cardiopulmonar. El paciente no presenta heridas abiertas ni drenajes activos. De acuerdo con los 5 Momentos de la OMS, ¿cuál es la indicación aséptica obligatoria antes de tocar al paciente?',
+      context: '5 Momentos OMS • Momento 1 (Antes del Contacto)',
       options: [
-        'Lavado con agua y jabón solo si hay suciedad visible, de lo contrario fricción con preparado de base alcohólica.',
-        'Lavado exclusivo con clorhexidina al 4% durante 2 minutos continuos.',
-        'Es suficiente con la postura de guantes estériles sin higiene previa.',
-        'Fricción de manos únicamente después de retirar la aguja del paciente.',
+        'Efectuar fricción antiséptica con solución hidroalcohólica inmediatamente antes del contacto (Momento 1), protegiendo al paciente de patógenos del entorno asistencial.',
+        'Colocarse guantes de procedimiento limpios de forma directa sin higiene de manos previa, al tratarse de un examen no invasivo.',
+        'Realizar la higiene de manos únicamente al finalizar la valoración completa (Momento 4), ya que el paciente no tiene aislamiento.',
+        'Omitir la higiene si las manos lucen visiblemente limpias y desinfectar exclusivamente las olivas del fonendoscopio con alcohol.',
       ],
       correctIndex: 0,
       rationale:
-        'Corresponde al Momento 2 (Antes de realizar una tarea aséptica/limpia). Si las manos no están visiblemente sucias, la fricción con base alcohólica es el estándar preferido por su rapidez y eficacia antimicrobiana.',
+        'Según la estrategia de los 5 Momentos de la OMS, el Momento 1 ("Antes del contacto con el paciente") es imperativo inmediatamente antes de cualquier examen físico, palpación o toma de signos vitales. Su propósito primordial es proteger al paciente de la colonización cruzada por microorganismos exógenos transportados transitoriamente en las manos del personal asistencial.',
     },
     {
       id: 2,
       question:
-        '¿Cuál es el tiempo mínimo requerido para una fricción efectiva con solución alcohólica según el protocolo estandarizado de la OMS?',
-      context: 'Protocolo Estandarizado OMS • Tiempo de Fricción',
+        'Caso Clínico 2: Se programa la canalización de un catéter venoso periférico en el antebrazo de un paciente para terapia antibiótica. El enfermero preparó la bandeja con los insumos estériles y seleccionó el trayecto venoso. Conforme al protocolo de técnica aséptica y el Momento 2 de la OMS, ¿cuál es la conducta adecuada previa a la punción?',
+      context: '5 Momentos OMS • Momento 2 (Tarea Aséptica)',
       options: [
-        '10 a 15 segundos.',
-        '20 a 30 segundos.',
-        '40 a 60 segundos.',
-        '90 segundos completos.',
+        'Realizar higiene de manos antiséptica inmediatamente antes de manipular insumos estériles y puncionar el acceso vascular (Momento 2), y posteriormente colocarse los guantes.',
+        'Realizar la higiene únicamente al culminar la venopunción y asegurar el apósito transparente sobre el sitio de inserción.',
+        'Confiar exclusivamente en el uso de guantes estériles, puesto que la higiene previa se considera redundante con material estéril.',
+        'Solo higienizarse las manos si se produce sangrado accidental durante la inserción del teflón intravascular.',
       ],
-      correctIndex: 1,
+      correctIndex: 0,
       rationale:
-        'La fricción con alcohol glicerinado debe durar entre 20 y 30 segundos cubriendo todos los pasos, a diferencia del lavado con agua y jabón que requiere entre 40 y 60 segundos.',
+        'El Momento 2 de la OMS ("Antes de realizar una tarea limpia o aséptica") previene la inoculación de microorganismos directamente al torrente sanguíneo o tejidos estériles. Debe ejecutarse inmediatamente antes del procedimiento (mediante fricción con base alcohólica si las manos no tienen suciedad visible) y previo a calzarse los guantes, ya que estos no sustituyen la higiene previa ni son barrera infranqueable frente a microperforaciones.',
     },
     {
       id: 3,
       question:
-        'Durante la atención a un paciente con diarrea confirmada por Clostridioides difficile, ¿cuál método de higiene de manos es obligatorio tras el contacto?',
-      context: 'Bioseguridad Hospitalaria • Esporas Bacterianas',
+        'Caso Clínico 3: Un enfermero finaliza el vaciado y medición de la orina de un catéter vesical cerrado utilizando guantes de examen limpios. Al retirar los guantes mediante la técnica pico-guante sin rozar la superficie externa contaminada, ¿cuál es la conducta mandatoria según las normas de bioseguridad hospitalaria?',
+      context: '5 Momentos OMS • Momento 3 (Exposición a Fluidos y Retiro de Guantes)',
       options: [
-        'Fricción con solución hidroalcohólica al 70%.',
-        'Lavado con agua y jabón común o antimicrobiano.',
-        'Uso de gel antibacterial seguido de secado con toalla de tela.',
-        'Solo retiro cuidadoso de guantes sin necesidad de lavado inmediato.',
+        'Realizar higiene de manos inmediata al retirar los guantes (Momento 3: Después del riesgo de exposición a fluidos), dado que los guantes no brindan protección microbiológica absoluta.',
+        'Omitir la higiene si los guantes se mantuvieron visualmente íntegros y no hubo humedad percibida sobre la epidermis.',
+        'Aplicar solución hidroalcohólica directamente sobre los guantes puestos para descontaminarlos y reutilizarlos con otro paciente.',
+        'Postergar la higiene hasta salir de la sala de hospitalización, limpiando únicamente el exterior del recipiente de medición.',
       ],
-      correctIndex: 1,
+      correctIndex: 0,
       rationale:
-        'Las esporas de Clostridioides difficile son resistentes a la acción bactericida del alcohol; se requiere la acción mecánica del agua y jabón para arrastrarlas físicamente.',
+        'La OMS estipula que el uso de guantes no reemplaza en ningún caso la higiene de manos. El Momento 3 ("Después del riesgo de exposición a líquidos corporales") exige realizar higiene de manos obligatoria de inmediato tras quitarse los guantes, debido a la posible contaminación de la piel por microporos indetectables o durante la maniobra de retiro de los elementos de protección personal.',
     },
     {
       id: 4,
       question:
-        "En la técnica de 6 pasos de la OMS, ¿cuál es el objetivo primordial del paso de 'rotación de los pulgares atrapándolos con la palma opuesta'?",
-      context: 'Técnica de 6 Pasos OMS • Biomecánica Digital',
+        'Caso Clínico 4: Durante la atención en sala de aislamiento a un paciente diagnosticado con colitis pseudomembranosa por Clostridioides difficile, o ante la presencia de manos con suciedad macroscópica visible o sangre, ¿por qué la directriz OMS establece el lavado con agua y jabón en lugar del alcohol en gel?',
+      context: 'Bioseguridad Hospitalaria • Esporas y Suciedad Visible',
       options: [
-        'Friccionar la articulación de la muñeca.',
-        'Descontaminar la zona tenar y el primer dedo, frecuentemente omitidos en el frotado general.',
-        'Limpiar el lecho ungueal y las cutículas.',
-        'Retirar la flora transitoria del dorso de la mano.',
+        'Porque las esporas de Clostridioides difficile y la materia orgánica resisten la acción del alcohol; se requiere el arrastre mecánico y detergencia del agua y jabón.',
+        'Porque el agua y jabón neutraliza químicamente las toxinas A y B en menos de 5 segundos a diferencia del alcohol en gel.',
+        'Porque el alcohol al 70% degrada la capa lipídica de las esporas convirtiéndolas en formas vegetativas más invasivas.',
+        'Porque el lavado con agua y jabón es de menor duración que la fricción hidroalcohólica recomendada en aislamientos.',
       ],
-      correctIndex: 1,
+      correctIndex: 0,
       rationale:
-        'Los pulgares y sus pliegues interdigitales son una de las áreas anatómicas que con mayor frecuencia se omiten cuando se realiza fricción simple palma contra palma.',
+        'Las preparaciones de base alcohólica son potentes bactericidas de acción rápida, pero carecen de eficacia esporicida contra Clostridioides difficile y ven reducida su efectividad ante biocargas orgánicas espesas. Por tanto, ante esporas o suciedad visible, es mandatorio el lavado mecánico con agua y jabón para emulsionar y arrastrar físicamente los patógenos por fricción hidrodinámica.',
     },
     {
       id: 5,
       question:
-        'Tras ajustar la bomba de infusión y acomodar la barandilla de la cama de un paciente (sin contacto físico directo con su piel), ¿es obligatorio higienizarse las manos?',
-      context: '5 Momentos OMS • Entorno Asistencial',
+        'Caso Clínico 5: En un taller de simulación clínica de enfermería, se instruye sobre los tiempos de contacto óptimos recomendados por la OMS para garantizar la eficacia antimicrobiana. ¿Cuáles son los rangos temporales protocolarios para la fricción con solución hidroalcohólica y para el lavado con agua y jabón, respectivamente?',
+      context: 'Tiempos Normativos OMS • Fricción vs. Lavado',
       options: [
-        'No, porque no hubo contacto con fluidos ni con el cuerpo del paciente.',
-        'Sí, corresponde al Momento 5 (Después del contacto con el entorno del paciente).',
-        'Solo si se va a salir inmediatamente del pabellón de hospitalización.',
-        'Únicamente si el paciente se encuentra bajo aislamiento por gotas.',
+        'Fricción con base alcohólica: 20 a 30 segundos | Lavado con agua y jabón: 40 a 60 segundos completos.',
+        'Fricción con base alcohólica: 10 a 15 segundos | Lavado con agua y jabón: 20 a 30 segundos.',
+        'Fricción con base alcohólica: 40 a 60 segundos | Lavado con agua y jabón: 90 a 120 segundos.',
+        'Fricción con base alcohólica: mínimo 60 segundos | Lavado con agua y jabón: 15 a 20 segundos breves.',
       ],
-      correctIndex: 1,
+      correctIndex: 0,
       rationale:
-        'El entorno inmediato del paciente se contamina con la misma flora del paciente; por tanto, el Momento 5 exige desinfección al abandonar la unidad o cambiar de actividad.',
+        'La OMS estipula que la fricción antiséptica con formulaciones a base de alcohol debe durar entre 20 y 30 segundos (frotando sistemáticamente hasta que el producto se evapore por completo y las manos queden secas). Por su parte, el lavado clínico con agua y jabón requiere entre 40 y 60 segundos para permitir la humectación, jabonado completo en los 6 pasos, enjuague y secado aséptico.',
     },
   ];
 

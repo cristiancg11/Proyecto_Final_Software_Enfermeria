@@ -303,9 +303,9 @@ export interface QualityAlert {
                 </p>
               </div>
 
-              <!-- Contenedor con reproductor de video o recurso multimedia en bucle con fallback SVG animado -->
-              <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl overflow-hidden bg-slate-950 border border-teal-500/30 shadow-lg flex items-center justify-center group">
-                <!-- Video Guía en bucle si existe el recurso .mp4 -->
+              <!-- Contenedor con reproductor de video funcional (autoplay, loop, muted, playsinline) y fallback animado en bucle -->
+              <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl overflow-hidden bg-slate-950 border border-teal-500/30 shadow-2xl flex items-center justify-center group">
+                <!-- Video Guía Clínico Real en bucle (Paso activo) -->
                 <video
                   #demoVideo
                   *ngIf="!videoDemoError()"
@@ -318,30 +318,45 @@ export interface QualityAlert {
                   class="w-full h-full object-cover rounded-2xl"
                 ></video>
 
-                <!-- Fallback Visual SVG Elegante con Animación de Movimiento Biomecánico -->
-                <div *ngIf="videoDemoError()" class="relative w-full h-full flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-900 to-slate-950">
-                  <img
-                    [src]="svgFallbackUrl()"
-                    [alt]="currentClinicalTitle()"
-                    class="max-h-[85%] max-w-[85%] object-contain filter drop-shadow-xl transition-all duration-500 group-hover:scale-105"
-                  />
+                <!-- Fallback Animado Biomecánico en Bucle (Técnica OMS) para que NUNCA quede como imagen estática -->
+                <div *ngIf="videoDemoError()" class="relative w-full h-full flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-900 to-slate-950 overflow-hidden">
+                  <div class="absolute inset-0 bg-[#00B39F]/5 pointer-events-none"></div>
+
+                  <!-- Elemento ilustrativo animado con keyframes biomecánicos en bucle continuo -->
+                  <div class="relative flex items-center justify-center w-48 h-48 sm:w-56 sm:h-56">
+                    <img
+                      [src]="svgFallbackUrl()"
+                      [alt]="currentClinicalTitle()"
+                      class="max-h-full max-w-full object-contain filter drop-shadow-2xl transition-transform duration-700"
+                      [ngClass]="{
+                        'anim-rub-palms-left': currentStepIndex() === 0,
+                        'anim-rub-dorsal-top': currentStepIndex() === 1,
+                        'anim-rub-interdigital-left': currentStepIndex() === 2,
+                        'anim-rub-hook-lock': currentStepIndex() === 3,
+                        'anim-rub-thumb-fist': currentStepIndex() === 4,
+                        'anim-rub-nails-cluster': currentStepIndex() === 5
+                      }"
+                    />
+                  </div>
+
+                  <!-- Subtítulo inferior dinámico -->
                   <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none px-2">
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/80 border border-teal-500/40 text-[10px] sm:text-xs font-bold text-teal-300 backdrop-blur-md">
+                    <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-teal-500/50 text-[10px] sm:text-xs font-bold text-teal-300 backdrop-blur-md shadow-lg">
                       <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
-                      <span>Ilustración Anatómica OMS</span>
+                      <span>Demostración Animada en Bucle • OMS</span>
                     </div>
-                    <span class="text-[10px] text-slate-400 font-medium bg-black/50 px-2 py-0.5 rounded-md">
-                      Guía Sincronizada Paso {{ currentStepIndex() + 1 }}
+                    <span class="text-[10px] text-slate-300 font-bold bg-black/60 px-2.5 py-1 rounded-md border border-white/10">
+                      Paso {{ currentStepIndex() + 1 }} de 6
                     </span>
                   </div>
                 </div>
 
-                <!-- Badge flotante superior -->
+                <!-- Badge flotante superior con estado del reproductor -->
                 <div class="absolute top-3 left-3 z-10 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-teal-500/30 text-[11px] font-bold text-teal-300">
                   <svg class="w-3.5 h-3.5 text-teal-400" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
                   </svg>
-                  <span>Referencia Biomecánica Oficial</span>
+                  <span>Video Demostrativo Clínico OMS</span>
                 </div>
               </div>
 
@@ -709,14 +724,31 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly palmsValidated = signal(false);
   readonly palmsFeedback = signal('Coloca ambas manos en el encuadre para comenzar.');
   readonly videoDemoError = signal(false);
+  readonly usingFallbackVideo = signal(false);
 
   // Previo de Apertura de Grifo
   readonly mostrarFaseInicial = signal(true);
   readonly segundosGrifo = signal(5);
   private grifoInterval: any = null;
 
+  // URLs remotas de fallback directo para los 6 pasos OMS (contingencia garantizada)
+  readonly fallbackVideoUrls: string[] = [
+    'https://upload.wikimedia.org/wikipedia/commons/8/89/Clean_hands_short.webm',
+    'https://upload.wikimedia.org/wikipedia/commons/6/60/20200303_-_SFGovTV_-_SFDPH_WASH_HANDS_SPANISH.webm',
+    'https://upload.wikimedia.org/wikipedia/commons/6/60/20200303_-_SFGovTV_-_SFDPH_WASH_HANDS_SPANISH.webm',
+    'https://upload.wikimedia.org/wikipedia/commons/6/60/20200303_-_SFGovTV_-_SFDPH_WASH_HANDS_SPANISH.webm',
+    'https://upload.wikimedia.org/wikipedia/commons/8/89/Clean_hands_short.webm',
+    'https://upload.wikimedia.org/wikipedia/commons/8/89/Clean_hands_short.webm',
+  ];
+
   // 2. SINCRONIZACIÓN DINÁMICA DEL RECURSO GUÍA
-  readonly videoUrl = computed(() => `assets/videos/paso${this.currentStepIndex() + 1}.mp4`);
+  readonly videoUrl = computed(() => {
+    const idx = this.currentStepIndex();
+    if (this.usingFallbackVideo()) {
+      return this.fallbackVideoUrls[idx] || `assets/videos/paso${idx + 1}.mp4`;
+    }
+    return `assets/videos/paso${idx + 1}.mp4`;
+  });
   readonly svgFallbackUrl = computed(() => `assets/images/pasos/paso-${this.currentStepIndex() + 1}.svg`);
 
   readonly clinicalTitles: string[] = [
@@ -754,6 +786,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
     return this.startCamera();
   }
 
+  @ViewChild('demoVideo') private demoVideo?: ElementRef<HTMLVideoElement>;
   @ViewChild('cameraVideo') private cameraVideo?: ElementRef<HTMLVideoElement>;
   @ViewChild('handOverlay') private handOverlay?: ElementRef<HTMLCanvasElement>;
 
@@ -1122,12 +1155,29 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   resetCurrentStepTimer(): void {
+    this.usingFallbackVideo.set(false);
     this.videoDemoError.set(false);
+    this.recargarVideoDemostrativo();
     this.startStepTimer();
   }
 
   onVideoDemoError(): void {
-    this.videoDemoError.set(true);
+    if (!this.usingFallbackVideo()) {
+      this.usingFallbackVideo.set(true);
+      this.recargarVideoDemostrativo();
+    } else {
+      this.videoDemoError.set(true);
+    }
+  }
+
+  private recargarVideoDemostrativo(): void {
+    setTimeout(() => {
+      const v = this.demoVideo?.nativeElement;
+      if (v) {
+        v.load();
+        v.play().catch(() => {});
+      }
+    }, 60);
   }
 
   completeStep(): void {
@@ -1149,7 +1199,9 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.router.navigate(['/evaluacion-practica']);
     } else {
       this.currentStepIndex.update((idx) => idx + 1);
+      this.usingFallbackVideo.set(false);
       this.videoDemoError.set(false);
+      this.recargarVideoDemostrativo();
       this.startStepTimer();
     }
   }
