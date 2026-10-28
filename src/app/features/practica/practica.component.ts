@@ -29,57 +29,47 @@ export interface QualityAlert {
   imports: [CommonModule],
   styles: [`
     @keyframes rubPalmsLeft {
-      0%, 100% { transform: translate(-3px, -3px) rotate(-3deg); }
-      50% { transform: translate(3px, 3px) rotate(3deg); }
-    }
-    @keyframes rubPalmsRight {
-      0%, 100% { transform: translate(3px, 3px) rotate(3deg); }
-      50% { transform: translate(-3px, -3px) rotate(-3deg); }
+      0%, 100% { transform: translate(-4px, -4px) rotate(-2.5deg); }
+      50% { transform: translate(4px, 4px) rotate(2.5deg); }
     }
     @keyframes rubDorsalTop {
-      0%, 100% { transform: translateY(-8px) rotate(14deg); }
-      50% { transform: translateY(8px) rotate(16deg); }
+      0%, 100% { transform: translateY(-7px) rotate(-3deg); }
+      50% { transform: translateY(7px) rotate(3deg); }
     }
     @keyframes rubInterdigitalLeft {
-      0%, 100% { transform: translateY(-4px); }
-      50% { transform: translateY(4px); }
-    }
-    @keyframes rubInterdigitalRight {
-      0%, 100% { transform: translateY(4px); }
-      50% { transform: translateY(-4px); }
+      0%, 100% { transform: translateY(-6px); }
+      50% { transform: translateY(6px); }
     }
     @keyframes rubHookLock {
-      0%, 100% { transform: translateX(-6px); }
-      50% { transform: translateX(6px); }
+      0%, 100% { transform: translateX(-7px); }
+      50% { transform: translateX(7px); }
     }
     @keyframes rubThumbFist {
-      0%, 100% { transform: rotate(-7deg) scale(0.98); }
-      50% { transform: rotate(7deg) scale(1.02); }
+      0%, 100% { transform: rotate(-8deg) scale(0.98); }
+      50% { transform: rotate(8deg) scale(1.02); }
     }
     @keyframes rubNailsCluster {
-      0% { transform: rotate(0deg) translate(0px, 0px); }
-      25% { transform: rotate(12deg) translate(3px, -2px); }
-      50% { transform: rotate(0deg) translate(0px, 3px); }
-      75% { transform: rotate(-12deg) translate(-3px, -2px); }
-      100% { transform: rotate(0deg) translate(0px, 0px); }
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(8deg) scale(1.02); }
+      50% { transform: rotate(0deg) scale(1); }
+      75% { transform: rotate(-8deg) scale(1.02); }
+      100% { transform: rotate(0deg) scale(1); }
     }
-    @keyframes arrowPulse {
-      0%, 100% { opacity: 0.8; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.08); }
+    @keyframes gentlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
     }
     @keyframes waterRipple {
       0%, 100% { transform: translateY(0px) scale(1); opacity: 0.9; }
       50% { transform: translateY(4px) scale(1.05); opacity: 1; }
     }
-    .anim-rub-palms-left { animation: rubPalmsLeft 1.8s ease-in-out infinite; transform-origin: 110px 140px; }
-    .anim-rub-palms-right { animation: rubPalmsRight 1.8s ease-in-out infinite; transform-origin: 190px 140px; }
-    .anim-rub-dorsal-top { animation: rubDorsalTop 1.6s ease-in-out infinite; transform-origin: 160px 140px; }
-    .anim-rub-interdigital-left { animation: rubInterdigitalLeft 1.4s ease-in-out infinite; }
-    .anim-rub-interdigital-right { animation: rubInterdigitalRight 1.4s ease-in-out infinite; }
-    .anim-rub-hook-lock { animation: rubHookLock 1.5s ease-in-out infinite; }
-    .anim-rub-thumb-fist { animation: rubThumbFist 1.8s ease-in-out infinite; transform-origin: 215px 135px; }
-    .anim-rub-nails-cluster { animation: rubNailsCluster 2s linear infinite; transform-origin: 160px 150px; }
-    .anim-arrow-pulse { animation: arrowPulse 1.4s ease-in-out infinite; transform-origin: center; }
+    .anim-rub-palms-left { animation: rubPalmsLeft 1.8s ease-in-out infinite; transform-origin: center; }
+    .anim-rub-dorsal-top { animation: rubDorsalTop 1.6s ease-in-out infinite; transform-origin: center; }
+    .anim-rub-interdigital-left { animation: rubInterdigitalLeft 1.4s ease-in-out infinite; transform-origin: center; }
+    .anim-rub-hook-lock { animation: rubHookLock 1.5s ease-in-out infinite; transform-origin: center; }
+    .anim-rub-thumb-fist { animation: rubThumbFist 1.8s ease-in-out infinite; transform-origin: center; }
+    .anim-rub-nails-cluster { animation: rubNailsCluster 2s linear infinite; transform-origin: center; }
+    .anim-pulse-subtle { animation: gentlePulse 3s ease-in-out infinite; }
     .anim-water-ripple { animation: waterRipple 2s ease-in-out infinite; }
   `],
   template: `
@@ -280,14 +270,14 @@ export interface QualityAlert {
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
 
             <!-- PANEL IZQUIERDO: "Demostración Guía del Paso" -->
-            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-xl border border-white/60 flex flex-col justify-between space-y-5 animate-fade-in">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-xl border border-white/60 flex flex-col justify-between space-y-4 animate-fade-in">
               
               <!-- Encabezado del Panel Izquierdo -->
-              <div class="space-y-2">
+              <div class="space-y-1.5">
                 <div class="flex items-center justify-between">
                   <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-extrabold border border-teal-200/80 shadow-xs">
                     <span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
-                    Demostración Guía del Paso
+                    Demostración Guía del Paso • Infografía OMS
                   </span>
                   <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                     Paso Activo: <strong class="text-teal-700">{{ currentStepIndex() + 1 }}</strong> de 6
@@ -295,7 +285,7 @@ export interface QualityAlert {
                 </div>
 
                 <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-[#0B2B29] leading-tight">
-                  {{ currentClinicalTitle() }}
+                  {{ currentClinicalName() }}
                 </h2>
 
                 <p class="text-xs sm:text-sm text-slate-600 font-medium">
@@ -303,31 +293,23 @@ export interface QualityAlert {
                 </p>
               </div>
 
-              <!-- Contenedor con reproductor de video funcional (autoplay, loop, muted, playsinline) y fallback animado en bucle -->
-              <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl overflow-hidden bg-slate-950 border border-teal-500/30 shadow-2xl flex items-center justify-center group">
-                <!-- Video Guía Clínico Real en bucle (Paso activo) -->
-                <video
-                  #demoVideo
-                  *ngIf="!videoDemoError()"
-                  [src]="videoUrl()"
-                  (error)="onVideoDemoError()"
-                  autoplay
-                  loop
-                  muted
-                  playsinline
-                  class="w-full h-full object-cover rounded-2xl"
-                ></video>
+              <!-- VISOR CIRCULAR CENTRAL ILUSTRADO (FONDO TURQUESA SUAVE #E0F7F6 / #CFFBF0 Y TÉCNICA VECTORIAL OMS) -->
+              <div class="relative w-full py-3 flex flex-col items-center justify-center bg-gradient-to-b from-[#E0F7F6]/70 via-[#CFFBF0]/50 to-white/90 rounded-3xl border border-teal-200/80 shadow-inner group overflow-hidden">
+                <!-- Anillos decorativos de fondo -->
+                <div class="absolute w-64 h-64 rounded-full bg-teal-100/40 -top-10 -left-10 blur-2xl pointer-events-none"></div>
+                <div class="absolute w-64 h-64 rounded-full bg-emerald-100/40 -bottom-10 -right-10 blur-2xl pointer-events-none"></div>
 
-                <!-- Fallback Animado Biomecánico en Bucle (Técnica OMS) para que NUNCA quede como imagen estática -->
-                <div *ngIf="videoDemoError()" class="relative w-full h-full flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-900 to-slate-950 overflow-hidden">
-                  <div class="absolute inset-0 bg-[#00B39F]/5 pointer-events-none"></div>
+                <!-- Visor Circular Ilustrado Central -->
+                <div class="relative w-56 h-56 sm:w-64 sm:h-64 rounded-full p-2 bg-gradient-to-b from-white to-[#E0F7F6] border-4 border-teal-300/80 shadow-xl shadow-teal-500/15 flex items-center justify-center anim-pulse-subtle">
+                  <!-- Borde interior punteado decorativo -->
+                  <div class="absolute inset-2 rounded-full border border-dashed border-teal-400/40 pointer-events-none"></div>
 
-                  <!-- Elemento ilustrativo animado con keyframes biomecánicos en bucle continuo -->
-                  <div class="relative flex items-center justify-center w-48 h-48 sm:w-56 sm:h-56">
+                  <!-- Imagen SVG Vectorial Detallada con Animación Biomecánica Continua -->
+                  <div class="relative w-full h-full flex items-center justify-center">
                     <img
-                      [src]="svgFallbackUrl()"
-                      [alt]="currentClinicalTitle()"
-                      class="max-h-full max-w-full object-contain filter drop-shadow-2xl transition-transform duration-700"
+                      [src]="currentSvgIllustration()"
+                      [alt]="currentClinicalName()"
+                      class="w-full h-full object-contain filter drop-shadow-md select-none pointer-events-none transition-transform duration-500"
                       [ngClass]="{
                         'anim-rub-palms-left': currentStepIndex() === 0,
                         'anim-rub-dorsal-top': currentStepIndex() === 1,
@@ -338,54 +320,58 @@ export interface QualityAlert {
                       }"
                     />
                   </div>
-
-                  <!-- Subtítulo inferior dinámico -->
-                  <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none px-2">
-                    <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-teal-500/50 text-[10px] sm:text-xs font-bold text-teal-300 backdrop-blur-md shadow-lg">
-                      <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
-                      <span>Demostración Animada en Bucle • OMS</span>
-                    </div>
-                    <span class="text-[10px] text-slate-300 font-bold bg-black/60 px-2.5 py-1 rounded-md border border-white/10">
-                      Paso {{ currentStepIndex() + 1 }} de 6
-                    </span>
-                  </div>
                 </div>
 
-                <!-- Badge flotante superior con estado del reproductor -->
-                <div class="absolute top-3 left-3 z-10 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-teal-500/30 text-[11px] font-bold text-teal-300">
-                  <svg class="w-3.5 h-3.5 text-teal-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                  </svg>
-                  <span>Video Demostrativo Clínico OMS</span>
+                <!-- Badge pedagógico inferior de Técnica Visual Activa -->
+                <div class="mt-2.5 flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 border border-teal-200 text-teal-800 text-[11px] font-extrabold shadow-xs">
+                  <span class="w-2 h-2 rounded-full bg-teal-500 animate-ping"></span>
+                  <span>Técnica Biomecánica Continua • Guía OMS</span>
                 </div>
               </div>
 
-              <!-- Breve indicación de técnica y clave clínica -->
-              <div class="space-y-3">
-                <div class="p-3.5 rounded-2xl bg-teal-50/80 border border-teal-200/80 text-slate-800 text-xs sm:text-sm">
-                  <div class="flex items-start gap-2.5">
-                    <div class="w-6 h-6 rounded-lg bg-[#00B39F] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <span class="font-extrabold text-teal-900">Indicación de Técnica: </span>
-                      <span class="text-slate-700 font-medium">{{ currentTechniqueInstruction() }}</span>
-                    </div>
+              <!-- DETALLES PEDAGÓGICOS: TARJETA DESTACADA CON NOMBRE CLÍNICO, TIP ANATÓMICO Y BARRA DE TIEMPO OMS -->
+              <div class="bg-gradient-to-br from-teal-50/90 via-emerald-50/60 to-white rounded-2xl p-4 border border-teal-200/90 shadow-xs space-y-3 text-left">
+                <!-- Nombre Clínico y Tip Anatómico -->
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="w-6 h-6 rounded-lg bg-[#008072] text-white flex items-center justify-center shrink-0 text-xs font-black shadow-xs">
+                      {{ currentStepIndex() + 1 }}
+                    </span>
+                    <h3 class="font-heading text-sm sm:text-base font-extrabold text-[#0B2B29] leading-snug">
+                      {{ currentClinicalName() }}
+                    </h3>
+                  </div>
+                  <div class="flex items-start gap-2 pl-8">
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                      <strong class="text-teal-900 font-bold">Tip Anatómico: </strong>
+                      {{ currentAnatomicalTip() }}
+                    </p>
                   </div>
                 </div>
 
-                <!-- Relevancia Clínica -->
-                <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/70 text-xs text-slate-700">
-                  <div class="w-5 h-5 rounded-md bg-slate-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                <!-- Barra de Tiempo Mínimo Sugerido por la OMS para el Paso -->
+                <div class="pt-2 border-t border-teal-200/60 space-y-1.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-1.5">
+                      <svg class="w-4 h-4 text-[#008072]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span class="font-extrabold text-teal-950">Tiempo Mínimo Sugerido OMS:</span>
+                      <span class="font-black text-[#008072]">{{ whoMinSecondsPerStep }} segundos</span>
+                    </div>
+                    <span class="font-extrabold text-xs"
+                      [ngClass]="currentSeconds() >= whoMinSecondsPerStep ? 'text-emerald-700 font-black' : 'text-slate-600'">
+                      {{ currentSeconds() >= whoMinSecondsPerStep ? '✓ Meta OMS alcanzada' : formattedTime() + 's / ' + whoMinSecondsPerStep + 's' }}
+                    </span>
                   </div>
-                  <div>
-                    <span class="font-bold text-slate-900">Objetivo Clínico: </span>
-                    <span>{{ currentStep().clinicalKey }}</span>
+
+                  <!-- Barra de progreso visual del tiempo OMS -->
+                  <div class="w-full h-2.5 bg-teal-100/80 rounded-full overflow-hidden p-0.5 border border-teal-200">
+                    <div
+                      class="h-full rounded-full transition-all duration-200"
+                      [ngClass]="currentSeconds() >= whoMinSecondsPerStep ? 'bg-gradient-to-r from-emerald-500 to-teal-500 shadow-xs' : 'bg-gradient-to-r from-teal-400 to-[#00B39F]'"
+                      [style.width.%]="whoTimeProgressPercent()"
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -741,7 +727,43 @@ export class PracticaComponent implements OnInit, OnDestroy {
     'https://upload.wikimedia.org/wikipedia/commons/8/89/Clean_hands_short.webm',
   ];
 
-  // 2. SINCRONIZACIÓN DINÁMICA DEL RECURSO GUÍA
+  // 2. SINCRONIZACIÓN DINÁMICA DEL RECURSO GUÍA OMS Y DETALLES PEDAGÓGICOS
+  readonly whoMinSecondsPerStep = 5;
+
+  readonly clinicalNames: string[] = [
+    'Frotar Palma con Palma con Espuma',
+    'Palma Derecha sobre Dorso Izquierdo',
+    'Palmas Entrelazadas en Espacios Interdigitales',
+    'Dorso de Dedos Trabados contra Palma (Candado)',
+    'Fricción Rotatoria de Pulgares',
+    'Fricción de Yemas y Lecho Ungueal en Palma Opuesta',
+  ];
+
+  readonly anatomicalTips: string[] = [
+    'Mantén ambas palmas firmes y realiza fricción vigorosa en círculos para activar la espuma antiséptica en toda la superficie palmar.',
+    'Cubre toda la superficie del dorso intercalando los dedos para arrastrar la flora microbiana transitoria hacia el exterior.',
+    'Asegura la fricción profunda en los pliegues y comisuras interdigitales deslizando de la base a las puntas de los dedos.',
+    'Traba las falanges firmemente en flexión contra la palma contraria para limpiar nudillos, surcos y articulaciones interfalángicas.',
+    'Atrapa el pulgar en la palma opuesta con rotación completa de 360° abarcando la eminencia tenar y la base del primer metacarpiano.',
+    'Junta las puntas de los dedos sobre la palma cóncava girando en círculos concéntricos para desinfectar el lecho subungueal.',
+  ];
+
+  readonly currentClinicalName = computed(() => {
+    return this.clinicalNames[this.currentStepIndex()] || this.currentStep().title;
+  });
+
+  readonly currentAnatomicalTip = computed(() => {
+    return this.anatomicalTips[this.currentStepIndex()] || this.currentTechniqueInstruction();
+  });
+
+  readonly currentSvgIllustration = computed(() => {
+    return `assets/svg/paso${this.currentStepIndex() + 1}.svg`;
+  });
+
+  readonly whoTimeProgressPercent = computed(() => {
+    return Math.min(100, Math.round((this.currentSeconds() / this.whoMinSecondsPerStep) * 100));
+  });
+
   readonly videoUrl = computed(() => {
     const idx = this.currentStepIndex();
     if (this.usingFallbackVideo()) {
@@ -749,7 +771,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
     }
     return `assets/videos/paso${idx + 1}.mp4`;
   });
-  readonly svgFallbackUrl = computed(() => `assets/images/pasos/paso-${this.currentStepIndex() + 1}.svg`);
+  readonly svgFallbackUrl = computed(() => `assets/svg/paso${this.currentStepIndex() + 1}.svg`);
 
   readonly clinicalTitles: string[] = [
     'Paso 1: Frotar palmas entre sí',

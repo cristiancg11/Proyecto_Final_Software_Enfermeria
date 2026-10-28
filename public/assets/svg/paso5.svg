@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Fondo circular suave turquesa / celeste estilo infografía clínica OMS -->
+    <linearGradient id="bgGradPaso5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F7F6"/>
+      <stop offset="60%" stop-color="#CFFBF0"/>
+      <stop offset="100%" stop-color="#B2F5EA"/>
+    </linearGradient>
+
+    <!-- Tonos de piel médica aséptica -->
+    <linearGradient id="skinLeftPaso5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE8D3"/>
+      <stop offset="70%" stop-color="#F6CEAA"/>
+      <stop offset="100%" stop-color="#EBB386"/>
+    </linearGradient>
+    <linearGradient id="skinRightPaso5" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFEEDC"/>
+      <stop offset="70%" stop-color="#FCD6B6"/>
+      <stop offset="100%" stop-color="#F0BA8E"/>
+    </linearGradient>
+
+    <!-- Espuma antiséptica -->
+    <linearGradient id="foamGradPaso5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#D1FAE5" stop-opacity="0.75"/>
+    </linearGradient>
+
+    <filter id="softGlowPaso5" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0D9488" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Círculo Base Central Infografía OMS -->
+  <circle cx="250" cy="250" r="225" fill="url(#bgGradPaso5)" stroke="#5EEAD4" stroke-width="6" filter="url(#softGlowPaso5)"/>
+  <circle cx="250" cy="250" r="215" fill="none" stroke="#99F6E4" stroke-width="2" stroke-dasharray="6 6"/>
+
+  <!-- Grupo Fricción Rotatoria de Pulgar Atrapado -->
+  <g class="hands-group" transform="translate(0, 10)">
+    <!-- Mano Izquierda (Pulgar extendido hacia arriba y palma hacia el espectador) -->
+    <g id="mano-pulgar-izq">
+      <!-- Muñeca y antebrazo izquierdo -->
+      <path d="M120,410 L160,300 C165,280 175,260 185,250 L195,270" fill="url(#skinLeftPaso5)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Dedos de la mano izquierda agrupados hacia arriba -->
+      <path d="M185,250 C185,185 190,125 200,120 C210,115 218,125 215,185 L215,250" fill="url(#skinLeftPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M210,240 C215,170 220,110 230,105 C240,100 248,110 245,170 L240,240" fill="url(#skinLeftPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M235,240 C240,175 245,120 255,115 C265,110 272,120 268,175 L262,245" fill="url(#skinLeftPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M258,245 C262,190 268,145 276,140 C284,135 290,145 285,190 L278,255" fill="url(#skinLeftPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Palma de la mano izquierda -->
+      <path d="M160,300 C175,340 250,330 278,255 L255,245 C220,235 185,245 160,300 Z" fill="url(#skinLeftPaso5)" stroke="#B45309" stroke-width="2.5"/>
+
+      <!-- Pulgar izquierdo que sobresale hacia la derecha (será atrapado) -->
+      <path d="M185,275 C210,265 240,260 265,245 C275,235 280,215 270,205 C255,195 240,215 225,230 L185,260" fill="url(#skinLeftPaso5)" stroke="#B45309" stroke-width="2.5"/>
+    </g>
+
+    <!-- Mano Derecha (Puño envolvente que atrapa y rota el pulgar izquierdo) -->
+    <g id="mano-puno-envolvente">
+      <!-- Antebrazo derecho que viene desde la derecha -->
+      <path d="M390,390 L330,300 C320,285 305,275 290,270" fill="url(#skinRightPaso5)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Dedos de la mano derecha cerrados envolviendo el pulgar -->
+      <!-- Dedo índice envolvente -->
+      <path d="M295,200 C275,190 240,195 240,215 C240,230 265,235 290,230 Z" fill="url(#skinRightPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedo medio envolvente -->
+      <path d="M305,220 C280,210 245,215 245,235 C245,250 275,255 300,248 Z" fill="url(#skinRightPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedo anular envolvente -->
+      <path d="M312,240 C285,230 250,235 250,255 C250,270 280,275 308,268 Z" fill="url(#skinRightPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedo meñique envolvente -->
+      <path d="M318,260 C290,250 255,255 255,275 C255,290 285,295 312,288 Z" fill="url(#skinRightPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Palma exterior y nudillos del puño derecho -->
+      <path d="M295,200 C330,200 345,240 330,300 L290,270 C285,260 285,220 295,200 Z" fill="url(#skinRightPaso5)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Pulgar derecho apoyado sobre el índice envolvente -->
+      <path d="M315,205 C310,180 290,170 275,180 C265,190 275,205 295,210 Z" fill="url(#skinRightPaso5)" stroke="#B45309" stroke-width="2.5"/>
+    </g>
+
+    <!-- Espuma en el pulgar atrapado y zona de fricción -->
+    <g id="espuma-pulgar" fill="url(#foamGradPaso5)" stroke="#6EE7B7" stroke-width="2">
+      <!-- Cúmulos de burbujas en el vórtice de rotación -->
+      <circle cx="250" cy="215" r="14"/>
+      <circle cx="235" cy="235" r="16"/>
+      <circle cx="245" cy="260" r="18"/>
+      <circle cx="270" cy="225" r="13"/>
+      <circle cx="265" cy="275" r="15"/>
+      <circle cx="295" cy="215" r="12"/>
+
+      <!-- Burbujas sueltas flotantes -->
+      <circle cx="160" cy="230" r="10" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="163" cy="227" r="3" fill="#00B39F" opacity="0.6"/>
+      <circle cx="340" cy="210" r="12" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="343" cy="207" r="3.5" fill="#00B39F" opacity="0.6"/>
+      <circle cx="210" cy="150" r="9" stroke="#00B39F" stroke-width="1.8" fill="white" opacity="0.9"/>
+      <circle cx="250" cy="330" r="11" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+    </g>
+
+    <!-- Flecha Circular / Orbital de Fricción Rotatoria 360° -->
+    <g id="flechas-rotacion-pulgar">
+      <!-- Arco superior y flecha orbital -->
+      <path d="M225,180 C255,145 320,150 335,195" fill="none" stroke="#00A389" stroke-width="6.5" stroke-linecap="round"/>
+      <polygon points="340,205 328,190 345,188" fill="#00A389"/>
+
+      <!-- Arco inferior y flecha orbital inversa -->
+      <path d="M320,310 C280,345 220,335 195,295" fill="none" stroke="#00A389" stroke-width="6.5" stroke-linecap="round"/>
+      <polygon points="190,285 202,300 186,303" fill="#00A389"/>
+
+      <!-- Destellos de limpieza -->
+      <path d="M140,160 L145,150 L150,160 L160,165 L150,170 L145,180 L140,170 L130,165 Z" fill="#00B39F" opacity="0.85"/>
+      <path d="M355,155 L360,145 L365,155 L375,160 L365,165 L360,175 L355,165 L345,160 Z" fill="#00B39F" opacity="0.85"/>
+    </g>
+  </g>
+
+  <!-- Píldora Guía OMS Paso 5 -->
+  <g transform="translate(130, 420)">
+    <rect width="240" height="42" rx="21" fill="#008072" filter="url(#softGlowPaso5)"/>
+    <circle cx="28" cy="21" r="13" fill="#FFFFFF"/>
+    <text x="28" y="26" font-family="'Inter', sans-serif" font-weight="900" font-size="14" fill="#008072" text-anchor="middle">5</text>
+    <text x="132" y="26" font-family="'Inter', sans-serif" font-weight="800" font-size="13" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">FRICCIÓN DE PULGARES</text>
+  </g>
+</svg>

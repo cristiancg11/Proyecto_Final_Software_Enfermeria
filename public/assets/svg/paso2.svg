@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Fondo circular suave turquesa / celeste estilo infografía clínica OMS -->
+    <linearGradient id="bgGradPaso2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F7F6"/>
+      <stop offset="60%" stop-color="#CFFBF0"/>
+      <stop offset="100%" stop-color="#B2F5EA"/>
+    </linearGradient>
+
+    <!-- Tonos de piel médica aséptica -->
+    <linearGradient id="skinDorsumPaso2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD6B6"/>
+      <stop offset="70%" stop-color="#F6CEAA"/>
+      <stop offset="100%" stop-color="#E8AE7F"/>
+    </linearGradient>
+    <linearGradient id="skinPalmPaso2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0E0"/>
+      <stop offset="70%" stop-color="#FDE8D3"/>
+      <stop offset="100%" stop-color="#F4BF95"/>
+    </linearGradient>
+
+    <!-- Espuma antiséptica -->
+    <linearGradient id="foamGradPaso2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#D1FAE5" stop-opacity="0.75"/>
+    </linearGradient>
+
+    <filter id="softGlowPaso2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0D9488" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Círculo Base Central Infografía OMS -->
+  <circle cx="250" cy="250" r="225" fill="url(#bgGradPaso2)" stroke="#5EEAD4" stroke-width="6" filter="url(#softGlowPaso2)"/>
+  <circle cx="250" cy="250" r="215" fill="none" stroke="#99F6E4" stroke-width="2" stroke-dasharray="6 6"/>
+
+  <!-- Grupo Ilustración: Palma Derecha sobre Dorso Izquierdo -->
+  <g class="hands-group" transform="translate(0, 10)">
+    <!-- Mano Inferior (Mano Izquierda vista desde el dorso) -->
+    <g id="mano-inferior-dorso" transform="rotate(-18 240 270)">
+      <!-- Muñeca y antebrazo -->
+      <path d="M120,400 L180,290 C185,275 195,260 205,250 L200,280" fill="url(#skinDorsumPaso2)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Pulgar izquierdo extendido hacia afuera -->
+      <path d="M165,305 C145,280 120,270 125,255 C130,240 155,260 178,285 Z" fill="url(#skinDorsumPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedos de la mano izquierda extendidos -->
+      <!-- Índice -->
+      <path d="M195,250 C200,200 205,145 215,140 C223,135 230,145 227,195 L222,250" fill="url(#skinDorsumPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Medio -->
+      <path d="M222,250 C227,190 234,130 244,125 C252,120 260,130 255,185 L248,250" fill="url(#skinDorsumPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Anular -->
+      <path d="M248,250 C252,200 260,140 268,135 C276,130 284,140 278,195 L272,252" fill="url(#skinDorsumPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Meñique -->
+      <path d="M272,252 C276,215 284,165 292,160 C300,155 306,165 300,210 L292,260" fill="url(#skinDorsumPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dorso base -->
+      <path d="M178,285 C200,320 280,310 292,260 L270,250 C235,245 200,255 178,285 Z" fill="url(#skinDorsumPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Tendones del dorso sutiles -->
+      <path d="M215,255 C218,225 220,195 223,175" stroke="#E59866" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/>
+      <path d="M235,255 C238,220 242,185 245,160" stroke="#E59866" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/>
+      <path d="M255,255 C258,225 262,195 265,170" stroke="#E59866" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/>
+    </g>
+
+    <!-- Mano Superior (Palma Derecha frotando sobre el dorso entrelazando dedos) -->
+    <g id="mano-superior-palma" transform="rotate(18 260 250)">
+      <!-- Muñeca y antebrazo derecho -->
+      <path d="M380,390 L320,290 C310,270 300,255 290,240" fill="url(#skinPalmPaso2)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Dedos de la mano derecha cruzando e intercalándose -->
+      <!-- Meñique superior cruzando entre meñique y anular inferior -->
+      <path d="M305,230 C295,190 280,150 270,145 C260,140 255,152 265,190 L280,245" fill="url(#skinPalmPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Anular superior -->
+      <path d="M285,235 C275,180 258,135 248,130 C238,125 232,138 244,180 L260,245" fill="url(#skinPalmPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Medio superior -->
+      <path d="M265,240 C252,175 235,125 225,120 C215,115 210,128 220,175 L240,250" fill="url(#skinPalmPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Índice superior cruzando sobre el índice inferior -->
+      <path d="M245,245 C232,185 212,135 202,130 C192,125 188,138 198,185 L220,255" fill="url(#skinPalmPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Pulgar derecho abarcando el lateral -->
+      <path d="M320,265 C340,245 365,235 360,220 C355,205 330,225 305,250 Z" fill="url(#skinPalmPaso2)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Palma que presiona el dorso -->
+      <path d="M305,250 C320,290 250,305 220,255 L245,245 C275,240 295,245 305,250 Z" fill="url(#skinPalmPaso2)" stroke="#B45309" stroke-width="2.5"/>
+    </g>
+
+    <!-- Espuma y burbujas en los espacios interdigitales y dorso -->
+    <g id="espuma-dorso" fill="url(#foamGradPaso2)" stroke="#6EE7B7" stroke-width="2">
+      <!-- Cúmulos en los pliegues y comisuras de los dedos -->
+      <circle cx="215" cy="195" r="14"/>
+      <circle cx="238" cy="185" r="16"/>
+      <circle cx="262" cy="190" r="15"/>
+      <circle cx="285" cy="205" r="13"/>
+      <circle cx="245" cy="235" r="22"/>
+      <circle cx="270" cy="245" r="18"/>
+      <circle cx="225" cy="255" r="16"/>
+
+      <!-- Burbujas sueltas -->
+      <circle cx="165" cy="210" r="8" stroke="#00B39F" stroke-width="1.8" fill="white" opacity="0.9"/>
+      <circle cx="330" cy="210" r="10" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="180" cy="160" r="11" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="183" cy="157" r="3" fill="#00B39F" opacity="0.6"/>
+      <circle cx="310" cy="160" r="9" stroke="#00B39F" stroke-width="1.8" fill="white" opacity="0.9"/>
+      <circle cx="250" cy="310" r="10" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+    </g>
+
+    <!-- Flechas Bidireccionales Longitudinales de Fricción en el Dorso -->
+    <g id="flechas-friccion-dorso">
+      <!-- Flecha longitudinal deslizamiento ascendente/descendente -->
+      <path d="M160,250 L195,160" fill="none" stroke="#00A389" stroke-width="6" stroke-linecap="round"/>
+      <polygon points="198,150 185,165 204,168" fill="#00A389"/>
+      <polygon points="155,260 170,245 152,242" fill="#00A389"/>
+
+      <path d="M335,170 L300,260" fill="none" stroke="#00A389" stroke-width="6" stroke-linecap="round"/>
+      <polygon points="338,160 324,175 342,178" fill="#00A389"/>
+      <polygon points="296,270 311,255 293,252" fill="#00A389"/>
+
+      <!-- Destellos de limpieza -->
+      <path d="M150,140 L155,130 L160,140 L170,145 L160,150 L155,160 L150,150 L140,145 Z" fill="#00B39F" opacity="0.85"/>
+      <path d="M350,140 L355,130 L360,140 L370,145 L360,150 L355,160 L350,150 L340,145 Z" fill="#00B39F" opacity="0.85"/>
+    </g>
+  </g>
+
+  <!-- Píldora Guía OMS Paso 2 -->
+  <g transform="translate(130, 420)">
+    <rect width="240" height="42" rx="21" fill="#008072" filter="url(#softGlowPaso2)"/>
+    <circle cx="28" cy="21" r="13" fill="#FFFFFF"/>
+    <text x="28" y="26" font-family="'Inter', sans-serif" font-weight="900" font-size="14" fill="#008072" text-anchor="middle">2</text>
+    <text x="132" y="26" font-family="'Inter', sans-serif" font-weight="800" font-size="13" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">PALMA SOBRE DORSO</text>
+  </g>
+</svg>

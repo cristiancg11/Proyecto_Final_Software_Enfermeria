@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Fondo circular suave turquesa / celeste estilo infografía clínica OMS -->
+    <linearGradient id="bgGradPaso1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F7F6"/>
+      <stop offset="60%" stop-color="#CFFBF0"/>
+      <stop offset="100%" stop-color="#B2F5EA"/>
+    </linearGradient>
+
+    <!-- Tonos de piel médica aséptica -->
+    <linearGradient id="skinLeftPaso1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE8D3"/>
+      <stop offset="70%" stop-color="#F6CEAA"/>
+      <stop offset="100%" stop-color="#EBB386"/>
+    </linearGradient>
+    <linearGradient id="skinRightPaso1" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFEEDC"/>
+      <stop offset="70%" stop-color="#FCD6B6"/>
+      <stop offset="100%" stop-color="#F0BA8E"/>
+    </linearGradient>
+
+    <!-- Espuma antiséptica -->
+    <linearGradient id="foamGradPaso1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#D1FAE5" stop-opacity="0.75"/>
+    </linearGradient>
+
+    <filter id="softGlowPaso1" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0D9488" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Círculo Base Central Infografía OMS -->
+  <circle cx="250" cy="250" r="225" fill="url(#bgGradPaso1)" stroke="#5EEAD4" stroke-width="6" filter="url(#softGlowPaso1)"/>
+  <circle cx="250" cy="250" r="215" fill="none" stroke="#99F6E4" stroke-width="2" stroke-dasharray="6 6"/>
+
+  <!-- Grupo Manos Enfrentadas: Frotado Palma con Palma -->
+  <g class="hands-group" transform="translate(0, 10)">
+    <!-- Mano Izquierda (Inclinada hacia la derecha) -->
+    <g id="mano-izquierda" transform="rotate(-12 210 280)">
+      <!-- Antebrazo y muñeca -->
+      <path d="M110,410 L160,290 C165,270 175,250 185,240 L195,210 C200,195 210,185 220,195 C228,203 222,225 215,245 L210,265" fill="url(#skinLeftPaso1)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Pulgar extendido -->
+      <path d="M175,250 C160,230 145,215 140,225 C135,235 150,255 168,275 Z" fill="url(#skinLeftPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedos alineados palma izquierda -->
+      <path d="M185,240 C185,190 190,140 198,135 C206,130 214,140 212,190 L212,240" fill="url(#skinLeftPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M205,235 C208,175 215,120 224,115 C232,110 240,120 236,175 L232,235" fill="url(#skinLeftPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M225,235 C228,185 235,130 244,125 C252,120 260,130 256,185 L250,240" fill="url(#skinLeftPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M245,240 C248,200 254,155 262,150 C270,145 276,155 272,200 L266,250" fill="url(#skinLeftPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Palma central base -->
+      <path d="M168,275 C180,310 250,310 266,250 L250,230 C220,225 185,235 168,275 Z" fill="url(#skinLeftPaso1)" stroke="#B45309" stroke-width="2.5"/>
+    </g>
+
+    <!-- Mano Derecha (Enfrentada palma contra palma) -->
+    <g id="mano-derecha" transform="rotate(12 290 280)">
+      <!-- Antebrazo y muñeca derecha -->
+      <path d="M390,410 L340,290 C335,270 325,250 315,240 L305,210 C300,195 290,185 280,195 C272,203 278,225 285,245 L290,265" fill="url(#skinRightPaso1)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Pulgar extendido derecho -->
+      <path d="M325,250 C340,230 355,215 360,225 C365,235 350,255 332,275 Z" fill="url(#skinRightPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedos alineados palma derecha -->
+      <path d="M315,240 C315,190 310,140 302,135 C294,130 286,140 288,190 L288,240" fill="url(#skinRightPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M295,235 C292,175 285,120 276,115 C268,110 260,120 264,175 L268,235" fill="url(#skinRightPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M275,235 C272,185 265,130 256,125 C248,120 240,130 244,185 L250,240" fill="url(#skinRightPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M255,240 C252,200 246,155 238,150 C230,145 224,155 228,200 L234,250" fill="url(#skinRightPaso1)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Palma central base -->
+      <path d="M332,275 C320,310 250,310 234,250 L250,230 C280,225 315,235 332,275 Z" fill="url(#skinRightPaso1)" stroke="#B45309" stroke-width="2.5"/>
+    </g>
+
+    <!-- Nube de Espuma Antiséptica y Burbujas en el Centro -->
+    <g id="espuma-jabon" fill="url(#foamGradPaso1)" stroke="#6EE7B7" stroke-width="2">
+      <!-- Cúmulos de espuma -->
+      <circle cx="250" cy="235" r="32"/>
+      <circle cx="225" cy="220" r="22"/>
+      <circle cx="275" cy="225" r="24"/>
+      <circle cx="240" cy="265" r="26"/>
+      <circle cx="265" cy="260" r="20"/>
+      <circle cx="215" cy="245" r="16"/>
+      <circle cx="285" cy="248" r="15"/>
+
+      <!-- Burbujas sueltas flotantes -->
+      <circle cx="180" cy="190" r="10" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="183" cy="188" r="3" fill="#00B39F" opacity="0.6"/>
+      <circle cx="320" cy="195" r="12" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="323" cy="192" r="3.5" fill="#00B39F" opacity="0.6"/>
+      <circle cx="250" cy="170" r="9" stroke="#00B39F" stroke-width="1.8" fill="white" opacity="0.9"/>
+      <circle cx="210" cy="290" r="8" stroke="#00B39F" stroke-width="1.8" fill="white" opacity="0.9"/>
+      <circle cx="290" cy="295" r="9" stroke="#00B39F" stroke-width="1.8" fill="white" opacity="0.9"/>
+      <circle cx="250" cy="305" r="11" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+    </g>
+
+    <!-- Flechas Curvas Circulares de Fricción Rotatoria (Estilo Infografía OMS) -->
+    <g id="flechas-friccion">
+      <!-- Flecha circular superior derecha -->
+      <path d="M190,135 C230,95 285,100 315,130" fill="none" stroke="#00A389" stroke-width="6.5" stroke-linecap="round"/>
+      <polygon points="325,136 308,123 318,142" fill="#00A389"/>
+
+      <!-- Flecha circular inferior izquierda -->
+      <path d="M310,325 C270,365 215,360 185,330" fill="none" stroke="#00A389" stroke-width="6.5" stroke-linecap="round"/>
+      <polygon points="175,324 192,337 182,318" fill="#00A389"/>
+
+      <!-- Destellos de limpieza -->
+      <path d="M165,150 L170,140 L175,150 L185,155 L175,160 L170,170 L165,160 L155,155 Z" fill="#00B39F" opacity="0.85"/>
+      <path d="M335,160 L340,150 L345,160 L355,165 L345,170 L340,180 L335,170 L325,165 Z" fill="#00B39F" opacity="0.85"/>
+    </g>
+  </g>
+
+  <!-- Píldora Guía OMS Paso 1 -->
+  <g transform="translate(140, 420)">
+    <rect width="220" height="42" rx="21" fill="#008072" filter="url(#softGlowPaso1)"/>
+    <circle cx="28" cy="21" r="13" fill="#FFFFFF"/>
+    <text x="28" y="26" font-family="'Inter', sans-serif" font-weight="900" font-size="14" fill="#008072" text-anchor="middle">1</text>
+    <text x="122" y="26" font-family="'Inter', sans-serif" font-weight="800" font-size="13" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">PALMA CON PALMA</text>
+  </g>
+</svg>

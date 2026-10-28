@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Fondo circular suave turquesa / celeste estilo infografía clínica OMS -->
+    <linearGradient id="bgGradPaso3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F7F6"/>
+      <stop offset="60%" stop-color="#CFFBF0"/>
+      <stop offset="100%" stop-color="#B2F5EA"/>
+    </linearGradient>
+
+    <!-- Tonos de piel médica aséptica -->
+    <linearGradient id="skinLeftPaso3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE8D3"/>
+      <stop offset="70%" stop-color="#F6CEAA"/>
+      <stop offset="100%" stop-color="#EBB386"/>
+    </linearGradient>
+    <linearGradient id="skinRightPaso3" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFEEDC"/>
+      <stop offset="70%" stop-color="#FCD6B6"/>
+      <stop offset="100%" stop-color="#F0BA8E"/>
+    </linearGradient>
+
+    <!-- Espuma antiséptica -->
+    <linearGradient id="foamGradPaso3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#D1FAE5" stop-opacity="0.75"/>
+    </linearGradient>
+
+    <filter id="softGlowPaso3" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0D9488" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Círculo Base Central Infografía OMS -->
+  <circle cx="250" cy="250" r="225" fill="url(#bgGradPaso3)" stroke="#5EEAD4" stroke-width="6" filter="url(#softGlowPaso3)"/>
+  <circle cx="250" cy="250" r="215" fill="none" stroke="#99F6E4" stroke-width="2" stroke-dasharray="6 6"/>
+
+  <!-- Grupo Manos Entrelazadas Palma con Palma (Espacios Interdigitales) -->
+  <g class="hands-group" transform="translate(0, 5)">
+    <!-- Base de las dos palmas y antebrazos -->
+    <!-- Antebrazo Izquierdo -->
+    <path d="M120,410 L180,290 C185,270 200,260 215,255 L215,310 C180,315 150,370 120,410 Z" fill="url(#skinLeftPaso3)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Pulgar izquierdo hacia la izquierda -->
+    <path d="M185,270 C160,250 140,240 135,255 C130,270 155,290 180,300 Z" fill="url(#skinLeftPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Antebrazo Derecho -->
+    <path d="M380,410 L320,290 C315,270 300,260 285,255 L285,310 C320,315 350,370 380,410 Z" fill="url(#skinRightPaso3)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Pulgar derecho hacia la derecha -->
+    <path d="M315,270 C340,250 360,240 365,255 C370,270 345,290 320,300 Z" fill="url(#skinRightPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Dedos Entrelazados en alternancia rítmica -->
+    <!-- Dedo 1 Izquierdo (Meñique izq) -->
+    <path d="M195,255 C195,200 195,155 204,150 C212,145 218,155 216,205 L216,255" fill="url(#skinLeftPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Dedo 1 Derecho (Anular der entrelazado) -->
+    <path d="M216,255 C218,190 220,135 228,130 C236,125 242,135 240,190 L236,255" fill="url(#skinRightPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Dedo 2 Izquierdo (Anular izq) -->
+    <path d="M236,255 C238,180 240,120 248,115 C256,110 262,120 260,180 L256,255" fill="url(#skinLeftPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Dedo 2 Derecho (Medio der) -->
+    <path d="M256,255 C258,175 260,110 268,105 C276,100 282,110 280,175 L276,255" fill="url(#skinRightPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Dedo 3 Izquierdo (Medio izq) -->
+    <path d="M276,255 C278,185 280,125 288,120 C296,115 302,125 300,185 L296,255" fill="url(#skinLeftPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Dedo 3 Derecho (Índice der) -->
+    <path d="M296,255 C296,205 298,145 306,140 C314,135 320,145 316,205 L310,255" fill="url(#skinRightPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Unión de palmas centro -->
+    <path d="M195,255 C220,270 280,270 310,255 C310,290 195,290 195,255 Z" fill="url(#skinLeftPaso3)" stroke="#B45309" stroke-width="2.5"/>
+
+    <!-- Espuma densa en los espacios interdigitales (entre los dedos) -->
+    <g id="espuma-interdigital" fill="url(#foamGradPaso3)" stroke="#6EE7B7" stroke-width="2">
+      <!-- Cúmulos de burbujas en los valles interdigitales -->
+      <circle cx="216" cy="225" r="13"/>
+      <circle cx="236" cy="215" r="14"/>
+      <circle cx="256" cy="205" r="15"/>
+      <circle cx="276" cy="210" r="14"/>
+      <circle cx="296" cy="225" r="13"/>
+
+      <!-- Burbujas medias y grandes en la fricción central -->
+      <circle cx="240" cy="260" r="20"/>
+      <circle cx="265" cy="260" r="22"/>
+      <circle cx="220" cy="265" r="16"/>
+      <circle cx="285" cy="265" r="17"/>
+
+      <!-- Burbujas sueltas flotantes -->
+      <circle cx="160" cy="180" r="11" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="163" cy="177" r="3.5" fill="#00B39F" opacity="0.6"/>
+      <circle cx="340" cy="180" r="12" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="343" cy="177" r="4" fill="#00B39F" opacity="0.6"/>
+      <circle cx="252" cy="85" r="8" stroke="#00B39F" stroke-width="1.8" fill="white" opacity="0.9"/>
+      <circle cx="250" cy="305" r="12" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+    </g>
+
+    <!-- Flechas Recíprocas Verticales de Fricción Interdigital -->
+    <g id="flechas-interdigitales">
+      <!-- Flecha vertical izquierda (hacia arriba y abajo) -->
+      <path d="M165,225 L165,150" fill="none" stroke="#00A389" stroke-width="6" stroke-linecap="round"/>
+      <polygon points="165,140 157,156 173,156" fill="#00A389"/>
+      <polygon points="165,235 157,219 173,219" fill="#00A389"/>
+
+      <!-- Flecha vertical derecha (hacia arriba y abajo) -->
+      <path d="M335,150 L335,225" fill="none" stroke="#00A389" stroke-width="6" stroke-linecap="round"/>
+      <polygon points="335,235 327,219 343,219" fill="#00A389"/>
+      <polygon points="335,140 327,156 343,156" fill="#00A389"/>
+
+      <!-- Destellos de limpieza -->
+      <path d="M145,135 L150,125 L155,135 L165,140 L155,145 L150,155 L145,145 L135,140 Z" fill="#00B39F" opacity="0.85"/>
+      <path d="M355,135 L360,125 L365,135 L375,140 L365,145 L360,155 L355,145 L345,140 Z" fill="#00B39F" opacity="0.85"/>
+    </g>
+  </g>
+
+  <!-- Píldora Guía OMS Paso 3 -->
+  <g transform="translate(130, 420)">
+    <rect width="240" height="42" rx="21" fill="#008072" filter="url(#softGlowPaso3)"/>
+    <circle cx="28" cy="21" r="13" fill="#FFFFFF"/>
+    <text x="28" y="26" font-family="'Inter', sans-serif" font-weight="900" font-size="14" fill="#008072" text-anchor="middle">3</text>
+    <text x="132" y="26" font-family="'Inter', sans-serif" font-weight="800" font-size="13" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">ENTRE LOS DEDOS</text>
+  </g>
+</svg>

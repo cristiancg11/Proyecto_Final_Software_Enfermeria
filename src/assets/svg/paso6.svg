@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Fondo circular suave turquesa / celeste estilo infografía clínica OMS -->
+    <linearGradient id="bgGradPaso6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F7F6"/>
+      <stop offset="60%" stop-color="#CFFBF0"/>
+      <stop offset="100%" stop-color="#B2F5EA"/>
+    </linearGradient>
+
+    <!-- Tonos de piel médica aséptica -->
+    <linearGradient id="skinLeftPaso6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE8D3"/>
+      <stop offset="70%" stop-color="#F6CEAA"/>
+      <stop offset="100%" stop-color="#EBB386"/>
+    </linearGradient>
+    <linearGradient id="skinRightPaso6" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFEEDC"/>
+      <stop offset="70%" stop-color="#FCD6B6"/>
+      <stop offset="100%" stop-color="#F0BA8E"/>
+    </linearGradient>
+
+    <!-- Espuma antiséptica -->
+    <linearGradient id="foamGradPaso6" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#D1FAE5" stop-opacity="0.75"/>
+    </linearGradient>
+
+    <filter id="softGlowPaso6" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0D9488" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Círculo Base Central Infografía OMS -->
+  <circle cx="250" cy="250" r="225" fill="url(#bgGradPaso6)" stroke="#5EEAD4" stroke-width="6" filter="url(#softGlowPaso6)"/>
+  <circle cx="250" cy="250" r="215" fill="none" stroke="#99F6E4" stroke-width="2" stroke-dasharray="6 6"/>
+
+  <!-- Grupo Fricción de Yemas y Uñas en Palma Opuesta -->
+  <g class="hands-group" transform="translate(0, 10)">
+    <!-- Mano Izquierda (Palma abierta ahuecada receptora de frente) -->
+    <g id="mano-palma-receptora">
+      <!-- Muñeca y antebrazo izquierdo -->
+      <path d="M110,400 L165,310 C175,295 185,285 200,280" fill="url(#skinLeftPaso6)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Pulgar izquierdo extendido lateralmente -->
+      <path d="M165,310 C145,290 120,280 125,265 C130,250 155,270 178,295 Z" fill="url(#skinLeftPaso6)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Cuenco de la palma abierta -->
+      <path d="M178,295 C190,340 280,345 310,290 L290,265 C260,260 210,265 178,295 Z" fill="url(#skinLeftPaso6)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedos extendidos mano izquierda (orientados hacia arriba/fondo) -->
+      <path d="M185,270 C185,225 185,175 194,170 C202,165 210,175 208,225 L208,265" fill="url(#skinLeftPaso6)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M208,265 C210,215 215,160 224,155 C232,150 240,160 236,215 L234,265" fill="url(#skinLeftPaso6)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M234,265 C238,220 245,165 254,160 C262,155 270,165 266,220 L262,265" fill="url(#skinLeftPaso6)" stroke="#B45309" stroke-width="2.5"/>
+      <path d="M262,265 C266,230 274,185 282,180 C290,175 296,185 292,230 L288,275" fill="url(#skinLeftPaso6)" stroke="#B45309" stroke-width="2.5"/>
+    </g>
+
+    <!-- Mano Derecha (Yemas agrupadas verticalmente frotando el centro de la palma) -->
+    <g id="mano-yemas-agrupadas">
+      <!-- Muñeca y antebrazo que baja inclinado desde arriba a la derecha -->
+      <path d="M390,140 L330,210 C320,220 305,230 285,240" fill="url(#skinRightPaso6)" stroke="#B45309" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Pulgar derecho apoyado en el grupo de dedos -->
+      <path d="M330,210 C325,190 310,180 295,190 C285,200 290,220 305,235 Z" fill="url(#skinRightPaso6)" stroke="#B45309" stroke-width="2.5"/>
+
+      <!-- Haz de 4 dedos agrupados en punta cónica tocando la palma -->
+      <!-- Dedo índice derecho -->
+      <path d="M275,205 C260,225 240,260 242,280 C244,288 252,288 254,280 L275,230" fill="url(#skinRightPaso6)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedo medio derecho (centro) -->
+      <path d="M285,205 C275,230 252,265 254,285 C256,292 264,292 266,285 L292,230" fill="url(#skinRightPaso6)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedo anular derecho -->
+      <path d="M298,215 C290,235 268,268 270,285 C272,290 278,290 280,282 L305,235" fill="url(#skinRightPaso6)" stroke="#B45309" stroke-width="2.5"/>
+      <!-- Dedo meñique derecho -->
+      <path d="M310,225 C305,242 282,270 284,282 C286,288 292,288 294,280 L318,245" fill="url(#skinRightPaso6)" stroke="#B45309" stroke-width="2.5"/>
+
+      <!-- Uñas / Yemas bien definidas tocando la palma -->
+      <path d="M242,277 C245,282 250,282 253,277" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+      <path d="M254,282 C257,287 263,287 265,282" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+      <path d="M270,282 C273,287 277,287 279,282" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+    </g>
+
+    <!-- Espuma y Burbujas en el centro de rotación de la palma -->
+    <g id="espuma-yemas" fill="url(#foamGradPaso6)" stroke="#6EE7B7" stroke-width="2">
+      <!-- Cúmulos concéntricos -->
+      <circle cx="260" cy="285" r="16"/>
+      <circle cx="240" cy="280" r="14"/>
+      <circle cx="275" cy="280" r="14"/>
+      <circle cx="255" cy="305" r="15"/>
+      <circle cx="235" cy="300" r="12"/>
+      <circle cx="280" cy="298" r="13"/>
+
+      <!-- Burbujas sueltas flotantes -->
+      <circle cx="160" cy="240" r="11" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="163" cy="237" r="3.5" fill="#00B39F" opacity="0.6"/>
+      <circle cx="340" cy="270" r="12" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+      <circle cx="343" cy="267" r="4" fill="#00B39F" opacity="0.6"/>
+      <circle cx="220" cy="140" r="9" stroke="#00B39F" stroke-width="1.8" fill="white" opacity="0.9"/>
+      <circle cx="255" cy="340" r="10" stroke="#00B39F" stroke-width="2" fill="white" opacity="0.9"/>
+    </g>
+
+    <!-- Flecha Rotatoria Concéntrica / Espiral de Fricción Circular -->
+    <g id="flechas-espiral-yemas">
+      <!-- Espiral / Círculo de rotación en la palma -->
+      <path d="M225,270 C225,245 285,245 295,270 C305,295 245,325 220,295" fill="none" stroke="#00A389" stroke-width="6" stroke-linecap="round"/>
+      <polygon points="215,285 230,295 218,305" fill="#00A389"/>
+
+      <!-- Flecha secundaria concéntrica -->
+      <path d="M275,315 C295,310 305,290 300,270" fill="none" stroke="#00A389" stroke-width="4.5" stroke-linecap="round"/>
+      <polygon points="296,260 306,272 292,274" fill="#00A389"/>
+
+      <!-- Destellos de limpieza -->
+      <path d="M145,160 L150,150 L155,160 L165,165 L155,170 L150,180 L145,170 L135,165 Z" fill="#00B39F" opacity="0.85"/>
+      <path d="M350,135 L355,125 L360,135 L370,140 L360,145 L355,155 L350,145 L340,140 Z" fill="#00B39F" opacity="0.85"/>
+    </g>
+  </g>
+
+  <!-- Píldora Guía OMS Paso 6 -->
+  <g transform="translate(130, 420)">
+    <rect width="240" height="42" rx="21" fill="#008072" filter="url(#softGlowPaso6)"/>
+    <circle cx="28" cy="21" r="13" fill="#FFFFFF"/>
+    <text x="28" y="26" font-family="'Inter', sans-serif" font-weight="900" font-size="14" fill="#008072" text-anchor="middle">6</text>
+    <text x="132" y="26" font-family="'Inter', sans-serif" font-weight="800" font-size="13" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">YEMAS Y UÑAS</text>
+  </g>
+</svg>
