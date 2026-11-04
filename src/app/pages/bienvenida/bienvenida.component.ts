@@ -348,6 +348,12 @@ export class BienvenidaComponent {
       studentCode: user.codigoEstudiantil || '',
       consent: user?.consentimiento !== undefined ? !!user.consentimiento : true,
     });
-    this.router.navigate([user.rol === 'DOCENTE' ? '/admin' : '/introduccion']);
+    if (user.rol === 'DOCENTE') {
+      this.stateService.unlockStep(7);
+      this.router.navigate(['/admin']);
+    } else {
+      this.stateService.resetProgressToStepOne();
+      this.router.navigate(['/introduccion']);
+    }
   }
 }

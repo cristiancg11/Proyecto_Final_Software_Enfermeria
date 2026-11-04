@@ -343,12 +343,14 @@ export class EncuestaComponent implements OnInit {
     this.encuestaService.enviarEncuesta(payload).subscribe({
       next: () => {
         this.enviando.set(false);
+        this.stateService.unlockStep(7);
         this.router.navigate(['/resultado']);
       },
       error: (err) => {
         console.warn('Aviso al persistir encuesta en servidor:', err);
         this.enviando.set(false);
         // Permitir continuar a resultados para no bloquear al estudiante
+        this.stateService.unlockStep(7);
         this.router.navigate(['/resultado']);
       },
     });

@@ -72,6 +72,13 @@ export class App {
     return ruta.startsWith('/practica');
   }
 
+  pasoDesbloqueado(paso: number): boolean {
+    if (this.esDocente()) {
+      return true;
+    }
+    return this.stateService.isStepUnlocked(paso);
+  }
+
   toggleVozGlobal(): void {
     const act = !this.vozChatActiva();
     this.vozChatActiva.set(act);

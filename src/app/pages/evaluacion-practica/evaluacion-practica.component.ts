@@ -914,6 +914,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     if (this.isLastStep()) {
       this.stopTimer();
       this.stopCamera();
+      this.stateService.unlockStep(5);
       this.evaluacionFinalizada.set(true);
     } else {
       this.currentStepIndex.update((idx) => idx + 1);
@@ -930,6 +931,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   }
 
   continuarAEvaluacionTeorica(): void {
+    this.stateService.unlockStep(5);
     this.router.navigate(['/evaluacion-teorica']);
   }
 }

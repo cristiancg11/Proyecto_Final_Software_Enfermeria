@@ -229,6 +229,7 @@ export class HandwashStateService {
   private readonly _stepRecords = signal<StepTimeRecord[]>([]);
   private readonly _notaTeorica = signal<number>(0);
   private readonly _retroalimentacionTeorica = signal<any[]>([]);
+  private readonly _maxUnlockedStep = signal<number>(this.obtenerPasoMaximoInicial());
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -255,6 +256,7 @@ export class HandwashStateService {
   readonly stepRecords = this._stepRecords.asReadonly();
   readonly notaTeoricaSignal = this._notaTeorica.asReadonly();
   readonly retroalimentacionTeorica = this._retroalimentacionTeorica.asReadonly();
+  readonly maxUnlockedStep = this._maxUnlockedStep.asReadonly();
 
   // Diagnostics completion signal
   readonly isDiagnosticComplete = computed(() => {
@@ -407,11 +409,58 @@ export class HandwashStateService {
     this._stepRecords.set([]);
   }
 
+  unlockStep(step: number): void {
+    const next = Math.max(this._maxUnlockedStep(), Math.min(7, Math.max(1, step)));
+    this._maxUnlockedStep.set(next);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('manos_seguras_max_step', String(next));
+    }
+  }
+
+  resetProgressToStepOne(): void {
+    this._maxUnlockedStep.set(1);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('manos_seguras_max_step', '1');
+    }
+  }
+
+  isStepUnlocked(step: number): boolean {
+    return this._maxUnlockedStep() >= step;
+  }
+
+  getRouteForStep(step: number): string {
+    const routes: { [key: number]: string } = {
+      1: '/introduccion',
+      2: '/preparacion',
+      3: '/practica',
+      4: '/evaluacion-practica',
+      5: '/evaluacion-teorica',
+      6: '/encuesta',
+      7: '/resultado',
+    };
+    return routes[step] || '/introduccion';
+  }
+
+  private obtenerPasoMaximoInicial(): number {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('manos_seguras_max_step');
+      const parsed = saved ? parseInt(saved, 10) : 1;
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 7) {
+        return parsed;
+      }
+    }
+    return 1;
+  }
+
   resetAll(): void {
     this._student.set(null);
     this._diagnosticAnswers.set({});
     this._stepRecords.set([]);
     this._notaTeorica.set(0);
     this._retroalimentacionTeorica.set([]);
+    this._maxUnlockedStep.set(1);
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('manos_seguras_max_step');
+    }
   }
 }

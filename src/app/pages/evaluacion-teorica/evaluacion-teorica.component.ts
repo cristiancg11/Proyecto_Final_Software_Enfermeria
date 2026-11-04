@@ -441,11 +441,13 @@ export class EvaluacionTeoricaComponent implements OnInit {
             this.procesarRetroalimentacionLocal(respuestasMap, preguntasList, nota);
           }
 
+          this.stateService.unlockStep(6);
           this.mostrarRetroalimentacion.set(true);
         },
         error: () => {
           this.enviando.set(false);
           this.procesarRetroalimentacionLocal(respuestasMap, preguntasList);
+          this.stateService.unlockStep(6);
           this.mostrarRetroalimentacion.set(true);
         },
       });
@@ -492,6 +494,7 @@ export class EvaluacionTeoricaComponent implements OnInit {
   }
 
   continuarAEncuesta(): void {
+    this.stateService.unlockStep(6);
     this.router.navigate(['/encuesta']);
   }
 

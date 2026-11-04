@@ -225,9 +225,14 @@ export interface QualityAlert {
                 <button
                   type="button"
                   (click)="irAEvaluacionPractica()"
-                  class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-black shadow-md hover:shadow-orange-500/25 transition-all cursor-pointer active:scale-95"
+                  [disabled]="completedRecords().length < 6"
+                  [ngClass]="completedRecords().length >= 6
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-orange-500/25 cursor-pointer active:scale-95'
+                    : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed opacity-70'"
+                  class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black transition-all"
+                  [title]="completedRecords().length >= 6 ? 'Ir a Evaluación Práctica' : 'Completa los 6 pasos de práctica para desbloquear la Evaluación Práctica'"
                 >
-                  <span>Ir a Evaluación Práctica</span>
+                  <span>{{ completedRecords().length >= 6 ? 'Ir a Evaluación Práctica' : '🔒 Ev. Práctica (6/6 pasos)' }}</span>
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -1310,7 +1315,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
-      } catch {}
+      } catch { }
     }
     this.manitaBotHablando.set(false);
   }
@@ -1632,7 +1637,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       const v = this.demoVideo?.nativeElement;
       if (v) {
         v.load();
-        v.play().catch(() => {});
+        v.play().catch(() => { });
       }
     }, 60);
   }
@@ -1668,6 +1673,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       );
       this.stopTimer();
       this.stopCamera();
+      this.stateService.unlockStep(4);
       this.router.navigate(['/evaluacion-practica']);
     } else {
       const nextIdx = this.currentStepIndex() + 1;
@@ -1681,8 +1687,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   irAEvaluacionPractica(): void {
+    if (this.completedRecords().length < 6 && !this.stateService.isStepUnlocked(4)) {
+      return;
+    }
     this.stopTimer();
     this.stopCamera();
+    this.stateService.unlockStep(4);
     this.router.navigate(['/evaluacion-practica']);
   }
 }

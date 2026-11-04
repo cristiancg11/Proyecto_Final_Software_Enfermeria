@@ -344,6 +344,7 @@ export class PreparacionComponent {
 
   continuarAPractica(): void {
     if (!this.checklistCompleto()) return;
+    this.stateService.unlockStep(3);
     this.router.navigate(['/practica']);
   }
 }

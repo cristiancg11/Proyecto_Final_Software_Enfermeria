@@ -21,8 +21,9 @@
         </div>
       </a>
 
-      <!-- Navegación de Flujo de Pantallas (Solo usuarios autenticados) -->
+      <!-- Navegación Secuencial de Fases (Pasos 1 al 7 bloqueados en orden; Reto Extremo libre) -->
       <nav class="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1 rounded-2xl border border-slate-700/50 text-xs font-semibold">
+        <!-- 1. Introducción (Siempre desbloqueado como paso inicial) -->
         <a
           routerLink="/introduccion"
           routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
@@ -30,48 +31,128 @@
         >
           1. Introducción
         </a>
-        <a
-          routerLink="/preparacion"
-          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
-          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
-        >
-          2. Preparación
-        </a>
-        <a
-          routerLink="/practica"
-          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
-          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
-        >
-          3. Práctica
-        </a>
-        <a
-          routerLink="/evaluacion-practica"
-          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
-          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
-        >
-          4. Ev. Práctica
-        </a>
-        <a
-          routerLink="/evaluacion-teorica"
-          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
-          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
-        >
-          5. Ev. Teórica
-        </a>
-        <a
-          routerLink="/encuesta"
-          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
-          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
-        >
-          6. Encuesta
-        </a>
-        <a
-          routerLink="/resultado"
-          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
-          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
-        >
-          7. Resultados
-        </a>
+
+        <!-- 2. Preparación -->
+        @if (pasoDesbloqueado(2)) {
+          <a
+            routerLink="/preparacion"
+            routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+            class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
+          >
+            2. Preparación
+          </a>
+        } @else {
+          <button
+            type="button"
+            disabled
+            title="Completa 1. Introducción para desbloquear este módulo"
+            class="px-3 py-1.5 rounded-xl text-slate-500/60 border border-transparent cursor-not-allowed select-none opacity-60 flex items-center gap-1"
+          >
+            <span>🔒 2. Preparación</span>
+          </button>
+        }
+
+        <!-- 3. Práctica -->
+        @if (pasoDesbloqueado(3)) {
+          <a
+            routerLink="/practica"
+            routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+            class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
+          >
+            3. Práctica
+          </a>
+        } @else {
+          <button
+            type="button"
+            disabled
+            title="Completa 2. Preparación para desbloquear este módulo"
+            class="px-3 py-1.5 rounded-xl text-slate-500/60 border border-transparent cursor-not-allowed select-none opacity-60 flex items-center gap-1"
+          >
+            <span>🔒 3. Práctica</span>
+          </button>
+        }
+
+        <!-- 4. Ev. Práctica -->
+        @if (pasoDesbloqueado(4)) {
+          <a
+            routerLink="/evaluacion-practica"
+            routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+            class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
+          >
+            4. Ev. Práctica
+          </a>
+        } @else {
+          <button
+            type="button"
+            disabled
+            title="Completa 3. Práctica para desbloquear este módulo"
+            class="px-3 py-1.5 rounded-xl text-slate-500/60 border border-transparent cursor-not-allowed select-none opacity-60 flex items-center gap-1"
+          >
+            <span>🔒 4. Ev. Práctica</span>
+          </button>
+        }
+
+        <!-- 5. Ev. Teórica -->
+        @if (pasoDesbloqueado(5)) {
+          <a
+            routerLink="/evaluacion-teorica"
+            routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+            class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
+          >
+            5. Ev. Teórica
+          </a>
+        } @else {
+          <button
+            type="button"
+            disabled
+            title="Completa 4. Ev. Práctica para desbloquear este módulo"
+            class="px-3 py-1.5 rounded-xl text-slate-500/60 border border-transparent cursor-not-allowed select-none opacity-60 flex items-center gap-1"
+          >
+            <span>🔒 5. Ev. Teórica</span>
+          </button>
+        }
+
+        <!-- 6. Encuesta -->
+        @if (pasoDesbloqueado(6)) {
+          <a
+            routerLink="/encuesta"
+            routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+            class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
+          >
+            6. Encuesta
+          </a>
+        } @else {
+          <button
+            type="button"
+            disabled
+            title="Completa 5. Ev. Teórica para desbloquear este módulo"
+            class="px-3 py-1.5 rounded-xl text-slate-500/60 border border-transparent cursor-not-allowed select-none opacity-60 flex items-center gap-1"
+          >
+            <span>🔒 6. Encuesta</span>
+          </button>
+        }
+
+        <!-- 7. Resultados -->
+        @if (pasoDesbloqueado(7)) {
+          <a
+            routerLink="/resultado"
+            routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+            class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
+          >
+            7. Resultados
+          </a>
+        } @else {
+          <button
+            type="button"
+            disabled
+            title="Completa 6. Encuesta para desbloquear este módulo"
+            class="px-3 py-1.5 rounded-xl text-slate-500/60 border border-transparent cursor-not-allowed select-none opacity-60 flex items-center gap-1"
+          >
+            <span>🔒 7. Resultados</span>
+          </button>
+        }
+
+        <!-- EXCEPCIÓN: Reto Extremo (Siempre habilitado y clickeable en todo momento) -->
         <a
           routerLink="/reto-extremo"
           routerLinkActive="ring-2 ring-teal-300"

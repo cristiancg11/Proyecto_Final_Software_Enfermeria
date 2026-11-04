@@ -316,6 +316,7 @@ export class IntroduccionComponent {
   });
 
   comenzarPreparacion(): void {
+    this.stateService.unlockStep(2);
     this.router.navigate(['/preparacion']);
   }
 }
