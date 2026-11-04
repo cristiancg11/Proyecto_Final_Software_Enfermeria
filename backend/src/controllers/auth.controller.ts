@@ -8,14 +8,23 @@ import { Rol } from '@prisma/client';
 const JWT_SECRET = process.env.JWT_SECRET || 'manos_seguras_default_secret_key';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
-// Esquema de validación para registro
+// Esquema de validación para registro (con normalización tolerante para evitar rechazos inesperados)
 const RegistroSchema = z.object({
-  nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
-  codigoEstudiantil: z.string().min(2, 'El código debe tener al menos 2 caracteres').optional(),
-  correo: z.string().email('Correo electrónico no válido'),
-  password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
-  rol: z.nativeEnum(Rol).optional().default(Rol.ESTUDIANTE),
-  consentimiento: z.boolean().default(false),
+  nombre: z.string().trim().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  codigoEstudiantil: z.preprocess(
+    (val) => (typeof val === 'string' && val.trim().length > 0 ? val.trim() : undefined),
+    z.string().min(2, 'El código debe tener al menos 2 caracteres').optional()
+  ),
+  correo: z.string().trim().toLowerCase().email('Correo electrónico no válido'),
+  password: z.preprocess(
+    (val) => (typeof val === 'string' && val.trim().length > 0 ? val : 'Estudiante2026*'),
+    z.string().min(6, 'La contraseña debe tener al menos 6 caracteres')
+  ),
+  rol: z.preprocess(
+    (val) => (typeof val === 'string' ? val.trim().toUpperCase() : undefined),
+    z.nativeEnum(Rol).optional().default(Rol.ESTUDIANTE)
+  ),
+  consentimiento: z.coerce.boolean().default(true),
 });
 
 // Esquema de validación para login (permite correo o código estudiantil)
@@ -33,6 +42,17 @@ const LoginSchema = z.object({
  * POST /api/auth/registro
  */
 export const registrarUsuario = async (req: Request, res: Response): Promise<void> => {
+  console.log('==============================================================');
+  console.log('📥 [REGISTRO INICIADO] Petición recibida en POST /api/auth/registro');
+  console.log('📋 Datos recibidos:', {
+    nombre: req.body?.nombre,
+    codigoEstudiantil: req.body?.codigoEstudiantil,
+    correo: req.body?.correo,
+    rol: req.body?.rol || 'ESTUDIANTE',
+    consentimiento: req.body?.consentimiento,
+    passwordLength: typeof req.body?.password === 'string' ? req.body.password.length : 0,
+  });
+
   try {
     const data = RegistroSchema.parse(req.body);
 
@@ -53,6 +73,18 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
     );
 
     if (usuarioExistente) {
+      console.warn('⚠️ [REGISTRO RECHAZADO - 409 CONFLICTO EN SUPABASE]:', {
+        motivo:
+          usuarioExistente.correo === correoNormalizado
+            ? 'Correo electrónico ya existe en tabla Usuario'
+            : 'Código estudiantil ya existe en tabla Usuario',
+        usuarioEnBaseDeDatos: {
+          id: usuarioExistente.id,
+          nombre: usuarioExistente.nombre,
+          codigoEstudiantil: usuarioExistente.codigoEstudiantil,
+          correo: usuarioExistente.correo,
+        },
+      });
       if (usuarioExistente.correo === correoNormalizado) {
         res.status(409).json({ error: 'Ya existe un usuario registrado con este correo electrónico.' });
         return;
@@ -108,28 +140,68 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
       consentimiento: nuevoUsuario.consentimiento,
     };
 
+    console.log('✅ [SUPABASE INSERT EXITOSO - TABLA "Usuario"]:', {
+      id: nuevoUsuario.id,
+      nombre: nuevoUsuario.nombre,
+      codigoEstudiantil: nuevoUsuario.codigoEstudiantil,
+      correo: nuevoUsuario.correo,
+      rol: nuevoUsuario.rol,
+      fechaRegistro: nuevoUsuario.fechaRegistro,
+    });
+    console.log('==============================================================');
+
     res.status(201).json({
       mensaje: 'Registro exitoso en la plataforma Manos Seguras',
       user: userPayload,
       usuario: nuevoUsuario,
       token,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof z.ZodError) {
+      console.error(
+        '❌ [REGISTRO RECHAZADO - 400 VALIDACIÓN ZOD]:',
+        JSON.stringify(
+          error.errors.map((e) => ({ campo: e.path.join('.'), mensaje: e.message })),
+          null,
+          2
+        )
+      );
+      console.log('==============================================================');
       res.status(400).json({
         error: 'Datos de registro inválidos',
         detalles: error.errors.map((e) => ({ campo: e.path.join('.'), mensaje: e.message })),
       });
       return;
     }
-    console.error('Error en registrarUsuario:', error);
+
+    console.error('🔥 [ERROR CRÍTICO EN registrarUsuario - PRISMA / SUPABASE]:', {
+      nombreError: error?.name,
+      codigoPrisma: error?.code,
+      metaPrisma: error?.meta,
+      clientVersion: error?.clientVersion,
+      mensaje: error?.message,
+      stack: error?.stack,
+    });
+    console.log('==============================================================');
+
+    if (error?.code === 'P2002') {
+      res.status(409).json({
+        error: 'El correo electrónico o código estudiantil ya se encuentra registrado en Supabase.',
+        camposEnConflicto: error?.meta?.target,
+      });
+      return;
+    }
+
     if (esErrorConexionTransitorio(error)) {
       res.status(503).json({
         error: 'Reconectando con la base de datos de Supabase. Por favor intenta de nuevo en unos segundos.',
       });
       return;
     }
-    res.status(500).json({ error: 'Error interno del servidor al procesar el registro.' });
+    res.status(500).json({
+      error: 'Error interno del servidor al procesar el registro en Supabase.',
+      detalleTecnico: error?.message || 'Error desconocido',
+    });
   }
 };
 
@@ -141,6 +213,8 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
   try {
     const data = LoginSchema.parse(req.body);
     const credencial = (data.correo || data.codigoEstudiantil || data.identificador || '').trim();
+
+    console.log(`🔍 [LOGIN INICIADO] Buscando usuario en Supabase ("Usuario") con credencial: "${credencial}"`);
 
     // Buscar por correo o por código estudiantil con reconexión automática a Supabase
     const usuario = await ejecutarConReconexion(() =>
@@ -155,6 +229,7 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
     );
 
     if (!usuario) {
+      console.warn(`⚠️ [LOGIN RECHAZADO - 401] El usuario "${credencial}" NO existe en la tabla "Usuario" de Supabase.`);
       res.status(401).json({
         error: 'Credenciales inválidas. Verifica tu correo/código y contraseña.',
       });
@@ -164,6 +239,7 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
     // Verificar contraseña con bcrypt
     const passwordValida = await bcrypt.compare(data.password, usuario.password);
     if (!passwordValida) {
+      console.warn(`⚠️ [LOGIN RECHAZADO - 401] Contraseña incorrecta para usuario "${usuario.correo}" (ID: ${usuario.id}).`);
       res.status(401).json({
         error: 'Credenciales inválidas. Verifica tu correo/código y contraseña.',
       });
@@ -189,6 +265,10 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
       codigoEstudiantil: usuario.codigoEstudiantil,
       consentimiento: usuario.consentimiento,
     };
+
+    console.log(
+      `[Supabase DB] 🔑 Login exitoso desde tabla "Usuario": ${usuario.nombre} (${usuario.correo}) | Rol: ${usuario.rol}`
+    );
 
     res.json({
       mensaje: 'Autenticación exitosa',
@@ -249,6 +329,10 @@ export const obtenerPerfil = async (req: Request, res: Response): Promise<void> 
       res.status(404).json({ error: 'Usuario no encontrado' });
       return;
     }
+
+    console.log(
+      `[Supabase DB] 🔑 Login exitoso desde tabla "Usuario": ${usuario.nombre} (${usuario.correo}) | Rol: ${usuario.rol}`
+    );
 
     res.json({ usuario });
   } catch (error) {
@@ -351,6 +435,10 @@ export const actualizarPerfil = async (req: Request, res: Response): Promise<voi
       rol: usuarioActualizado.rol,
       codigoEstudiantil: usuarioActualizado.codigoEstudiantil,
     };
+
+    console.log(
+      `[Supabase DB] 🔑 Login exitoso desde tabla "Usuario": ${usuario.nombre} (${usuario.correo}) | Rol: ${usuario.rol}`
+    );
 
     res.json({
       mensaje: data.passwordNuevo

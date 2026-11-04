@@ -6,6 +6,17 @@ import { PrismaClient } from '@prisma/client';
 dotenv.config();
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
+const DEFAULT_SUPABASE_POOLER_URL =
+  'postgresql://postgres.pogefcmywndmbpphczhe:ManosSeguras2026@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=10&pool_timeout=30&connect_timeout=20';
+
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = DEFAULT_SUPABASE_POOLER_URL;
+}
+if (!process.env.DIRECT_URL) {
+  process.env.DIRECT_URL =
+    'postgresql://postgres.pogefcmywndmbpphczhe:ManosSeguras2026@aws-0-us-east-1.pooler.supabase.com:5432/postgres?connect_timeout=20';
+}
+
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
@@ -13,7 +24,7 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+    log: ['error', 'warn'],
     datasources: {
       db: {
         url: process.env.DATABASE_URL,
@@ -55,7 +66,7 @@ export function esErrorConexionTransitorio(error: any): boolean {
  */
 export async function ejecutarConReconexion<T>(
   operacion: () => Promise<T>,
-  reintentos = 2
+  reintentos = 3
 ): Promise<T> {
   let ultimoError: unknown;
 
@@ -64,17 +75,26 @@ export async function ejecutarConReconexion<T>(
       return await operacion();
     } catch (error) {
       ultimoError = error;
+      const errObj = error as any;
+      console.error(
+        `⚠️ [Prisma Supabase Error - Intento ${intento + 1}/${reintentos + 1}] Código: ${errObj?.code || 'N/A'} | Nombre: ${errObj?.name || 'Error'} | Mensaje: ${errObj?.message || errObj}`,
+        errObj?.meta ? { meta: errObj.meta } : ''
+      );
       if (intento < reintentos && esErrorConexionTransitorio(error)) {
         console.warn(
-          `[Prisma Supabase] Reconectando a la base de datos tras inactividad (intento ${intento + 1}/${reintentos})...`
+          `🔄 [Prisma Supabase] Reintentando operación en base de datos Supabase (intento ${intento + 1}/${reintentos})...`
         );
-        try {
-          await prisma.$disconnect();
-        } catch {}
-        await new Promise((resolve) => setTimeout(resolve, 600 * (intento + 1)));
+        await new Promise((resolve) => setTimeout(resolve, 500 * (intento + 1)));
+        if (intento >= 1) {
+          try {
+            await prisma.$disconnect();
+          } catch {}
+        }
         try {
           await prisma.$connect();
-        } catch {}
+        } catch (connErr: any) {
+          console.error('⚠️ [Prisma Supabase] Error al reconectar cliente Prisma:', connErr?.message || connErr);
+        }
         continue;
       }
       throw error;

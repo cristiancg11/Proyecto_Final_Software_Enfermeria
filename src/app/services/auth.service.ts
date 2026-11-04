@@ -81,13 +81,19 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/auth/registro`, payload)
       .pipe(
-        retry({ count: 1, delay: 700 }),
+        retry({ count: 2, delay: 800 }),
         catchError((err) => {
-          // Si estamos en Vercel o la base de datos de Supabase está despertando de pausa (status 0, 502, 503, 504)
-          if (err.status === 0 || err.status === 502 || err.status === 503 || err.status === 504) {
-            const fallbackRes = this.crearSesionRespaldoRegistro(payload);
-            return of(fallbackRes);
-          }
+          console.error('❌ [AuthService.registro] Error al registrar usuario en el backend / Supabase:', {
+            status: err?.status,
+            statusText: err?.statusText,
+            errorBody: err?.error,
+            payloadEnviado: {
+              nombre: payload.nombre,
+              codigoEstudiantil: payload.codigoEstudiantil,
+              correo: payload.correo,
+              rol: payload.rol,
+            },
+          });
           return throwError(() => err);
         }),
         tap((res) => {
@@ -153,13 +159,13 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/auth/login`, payload)
       .pipe(
-        retry({ count: 1, delay: 700 }),
+        retry({ count: 2, delay: 800 }),
         catchError((err) => {
-          // Si estamos en Vercel o el servidor está reconectando tras pausa de Supabase (status 0, 502, 503, 504)
-          if (err.status === 0 || err.status === 502 || err.status === 503 || err.status === 504) {
-            const fallbackRes = this.crearSesionRespaldoLogin(payload);
-            return of(fallbackRes);
-          }
+          console.error('❌ [AuthService.login] Error al autenticar usuario contra Supabase:', {
+            status: err?.status,
+            statusText: err?.statusText,
+            errorBody: err?.error,
+          });
           return throwError(() => err);
         }),
         tap((res) => {

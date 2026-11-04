@@ -23,6 +23,14 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean) as string[];
 
+// Permitir Private Network Access (peticiones desde https://*.vercel.app hacia http://localhost:3000 en navegadores Chromium)
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.headers['access-control-request-private-network']) {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
+  next();
+});
+
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -48,6 +56,16 @@ app.use(
 );
 
 app.use(express.json());
+
+// Log de auditoría en consola para todas las peticiones entrantes al backend
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const inicio = Date.now();
+  res.on('finish', () => {
+    const duracion = Date.now() - inicio;
+    console.log(`[API ${new Date().toISOString()}] ${req.method} ${req.originalUrl} -> ${res.statusCode} (${duracion}ms)`);
+  });
+  next();
+});
 
 // Endpoint de Diagnóstico y Salud del Servicio (incluye verificación de conexión con Supabase)
 app.get('/api/health', async (_req: Request, res: Response) => {
