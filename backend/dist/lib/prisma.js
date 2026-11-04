@@ -1,0 +1,91 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.prisma = void 0;
+exports.esErrorConexionTransitorio = esErrorConexionTransitorio;
+exports.ejecutarConReconexion = ejecutarConReconexion;
+const path_1 = __importDefault(require("path"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const client_1 = require("@prisma/client");
+// Garantizar carga del archivo .env del backend independientemente del directorio de ejecución
+dotenv_1.default.config();
+dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../.env') });
+const DEFAULT_SUPABASE_POOLER_URL = 'postgresql://postgres.pogefcmywndmbpphczhe:ManosSeguras2026@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=10&pool_timeout=30&connect_timeout=20';
+if (!process.env.DATABASE_URL) {
+    process.env.DATABASE_URL = DEFAULT_SUPABASE_POOLER_URL;
+}
+if (!process.env.DIRECT_URL) {
+    process.env.DIRECT_URL =
+        'postgresql://postgres.pogefcmywndmbpphczhe:ManosSeguras2026@aws-0-us-east-1.pooler.supabase.com:5432/postgres?connect_timeout=20';
+}
+const globalForPrisma = globalThis;
+exports.prisma = globalForPrisma.prisma ??
+    new client_1.PrismaClient({
+        log: ['error', 'warn'],
+        datasources: {
+            db: {
+                url: process.env.DATABASE_URL,
+            },
+        },
+    });
+if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.prisma = exports.prisma;
+}
+/**
+ * Detecta si un error de Prisma corresponde a una caída temporal, timeout o pausa de Supabase/PgBouncer
+ */
+function esErrorConexionTransitorio(error) {
+    if (!error)
+        return false;
+    const code = String(error.code || '');
+    const msg = String(error.message || '').toLowerCase();
+    const codigosTransitorios = ['P1001', 'P1002', 'P1008', 'P1017', 'P2024'];
+    if (codigosTransitorios.includes(code)) {
+        return true;
+    }
+    return (msg.includes("can't reach database server") ||
+        msg.includes('server has closed the connection') ||
+        msg.includes('connection reset') ||
+        msg.includes('connection terminated') ||
+        msg.includes('timed out') ||
+        msg.includes('prepared statement') ||
+        msg.includes('engine is not yet connected'));
+}
+/**
+ * Ejecuta una operación de Prisma con reconexión automática en caso de que Supabase
+ * haya estado en pausa o el pooler haya cerrado una conexión inactiva.
+ */
+async function ejecutarConReconexion(operacion, reintentos = 3) {
+    let ultimoError;
+    for (let intento = 0; intento <= reintentos; intento++) {
+        try {
+            return await operacion();
+        }
+        catch (error) {
+            ultimoError = error;
+            const errObj = error;
+            console.error(`⚠️ [Prisma Supabase Error - Intento ${intento + 1}/${reintentos + 1}] Código: ${errObj?.code || 'N/A'} | Nombre: ${errObj?.name || 'Error'} | Mensaje: ${errObj?.message || errObj}`, errObj?.meta ? { meta: errObj.meta } : '');
+            if (intento < reintentos && esErrorConexionTransitorio(error)) {
+                console.warn(`🔄 [Prisma Supabase] Reintentando operación en base de datos Supabase (intento ${intento + 1}/${reintentos})...`);
+                await new Promise((resolve) => setTimeout(resolve, 500 * (intento + 1)));
+                if (intento >= 1) {
+                    try {
+                        await exports.prisma.$disconnect();
+                    }
+                    catch { }
+                }
+                try {
+                    await exports.prisma.$connect();
+                }
+                catch (connErr) {
+                    console.error('⚠️ [Prisma Supabase] Error al reconectar cliente Prisma:', connErr?.message || connErr);
+                }
+                continue;
+            }
+            throw error;
+        }
+    }
+    throw ultimoError;
+}

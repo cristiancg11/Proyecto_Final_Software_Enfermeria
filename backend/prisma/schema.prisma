@@ -1,7 +1,8 @@
 // Prisma Schema para la plataforma educativa "Manos Seguras"
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

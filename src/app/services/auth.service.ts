@@ -53,7 +53,15 @@ export interface ActualizarPerfilResponse {
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api';
+  private readonly localApiUrl = 'http://localhost:3000/api';
+  private readonly serverlessApiUrl = '/api';
+
+  // En localhost usa directamente el backend local; en producción (Vercel) usa el backend serverless /api conectado a Supabase
+  readonly apiUrl =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? this.localApiUrl
+      : this.serverlessApiUrl;
 
   // Manejo de estado reactivo mediante Signals
   readonly token = signal<string | null>(this.obtenerTokenInicial());
@@ -65,7 +73,7 @@ export class AuthService {
   readonly esEstudiante = computed<boolean>(() => this.usuarioActual()?.rol === 'ESTUDIANTE');
 
   /**
-   * Registra un nuevo estudiante o docente en el backend PostgreSQL
+   * Registra un nuevo estudiante o docente de forma persistente en Supabase PostgreSQL
    * POST /api/auth/registro
    */
   registro(datos: RegistroDatos): Observable<AuthResponse> {
@@ -81,9 +89,18 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/auth/registro`, payload)
       .pipe(
-        retry({ count: 2, delay: 800 }),
         catchError((err) => {
-          console.error('❌ [AuthService.registro] Error al registrar usuario en el backend / Supabase:', {
+          // Si estamos en Vercel pero el desarrollador tiene corriendo localhost:3000 (o viceversa) y la primera ruta no respondió por red
+          const alternateUrl =
+            this.apiUrl === this.localApiUrl ? this.serverlessApiUrl : this.localApiUrl;
+          if (err.status === 0 || err.status === 404) {
+            return this.http.post<AuthResponse>(`${alternateUrl}/auth/registro`, payload);
+          }
+          return throwError(() => err);
+        }),
+        retry({ count: 1, delay: 700 }),
+        catchError((err) => {
+          console.error('❌ [AuthService.registro] Error al registrar usuario en Supabase:', {
             status: err?.status,
             statusText: err?.statusText,
             errorBody: err?.error,
@@ -95,12 +112,6 @@ export class AuthService {
             },
           });
           return throwError(() => err);
-        }),
-        tap((res) => {
-          const rawUser = res.usuario || res.user;
-          if (rawUser) {
-            this.guardarUsuarioEnDirectorioLocal(rawUser);
-          }
         })
       );
   }
@@ -122,23 +133,32 @@ export class AuthService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
-    return this.http.post<AuthResponse>(
-      `${this.apiUrl}/auth/registro`,
-      {
-        nombre: datos.nombre.trim(),
-        codigoEstudiantil:
-          datos.codigoEstudiantil?.trim() || `DOC-${Math.floor(1000 + Math.random() * 9000)}`,
-        correo: datos.correo.trim().toLowerCase(),
-        password: datos.password,
-        rol: 'DOCENTE',
-        consentimiento: true,
-      },
-      { headers }
-    );
+    const body = {
+      nombre: datos.nombre.trim(),
+      codigoEstudiantil:
+        datos.codigoEstudiantil?.trim() || `DOC-${Math.floor(1000 + Math.random() * 9000)}`,
+      correo: datos.correo.trim().toLowerCase(),
+      password: datos.password,
+      rol: 'DOCENTE',
+      consentimiento: true,
+    };
+
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/auth/registro`, body, { headers })
+      .pipe(
+        catchError((err) => {
+          const alternateUrl =
+            this.apiUrl === this.localApiUrl ? this.serverlessApiUrl : this.localApiUrl;
+          if (err.status === 0 || err.status === 404) {
+            return this.http.post<AuthResponse>(`${alternateUrl}/auth/registro`, body, { headers });
+          }
+          return throwError(() => err);
+        })
+      );
   }
 
   /**
-   * Inicia sesión con correo/código y contraseña
+   * Inicia sesión con correo/código y contraseña verificando directamente contra Supabase
    * POST /api/auth/login
    */
   login(credenciales: LoginCredenciales): Observable<AuthResponse> {
@@ -159,7 +179,15 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/auth/login`, payload)
       .pipe(
-        retry({ count: 2, delay: 800 }),
+        catchError((err) => {
+          const alternateUrl =
+            this.apiUrl === this.localApiUrl ? this.serverlessApiUrl : this.localApiUrl;
+          if (err.status === 0 || err.status === 404) {
+            return this.http.post<AuthResponse>(`${alternateUrl}/auth/login`, payload);
+          }
+          return throwError(() => err);
+        }),
+        retry({ count: 1, delay: 700 }),
         catchError((err) => {
           console.error('❌ [AuthService.login] Error al autenticar usuario contra Supabase:', {
             status: err?.status,
@@ -248,96 +276,5 @@ export class AuthService {
       }
     }
     return null;
-  }
-
-  private crearSesionRespaldoRegistro(datos: {
-    nombre: string;
-    codigoEstudiantil: string;
-    correo: string;
-    rol: 'ESTUDIANTE' | 'DOCENTE';
-    consentimiento: boolean;
-  }): AuthResponse {
-    const usuario: Usuario = {
-      id: `usr-${Date.now()}`,
-      nombre: datos.nombre,
-      codigoEstudiantil: datos.codigoEstudiantil,
-      correo: datos.correo,
-      rol: datos.rol,
-      consentimiento: datos.consentimiento,
-      fechaRegistro: new Date().toISOString(),
-    };
-    this.guardarUsuarioEnDirectorioLocal(usuario);
-    return {
-      mensaje: 'Registro exitoso en la plataforma Manos Seguras',
-      usuario,
-      user: usuario,
-      token: `jwt-vercel-${Date.now()}`,
-    };
-  }
-
-  private crearSesionRespaldoLogin(credenciales: LoginCredenciales): AuthResponse {
-    const iden = (
-      credenciales.identificador ||
-      credenciales.correo ||
-      credenciales.codigoEstudiantil ||
-      'estudiante'
-    )
-      .trim()
-      .toLowerCase();
-
-    const directorio = this.obtenerDirectorioLocal();
-    const encontrado = directorio.find(
-      (u) =>
-        u.correo.toLowerCase() === iden ||
-        u.codigoEstudiantil.toLowerCase() === iden
-    );
-
-    const esDocente =
-      encontrado?.rol === 'DOCENTE' ||
-      iden.includes('docente') ||
-      iden.includes('admin') ||
-      iden === 'doc-2026';
-
-    const usuario: Usuario = encontrado || {
-      id: esDocente ? '7df1ce3a-c597-4de0-8abe-91221a55d8b3' : `est-${Date.now()}`,
-      nombre: esDocente
-        ? 'Docente Supervisor UCC'
-        : iden.includes('@')
-          ? iden.split('@')[0].replace(/[._]/g, ' ')
-          : `Estudiante ${iden.toUpperCase()}`,
-      codigoEstudiantil: esDocente ? 'DOC-2026' : iden.toUpperCase(),
-      correo: iden.includes('@') ? iden : `${iden}@campusucc.edu.co`,
-      rol: esDocente ? 'DOCENTE' : 'ESTUDIANTE',
-      consentimiento: true,
-      fechaRegistro: new Date().toISOString(),
-    };
-
-    return {
-      mensaje: 'Autenticación exitosa',
-      usuario,
-      user: usuario,
-      token: `jwt-vercel-${Date.now()}`,
-    };
-  }
-
-  private guardarUsuarioEnDirectorioLocal(usuario: Usuario): void {
-    if (typeof window === 'undefined') return;
-    try {
-      const lista = this.obtenerDirectorioLocal().filter(
-        (u) => u.correo !== usuario.correo && u.codigoEstudiantil !== usuario.codigoEstudiantil
-      );
-      lista.push(usuario);
-      localStorage.setItem('directorio_usuarios_manos_seguras', JSON.stringify(lista));
-    } catch {}
-  }
-
-  private obtenerDirectorioLocal(): Usuario[] {
-    if (typeof window === 'undefined') return [];
-    try {
-      const raw = localStorage.getItem('directorio_usuarios_manos_seguras');
-      return raw ? (JSON.parse(raw) as Usuario[]) : [];
-    } catch {
-      return [];
-    }
   }
 }

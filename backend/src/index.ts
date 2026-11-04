@@ -113,14 +113,16 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-// Inicialización del Servidor HTTP
-app.listen(PORT, () => {
-  console.log(`===============================================`);
-  console.log(`🚀 Servidor Manos Seguras API corriendo`);
-  console.log(`📍 URL: http://localhost:${PORT}`);
-  console.log(`🛡️ Entorno: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🩺 Health: http://localhost:${PORT}/api/health`);
-  console.log(`===============================================`);
-});
+// Inicialización del Servidor HTTP (en local; en Vercel Serverless se exporta `app` directamente)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`===============================================`);
+    console.log(`🚀 Servidor Manos Seguras API corriendo`);
+    console.log(`📍 URL: http://localhost:${PORT}`);
+    console.log(`🛡️ Entorno: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🩺 Health: http://localhost:${PORT}/api/health`);
+    console.log(`===============================================`);
+  });
+}
 
 export default app;

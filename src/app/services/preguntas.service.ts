@@ -94,7 +94,9 @@ export interface EnviarDiagnosticoResponse {
 export class PreguntasService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
-  private readonly apiUrl = 'http://localhost:3000/api';
+  private get apiUrl(): string {
+    return this.authService.apiUrl;
+  }
 
   // Signals reactivos para el estado del banco de preguntas
   readonly preguntasEstudiante = signal<PreguntaEstudiante[]>([]);

@@ -98,6 +98,7 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
     const passwordHashed = await bcrypt.hash(data.password, salt);
 
     // Guardar el nuevo usuario en PostgreSQL / Supabase con reconexión automática
+    console.log('⏳ [SUPABASE] Ejecutando prisma.usuario.create() en tabla "Usuario"...');
     const nuevoUsuario = await ejecutarConReconexion(() =>
       prisma.usuario.create({
         data: {
@@ -120,6 +121,22 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
       })
     );
 
+    // Verificar persistencia real en Supabase consultando el registro recién insertado
+    const verificacionSupabase = await ejecutarConReconexion(() =>
+      prisma.usuario.findUnique({
+        where: { id: nuevoUsuario.id },
+        select: { id: true, correo: true, codigoEstudiantil: true },
+      })
+    );
+
+    if (!verificacionSupabase) {
+      throw new Error(
+        `Fallo de persistencia en Supabase: el usuario ${nuevoUsuario.correo} (${nuevoUsuario.id}) no se encontró en la tabla "Usuario" tras prisma.usuario.create().`
+      );
+    }
+
+    const totalUsuariosEnSupabase = await ejecutarConReconexion(() => prisma.usuario.count());
+
     // Generar el token JWT
     const token = jwt.sign(
       {
@@ -140,14 +157,17 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
       consentimiento: nuevoUsuario.consentimiento,
     };
 
-    console.log('✅ [SUPABASE INSERT EXITOSO - TABLA "Usuario"]:', {
-      id: nuevoUsuario.id,
-      nombre: nuevoUsuario.nombre,
-      codigoEstudiantil: nuevoUsuario.codigoEstudiantil,
-      correo: nuevoUsuario.correo,
-      rol: nuevoUsuario.rol,
-      fechaRegistro: nuevoUsuario.fechaRegistro,
-    });
+    console.log(
+      `✅ [SUPABASE INSERT VERIFICADO - TABLA "Usuario" | Total usuarios en BD: ${totalUsuariosEnSupabase}]:`,
+      {
+        id: nuevoUsuario.id,
+        nombre: nuevoUsuario.nombre,
+        codigoEstudiantil: nuevoUsuario.codigoEstudiantil,
+        correo: nuevoUsuario.correo,
+        rol: nuevoUsuario.rol,
+        fechaRegistro: nuevoUsuario.fechaRegistro,
+      }
+    );
     console.log('==============================================================');
 
     res.status(201).json({

@@ -151,7 +151,9 @@ export interface RankingRetoExtremoResponse {
 export class PracticasService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
-  private readonly apiUrl = 'http://localhost:3000/api';
+  private get apiUrl(): string {
+    return this.authService.apiUrl;
+  }
 
   private obtenerHeadersAuth(): HttpHeaders {
     const token = this.authService.token();
