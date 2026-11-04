@@ -123,6 +123,28 @@ export interface RankingProgresoIAResponse {
   catalogoInsignias: InsigniaDigitalIA[];
 }
 
+export interface RegistroRetoExtremo {
+  id: string;
+  posicion: number;
+  nombre: string;
+  codigoEstudiantil: string;
+  aciertos: number;
+  totalPreguntas: number;
+  porcentajeExito: number;
+  tiempoSegundos: number;
+  puntajeCompetitivo: number;
+  fecha: string;
+  esUsuarioActual?: boolean;
+}
+
+export interface RankingRetoExtremoResponse {
+  totalParticipantes: number;
+  primerLugar: RegistroRetoExtremo | null;
+  ultimoLugar: RegistroRetoExtremo | null;
+  ranking: RegistroRetoExtremo[];
+  resultado?: RegistroRetoExtremo;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -184,6 +206,38 @@ export class PracticasService {
       : '';
     return this.http.get<RankingProgresoIAResponse>(
       `${this.apiUrl}/ia/ranking-progreso${query}`,
+      { headers: this.obtenerHeadersAuth() }
+    );
+  }
+
+  /**
+   * Obtiene el ranking competitivo del Modo Trivia Reto Extremo (primero y último lugar)
+   * GET /api/ia/reto-extremo/ranking
+   */
+  obtenerRankingRetoExtremo(codigoEstudiantil?: string): Observable<RankingRetoExtremoResponse> {
+    const query = codigoEstudiantil
+      ? `?codigoEstudiantil=${encodeURIComponent(codigoEstudiantil.trim())}`
+      : '';
+    return this.http.get<RankingRetoExtremoResponse>(
+      `${this.apiUrl}/ia/reto-extremo/ranking${query}`,
+      { headers: this.obtenerHeadersAuth() }
+    );
+  }
+
+  /**
+   * Registra el resultado de la Trivia Reto Extremo y devuelve el ranking actualizado
+   * POST /api/ia/reto-extremo/registrar
+   */
+  registrarRetoExtremo(datos: {
+    nombre: string;
+    codigoEstudiantil: string;
+    aciertos: number;
+    totalPreguntas: number;
+    tiempoSegundos: number;
+  }): Observable<RankingRetoExtremoResponse> {
+    return this.http.post<RankingRetoExtremoResponse>(
+      `${this.apiUrl}/ia/reto-extremo/registrar`,
+      datos,
       { headers: this.obtenerHeadersAuth() }
     );
   }

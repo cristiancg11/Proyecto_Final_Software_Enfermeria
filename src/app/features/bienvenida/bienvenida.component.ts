@@ -6,14 +6,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService, AuthResponse } from '../../services/auth.service';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 
 @Component({
   selector: 'app-bienvenida',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
     <div class="max-w-3xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
       <!-- Badge de Encabezado -->
@@ -30,6 +30,18 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
         <p class="text-base md:text-lg text-[#D1E0EE] max-w-xl mx-auto leading-relaxed">
           Plataforma de entrenamiento clínico y evaluación interactiva de la técnica de lavado de manos según la norma internacional de la OMS.
         </p>
+
+        <!-- Botón Destacado de Acceso Directo: Modo Reto Extremo / Trivia de Asepsia -->
+        <div class="mt-6 flex justify-center">
+          <a
+            routerLink="/reto-extremo"
+            class="inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#FF6A4D] via-amber-500 to-[#00B39F] text-white font-black text-xs sm:text-sm shadow-[0_0_25px_rgba(255,106,77,0.45)] hover:shadow-[0_0_35px_rgba(80,231,255,0.5)] hover:scale-105 transition-all duration-300 border border-white/30"
+          >
+            <span class="text-base">⚡</span>
+            <span>¡Modo Reto Extremo: Demuestra tu Nivel! (Trivia Competitiva OMS)</span>
+            <span class="px-2 py-0.5 rounded-full bg-black/30 text-[10px] uppercase tracking-wider">Ranking en Vivo</span>
+          </a>
+        </div>
       </div>
 
       <!-- SELECTOR DE ACCESO: ESTUDIANTE vs DOCENTE / ADMIN -->

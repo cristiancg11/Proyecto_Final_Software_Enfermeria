@@ -723,90 +723,80 @@ export interface QualityAlert {
             </div>
           }
 
-          <!-- ASISTENTE VIRTUAL EN VIVO: MANITABOT COACH (AVATAR FLOTANTE DE ENFERMERÍA CON VOZ WEB SPEECH API) -->
-          <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 max-w-sm w-[calc(100vw-2rem)] sm:w-96 pointer-events-auto">
+          <!-- ASISTENTE VIRTUAL EN VIVO: GUANEÑABOT COACH (TARJETA FLOTANTE MODERNA CON CHAT E INDICADOR "ESCRIBIENDO...") -->
+          <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 max-w-sm w-[calc(100vw-2rem)] sm:w-[400px] pointer-events-auto">
             @if (manitaBotExpandido()) {
               <div
-                class="bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-2xl border-2 transition-all duration-300 animate-fade-in"
+                class="bg-white/95 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(11,43,41,0.28)] border-2 transition-all duration-300 animate-fade-in"
                 [ngClass]="{
-                  'border-emerald-400 shadow-emerald-500/20': manitaBotEstado() === 'optimo',
-                  'border-[#FF6A4D] shadow-[#FF6A4D]/25': manitaBotEstado() === 'alerta',
-                  'border-[#00B39F] shadow-[#00B39F]/20': manitaBotEstado() === 'guia'
+                  'border-emerald-400': manitaBotEstado() === 'optimo',
+                  'border-[#FF6A4D]': manitaBotEstado() === 'alerta',
+                  'border-[#00B39F]': manitaBotEstado() === 'guia'
                 }"
               >
-                <!-- Cabecera del Avatar de Enfermería ManitaBot Coach -->
-                <div class="flex items-start justify-between gap-3">
+                <!-- Cabecera Institucional con Degradado y Avatar Claro de Enfermería -->
+                <div class="bg-gradient-to-r from-[#0B2B29] via-[#0F3834] to-[#008072] p-4 text-white flex items-center justify-between gap-3">
                   <div class="flex items-center gap-3">
-                    <!-- Avatar SVG de Enfermería con Cofia y Ondas de Voz -->
-                    <div
-                      class="relative w-13 h-13 rounded-2xl flex items-center justify-center shrink-0 shadow-md border"
-                      [ngClass]="{
-                        'bg-gradient-to-br from-emerald-50 to-teal-100 border-emerald-300': manitaBotEstado() === 'optimo',
-                        'bg-gradient-to-br from-[#FFE9DE] to-orange-100 border-[#FF6A4D]/50 animate-pulse': manitaBotEstado() === 'alerta',
-                        'bg-gradient-to-br from-[#CFFBF0] to-teal-100 border-[#00B39F]/40': manitaBotEstado() === 'guia'
-                      }"
-                    >
-                      <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
-                        <!-- Cofia de enfermería clínica -->
-                        <path d="M18 18L24 9H40L46 18H18Z" fill="#FFFFFF" stroke="#008072" stroke-width="2.2" stroke-linejoin="round"/>
-                        <!-- Cruz clínica en la cofia -->
+                    <!-- Avatar de Enfermería GuaneñaBot Coach -->
+                    <div class="relative w-12 h-12 rounded-2xl bg-white/15 border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
+                      <svg class="w-9 h-9" viewBox="0 0 64 64" fill="none">
+                        <path d="M18 18L24 9H40L46 18H18Z" fill="#FFFFFF" stroke="#50E7FF" stroke-width="2" stroke-linejoin="round"/>
                         <path d="M32 11.5V16.5M29.5 14H34.5" stroke="#FF6A4D" stroke-width="2.2" stroke-linecap="round"/>
-                        <!-- Rostro amigable de ManitaBot -->
-                        <rect x="16" y="18" width="32" height="26" rx="12" fill="#0B2B29" stroke="#00B39F" stroke-width="2.2"/>
-                        <!-- Visor digital de enfermería -->
+                        <rect x="16" y="18" width="32" height="26" rx="12" fill="#081C1A" stroke="#50E7FF" stroke-width="2"/>
                         <rect x="20" y="23" width="24" height="13" rx="6" fill="#134E4A"/>
-                        <!-- Ojos expresivos -->
                         <circle cx="27" cy="29.5" r="2.5" [attr.fill]="manitaBotEstado() === 'alerta' ? '#FF6A4D' : '#50E7FF'"/>
                         <circle cx="37" cy="29.5" r="2.5" [attr.fill]="manitaBotEstado() === 'alerta' ? '#FF6A4D' : '#50E7FF'"/>
-                        <!-- Sonrisa / Onda de voz en visor -->
                         <path
                           [attr.d]="manitaBotEstado() === 'alerta' ? 'M28 39Q32 36 36 39' : 'M27 38Q32 42 37 38'"
-                          stroke="#00B39F"
+                          stroke="#50E7FF"
                           stroke-width="2.2"
                           stroke-linecap="round"
                         />
-                        <!-- Estetoscopio / Cuello clínico -->
-                        <path d="M22 44C22 50 42 50 42 44" stroke="#00B39F" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M22 44C22 50 42 50 42 44" stroke="#50E7FF" stroke-width="2.5" stroke-linecap="round"/>
                         <circle cx="32" cy="51" r="3" fill="#FF6A4D"/>
                       </svg>
-
-                      <!-- Indicador luminoso de estado de voz -->
-                      @if (manitaBotHablando()) {
-                        <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00B39F] opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#00B39F]"></span>
-                        </span>
-                      }
+                      <span
+                        class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#0B2B29]"
+                        [ngClass]="manitaBotHablando() ? 'bg-[#50E7FF] animate-ping' : 'bg-emerald-400'"
+                      ></span>
                     </div>
 
                     <div>
-                      <div class="flex items-center gap-1.5">
-                        <span class="font-heading text-sm font-black text-[#0B2B29]">ManitaBot Coach</span>
+                      <div class="flex items-center gap-2">
+                        <h4 class="font-heading text-sm sm:text-base font-black text-white tracking-tight">
+                          GuaneñaBot Coach
+                        </h4>
                         <span
                           class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider"
                           [ngClass]="{
-                            'bg-emerald-100 text-emerald-800': manitaBotEstado() === 'optimo',
-                            'bg-[#FFE9DE] text-[#FF6A4D]': manitaBotEstado() === 'alerta',
-                            'bg-[#CFFBF0] text-[#008072]': manitaBotEstado() === 'guia'
+                            'bg-emerald-400/25 text-emerald-200 border border-emerald-300/40': manitaBotEstado() === 'optimo',
+                            'bg-[#FF6A4D]/30 text-[#FFD2C9] border border-[#FF6A4D]/50': manitaBotEstado() === 'alerta',
+                            'bg-[#50E7FF]/20 text-[#50E7FF] border border-[#50E7FF]/40': manitaBotEstado() === 'guia'
                           }"
                         >
-                          {{ manitaBotEstado() === 'optimo' ? 'Técnica Óptima' : manitaBotEstado() === 'alerta' ? 'Aviso Correctivo' : 'Asistente IA' }}
+                          {{ manitaBotEstado() === 'optimo' ? 'Óptimo' : manitaBotEstado() === 'alerta' ? 'Corregir' : 'En línea' }}
                         </span>
                       </div>
-                      <p class="text-[11px] text-slate-500 font-semibold">
-                        Enfermera Virtual • Síntesis de Voz en Vivo
+                      <p class="text-[11px] text-teal-100/90 font-medium flex items-center gap-1.5">
+                        @if (botEscribiendo()) {
+                          <span>✍️ Escribiendo recomendación clínica...</span>
+                        } @else if (manitaBotHablando()) {
+                          <span>🔊 Hablando en tiempo real...</span>
+                        } @else {
+                          <span>Mentora Clínica OMS • Paso {{ currentStepIndex() + 1 }} de 6</span>
+                        }
                       </p>
                     </div>
                   </div>
 
-                  <!-- Controles rápidos: Silenciar Voz y Minimizar -->
+                  <!-- Botones de Voz y Minimizar -->
                   <div class="flex items-center gap-1">
                     <button
                       type="button"
                       (click)="toggleVozAsistente()"
                       class="p-2 rounded-xl border transition cursor-pointer"
-                      [ngClass]="vozActiva() ? 'bg-teal-50 border-teal-200 text-[#008072] hover:bg-teal-100' : 'bg-slate-100 border-slate-200 text-slate-400 hover:text-slate-600'"
-                      [title]="vozActiva() ? 'Silenciar voz de ManitaBot' : 'Activar voz de ManitaBot'"
+                      [ngClass]="vozActiva() ? 'bg-white/15 border-white/25 text-[#50E7FF] hover:bg-white/25' : 'bg-white/5 border-white/10 text-slate-400'"
+                      [title]="vozActiva() ? 'Silenciar voz' : 'Activar voz'"
                     >
                       @if (vozActiva()) {
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -822,8 +812,8 @@ export interface QualityAlert {
                     <button
                       type="button"
                       (click)="manitaBotExpandido.set(false)"
-                      class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
-                      title="Minimizar asistente"
+                      class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+                      title="Minimizar GuaneñaBot"
                     >
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -832,51 +822,81 @@ export interface QualityAlert {
                   </div>
                 </div>
 
-                <!-- Burbuja de retroalimentación hablada en tiempo real -->
-                <div
-                  class="mt-3 p-3 rounded-2xl border text-xs leading-relaxed font-semibold transition-all"
-                  [ngClass]="{
-                    'bg-emerald-50/90 border-emerald-200 text-emerald-950': manitaBotEstado() === 'optimo',
-                    'bg-[#FFF5F2] border-[#FF6A4D]/40 text-[#9A2B15]': manitaBotEstado() === 'alerta',
-                    'bg-slate-50 border-slate-200/80 text-[#0B2B29]': manitaBotEstado() === 'guia'
-                  }"
-                >
-                  <div class="flex items-start gap-2">
-                    <span class="text-sm shrink-0">
-                      {{ manitaBotEstado() === 'alerta' ? '⚠️' : manitaBotEstado() === 'optimo' ? '✅' : '🩺' }}
-                    </span>
-                    <p>{{ manitaBotMensaje() }}</p>
+                <!-- Cuerpo de Conversación con Jerarquía Tipográfica y Avatares Claros -->
+                <div class="p-4 space-y-3 bg-gradient-to-b from-slate-50/90 to-white">
+                  <!-- Mensaje principal del asistente con Avatar -->
+                  <div class="flex items-start gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-[#008072] text-white text-xs font-black flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                      🩺
+                    </div>
+                    <div
+                      class="flex-1 rounded-2xl rounded-tl-xs p-3.5 border text-xs leading-relaxed shadow-xs transition-all"
+                      [ngClass]="{
+                        'bg-emerald-50/95 border-emerald-200 text-emerald-950': manitaBotEstado() === 'optimo',
+                        'bg-[#FFF5F2] border-[#FF6A4D]/40 text-[#9A2B15]': manitaBotEstado() === 'alerta',
+                        'bg-white border-slate-200/90 text-[#0B2B29]': manitaBotEstado() === 'guia'
+                      }"
+                    >
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-[#008072]">
+                          Guía Biomecánica • Paso {{ currentStepIndex() + 1 }}
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-semibold">Ahora</span>
+                      </div>
+                      <p class="font-semibold text-xs sm:text-[13px] leading-snug">
+                        {{ manitaBotMensaje() }}
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <!-- Pie del Asistente: Botón para escuchar consejo clínico y estado de voz -->
-                <div class="mt-3 flex items-center justify-between gap-2 text-[11px]">
-                  <button
-                    type="button"
-                    (click)="hablarGuiaPasoActual()"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00B39F]/15 hover:bg-[#00B39F]/25 text-[#008072] font-extrabold transition cursor-pointer"
-                  >
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-                    </svg>
-                    <span>Escuchar guía del paso {{ currentStepIndex() + 1 }}</span>
-                  </button>
+                  <!-- Indicador animado "GuaneñaBot está escribiendo..." -->
+                  @if (botEscribiendo()) {
+                    <div class="flex items-center gap-2 pl-9 animate-fade-in">
+                      <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-teal-50 border border-teal-200 text-[#008072] text-[11px] font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce" style="animation-delay: 150ms"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce" style="animation-delay: 300ms"></span>
+                        <span class="ml-1">GuaneñaBot está escribiendo...</span>
+                      </div>
+                    </div>
+                  }
 
-                  <span class="text-[10px] font-bold text-slate-400">
-                    {{ manitaBotHablando() ? '🔊 Hablando en español...' : vozActiva() ? '🎙️ Voz activa' : '🔇 Voz silenciada' }}
-                  </span>
+                  <!-- Píldoras de Consulta Rápida Interactiva -->
+                  <div class="flex flex-wrap gap-1.5 pt-1">
+                    <button
+                      type="button"
+                      (click)="consultarTipClinicoRapido('anatomia')"
+                      class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-[#CFFBF0] text-slate-700 hover:text-[#008072] border border-slate-200 text-[10px] font-extrabold transition cursor-pointer"
+                    >
+                      💡 ¿Tip anatómico?
+                    </button>
+                    <button
+                      type="button"
+                      (click)="consultarTipClinicoRapido('tiempo')"
+                      class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-[#CFFBF0] text-slate-700 hover:text-[#008072] border border-slate-200 text-[10px] font-extrabold transition cursor-pointer"
+                    >
+                      ⏱ ¿Por qué 3 a 8s?
+                    </button>
+                    <button
+                      type="button"
+                      (click)="hablarGuiaPasoActual()"
+                      class="px-2.5 py-1 rounded-full bg-[#00B39F]/15 hover:bg-[#00B39F]/25 text-[#008072] border border-[#00B39F]/30 text-[10px] font-extrabold transition cursor-pointer"
+                    >
+                      🔊 Escuchar voz
+                    </button>
+                  </div>
                 </div>
               </div>
             } @else {
-              <!-- Botón Flotante Compacto cuando ManitaBot está minimizado -->
+              <!-- Botón Flotante Moderno cuando GuaneñaBot está minimizado -->
               <button
                 type="button"
                 (click)="manitaBotExpandido.set(true)"
-                class="ml-auto flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#0B2B29] text-white shadow-2xl border-2 border-[#00B39F] hover:scale-105 transition-all cursor-pointer"
+                class="ml-auto flex items-center gap-3 px-4 py-3 rounded-full bg-gradient-to-r from-[#0B2B29] to-[#008072] text-white shadow-2xl border-2 border-[#50E7FF]/60 hover:scale-105 transition-all cursor-pointer"
               >
-                <span class="w-2.5 h-2.5 rounded-full bg-[#00B39F] animate-ping"></span>
-                <span class="font-extrabold text-xs">ManitaBot Coach</span>
-                <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#00B39F]/20 text-[#50E7FF]">Abrir</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-[#50E7FF] animate-ping"></span>
+                <span class="font-extrabold text-xs">GuaneñaBot Coach</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/15 text-[#50E7FF] font-black">Abrir Chat</span>
               </button>
             }
           </div>
@@ -911,13 +931,14 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly segundosGrifo = signal(5);
   private grifoInterval: any = null;
 
-  // Asistente Virtual en Vivo: ManitaBot Coach (Web Speech API)
+  // Asistente Virtual en Vivo: GuaneñaBot Coach (Web Speech API + Indicador Escribiendo)
   readonly manitaBotExpandido = signal(true);
   readonly vozActiva = signal(true);
   readonly manitaBotHablando = signal(false);
+  readonly botEscribiendo = signal(false);
   readonly manitaBotEstado = signal<'guia' | 'optimo' | 'alerta'>('guia');
   readonly manitaBotMensaje = signal(
-    '¡Hola! Soy ManitaBot Coach. Te guiaré con voz en tiempo real para que cumplas los segundos y movimientos OMS en cada paso.'
+    '¡Hola! Soy GuaneñaBot Coach. Te guiaré con voz e indicadores en tiempo real para que cumplas los segundos y movimientos OMS en cada paso.'
   );
   readonly motionIntensityPercent = signal(0);
   private ultimoAvisoVozTimestamp = 0;
@@ -1206,6 +1227,25 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
   hablarGuiaPasoActual(): void {
     this.anunciarPasoEnVoz(this.currentStepIndex(), true);
+  }
+
+  consultarTipClinicoRapido(tipo: 'anatomia' | 'tiempo'): void {
+    this.botEscribiendo.set(true);
+    setTimeout(() => {
+      this.botEscribiendo.set(false);
+      if (tipo === 'anatomia') {
+        const tip = this.currentAnatomicalTip();
+        this.manitaBotEstado.set('guia');
+        this.manitaBotMensaje.set(tip);
+        this.hablarConManitaBot(tip, true);
+      } else {
+        const msg =
+          'El frotado de 3 a 8 segundos por paso permite que el tensoactivo o el alcohol al 70% rompa la membrana lipídica bacteriana.';
+        this.manitaBotEstado.set('guia');
+        this.manitaBotMensaje.set(msg);
+        this.hablarConManitaBot(msg, true);
+      }
+    }, 550);
   }
 
   private anunciarPasoEnVoz(stepIdx: number, forzar = false): void {

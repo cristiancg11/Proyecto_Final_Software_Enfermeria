@@ -103,6 +103,14 @@ export const routes: Routes = [
     redirectTo: 'resultado',
   },
   {
+    path: 'reto-extremo',
+    loadComponent: () =>
+      import('./pages/reto-extremo/reto-extremo.component').then(
+        (m) => m.RetoExtremoComponent
+      ),
+    title: 'Manos Seguras — Modo Reto Extremo: Trivia de Asepsia OMS',
+  },
+  {
     path: 'validar/:codigo',
     loadComponent: () =>
       import('./pages/validar-certificado/validar-certificado.component').then(
