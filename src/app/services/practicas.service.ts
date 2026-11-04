@@ -82,6 +82,47 @@ export interface ValidarCertificadoResponse {
   error?: string;
 }
 
+export interface InsigniaDigitalIA {
+  id: string;
+  codigo: string;
+  nombre: string;
+  descripcion: string;
+  icono: string;
+  categoria: 'excelencia' | 'tecnica' | 'progreso' | 'constancia';
+  desbloqueada: boolean;
+  progreso: number;
+  criterio: string;
+}
+
+export interface ParticipanteRankingIA {
+  posicion: number;
+  aliasAnonimo: string;
+  codigoAnonimizado: string;
+  intentosCompletados: number;
+  notaIntento1: number;
+  notaIntento2: number | null;
+  notaIntento3: number | null;
+  notaActual: number;
+  mejoraPorcentual: number;
+  puntajeEsfuerzoIA: number;
+  tendencia: 'ascendente' | 'estable' | 'destacado';
+  insignias: string[];
+  esUsuarioActual?: boolean;
+}
+
+export interface RankingProgresoIAResponse {
+  generadoEn: string;
+  motorIA: string;
+  metricasCohorte: {
+    totalEstudiantesAnalizados: number;
+    promedioMejoraIntento1a3: number;
+    tasaDominioPulgares: number;
+    tiempoOptimoPromedioSeg: number;
+  };
+  rankingGrupal: ParticipanteRankingIA[];
+  catalogoInsignias: InsigniaDigitalIA[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -130,6 +171,20 @@ export class PracticasService {
     const codigoLimpio = encodeURIComponent(codigo.trim());
     return this.http.get<ValidarCertificadoResponse>(
       `${this.apiUrl}/certificados/validar/${codigoLimpio}`
+    );
+  }
+
+  /**
+   * Obtiene el tablero de desafío contra compañeros y analítica de progresión IA
+   * GET /api/ia/ranking-progreso
+   */
+  obtenerRankingProgresoIA(codigoEstudiantil?: string): Observable<RankingProgresoIAResponse> {
+    const query = codigoEstudiantil
+      ? `?codigoEstudiantil=${encodeURIComponent(codigoEstudiantil.trim())}`
+      : '';
+    return this.http.get<RankingProgresoIAResponse>(
+      `${this.apiUrl}/ia/ranking-progreso${query}`,
+      { headers: this.obtenerHeadersAuth() }
     );
   }
 }

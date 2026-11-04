@@ -235,31 +235,53 @@ export interface QualityAlert {
               </div>
             </div>
 
-            <!-- Stepper visual de 6 pasos con píldoras y conectores -->
-            <div class="grid grid-cols-6 gap-2 sm:gap-4 items-center">
+            <!-- Stepper visual de 6 pasos con píldoras e indicadores dinámicos de estado -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sm:gap-3 items-stretch">
               @for (step of steps; track step.number; let idx = $index) {
-                <div class="flex flex-col items-center gap-1.5 text-center group">
-                  <div
-                    class="w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-extrabold text-xs sm:text-sm transition-all duration-300 shadow-md"
-                    [ngClass]="{
-                      'bg-gradient-to-r from-[#00B39F] to-[#009988] text-white ring-4 ring-[#00B39F]/30 scale-110 shadow-[#00B39F]/40': idx === currentStepIndex(),
-                      'bg-[#00B39F] text-white': idx < currentStepIndex(),
-                      'bg-slate-100 text-slate-400 border border-slate-200': idx > currentStepIndex()
-                    }"
-                  >
-                    @if (idx < currentStepIndex()) {
-                      <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                      </svg>
-                    } @else {
-                      {{ step.number }}
-                    }
+                <div
+                  class="flex flex-col items-center justify-between gap-1.5 p-2.5 rounded-2xl border transition-all duration-300 text-center group"
+                  [ngClass]="{
+                    'bg-[#E6FBF7]/90 border-[#00B39F] shadow-md shadow-[#00B39F]/10': idx === currentStepIndex() && isTechniqueActive(),
+                    'bg-[#FFF5F2] border-[#FF6A4D]/60 shadow-sm': idx === currentStepIndex() && cameraActive() && !isTechniqueActive(),
+                    'bg-teal-50/70 border-teal-200': idx === currentStepIndex() && !cameraActive(),
+                    'bg-emerald-50/70 border-emerald-200/80': idx < currentStepIndex(),
+                    'bg-slate-50/80 border-slate-200/70 opacity-75': idx > currentStepIndex()
+                  }"
+                >
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-extrabold text-xs sm:text-sm transition-all duration-300 shadow-sm"
+                      [ngClass]="{
+                        'bg-gradient-to-r from-[#00B39F] to-[#009988] text-white ring-4 ring-[#00B39F]/25 scale-105': idx === currentStepIndex() && (!cameraActive() || isTechniqueActive()),
+                        'bg-[#FF6A4D] text-white ring-4 ring-[#FF6A4D]/25 animate-pulse': idx === currentStepIndex() && cameraActive() && !isTechniqueActive(),
+                        'bg-emerald-500 text-white': idx < currentStepIndex(),
+                        'bg-slate-200 text-slate-500': idx > currentStepIndex()
+                      }"
+                    >
+                      @if (idx < currentStepIndex()) {
+                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                      } @else {
+                        {{ step.number }}
+                      }
+                    </div>
                   </div>
+
                   <span
-                    class="text-[10px] sm:text-xs font-bold truncate max-w-full hidden md:block transition-colors"
-                    [ngClass]="idx === currentStepIndex() ? 'text-[#008072]' : idx < currentStepIndex() ? 'text-[#0B2B29]' : 'text-slate-400'"
+                    class="text-[11px] font-extrabold truncate max-w-full transition-colors"
+                    [ngClass]="idx === currentStepIndex() ? 'text-[#0B2B29]' : idx < currentStepIndex() ? 'text-emerald-900' : 'text-slate-400'"
                   >
                     {{ step.title }}
+                  </span>
+
+                  <!-- Indicador visual dinámico de estado por cada paso -->
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border"
+                    [ngClass]="getStepBadgeClasses(idx)"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getStepDotClasses(idx)"></span>
+                    <span>{{ getStepStatusLabel(idx) }}</span>
                   </span>
                 </div>
               }
@@ -597,26 +619,40 @@ export interface QualityAlert {
                   ></div>
                 </div>
 
-                <!-- Feedback textual en vivo -->
-                <p class="text-xs text-slate-600 font-medium truncate pt-0.5">
-                  {{ palmsFeedback() }}
-                </p>
+                <!-- Feedback textual en vivo + Medidor de Energía Biomecánica -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-slate-200/70">
+                  <p class="text-xs text-slate-600 font-medium truncate">
+                    {{ palmsFeedback() }}
+                  </p>
+                  <div class="inline-flex items-center gap-1.5 shrink-0">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Cadencia IA:</span>
+                    <span
+                      class="text-[10px] font-extrabold px-2 py-0.5 rounded-full"
+                      [ngClass]="{
+                        'bg-emerald-100 text-emerald-800': isTechniqueActive() && currentSeconds() >= 3.0,
+                        'bg-teal-100 text-teal-800': isTechniqueActive() && currentSeconds() < 3.0,
+                        'bg-[#FFE9DE] text-[#FF6A4D]': !isTechniqueActive()
+                      }"
+                    >
+                      {{ isTechniqueActive() ? 'Fricción Activa (' + motionIntensityPercent() + '%)' : 'Sin Fricción Suficiente' }}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <!-- Botones de Acción de la Cámara / Paso -->
-              <div class="pt-1">
+              <div class="pt-1 flex flex-col sm:flex-row gap-2.5">
                 <button
                   type="button"
                   (click)="completeStep()"
-                  [disabled]="cameraActive() && !palmsValidated()"
-                  class="w-full py-3.5 px-6 rounded-full font-extrabold text-sm sm:text-base text-white shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group"
+                  class="flex-1 py-3.5 px-6 rounded-full font-extrabold text-sm sm:text-base text-white shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group"
                   [ngClass]="cameraActive() && !palmsValidated()
-                    ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none'
+                    ? 'bg-gradient-to-r from-[#FF6A4D] to-amber-500 hover:from-[#e8573a] hover:to-amber-600 shadow-[#FF6A4D]/25'
                     : 'bg-[#00B39F] hover:bg-[#009988] hover:shadow-[#00B39F]/30 hover:scale-[1.01] active:scale-[0.99]'"
                 >
                   <span>
                     @if (cameraActive() && !palmsValidated()) {
-                      Frotando frente a la cámara...
+                      Verificar Umbral con ManitaBot ({{ formattedTime() }}s / 3.0s)
                     } @else if (isLastStep()) {
                       Ir a Evaluación Práctica
                     } @else {
@@ -686,6 +722,164 @@ export interface QualityAlert {
               </div>
             </div>
           }
+
+          <!-- ASISTENTE VIRTUAL EN VIVO: MANITABOT COACH (AVATAR FLOTANTE DE ENFERMERÍA CON VOZ WEB SPEECH API) -->
+          <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 max-w-sm w-[calc(100vw-2rem)] sm:w-96 pointer-events-auto">
+            @if (manitaBotExpandido()) {
+              <div
+                class="bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-2xl border-2 transition-all duration-300 animate-fade-in"
+                [ngClass]="{
+                  'border-emerald-400 shadow-emerald-500/20': manitaBotEstado() === 'optimo',
+                  'border-[#FF6A4D] shadow-[#FF6A4D]/25': manitaBotEstado() === 'alerta',
+                  'border-[#00B39F] shadow-[#00B39F]/20': manitaBotEstado() === 'guia'
+                }"
+              >
+                <!-- Cabecera del Avatar de Enfermería ManitaBot Coach -->
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <!-- Avatar SVG de Enfermería con Cofia y Ondas de Voz -->
+                    <div
+                      class="relative w-13 h-13 rounded-2xl flex items-center justify-center shrink-0 shadow-md border"
+                      [ngClass]="{
+                        'bg-gradient-to-br from-emerald-50 to-teal-100 border-emerald-300': manitaBotEstado() === 'optimo',
+                        'bg-gradient-to-br from-[#FFE9DE] to-orange-100 border-[#FF6A4D]/50 animate-pulse': manitaBotEstado() === 'alerta',
+                        'bg-gradient-to-br from-[#CFFBF0] to-teal-100 border-[#00B39F]/40': manitaBotEstado() === 'guia'
+                      }"
+                    >
+                      <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none">
+                        <!-- Cofia de enfermería clínica -->
+                        <path d="M18 18L24 9H40L46 18H18Z" fill="#FFFFFF" stroke="#008072" stroke-width="2.2" stroke-linejoin="round"/>
+                        <!-- Cruz clínica en la cofia -->
+                        <path d="M32 11.5V16.5M29.5 14H34.5" stroke="#FF6A4D" stroke-width="2.2" stroke-linecap="round"/>
+                        <!-- Rostro amigable de ManitaBot -->
+                        <rect x="16" y="18" width="32" height="26" rx="12" fill="#0B2B29" stroke="#00B39F" stroke-width="2.2"/>
+                        <!-- Visor digital de enfermería -->
+                        <rect x="20" y="23" width="24" height="13" rx="6" fill="#134E4A"/>
+                        <!-- Ojos expresivos -->
+                        <circle cx="27" cy="29.5" r="2.5" [attr.fill]="manitaBotEstado() === 'alerta' ? '#FF6A4D' : '#50E7FF'"/>
+                        <circle cx="37" cy="29.5" r="2.5" [attr.fill]="manitaBotEstado() === 'alerta' ? '#FF6A4D' : '#50E7FF'"/>
+                        <!-- Sonrisa / Onda de voz en visor -->
+                        <path
+                          [attr.d]="manitaBotEstado() === 'alerta' ? 'M28 39Q32 36 36 39' : 'M27 38Q32 42 37 38'"
+                          stroke="#00B39F"
+                          stroke-width="2.2"
+                          stroke-linecap="round"
+                        />
+                        <!-- Estetoscopio / Cuello clínico -->
+                        <path d="M22 44C22 50 42 50 42 44" stroke="#00B39F" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="32" cy="51" r="3" fill="#FF6A4D"/>
+                      </svg>
+
+                      <!-- Indicador luminoso de estado de voz -->
+                      @if (manitaBotHablando()) {
+                        <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00B39F] opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#00B39F]"></span>
+                        </span>
+                      }
+                    </div>
+
+                    <div>
+                      <div class="flex items-center gap-1.5">
+                        <span class="font-heading text-sm font-black text-[#0B2B29]">ManitaBot Coach</span>
+                        <span
+                          class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider"
+                          [ngClass]="{
+                            'bg-emerald-100 text-emerald-800': manitaBotEstado() === 'optimo',
+                            'bg-[#FFE9DE] text-[#FF6A4D]': manitaBotEstado() === 'alerta',
+                            'bg-[#CFFBF0] text-[#008072]': manitaBotEstado() === 'guia'
+                          }"
+                        >
+                          {{ manitaBotEstado() === 'optimo' ? 'Técnica Óptima' : manitaBotEstado() === 'alerta' ? 'Aviso Correctivo' : 'Asistente IA' }}
+                        </span>
+                      </div>
+                      <p class="text-[11px] text-slate-500 font-semibold">
+                        Enfermera Virtual • Síntesis de Voz en Vivo
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Controles rápidos: Silenciar Voz y Minimizar -->
+                  <div class="flex items-center gap-1">
+                    <button
+                      type="button"
+                      (click)="toggleVozAsistente()"
+                      class="p-2 rounded-xl border transition cursor-pointer"
+                      [ngClass]="vozActiva() ? 'bg-teal-50 border-teal-200 text-[#008072] hover:bg-teal-100' : 'bg-slate-100 border-slate-200 text-slate-400 hover:text-slate-600'"
+                      [title]="vozActiva() ? 'Silenciar voz de ManitaBot' : 'Activar voz de ManitaBot'"
+                    >
+                      @if (vozActiva()) {
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                      } @else {
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                        </svg>
+                      }
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="manitaBotExpandido.set(false)"
+                      class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
+                      title="Minimizar asistente"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Burbuja de retroalimentación hablada en tiempo real -->
+                <div
+                  class="mt-3 p-3 rounded-2xl border text-xs leading-relaxed font-semibold transition-all"
+                  [ngClass]="{
+                    'bg-emerald-50/90 border-emerald-200 text-emerald-950': manitaBotEstado() === 'optimo',
+                    'bg-[#FFF5F2] border-[#FF6A4D]/40 text-[#9A2B15]': manitaBotEstado() === 'alerta',
+                    'bg-slate-50 border-slate-200/80 text-[#0B2B29]': manitaBotEstado() === 'guia'
+                  }"
+                >
+                  <div class="flex items-start gap-2">
+                    <span class="text-sm shrink-0">
+                      {{ manitaBotEstado() === 'alerta' ? '⚠️' : manitaBotEstado() === 'optimo' ? '✅' : '🩺' }}
+                    </span>
+                    <p>{{ manitaBotMensaje() }}</p>
+                  </div>
+                </div>
+
+                <!-- Pie del Asistente: Botón para escuchar consejo clínico y estado de voz -->
+                <div class="mt-3 flex items-center justify-between gap-2 text-[11px]">
+                  <button
+                    type="button"
+                    (click)="hablarGuiaPasoActual()"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00B39F]/15 hover:bg-[#00B39F]/25 text-[#008072] font-extrabold transition cursor-pointer"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                    </svg>
+                    <span>Escuchar guía del paso {{ currentStepIndex() + 1 }}</span>
+                  </button>
+
+                  <span class="text-[10px] font-bold text-slate-400">
+                    {{ manitaBotHablando() ? '🔊 Hablando en español...' : vozActiva() ? '🎙️ Voz activa' : '🔇 Voz silenciada' }}
+                  </span>
+                </div>
+              </div>
+            } @else {
+              <!-- Botón Flotante Compacto cuando ManitaBot está minimizado -->
+              <button
+                type="button"
+                (click)="manitaBotExpandido.set(true)"
+                class="ml-auto flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#0B2B29] text-white shadow-2xl border-2 border-[#00B39F] hover:scale-105 transition-all cursor-pointer"
+              >
+                <span class="w-2.5 h-2.5 rounded-full bg-[#00B39F] animate-ping"></span>
+                <span class="font-extrabold text-xs">ManitaBot Coach</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#00B39F]/20 text-[#50E7FF]">Abrir</span>
+              </button>
+            }
+          </div>
         }
       </div>
     </div>
@@ -716,6 +910,28 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly mostrarFaseInicial = signal(true);
   readonly segundosGrifo = signal(5);
   private grifoInterval: any = null;
+
+  // Asistente Virtual en Vivo: ManitaBot Coach (Web Speech API)
+  readonly manitaBotExpandido = signal(true);
+  readonly vozActiva = signal(true);
+  readonly manitaBotHablando = signal(false);
+  readonly manitaBotEstado = signal<'guia' | 'optimo' | 'alerta'>('guia');
+  readonly manitaBotMensaje = signal(
+    '¡Hola! Soy ManitaBot Coach. Te guiaré con voz en tiempo real para que cumplas los segundos y movimientos OMS en cada paso.'
+  );
+  readonly motionIntensityPercent = signal(0);
+  private ultimoAvisoVozTimestamp = 0;
+  private framesSinCumplirUmbral = 0;
+  private readonly COOLDOWN_VOZ_MS = 6500;
+
+  readonly alertasVozCorrectivasPorPaso: string[] = [
+    'Atención en palma con palma: frota en círculos continuos durante al menos 3 segundos.',
+    'Aviso correctivo en dorso de las manos: tu fricción en los dorsos es menor a los segundos requeridos. Entrelaza los dedos y frota con firmeza.',
+    'Atención en espacios interdigitales: mantén las palmas juntas y frota entre los dedos hasta cumplir el tiempo mínimo.',
+    'Aviso en dorso de los dedos: traba los dedos en candado y realiza vaivén continuo sin detenerte antes de los 3 segundos.',
+    'Alerta en limpieza de pulgares: la fricción rotatoria del pulgar es menor al umbral requerido. Rodea el pulgar y gira durante al menos 3 segundos.',
+    'Atención en yemas y uñas: frota las puntas de los dedos sobre la palma opuesta en círculos hasta alcanzar el umbral aséptico.',
+  ];
 
   // URLs remotas de fallback directo para los 6 pasos OMS (contingencia garantizada)
   readonly fallbackVideoUrls: string[] = [
@@ -903,6 +1119,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.mostrarFaseInicial.set(false);
     this.startStepTimer();
     this.startCamera();
+    this.anunciarPasoEnVoz(0);
   }
 
   goToBienvenida(): void {
@@ -914,8 +1131,148 @@ export class PracticaComponent implements OnInit, OnDestroy {
       clearInterval(this.grifoInterval);
       this.grifoInterval = null;
     }
+    this.detenerVoz();
     this.stopTimer();
     this.stopCamera();
+  }
+
+  // Indicadores visuales dinámicos de estado por cada paso
+  getStepStatusLabel(idx: number): string {
+    const current = this.currentStepIndex();
+    if (idx < current) {
+      const rec = this.completedRecords().find((r) => r.stepNumber === idx + 1);
+      return rec ? `✓ ${rec.seconds}s` : '✓ Validado';
+    }
+    if (idx > current) {
+      return 'Pendiente';
+    }
+    // Paso actual en ejecución
+    if (this.currentSeconds() >= 3.0) {
+      return `Óptimo (${this.formattedTime()}s)`;
+    }
+    if (this.cameraActive() && !this.isTechniqueActive()) {
+      return 'Alerta Fricción';
+    }
+    if (this.isTechniqueActive()) {
+      return `Frotando ${this.formattedTime()}s`;
+    }
+    return 'En Curso';
+  }
+
+  getStepBadgeClasses(idx: number): string {
+    const current = this.currentStepIndex();
+    if (idx < current) {
+      return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+    }
+    if (idx > current) {
+      return 'bg-slate-100 text-slate-400 border-slate-200';
+    }
+    if (this.currentSeconds() >= 3.0) {
+      return 'bg-emerald-100 text-emerald-800 border-emerald-400';
+    }
+    if (this.cameraActive() && !this.isTechniqueActive()) {
+      return 'bg-[#FFE9DE] text-[#FF6A4D] border-[#FF6A4D]/40';
+    }
+    return 'bg-[#CFFBF0] text-[#008072] border-[#00B39F]/40';
+  }
+
+  getStepDotClasses(idx: number): string {
+    const current = this.currentStepIndex();
+    if (idx < current || this.currentSeconds() >= 3.0) {
+      return 'bg-emerald-500';
+    }
+    if (idx > current) {
+      return 'bg-slate-300';
+    }
+    if (this.cameraActive() && !this.isTechniqueActive()) {
+      return 'bg-[#FF6A4D] animate-ping';
+    }
+    return 'bg-[#00B39F] animate-pulse';
+  }
+
+  // Métodos del Asistente Virtual de Voz ManitaBot Coach (Web Speech API)
+  toggleVozAsistente(): void {
+    const nuevoEstado = !this.vozActiva();
+    this.vozActiva.set(nuevoEstado);
+    if (!nuevoEstado) {
+      this.detenerVoz();
+    } else {
+      this.hablarConManitaBot(
+        `Voz activada. Estás en el paso ${this.currentStepIndex() + 1}: ${this.currentStep().title}.`,
+        true
+      );
+    }
+  }
+
+  hablarGuiaPasoActual(): void {
+    this.anunciarPasoEnVoz(this.currentStepIndex(), true);
+  }
+
+  private anunciarPasoEnVoz(stepIdx: number, forzar = false): void {
+    const paso = this.steps[stepIdx];
+    if (!paso) return;
+    const texto = `Paso ${paso.number}: ${paso.title}. ${this.techniqueInstructions[stepIdx] || paso.description} Mantén la fricción al menos 3 a 5 segundos.`;
+    this.manitaBotEstado.set('guia');
+    this.manitaBotMensaje.set(texto);
+    this.hablarConManitaBot(texto, forzar);
+  }
+
+  private emitirAlertaCorrectivaVoz(mensajeVisual: string, mensajeHablado: string, forzar = false): void {
+    this.manitaBotEstado.set('alerta');
+    this.manitaBotMensaje.set(mensajeVisual);
+    const ahora = Date.now();
+    if (forzar || ahora - this.ultimoAvisoVozTimestamp >= this.COOLDOWN_VOZ_MS) {
+      this.ultimoAvisoVozTimestamp = ahora;
+      this.hablarConManitaBot(mensajeHablado, forzar);
+    }
+  }
+
+  private hablarConManitaBot(texto: string, forzar = false): void {
+    if (!this.vozActiva() || typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      return;
+    }
+    try {
+      const synth = window.speechSynthesis;
+      if (forzar) {
+        synth.cancel();
+      } else if (synth.speaking) {
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(texto);
+      utterance.lang = 'es-ES';
+      utterance.rate = 1.03;
+      utterance.pitch = 1.05;
+
+      const voices = synth.getVoices();
+      const vozEspanol = voices.find(
+        (v) =>
+          v.lang.toLowerCase().startsWith('es-co') ||
+          v.lang.toLowerCase().startsWith('es-mx') ||
+          v.lang.toLowerCase().startsWith('es-es') ||
+          v.lang.toLowerCase().startsWith('es')
+      );
+      if (vozEspanol) {
+        utterance.voice = vozEspanol;
+      }
+
+      utterance.onstart = () => this.manitaBotHablando.set(true);
+      utterance.onend = () => this.manitaBotHablando.set(false);
+      utterance.onerror = () => this.manitaBotHablando.set(false);
+
+      synth.speak(utterance);
+    } catch {
+      this.manitaBotHablando.set(false);
+    }
+  }
+
+  private detenerVoz(): void {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {}
+    }
+    this.manitaBotHablando.set(false);
   }
 
   async startCamera(): Promise<void> {
@@ -1005,8 +1362,17 @@ export class PracticaComponent implements OnInit, OnDestroy {
     if (landmarks.length < 2) {
       this.handsTogether.set(false);
       this.handsRubbing.set(false);
+      this.motionIntensityPercent.set(0);
       this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre.`);
       this.previousKeyPoints = null;
+      this.framesSinCumplirUmbral++;
+      if (this.framesSinCumplirUmbral > 45) {
+        this.emitirAlertaCorrectivaVoz(
+          `⚠️ ${instruction}: ubica ambas manos frente a la cámara para medir tu fricción.`,
+          `Atención: ubica ambas manos frente a la cámara para continuar con ${instruction.toLowerCase()}.`
+        );
+        this.framesSinCumplirUmbral = 0;
+      }
       return;
     }
 
@@ -1032,8 +1398,17 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
     if (!areHandsTogether) {
       this.handsRubbing.set(false);
+      this.motionIntensityPercent.set(0);
       this.palmsFeedback.set(`Junta las manos para realizar la técnica de ${instruction.toLowerCase()}.`);
       this.previousKeyPoints = null;
+      this.framesSinCumplirUmbral++;
+      if (this.framesSinCumplirUmbral > 45) {
+        this.emitirAlertaCorrectivaVoz(
+          `⚠️ Manos separadas en ${instruction}. Júntalas para activar la fricción.`,
+          `Aviso correctivo: junta tus manos para ejecutar ${instruction.toLowerCase()}.`
+        );
+        this.framesSinCumplirUmbral = 0;
+      }
       return;
     }
 
@@ -1062,16 +1437,28 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
     const avgMovement = sampleCount > 0 ? deltaMovement / sampleCount : 0;
     this.smoothedMotion = this.smoothedMotion * 0.65 + avgMovement * 0.35;
+    const intensity = Math.min(100, Math.round((this.smoothedMotion / 0.015) * 100));
+    this.motionIntensityPercent.set(intensity);
 
     const isRubbing = this.smoothedMotion > 0.0035;
     this.handsRubbing.set(isRubbing);
 
     if (!isRubbing) {
       this.palmsFeedback.set(`⚠️ Frota activamente las manos.`);
+      this.framesSinCumplirUmbral++;
+      if (this.framesSinCumplirUmbral > 38 && this.effectiveSeconds < 3.0) {
+        const idx = this.currentStepIndex();
+        const avisoPaso =
+          this.alertasVozCorrectivasPorPaso[idx] ||
+          `No detengas el movimiento en ${instruction}. Aún no alcanzas los 3 segundos requeridos.`;
+        this.emitirAlertaCorrectivaVoz(avisoPaso, avisoPaso);
+        this.framesSinCumplirUmbral = 0;
+      }
       return;
     }
 
     // CONDICIÓN CUMPLIDA: Manos juntas y frotado continuo detectado
+    this.framesSinCumplirUmbral = 0;
     this.effectiveSeconds += elapsed;
     const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
     if (this.currentSeconds() !== roundedSeconds) {
@@ -1086,10 +1473,18 @@ export class PracticaComponent implements OnInit, OnDestroy {
     }
 
     if (this.effectiveSeconds < 3.0) {
+      this.manitaBotEstado.set('guia');
+      this.manitaBotMensaje.set(
+        `Fricción activa detectada en ${instruction} (${roundedSeconds}s / 3.0s). ¡Sigue frotando con ritmo constante!`
+      );
       this.palmsFeedback.set(
         `¡Fricción continua en ${instruction}! Mantén el frotado activo hasta 3.0s mínimos.`
       );
     } else {
+      this.manitaBotEstado.set('optimo');
+      this.manitaBotMensaje.set(
+        `¡Excelente técnica en ${instruction}! Umbral de tiempo y movimiento cumplido (${roundedSeconds}s).`
+      );
       this.palmsFeedback.set(`✓ ¡Excelente técnica y tiempo óptimo alcanzado (${roundedSeconds}s)!`);
     }
 
@@ -1203,6 +1598,17 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   completeStep(): void {
+    // Si el estudiante intenta avanzar sin cumplir el umbral de 3 segundos, ManitaBot emite alerta hablada correctiva
+    if (this.currentSeconds() < 3.0) {
+      const idx = this.currentStepIndex();
+      const alertaEspecifica =
+        this.alertasVozCorrectivasPorPaso[idx] ||
+        `Atención: llevas ${this.formattedTime()} segundos en ${this.currentStep().title}. Debes frotar al menos 3 segundos antes de avanzar.`;
+      this.emitirAlertaCorrectivaVoz(alertaEspecifica, alertaEspecifica, true);
+      if (this.cameraActive() && !this.palmsValidated()) {
+        return;
+      }
+    }
     this.finishCurrentStep();
   }
 
@@ -1216,15 +1622,21 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.stateService.recordStepTime(stepNum, finalSeconds);
 
     if (this.isLastStep()) {
+      this.hablarConManitaBot(
+        '¡Felicidades! Has completado los 6 pasos de práctica supervisada. Pasemos a la evaluación práctica.',
+        true
+      );
       this.stopTimer();
       this.stopCamera();
       this.router.navigate(['/evaluacion-practica']);
     } else {
-      this.currentStepIndex.update((idx) => idx + 1);
+      const nextIdx = this.currentStepIndex() + 1;
+      this.currentStepIndex.set(nextIdx);
       this.usingFallbackVideo.set(false);
       this.videoDemoError.set(false);
       this.recargarVideoDemostrativo();
       this.startStepTimer();
+      this.anunciarPasoEnVoz(nextIdx, true);
     }
   }
 

@@ -7,6 +7,7 @@ import { authRouter } from './routes/auth.routes';
 import { preguntaRouter } from './routes/pregunta.routes';
 import { practicasRouter } from './routes/practicas.routes';
 import { encuestaRouter } from './routes/encuesta.routes';
+import { iaRouter } from './routes/ia.routes';
 import { verificarCertificado } from './controllers/practica.controller';
 
 const app = express();
@@ -61,6 +62,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/preguntas', preguntaRouter);
 app.use('/api/practicas', practicasRouter);
 app.use('/api/encuesta', encuestaRouter);
+app.use('/api/ia', iaRouter);
 app.get('/api/certificados/validar/:codigo', verificarCertificado);
 
 // Manejador de rutas no encontradas (404)
