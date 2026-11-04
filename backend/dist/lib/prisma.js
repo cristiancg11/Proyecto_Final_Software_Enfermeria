@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.prisma = void 0;
+exports.prismaDirect = exports.prisma = void 0;
 exports.esErrorConexionTransitorio = esErrorConexionTransitorio;
 exports.ejecutarConReconexion = ejecutarConReconexion;
 const path_1 = __importDefault(require("path"));
@@ -13,12 +13,12 @@ const client_1 = require("@prisma/client");
 dotenv_1.default.config();
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../.env') });
 const DEFAULT_SUPABASE_POOLER_URL = 'postgresql://postgres.pogefcmywndmbpphczhe:ManosSeguras2026@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=10&pool_timeout=30&connect_timeout=20';
-if (!process.env.DATABASE_URL) {
+const DEFAULT_SUPABASE_DIRECT_URL = 'postgresql://postgres.pogefcmywndmbpphczhe:ManosSeguras2026@aws-0-us-east-1.pooler.supabase.com:5432/postgres?connect_timeout=20';
+if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('connection_limit=1')) {
     process.env.DATABASE_URL = DEFAULT_SUPABASE_POOLER_URL;
 }
 if (!process.env.DIRECT_URL) {
-    process.env.DIRECT_URL =
-        'postgresql://postgres.pogefcmywndmbpphczhe:ManosSeguras2026@aws-0-us-east-1.pooler.supabase.com:5432/postgres?connect_timeout=20';
+    process.env.DIRECT_URL = DEFAULT_SUPABASE_DIRECT_URL;
 }
 const globalForPrisma = globalThis;
 exports.prisma = globalForPrisma.prisma ??
@@ -30,8 +30,18 @@ exports.prisma = globalForPrisma.prisma ??
             },
         },
     });
+exports.prismaDirect = globalForPrisma.prismaDirect ??
+    new client_1.PrismaClient({
+        log: ['error', 'warn'],
+        datasources: {
+            db: {
+                url: process.env.DIRECT_URL,
+            },
+        },
+    });
 if (process.env.NODE_ENV !== 'production') {
     globalForPrisma.prisma = exports.prisma;
+    globalForPrisma.prismaDirect = exports.prismaDirect;
 }
 /**
  * Detecta si un error de Prisma corresponde a una caída temporal, timeout o pausa de Supabase/PgBouncer
@@ -60,24 +70,19 @@ function esErrorConexionTransitorio(error) {
 async function ejecutarConReconexion(operacion, reintentos = 3) {
     let ultimoError;
     for (let intento = 0; intento <= reintentos; intento++) {
+        const clienteActivo = intento >= 2 ? exports.prismaDirect : exports.prisma;
         try {
-            return await operacion();
+            return await operacion(clienteActivo);
         }
         catch (error) {
             ultimoError = error;
             const errObj = error;
             console.error(`⚠️ [Prisma Supabase Error - Intento ${intento + 1}/${reintentos + 1}] Código: ${errObj?.code || 'N/A'} | Nombre: ${errObj?.name || 'Error'} | Mensaje: ${errObj?.message || errObj}`, errObj?.meta ? { meta: errObj.meta } : '');
             if (intento < reintentos && esErrorConexionTransitorio(error)) {
-                console.warn(`🔄 [Prisma Supabase] Reintentando operación en base de datos Supabase (intento ${intento + 1}/${reintentos})...`);
-                await new Promise((resolve) => setTimeout(resolve, 500 * (intento + 1)));
-                if (intento >= 1) {
-                    try {
-                        await exports.prisma.$disconnect();
-                    }
-                    catch { }
-                }
+                console.warn(`🔄 [Prisma Supabase] Reintentando operación en base de datos Supabase (intento ${intento + 1}/${reintentos}, usando ${intento + 1 >= 2 ? 'DIRECT_URL:5432' : 'POOLER:6543'})...`);
+                await new Promise((resolve) => setTimeout(resolve, 450 * (intento + 1)));
                 try {
-                    await exports.prisma.$connect();
+                    await (intento + 1 >= 2 ? exports.prismaDirect : exports.prisma).$connect();
                 }
                 catch (connErr) {
                     console.error('⚠️ [Prisma Supabase] Error al reconectar cliente Prisma:', connErr?.message || connErr);

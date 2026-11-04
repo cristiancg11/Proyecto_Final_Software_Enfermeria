@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { prisma } from '../lib/prisma';
+import { prisma, ejecutarConReconexion } from '../lib/prisma';
 
 const RegistrarPracticaSchema = z.object({
   usuarioId: z.string().uuid('ID de estudiante no válido').optional(),
@@ -14,35 +14,55 @@ const RegistrarPracticaSchema = z.object({
 
 /**
  * GET /api/practicas/docente
- * Consulta todas las prácticas realizadas por estudiantes con desglose de nota práctica, cuestionario y nota final consolidada.
+ * Consulta todas las prácticas realizadas por estudiantes y todos los estudiantes registrados en la tabla Usuario de Supabase.
  * Protegido: autenticarToken + requerirDocente
  */
 export const obtenerPracticasDocente = async (req: Request, res: Response): Promise<void> => {
   try {
-    const intentos = await prisma.intentoPractica.findMany({
-      include: {
-        usuario: {
+    const [intentos, estudiantesRegistrados] = await ejecutarConReconexion((db) =>
+      Promise.all([
+        db.intentoPractica.findMany({
+          include: {
+            usuario: {
+              select: {
+                id: true,
+                nombre: true,
+                codigoEstudiantil: true,
+                correo: true,
+              },
+            },
+            certificado: {
+              select: {
+                id: true,
+                codigoVerificacion: true,
+                fechaEmision: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        db.usuario.findMany({
+          where: { rol: 'ESTUDIANTE' },
           select: {
             id: true,
             nombre: true,
             codigoEstudiantil: true,
             correo: true,
+            fechaRegistro: true,
           },
-        },
-        certificado: {
-          select: {
-            id: true,
-            codigoVerificacion: true,
-            fechaEmision: true,
+          orderBy: {
+            fechaRegistro: 'desc',
           },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+        }),
+      ])
+    );
 
-    const practicas = intentos.map((intento) => {
+    const usuariosConIntento = new Set<string>();
+
+    const practicasDeIntentos = intentos.map((intento) => {
+      usuariosConIntento.add(intento.usuarioId);
       const detalle = (intento.detallePasosJson || {}) as any;
       const notaFinal = intento.calificacion;
       const notaPractica = detalle.notaPractica !== undefined
@@ -79,6 +99,27 @@ export const obtenerPracticasDocente = async (req: Request, res: Response): Prom
         detallePasos: intento.detallePasosJson,
       };
     });
+
+    const estudiantesSinPractica = estudiantesRegistrados
+      .filter((est) => !usuariosConIntento.has(est.id))
+      .map((est) => ({
+        id: `reg-${est.id}`,
+        estudianteId: est.id,
+        nombre: est.nombre,
+        codigo: est.codigoEstudiantil,
+        correo: est.correo,
+        fecha: est.fechaRegistro,
+        calificacion: 0,
+        notaPractica: 0,
+        notaTeorica: 0,
+        notaFinal: 0,
+        aprobado: false,
+        estado: 'Registrado (En curso)',
+        certificado: null,
+        detallePasos: { records: [] },
+      }));
+
+    const practicas = [...practicasDeIntentos, ...estudiantesSinPractica];
 
     res.json({
       total: practicas.length,

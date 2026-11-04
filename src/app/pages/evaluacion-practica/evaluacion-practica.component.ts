@@ -181,15 +181,17 @@ export interface QualityAlert {
               </div>
             </div>
 
-            <!-- Contenedor del Feed de Cámara Web Individual Grande y Centrado -->
-            <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] max-h-[580px] bg-slate-950 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 flex items-center justify-center group mx-auto">
+            <!-- Contenedor del Feed de Cámara Web Individual Grande y Centrado (Optimizado para Celulares y Escritorio) -->
+            <div class="relative w-full min-h-[260px] sm:min-h-[320px] aspect-[4/3] sm:aspect-[16/10] max-h-[580px] bg-slate-950 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 flex items-center justify-center group mx-auto">
               
-              <!-- Video Stream con efecto espejo -->
+              <!-- Video Stream con atributos obligatorios para celulares y efecto espejo -->
               <video
                 #cameraVideo
+                playsinline
+                webkit-playsinline="true"
                 autoplay
                 muted
-                playsinline
+                [muted]="true"
                 class="w-full h-full object-cover scale-x-[-1]"
               ></video>
 
@@ -641,38 +643,91 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.cameraLoading.set(true);
     this.cameraError.set('');
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' },
-        audio: false,
-      });
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+        throw new Error('Tu navegador móvil no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS.');
+      }
+
+      this.releaseStream();
+
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: 'user',
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+          },
+          audio: false,
+        });
+      } catch {
+        this.stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user' },
+          audio: false,
+        });
+      }
+
       const video = this.cameraVideo?.nativeElement;
-      if (!video) throw new Error('Visor no disponible');
+      if (!video) throw new Error('Visor de video no disponible');
+
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+      video.setAttribute('autoplay', 'true');
+      video.setAttribute('muted', 'true');
+      video.playsInline = true;
+      video.muted = true;
+      video.autoplay = true;
       video.srcObject = this.stream;
+
+      if (video.readyState < 1) {
+        await new Promise<void>((resolve) => {
+          const onLoaded = () => {
+            video.removeEventListener('loadedmetadata', onLoaded);
+            resolve();
+          };
+          video.addEventListener('loadedmetadata', onLoaded);
+          setTimeout(resolve, 1500);
+        });
+      }
+
       await video.play();
+
+      this.stopTimer();
+      this.cameraActive.set(true);
 
       if (!this.detector) {
         const vision = await FilesetResolver.forVisionTasks(
           'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
         );
-        this.detector = await HandLandmarker.createFromOptions(vision, {
-          baseOptions: {
-            modelAssetPath:
-              'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-          },
-          runningMode: 'VIDEO',
-          numHands: 2,
-        });
+        try {
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'GPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        } catch {
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'CPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        }
       }
 
-      this.stopTimer();
-      this.cameraActive.set(true);
       this.detectHands();
-    } catch (error) {
+    } catch (error: any) {
       this.releaseStream();
+      this.cameraActive.set(false);
       this.cameraError.set(
         error instanceof DOMException && error.name === 'NotAllowedError'
-          ? 'Debes autorizar el permiso de acceso a la cámara.'
-          : 'No fue posible iniciar la cámara en este dispositivo.'
+          ? 'Debes autorizar el permiso de acceso a la cámara en tu celular o navegador.'
+          : error?.message || 'No fue posible iniciar la cámara frontal en este dispositivo.'
       );
     } finally {
       this.cameraLoading.set(false);

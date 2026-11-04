@@ -64,8 +64,8 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
         : `EST-${Math.floor(1000 + Math.random() * 9000)}`);
 
     // Validar si ya existe un usuario con ese correo o código estudiantil (con reconexión automática a Supabase)
-    const usuarioExistente = await ejecutarConReconexion(() =>
-      prisma.usuario.findFirst({
+    const usuarioExistente = await ejecutarConReconexion((db) =>
+      db.usuario.findFirst({
         where: {
           OR: [{ correo: correoNormalizado }, { codigoEstudiantil: codigoNormalizado }],
         },
@@ -99,8 +99,8 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
 
     // Guardar el nuevo usuario en PostgreSQL / Supabase con reconexión automática
     console.log('⏳ [SUPABASE] Ejecutando prisma.usuario.create() en tabla "Usuario"...');
-    const nuevoUsuario = await ejecutarConReconexion(() =>
-      prisma.usuario.create({
+    const nuevoUsuario = await ejecutarConReconexion((db) =>
+      db.usuario.create({
         data: {
           nombre: data.nombre.trim(),
           codigoEstudiantil: codigoNormalizado,
@@ -122,8 +122,8 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
     );
 
     // Verificar persistencia real en Supabase consultando el registro recién insertado
-    const verificacionSupabase = await ejecutarConReconexion(() =>
-      prisma.usuario.findUnique({
+    const verificacionSupabase = await ejecutarConReconexion((db) =>
+      db.usuario.findUnique({
         where: { id: nuevoUsuario.id },
         select: { id: true, correo: true, codigoEstudiantil: true },
       })
@@ -135,7 +135,7 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
       );
     }
 
-    const totalUsuariosEnSupabase = await ejecutarConReconexion(() => prisma.usuario.count());
+    const totalUsuariosEnSupabase = await ejecutarConReconexion((db) => db.usuario.count());
 
     // Generar el token JWT
     const token = jwt.sign(
@@ -237,8 +237,8 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
     console.log(`🔍 [LOGIN INICIADO] Buscando usuario en Supabase ("Usuario") con credencial: "${credencial}"`);
 
     // Buscar por correo o por código estudiantil con reconexión automática a Supabase
-    const usuario = await ejecutarConReconexion(() =>
-      prisma.usuario.findFirst({
+    const usuario = await ejecutarConReconexion((db) =>
+      db.usuario.findFirst({
         where: {
           OR: [
             { correo: credencial.toLowerCase() },
@@ -330,8 +330,8 @@ export const obtenerPerfil = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const usuario = await ejecutarConReconexion(() =>
-      prisma.usuario.findUnique({
+    const usuario = await ejecutarConReconexion((db) =>
+      db.usuario.findUnique({
         where: { id: req.user!.id },
         select: {
           id: true,

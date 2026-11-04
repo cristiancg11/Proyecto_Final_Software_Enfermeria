@@ -502,15 +502,17 @@ export interface QualityAlert {
                 </div>
               </div>
 
-              <!-- Contenedor del Feed de Cámara Web Amplio con Canvas Superpuesto -->
-              <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 flex items-center justify-center group">
+              <!-- Contenedor del Feed de Cámara Web Amplio con Canvas Superpuesto (Optimizado para Celulares y Escritorio) -->
+              <div class="relative w-full min-h-[260px] sm:min-h-[320px] aspect-[4/3] sm:aspect-[16/10] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 flex items-center justify-center group">
                 
-                <!-- Video Stream con inversión de espejo -->
+                <!-- Video Stream con atributos obligatorios para celulares (iOS Safari / Android Chrome) e inversión de espejo -->
                 <video
                   #cameraVideo
+                  playsinline
+                  webkit-playsinline="true"
                   autoplay
                   muted
-                  playsinline
+                  [muted]="true"
                   class="w-full h-full object-cover scale-x-[-1]"
                 ></video>
 
@@ -528,9 +530,9 @@ export interface QualityAlert {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <h4 class="font-extrabold text-base mb-1">Cámara en Espera</h4>
+                    <h4 class="font-extrabold text-base mb-1">Cámara Frontal en Espera</h4>
                     <p class="text-xs text-slate-300 max-w-xs mb-4">
-                      Ubica tus manos frente a la cámara para que MediaPipe detecte los 21 puntos articulares.
+                      Ubica tus manos frente a la cámara frontal para que MediaPipe detecte los 21 puntos articulares.
                     </p>
                     <button
                       type="button"
@@ -539,11 +541,14 @@ export interface QualityAlert {
                       class="px-5 py-2.5 rounded-full bg-[#00B39F] hover:bg-[#009988] text-white font-bold text-xs shadow-lg shadow-teal-500/30 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       @if (cameraLoading()) {
-                        <span>Iniciando Visor...</span>
+                        <span>Iniciando Cámara Frontal...</span>
                       } @else {
-                        <span>Activar Cámara</span>
+                        <span>Activar Cámara Frontal</span>
                       }
                     </button>
+                    @if (cameraError()) {
+                      <p class="text-xs text-[#FF6A4D] font-bold mt-3 max-w-xs">{{ cameraError() }}</p>
+                    }
                   </div>
                 }
 
@@ -937,7 +942,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
   private grifoInterval: any = null;
 
   // Asistente Virtual en Vivo: Manitos Coach (Web Speech API + Indicador Escribiendo)
-  readonly manitaBotExpandido = signal(true);
+  readonly manitaBotExpandido = signal(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
   readonly vozActiva = signal(true);
   readonly manitaBotHablando = signal(false);
   readonly botEscribiendo = signal(false);
@@ -1324,39 +1329,96 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.cameraLoading.set(true);
     this.cameraError.set('');
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' },
-        audio: false,
-      });
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+        throw new Error('Tu navegador móvil no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS.');
+      }
+
+      // Liberar cualquier stream previo para evitar bloqueo de cámara en Android/iOS
+      this.releaseStream();
+
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: 'user',
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+          },
+          audio: false,
+        });
+      } catch {
+        // Fallback directo con facingMode: 'user' sin restricciones de resolución
+        this.stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user' },
+          audio: false,
+        });
+      }
+
       const video = this.cameraVideo?.nativeElement;
-      if (!video) throw new Error('Visor no disponible');
+      if (!video) throw new Error('Visor de video no disponible');
+
+      // Garantizar atributos y propiedades requeridas en navegadores móviles (iOS Safari y Android Chrome)
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+      video.setAttribute('autoplay', 'true');
+      video.setAttribute('muted', 'true');
+      video.playsInline = true;
+      video.muted = true;
+      video.autoplay = true;
       video.srcObject = this.stream;
+
+      if (video.readyState < 1) {
+        await new Promise<void>((resolve) => {
+          const onLoaded = () => {
+            video.removeEventListener('loadedmetadata', onLoaded);
+            resolve();
+          };
+          video.addEventListener('loadedmetadata', onLoaded);
+          setTimeout(resolve, 1500);
+        });
+      }
+
       await video.play();
+
+      // Activar visor de inmediato antes de cargar el modelo WASM de MediaPipe
+      this.stopTimer();
+      this.cameraActive.set(true);
 
       if (!this.detector) {
         const vision = await FilesetResolver.forVisionTasks(
           'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
         );
-        this.detector = await HandLandmarker.createFromOptions(vision, {
-          baseOptions: {
-            modelAssetPath:
-              'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-          },
-          runningMode: 'VIDEO',
-          numHands: 2,
-        });
+        try {
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'GPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        } catch {
+          // Fallback a CPU para GPUs móviles que no soporten texturas float16 en WebGL
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'CPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        }
       }
 
-      // Detenemos el cronómetro por intervalo ciego para que la cámara gobierne el progreso
-      this.stopTimer();
-      this.cameraActive.set(true);
       this.detectHands();
-    } catch (error) {
+    } catch (error: any) {
       this.releaseStream();
+      this.cameraActive.set(false);
       this.cameraError.set(
         error instanceof DOMException && error.name === 'NotAllowedError'
-          ? 'Debes autorizar el permiso de acceso a la cámara.'
-          : 'No fue posible iniciar la cámara en este dispositivo.'
+          ? 'Debes autorizar el permiso de acceso a la cámara en tu celular o navegador.'
+          : error?.message || 'No fue posible iniciar la cámara frontal en este dispositivo.'
       );
     } finally {
       this.cameraLoading.set(false);

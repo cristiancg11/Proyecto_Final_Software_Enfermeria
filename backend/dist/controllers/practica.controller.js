@@ -14,34 +14,51 @@ const RegistrarPracticaSchema = zod_1.z.object({
 });
 /**
  * GET /api/practicas/docente
- * Consulta todas las prácticas realizadas por estudiantes con desglose de nota práctica, cuestionario y nota final consolidada.
+ * Consulta todas las prácticas realizadas por estudiantes y todos los estudiantes registrados en la tabla Usuario de Supabase.
  * Protegido: autenticarToken + requerirDocente
  */
 const obtenerPracticasDocente = async (req, res) => {
     try {
-        const intentos = await prisma_1.prisma.intentoPractica.findMany({
-            include: {
-                usuario: {
-                    select: {
-                        id: true,
-                        nombre: true,
-                        codigoEstudiantil: true,
-                        correo: true,
+        const [intentos, estudiantesRegistrados] = await (0, prisma_1.ejecutarConReconexion)((db) => Promise.all([
+            db.intentoPractica.findMany({
+                include: {
+                    usuario: {
+                        select: {
+                            id: true,
+                            nombre: true,
+                            codigoEstudiantil: true,
+                            correo: true,
+                        },
+                    },
+                    certificado: {
+                        select: {
+                            id: true,
+                            codigoVerificacion: true,
+                            fechaEmision: true,
+                        },
                     },
                 },
-                certificado: {
-                    select: {
-                        id: true,
-                        codigoVerificacion: true,
-                        fechaEmision: true,
-                    },
+                orderBy: {
+                    createdAt: 'desc',
                 },
-            },
-            orderBy: {
-                createdAt: 'desc',
-            },
-        });
-        const practicas = intentos.map((intento) => {
+            }),
+            db.usuario.findMany({
+                where: { rol: 'ESTUDIANTE' },
+                select: {
+                    id: true,
+                    nombre: true,
+                    codigoEstudiantil: true,
+                    correo: true,
+                    fechaRegistro: true,
+                },
+                orderBy: {
+                    fechaRegistro: 'desc',
+                },
+            }),
+        ]));
+        const usuariosConIntento = new Set();
+        const practicasDeIntentos = intentos.map((intento) => {
+            usuariosConIntento.add(intento.usuarioId);
             const detalle = (intento.detallePasosJson || {});
             const notaFinal = intento.calificacion;
             const notaPractica = detalle.notaPractica !== undefined
@@ -77,6 +94,25 @@ const obtenerPracticasDocente = async (req, res) => {
                 detallePasos: intento.detallePasosJson,
             };
         });
+        const estudiantesSinPractica = estudiantesRegistrados
+            .filter((est) => !usuariosConIntento.has(est.id))
+            .map((est) => ({
+            id: `reg-${est.id}`,
+            estudianteId: est.id,
+            nombre: est.nombre,
+            codigo: est.codigoEstudiantil,
+            correo: est.correo,
+            fecha: est.fechaRegistro,
+            calificacion: 0,
+            notaPractica: 0,
+            notaTeorica: 0,
+            notaFinal: 0,
+            aprobado: false,
+            estado: 'Registrado (En curso)',
+            certificado: null,
+            detallePasos: { records: [] },
+        }));
+        const practicas = [...practicasDeIntentos, ...estudiantesSinPractica];
         res.json({
             total: practicas.length,
             practicas,
