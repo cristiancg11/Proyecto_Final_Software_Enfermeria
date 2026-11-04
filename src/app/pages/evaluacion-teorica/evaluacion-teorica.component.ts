@@ -226,11 +226,11 @@ interface PreguntaEvaluacion {
               <div>
                 <button
                   type="button"
-                  (click)="continuarAResultados()"
-                  class="px-8 py-4 rounded-full bg-[#00B39F] hover:bg-[#008072] text-white font-black text-sm sm:text-base shadow-xl shadow-teal-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer inline-flex items-center gap-3"
+                  (click)="continuarAEncuesta()"
+                  class="px-8 py-4 rounded-full bg-gradient-to-r from-[#00B39F] via-[#50E7FF] to-[#D9FF43] hover:brightness-110 text-[#080B10] font-black text-sm sm:text-base shadow-xl shadow-teal-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer inline-flex items-center gap-3"
                 >
-                  <span>Continuar a Resultados Finales</span>
-                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <span>Continuar a Calificación de la Plataforma</span>
+                  <svg class="w-5 h-5 text-[#080B10]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </button>

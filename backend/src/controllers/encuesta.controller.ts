@@ -73,6 +73,8 @@ export const registrarEncuesta = async (req: Request, res: Response): Promise<vo
       },
     });
 
+    console.log(`[Encuesta] ✅ Encuesta y calificación guardada en Supabase para el usuario ${usuarioId} (${nuevaEncuesta.usuario?.nombre || 'Estudiante'}): recomendación ${data.recomendacion}/5, facilidad ${data.facilidadUso}/5. Comentarios: "${data.comentarios || 'Sin comentarios'}"`);
+
     res.status(201).json({
       mensaje: 'Encuesta registrada exitosamente.',
       encuesta: nuevaEncuesta,
