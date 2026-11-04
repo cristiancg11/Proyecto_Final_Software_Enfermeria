@@ -33,12 +33,21 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             Bienvenido/a a la plataforma de entrenamiento interactivo de la Universidad Cooperativa de Colombia. Antes de la simulación práctica, revisa los fundamentos epidemiológicos, los 5 momentos clave de atención asistencial y la metodología del entrenamiento que asegurarás en tu práctica hospitalaria.
           </p>
 
-          <div class="inline-flex flex-wrap items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 border border-white/10 text-xs sm:text-sm text-slate-300">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#00B39F] animate-pulse"></span>
-            <span>Estudiante en formación:</span>
-            <strong class="text-white">{{ nombreEstudiante() }}</strong>
-            <span class="text-slate-500">•</span>
-            <span class="font-mono text-[#50E7FF]">{{ codigoEstudiante() }}</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="inline-flex flex-wrap items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 border border-white/10 text-xs sm:text-sm text-slate-300">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#00B39F] animate-pulse"></span>
+              <span>Estudiante en formación:</span>
+              <strong class="text-white">{{ nombreEstudiante() }}</strong>
+              <span class="text-slate-500">•</span>
+              <span class="font-mono text-[#50E7FF]">{{ codigoEstudiante() }}</span>
+            </div>
+
+            <a
+              routerLink="/reto-extremo"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-[#FF6A4D] to-amber-500 text-white font-black text-xs sm:text-sm shadow-lg hover:scale-105 transition border border-white/25"
+            >
+              <span>⚡ ¡Modo Reto Extremo: Demuestra tu Nivel!</span>
+            </a>
           </div>
         </div>
       </div>

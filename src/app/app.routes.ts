@@ -104,6 +104,7 @@ export const routes: Routes = [
   },
   {
     path: 'reto-extremo',
+    canActivate: [studentAuthGuard],
     loadComponent: () =>
       import('./pages/reto-extremo/reto-extremo.component').then(
         (m) => m.RetoExtremoComponent

@@ -23,7 +23,10 @@ export class App {
   );
   readonly esDocente = this.authService.esDocente;
   readonly isLoggedIn = computed(
-    () => this.authService.estaAutenticado() || (!!this.student() && !!this.student()?.fullName)
+    () =>
+      this.authService.estaAutenticado() &&
+      (!!this.authService.usuarioActual()?.nombre ||
+        (!!this.student() && !!this.student()?.fullName))
   );
   readonly rutaActual = signal<string>(this.router.url);
 
@@ -53,8 +56,9 @@ export class App {
   }
 
   esRutaLogin(): boolean {
-    const ruta = this.rutaActual() || this.router.url;
+    const ruta = (this.rutaActual() || this.router.url || '').trim();
     return (
+      !ruta ||
       ruta === '/' ||
       ruta === '/bienvenida' ||
       ruta === '/login' ||

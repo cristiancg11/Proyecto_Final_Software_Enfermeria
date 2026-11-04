@@ -8,15 +8,15 @@ export const studentAuthGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // 1. Verificar si ya está el estudiante en el StateService
+  // 1. Verificar si hay sesión autenticada activa en AuthService y StateService
   const student = stateService.student();
-  if (student && student.fullName) {
+  if (authService.estaAutenticado() && student && student.fullName) {
     return true;
   }
 
-  // 2. Verificar si hay un usuario autenticado en AuthService
+  // 2. Verificar si hay un usuario autenticado con token en AuthService
   const usuario = authService.usuarioActual();
-  if (usuario && usuario.nombre) {
+  if (authService.estaAutenticado() && usuario && usuario.nombre) {
     stateService.setStudent({
       fullName: usuario.nombre,
       studentCode: usuario.codigoEstudiantil || '',
@@ -25,10 +25,11 @@ export const studentAuthGuard: CanActivateFn = () => {
     return true;
   }
 
-  // 3. Fallback de localStorage si hubo recarga directa de página
+  // 3. Fallback de localStorage si hubo recarga directa de página con token válido
   if (typeof window !== 'undefined') {
+    const rawToken = localStorage.getItem('token');
     const rawUser = localStorage.getItem('usuario');
-    if (rawUser) {
+    if (rawToken && rawUser) {
       try {
         const u = JSON.parse(rawUser);
         if (u && u.nombre) {
