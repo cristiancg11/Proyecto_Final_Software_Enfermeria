@@ -26,7 +26,28 @@ export interface ParticipanteRanking {
   puntajeEsfuerzoIA: number;
   tendencia: 'ascendente' | 'estable' | 'destacado';
   insignias: string[];
+  mensajeMotivacionalIA?: string;
   esUsuarioActual?: boolean;
+}
+
+/**
+ * Genera un mensaje personalizado de IA que premia el esfuerzo y la constancia entre el intento 1 y el 3
+ */
+function generarMensajeMotivacionalIA(
+  mejoraPorcentual: number,
+  notaActual: number,
+  intentosCompletados: number
+): string {
+  if (mejoraPorcentual >= 25 && notaActual >= 9.0) {
+    return `¡Superación sobresaliente (+${mejoraPorcentual}%)! Tu constancia entre el intento 1 y el 3 consolidó una técnica aséptica de excelencia clínica.`;
+  }
+  if (mejoraPorcentual >= 10) {
+    return `¡Evolución constante (+${mejoraPorcentual}%)! El análisis biomecánico confirma que tu memoria muscular mejoró notablemente tras ${intentosCompletados} intentos.`;
+  }
+  if (notaActual >= 8.8) {
+    return '¡Dominio clínico sostenido! Mantienes una precisión ejemplar en los tiempos y movimientos del protocolo OMS.';
+  }
+  return '¡Buen esfuerzo clínico! Cada intento fortalece tu destreza en la fricción de pulgares, dorsos y espacios interdigitales.';
 }
 
 /**
@@ -238,6 +259,11 @@ export const obtenerRankingProgresoIA = async (req: Request, res: Response): Pro
         puntajeEsfuerzoIA,
         tendencia: mejoraPorcentual >= 12 ? 'ascendente' : actual >= 9.0 ? 'destacado' : 'estable',
         insignias: insigniasEval.length > 0 ? insigniasEval : ['Evolución Constante'],
+        mensajeMotivacionalIA: generarMensajeMotivacionalIA(
+          mejoraPorcentual,
+          actual,
+          Math.min(3, notas.length)
+        ),
         esUsuarioActual: esActual,
       });
       indexAnonimo++;
@@ -351,3 +377,4 @@ export const obtenerRankingProgresoIA = async (req: Request, res: Response): Pro
     });
   }
 };
+

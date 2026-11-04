@@ -378,13 +378,32 @@ import {
               }
             </div>
 
-            <div class="mt-4 pt-3 border-t border-slate-200/70 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
-              <span>
-                 Diagnóstico IA: <strong class="text-[#0B2B29]">{{ diagnosticoCurvaIA() }}</strong>
-              </span>
-              <span class="text-[11px] font-bold text-[#008072]">
-                Puntaje de Esfuerzo: {{ puntajeEsfuerzoPersonal() }} / 100 pts
-              </span>
+            <div class="mt-4 pt-3 border-t border-slate-200/70 space-y-2.5 text-xs text-slate-600">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span>
+                  Diagnóstico IA: <strong class="text-[#0B2B29]">{{ diagnosticoCurvaIA() }}</strong>
+                </span>
+                <span class="text-[11px] font-bold text-[#008072]">
+                  Puntaje de Esfuerzo: {{ puntajeEsfuerzoPersonal() }} / 100 pts
+                </span>
+              </div>
+
+              <!-- Barra de Progreso de Superación Personal y Mensaje Motivacional IA -->
+              <div class="p-3 rounded-xl bg-[#E6FBF7]/80 border border-[#00B39F]/30 space-y-1.5">
+                <div class="flex items-center justify-between text-[11px] font-extrabold text-[#008072]">
+                  <span>🌟 Índice de Superación Personal y Constancia (Intento 1 → 3)</span>
+                  <span>{{ puntajeEsfuerzoPersonal() }}%</span>
+                </div>
+                <div class="w-full h-2 bg-white rounded-full overflow-hidden border border-[#00B39F]/20">
+                  <div
+                    class="h-full rounded-full bg-gradient-to-r from-[#00B39F] via-emerald-500 to-amber-400 transition-all duration-500"
+                    [style.width.%]="puntajeEsfuerzoPersonal()"
+                  ></div>
+                </div>
+                <p class="text-[11px] text-[#0B2B29] font-medium leading-relaxed">
+                  {{ mensajeMotivacionalPersonalIA() }}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -755,6 +774,15 @@ export class ResultadoComponent {
       return 'Progresión ascendente sostenida entre el intento 1 y el 3 con ritmo clínico estable.';
     }
     return 'Ejecución consistente con oportunidades de refuerzo en pasos de fricción distal.';
+  });
+
+  readonly mensajeMotivacionalPersonalIA = computed(() => {
+    const mejora = this.mejoraPorcentualEstudiante();
+    const nota = this.evaluation().overallScore || 8.5;
+    if (mejora >= 20 && nota >= 8.5) {
+      return `¡Felicidades por tu constancia! Superaste tu línea base en un +${mejora}% entre el intento 1 y el 3, consolidando los umbrales de fricción OMS.`;
+    }
+    return `¡Gran esfuerzo clínico! Tu evolución del intento 1 al 3 (+${mejora}%) refleja compromiso con la bioseguridad del paciente y perfeccionamiento continuo.`;
   });
 
   // Insignias digitales asignadas automáticamente según el desempeño en los pasos y la mejora

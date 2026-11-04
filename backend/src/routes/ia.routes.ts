@@ -5,3 +5,4 @@ export const iaRouter = Router();
 
 // GET /api/ia/ranking-progreso
 iaRouter.get('/ranking-progreso', obtenerRankingProgresoIA);
+
