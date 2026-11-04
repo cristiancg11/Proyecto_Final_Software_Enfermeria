@@ -16,7 +16,7 @@ import {
   HandLandmarker,
 } from '@mediapipe/tasks-vision';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
-import { HandwashStep, StepTimeRecord } from '../../core/models/handwash.models';
+import { HandwashStep } from '../../core/models/handwash.models';
 
 export interface QualityAlert {
   type: 'hands-missing' | 'hands-apart' | 'still';
@@ -29,162 +29,162 @@ export interface QualityAlert {
   imports: [CommonModule, RouterModule],
   template: `
     <!-- Contenedor Maestro con Fondo Aséptico y Efectos de Luz -->
-    <div class="min-h-screen py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#08151D] via-[#0E2428] to-[#081E1C] text-slate-100 relative overflow-hidden">
-      <!-- Glows y Efectos Ambientales -->
-      <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#00B39F]/15 blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#50E7FF]/15 blur-3xl pointer-events-none"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+    <div
+      class="min-h-screen py-4 sm:py-6 md:py-8 px-3 sm:px-6 lg:px-8 bg-gradient-to-br from-[#08151D] via-[#0E2428] to-[#081E1C] text-slate-100 relative overflow-hidden"
+      [ngClass]="{ 'p-0 sm:p-0 min-h-0 h-[100dvh] overflow-hidden': isFullScreen() }"
+    >
+      <!-- Glows y Efectos Ambientales (ocultos en pantalla completa inmersiva) -->
+      @if (!isFullScreen()) {
+        <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#00B39F]/15 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#50E7FF]/15 blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+      }
 
-      <div class="max-w-5xl mx-auto relative z-10">
-
-        <!-- 1. ENCABEZADO: EVALUACIÓN PRÁCTICA DE TÉCNICA BIOMECÁNICA -->
-        <div class="bg-gradient-to-r from-[#0d1e26] via-[#10292f] to-[#0c2420] rounded-3xl p-5 sm:p-7 border border-[#00B39F]/30 shadow-2xl mb-6 relative overflow-hidden animate-fade-in">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            
-            <div class="flex items-start sm:items-center gap-3.5">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#00B39F] to-[#50E7FF] text-[#080B10] flex items-center justify-center font-black text-xl shadow-lg shrink-0">
-                <svg class="w-6 h-6 text-[#080B10]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div>
-                <div class="flex flex-wrap items-center gap-2 mb-1">
-                  <!-- BADGE SOLICITADO: MODO AUTÓNOMO -->
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-black uppercase tracking-wider border border-amber-500/40 shadow-xs">
-                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-                    <span>Modo Autónomo • Sin Asistencia Visual</span>
-                  </span>
-
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00B39F]/20 text-[#50E7FF] text-xs font-bold border border-[#00B39F]/30">
-                    <span>Fase 4 • Protocolo Biomecánico OMS</span>
-                  </span>
-                </div>
-
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight">
-                  Evaluación Práctica de Técnica Biomecánica
-                </h1>
-
-                <p class="text-xs sm:text-sm text-[#A5C2DE] mt-1">
-                  Estudiante: <strong class="text-white">{{ studentName() }}</strong>
-                  <span class="mx-1.5 text-slate-500">•</span>
-                  Código: <span class="font-mono text-[#50E7FF]">{{ studentCode() }}</span>
-                </p>
-              </div>
-            </div>
-
-            <!-- Botón Volver a Práctica Asistida si requiere repasar -->
-            <div class="flex items-center gap-2 self-start md:self-auto">
-              <a
-                routerLink="/practica"
-                (click)="stopCamera()"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white text-xs font-bold transition border border-white/15"
-                title="Volver a la práctica guiada con video"
-              >
-                <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <span>Práctica con Video</span>
-              </a>
-            </div>
-
-          </div>
-        </div>
+      <div class="mx-auto relative z-10" [ngClass]="isFullScreen() ? 'w-full h-full' : 'max-w-5xl'">
 
         @if (!evaluacionFinalizada()) {
 
-          <!-- 2. STEPPER SUPERIOR DE LOS 6 PASOS OMS -->
-          <div class="bg-gradient-to-r from-[#0d1e26] via-[#10292f] to-[#0c2420] rounded-3xl p-4 sm:p-6 mb-6 shadow-xl border border-white/10 animate-fade-in">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <div>
-                <span class="text-[11px] font-bold text-[#50E7FF] uppercase tracking-wider block">
-                  Paso Requerido {{ currentStepIndex() + 1 }} de 6
-                </span>
-                <h2 class="font-heading text-lg sm:text-xl font-black text-white">
-                  {{ currentClinicalTitle() }}
-                </h2>
-              </div>
-
-              <!-- Indicador de Tiempo Objetivo OMS -->
-              <div class="self-start sm:self-auto inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00B39F]/15 border border-[#00B39F]/30 text-[#50E7FF] text-xs font-bold">
-                <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Fricción requerida: Mínimo 3.0s (Óptimo 3-8s)</span>
-              </div>
-            </div>
-
-            <!-- Stepper visual de 6 pasos -->
-            <div class="grid grid-cols-6 gap-2 sm:gap-4 items-center">
-              @for (step of steps; track step.number; let idx = $index) {
-                <div class="flex flex-col items-center gap-1.5 text-center">
-                  <div
-                    class="w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-extrabold text-xs sm:text-sm transition-all duration-300 shadow-md"
-                    [ngClass]="{
-                      'bg-gradient-to-r from-[#00B39F] to-[#50E7FF] text-[#080B10] ring-4 ring-[#50E7FF]/30 scale-110 shadow-[#50E7FF]/40': idx === currentStepIndex(),
-                      'bg-emerald-500 text-white': idx < currentStepIndex(),
-                      'bg-white/10 text-slate-400 border border-white/10': idx > currentStepIndex()
-                    }"
-                  >
-                    @if (idx < currentStepIndex()) {
-                      <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                      </svg>
-                    } @else {
-                      {{ step.number }}
-                    }
+          <!-- 1. ENCABEZADO MINIMALISTA DE EVALUACIÓN PRÁCTICA (Ocultable en Fullscreen Móvil) -->
+          @if (!isFullScreen()) {
+            <div class="bg-gradient-to-r from-[#0d1e26] via-[#10292f] to-[#0c2420] rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#00B39F]/30 shadow-2xl mb-4 sm:mb-6 relative overflow-hidden animate-fade-in">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+                
+                <div class="flex items-start sm:items-center gap-3">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-[#00B39F] to-[#50E7FF] text-[#080B10] flex items-center justify-center font-black text-lg sm:text-xl shadow-lg shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#080B10]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
                   </div>
-                  <span
-                    class="text-[10px] sm:text-xs font-bold truncate max-w-full hidden md:block transition-colors"
-                    [ngClass]="idx === currentStepIndex() ? 'text-[#50E7FF]' : idx < currentStepIndex() ? 'text-white' : 'text-slate-400'"
-                  >
-                    {{ step.title }}
-                  </span>
-                </div>
-              }
-            </div>
-          </div>
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-0.5">
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-black uppercase tracking-wider border border-amber-500/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                        <span>Examen Práctico Autónomo</span>
+                      </span>
 
-          <!-- 3. PANTALLA CENTRADA CON EL FEED DE CÁMARA AMPLIO Y PROMINENTE (SIN VIDEO GUÍA) -->
-          <div class="bg-gradient-to-br from-[#0c2027] via-[#0e272d] to-[#0a1e20] rounded-3xl p-5 sm:p-7 shadow-2xl border border-white/15 relative overflow-hidden animate-fade-in mb-6">
+                      <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#00B39F]/20 text-[#50E7FF] text-[11px] font-bold border border-[#00B39F]/30">
+                        <span>Paso {{ currentStepIndex() + 1 }} de 6</span>
+                      </span>
+                    </div>
+
+                    <h1 class="text-lg sm:text-2xl font-black text-white tracking-tight">
+                      {{ currentClinicalTitle() }}
+                    </h1>
+
+                    <p class="text-xs text-[#A5C2DE] mt-0.5">
+                      Estudiante: <strong class="text-white">{{ studentName() }}</strong>
+                      <span class="mx-1 text-slate-500">•</span>
+                      Código: <span class="font-mono text-[#50E7FF]">{{ studentCode() }}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Botones Superiores: Repasar Práctica y Toggle Pantalla Completa -->
+                <div class="flex items-center gap-2 self-start md:self-auto">
+                  <button
+                    type="button"
+                    (click)="toggleFullScreen()"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white text-xs font-bold transition border border-white/15 cursor-pointer"
+                    title="Modo pantalla completa"
+                  >
+                    <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                    <span class="hidden sm:inline">Pantalla Completa</span>
+                  </button>
+
+                  <a
+                    routerLink="/practica"
+                    (click)="stopCamera()"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white text-xs font-bold transition border border-white/15"
+                    title="Volver a la práctica guiada con video"
+                  >
+                    <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    <span>Práctica</span>
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          }
+
+          <!-- 2. INTERFAZ LIMPIA ENFOCADA 100% EN LA CÁMARA Y DETECCIÓN (SIN STEPPER / GUÍA) -->
+          <div
+            class="relative overflow-hidden transition-all duration-300"
+            [ngClass]="isFullScreen()
+              ? 'fixed inset-0 z-50 w-full h-[100dvh] bg-slate-950 flex flex-col justify-between p-3 sm:p-5'
+              : 'bg-gradient-to-br from-[#0c2027] via-[#0e272d] to-[#0a1e20] rounded-2xl sm:rounded-3xl p-3 sm:p-6 shadow-2xl border border-white/15 mb-6'"
+          >
             
-            <!-- Barra Superior Interna del Visor -->
-            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <!-- Indicador del Paso Activo -->
+            <!-- Barra Superior del Visor: Identificación del Paso y Detección MediaPipe -->
+            <div class="flex items-center justify-between gap-2 mb-3 z-30">
               <div class="flex items-center gap-2">
                 <span class="w-3 h-3 rounded-full bg-[#00B39F] animate-ping"></span>
                 <span class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
-                  {{ currentStep().title }}
+                  Paso {{ currentStepIndex() + 1 }}/6: {{ currentStep().title }}
                 </span>
-                <span class="text-xs text-slate-400 hidden sm:inline">• {{ currentStep().subtitle }}</span>
               </div>
 
-              <!-- Feedback discreto de detección de manos con MediaPipe -->
-              <div class="flex items-center gap-2">
-                <div
-                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border transition-all duration-300"
-                  [ngClass]="handsDetected() >= 2
-                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                    : 'bg-[#FF6A4D]/20 text-[#FF6A4D] border-[#FF6A4D]/40'"
+              <!-- Controles Flotantes Superiores: Selector de Cámara, Fullscreen y Pausar -->
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <!-- SELECTOR DE CÁMARA FRONTAL / TRASERA (MÓVIL Y DESKTOP) -->
+                <button
+                  type="button"
+                  (click)="alternarCamara()"
+                  [disabled]="cameraLoading()"
+                  class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white text-xs font-bold border border-white/20 backdrop-blur-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 shadow-md"
+                  [title]="camaraFacingMode() === 'user' ? 'Cambiar a cámara trasera' : 'Cambiar a cámara frontal'"
                 >
-                  <span
-                    class="w-2 h-2 rounded-full"
-                    [ngClass]="handsDetected() >= 2 ? 'bg-emerald-400 animate-pulse' : 'bg-[#FF6A4D]'"
-                  ></span>
-                  <span>MediaPipe: {{ handsDetected() }}/2 Manos</span>
-                </div>
+                  <svg class="w-3.5 h-3.5 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span class="text-[11px]">{{ camaraFacingMode() === 'user' ? 'Frontal' : 'Trasera' }}</span>
+                </button>
 
-                @if (handsTogether() && handsRubbing()) {
-                  <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#50E7FF]/20 text-[#50E7FF] text-xs font-bold border border-[#50E7FF]/40 animate-pulse">
-                    <span>Frotado Activo ✓</span>
-                  </span>
+                <!-- Botón Alternar Pantalla Completa -->
+                <button
+                  type="button"
+                  (click)="toggleFullScreen()"
+                  class="p-1.5 sm:p-2 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 backdrop-blur-md transition-all active:scale-95 cursor-pointer shadow-md"
+                  [title]="isFullScreen() ? 'Salir de pantalla completa' : 'Pantalla completa'"
+                >
+                  @if (isFullScreen()) {
+                    <svg class="w-3.5 h-3.5 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  } @else {
+                    <svg class="w-3.5 h-3.5 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  }
+                </button>
+
+                @if (cameraActive()) {
+                  <button
+                    type="button"
+                    (click)="stopCamera()"
+                    class="p-1.5 sm:p-2 rounded-full bg-slate-900/85 hover:bg-slate-900 text-white border border-white/20 backdrop-blur-md transition-all active:scale-95 cursor-pointer shadow-md"
+                    title="Pausar Cámara"
+                  >
+                    <svg class="w-3.5 h-3.5 text-[#FF6A4D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                  </button>
                 }
               </div>
             </div>
 
-            <!-- Contenedor del Feed de Cámara Web Individual Grande y Centrado (Optimizado para Celulares y Escritorio) -->
-            <div class="relative w-full min-h-[260px] sm:min-h-[320px] aspect-[4/3] sm:aspect-[16/10] max-h-[580px] bg-slate-950 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 flex items-center justify-center group mx-auto">
+            <!-- CONTENEDOR DE LA CÁMARA: RESPONSIVE / FULL SCREEN EN MÓVIL (h-[100dvh] o aspect amplio) -->
+            <div
+              class="relative w-full bg-slate-950 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 flex items-center justify-center group mx-auto transition-all duration-300"
+              [ngClass]="isFullScreen()
+                ? 'grow min-h-0 h-full w-full'
+                : 'min-h-[280px] sm:min-h-[380px] aspect-[4/3] sm:aspect-[16/10] max-h-[650px]'"
+            >
               
-              <!-- Video Stream con atributos obligatorios para celulares y efecto espejo -->
+              <!-- Video Stream con atributos obligatorios para celulares (iOS Safari y Android) -->
               <video
                 #cameraVideo
                 playsinline
@@ -192,16 +192,18 @@ export interface QualityAlert {
                 autoplay
                 muted
                 [muted]="true"
-                class="w-full h-full object-cover scale-x-[-1]"
+                class="w-full h-full object-cover"
+                [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
               ></video>
 
               <!-- Canvas Superpuesto para Dibujo de MediaPipe AI -->
               <canvas
                 #handOverlay
-                class="absolute inset-0 w-full h-full pointer-events-none z-10 scale-x-[-1] object-cover"
+                class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover"
+                [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
               ></canvas>
 
-              <!-- Overlay cuando la cámara aún no ha sido encendida -->
+              <!-- OVERLAY ANTES DE ACTIVAR LA CÁMARA (El temporizador NO inicia hasta que se active) -->
               @if (!cameraActive()) {
                 <div class="absolute inset-0 z-20 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white">
                   <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-[#00B39F]/20 to-[#50E7FF]/20 text-[#50E7FF] border border-[#50E7FF]/30 flex items-center justify-center mb-4 shadow-xl">
@@ -209,66 +211,77 @@ export interface QualityAlert {
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <h3 class="font-black text-xl mb-1 text-white">Iniciar Cámara para Evaluación Autónoma</h3>
-                  <p class="text-xs sm:text-sm text-slate-300 max-w-md mb-6 leading-relaxed">
-                    Colócate frente a la cámara web con las manos visibles. MediaPipe evaluará tu biomecánica sin guía visual, simulando una evaluación hospitalaria real.
+
+                  <h3 class="font-black text-xl mb-1 text-white">Examen Práctico Autónomo</h3>
+                  <p class="text-xs sm:text-sm text-slate-300 max-w-md mb-2 leading-relaxed">
+                    Colócate frente a la cámara con las manos visibles. El cronómetro se activará <strong>únicamente cuando la cámara empiece a transmitir</strong>.
                   </p>
+                  <p class="text-[11px] text-amber-300 font-bold mb-6">
+                    ⏱️ Cronómetro en espera (0.0s) • Activa la cámara para comenzar
+                  </p>
+
                   <button
                     type="button"
                     (click)="startCamera()"
                     [disabled]="cameraLoading()"
-                    class="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#00B39F] via-[#50E7FF] to-[#D9FF43] hover:brightness-110 text-[#080B10] font-black text-sm shadow-xl transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50"
+                    class="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#00B39F] via-[#50E7FF] to-[#D9FF43] hover:brightness-110 text-[#080B10] font-black text-sm shadow-xl transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-2"
                   >
                     @if (cameraLoading()) {
+                      <svg class="animate-spin w-4 h-4 text-[#080B10]" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
                       <span>Calibrando Visor MediaPipe...</span>
                     } @else {
-                      <span>Activar Cámara y Comenzar</span>
+                      <svg class="w-5 h-5 text-[#080B10]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Iniciar Cámara y Arrancar Examen</span>
                     }
                   </button>
+
                   @if (cameraError()) {
                     <p class="text-xs text-[#FF6A4D] font-bold mt-3 max-w-sm">{{ cameraError() }}</p>
                   }
                 </div>
               }
 
-              <!-- Badges Flotantes Dentro de la Cámara (FEEDBACK DISCRETO) -->
+              <!-- Badges Flotantes Dentro de la Cámara cuando está activa -->
               @if (cameraActive()) {
-                <!-- Top Left: Indicador del paso en vivo -->
+                <!-- Top Left: Indicador del paso actual -->
                 <div class="absolute top-3 left-3 z-20">
                   <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-white/20 text-white text-xs font-bold shadow-md">
                     <span class="w-5 h-5 rounded-full bg-[#00B39F] text-white text-[11px] font-black flex items-center justify-center">
                       {{ currentStepIndex() + 1 }}
                     </span>
-                    <span>Modo Autónomo: {{ currentStep().title }}</span>
+                    <span>{{ currentStep().title }}</span>
                   </div>
                 </div>
 
-                <!-- Top Right: Feedback de Alineación / Frotado -->
+                <!-- Top Right: Feedback de MediaPipe (Manos detectadas y frotado) -->
                 <div class="absolute top-3 right-3 z-20 flex items-center gap-2">
+                  <div
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md transition-all duration-300"
+                    [ngClass]="handsDetected() >= 2
+                      ? 'bg-emerald-500/25 text-emerald-300 border-emerald-500/50'
+                      : 'bg-[#FF6A4D]/25 text-[#FF6A4D] border-[#FF6A4D]/50'"
+                  >
+                    <span
+                      class="w-2 h-2 rounded-full"
+                      [ngClass]="handsDetected() >= 2 ? 'bg-emerald-400 animate-pulse' : 'bg-[#FF6A4D]'"
+                    ></span>
+                    <span>{{ handsDetected() }}/2 Manos</span>
+                  </div>
+
                   @if (handsTogether() && handsRubbing()) {
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/90 text-white text-xs font-extrabold shadow-md backdrop-blur-md animate-pulse">
-                      <span class="w-2 h-2 rounded-full bg-white"></span>
-                      <span>Fricción biomecánica detectada</span>
-                    </div>
-                  } @else if (handsDetected() >= 2) {
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/90 text-white text-xs font-bold shadow-md backdrop-blur-md">
-                      <span>Junta las manos para frotar</span>
+                    <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/90 text-white text-xs font-extrabold shadow-md backdrop-blur-md animate-pulse">
+                      <span>✓ Fricción activa</span>
                     </div>
                   }
-
-                  <button
-                    type="button"
-                    (click)="stopCamera()"
-                    class="p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white border border-white/20 backdrop-blur-md transition-all cursor-pointer"
-                    title="Pausar Cámara"
-                  >
-                    <svg class="w-3.5 h-3.5 text-[#FF6A4D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                    </svg>
-                  </button>
                 </div>
 
-                <!-- Alerta flotante central discreta cuando la técnica se detiene -->
+                <!-- Alerta flotante central cuando la técnica se detiene -->
                 @if (activeAlert()) {
                   <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none z-25 px-4 animate-fade-in">
                     <div
@@ -286,24 +299,27 @@ export interface QualityAlert {
 
             </div>
 
-            <!-- 4. CONTADOR Y BARRA DE PROGRESO DEL TIEMPO DE FRICCIÓN REQUERIDO -->
-            <div class="mt-5 bg-black/40 rounded-2xl p-4 sm:p-5 border border-white/10 space-y-3">
+            <!-- 3. CONTADOR Y BARRA DE PROGRESO DEL TIEMPO DE FRICCIÓN (ACTIVO SOLO TRAS INICIAR CÁMARA) -->
+            <div class="mt-3 sm:mt-4 bg-black/50 rounded-2xl p-3 sm:p-4 border border-white/10 space-y-2.5 z-30">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                 
                 <div class="flex items-center gap-3">
-                  <div class="font-heading text-3xl sm:text-4xl font-black tracking-tight"
+                  <div class="font-heading text-2xl sm:text-4xl font-black tracking-tight"
                     [ngClass]="{
-                      'text-[#FF6A4D]': currentSeconds() < 3.0,
-                      'text-[#50E7FF]': currentSeconds() >= 3.0 && currentSeconds() <= 8.0,
-                      'text-amber-400': currentSeconds() > 8.0
+                      'text-slate-400': !cameraActive(),
+                      'text-[#FF6A4D]': cameraActive() && currentSeconds() < 3.0,
+                      'text-[#50E7FF]': cameraActive() && currentSeconds() >= 3.0 && currentSeconds() <= 8.0,
+                      'text-amber-400': cameraActive() && currentSeconds() > 8.0
                     }"
                   >
                     {{ formattedTime() }}s
                   </div>
                   <div>
-                    <span class="font-extrabold text-white block">Tiempo de Fricción Continuo</span>
+                    <span class="font-extrabold text-white block text-xs sm:text-sm">
+                      {{ cameraActive() ? 'Tiempo de Fricción Registrado' : 'Cronómetro Listo (En Espera)' }}
+                    </span>
                     <span class="text-slate-400 text-[11px]">
-                      Objetivo mínimo: <strong class="text-[#50E7FF]">3.0s</strong> • Rango óptimo OMS: <strong class="text-white">3 a 8s</strong>
+                      Objetivo mínimo OMS: <strong class="text-[#50E7FF]">3.0s</strong> (Rango óptimo 3 a 8s)
                     </span>
                   </div>
                 </div>
@@ -311,14 +327,17 @@ export interface QualityAlert {
                 <!-- Badge de Estado de Ritmo OMS -->
                 <div class="flex items-center gap-2">
                   <div
-                    class="text-[11px] font-extrabold px-3 py-1.5 rounded-full border shadow-xs"
+                    class="text-[11px] font-extrabold px-3 py-1 rounded-full border shadow-xs"
                     [ngClass]="{
-                      'bg-[#FF6A4D]/20 text-[#FF6A4D] border-[#FF6A4D]/40': currentSeconds() < 3.0,
-                      'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 animate-pulse': currentSeconds() >= 3.0 && currentSeconds() <= 8.0,
-                      'bg-amber-500/20 text-amber-300 border-amber-500/40': currentSeconds() > 8.0
+                      'bg-slate-800 text-slate-400 border-slate-700': !cameraActive(),
+                      'bg-[#FF6A4D]/20 text-[#FF6A4D] border-[#FF6A4D]/40': cameraActive() && currentSeconds() < 3.0,
+                      'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 animate-pulse': cameraActive() && currentSeconds() >= 3.0 && currentSeconds() <= 8.0,
+                      'bg-amber-500/20 text-amber-300 border-amber-500/40': cameraActive() && currentSeconds() > 8.0
                     }"
                   >
-                    @if (currentSeconds() < 3.0) {
+                    @if (!cameraActive()) {
+                      <span>Cámara Inactiva</span>
+                    } @else if (currentSeconds() < 3.0) {
                       <span>Fricción Insuficiente (&lt;3.0s)</span>
                     } @else if (currentSeconds() <= 8.0) {
                       <span>✓ Rango Óptimo OMS (3 a 8s)</span>
@@ -327,7 +346,7 @@ export interface QualityAlert {
                     }
                   </div>
 
-                  <span class="px-2.5 py-1 rounded-full bg-white/10 text-white font-mono text-xs font-bold border border-white/10">
+                  <span class="px-2 py-1 rounded-full bg-white/10 text-white font-mono text-xs font-bold border border-white/10">
                     {{ techniqueProgressPercent() }}%
                   </span>
                 </div>
@@ -335,7 +354,7 @@ export interface QualityAlert {
               </div>
 
               <!-- Barra de Progreso Lineal con Gradiente -->
-              <div class="w-full h-3 bg-black/60 rounded-full overflow-hidden p-0.5 border border-white/10">
+              <div class="w-full h-2.5 sm:h-3 bg-black/60 rounded-full overflow-hidden p-0.5 border border-white/10">
                 <div
                   class="h-full rounded-full transition-all duration-300"
                   [ngClass]="palmsValidated()
@@ -348,39 +367,41 @@ export interface QualityAlert {
               </div>
 
               <!-- Mensaje de Feedback Textual Discreto -->
-              <div class="flex items-center justify-between text-xs text-slate-300 pt-1">
-                <p class="truncate font-medium">
-                  {{ palmsFeedback() }}
+              <div class="flex items-center justify-between text-xs text-slate-300 pt-0.5">
+                <p class="truncate font-medium text-[11px] sm:text-xs">
+                  {{ cameraActive() ? palmsFeedback() : 'Presiona "Iniciar Cámara" para comenzar la transmisión.' }}
                 </p>
 
-                <button
-                  type="button"
-                  (click)="resetCurrentStepTimer()"
-                  class="text-[11px] font-bold text-slate-400 hover:text-[#50E7FF] transition flex items-center gap-1 shrink-0 ml-2 cursor-pointer"
-                >
-                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span>Reiniciar Cronómetro</span>
-                </button>
+                @if (cameraActive()) {
+                  <button
+                    type="button"
+                    (click)="resetCurrentStepTimer()"
+                    class="text-[11px] font-bold text-slate-400 hover:text-[#50E7FF] transition flex items-center gap-1 shrink-0 ml-2 cursor-pointer"
+                  >
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Reiniciar Tiempo</span>
+                  </button>
+                }
               </div>
 
             </div>
 
-            <!-- Botón de Acción para Avanzar o Confirmar el Paso -->
-            <div class="mt-5">
+            <!-- 4. BOTÓN DE AVANCE O CONFIRMACIÓN DEL PASO -->
+            <div class="mt-3 sm:mt-4 z-30">
               <button
                 type="button"
                 (click)="completeStep()"
                 [disabled]="cameraActive() && !palmsValidated()"
-                class="w-full py-4 px-6 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group"
+                class="w-full py-3.5 sm:py-4 px-6 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group"
                 [ngClass]="cameraActive() && !palmsValidated()
                   ? 'bg-slate-800 text-slate-500 cursor-not-allowed shadow-none border border-white/5'
                   : 'bg-gradient-to-r from-[#00B39F] via-[#009988] to-[#008072] hover:brightness-110 shadow-teal-500/20 active:scale-[0.99]'"
               >
                 <span>
                   @if (cameraActive() && !palmsValidated()) {
-                    Frotando de forma autónoma... (Mínimo 3.0s requeridos)
+                    Frotando técnica autónoma... (Mínimo 3.0s requeridos)
                   } @else if (isLastStep()) {
                     Finalizar Evaluación Práctica y Guardar Calificación
                   } @else {
@@ -396,15 +417,15 @@ export interface QualityAlert {
           </div>
 
           <!-- Historial de Tiempos Registrados en Modo Autónomo -->
-          @if (completedRecords().length > 0) {
-            <div class="bg-gradient-to-r from-[#0d1e26] via-[#10292f] to-[#0c2420] rounded-3xl p-5 border border-white/10 shadow-xl animate-fade-in">
+          @if (!isFullScreen() && completedRecords().length > 0) {
+            <div class="bg-gradient-to-r from-[#0d1e26] via-[#10292f] to-[#0c2420] rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-white/10 shadow-xl animate-fade-in">
               <div class="flex items-center gap-2 mb-3">
                 <span class="w-2.5 h-2.5 rounded-full bg-[#50E7FF]"></span>
                 <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-white">
                   Tiempos Registrados en Evaluación Autónoma
                 </h3>
               </div>
-              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
                 @for (rec of completedRecords(); track rec.stepNumber) {
                   <div class="p-3 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between">
                     <div class="flex items-center justify-between text-[11px] text-slate-400 font-bold mb-1">
@@ -500,7 +521,7 @@ export interface QualityAlert {
                 </div>
               </div>
 
-              <!-- BOTÓN SOLICITADO: CONTINUAR A EVALUACIÓN TEÓRICA -->
+              <!-- BOTÓN: CONTINUAR A EVALUACIÓN TEÓRICA -->
               <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button
                   type="button"
@@ -548,6 +569,9 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   readonly cameraActive = signal(false);
   readonly cameraLoading = signal(false);
   readonly cameraError = signal('');
+  readonly camaraFacingMode = signal<'user' | 'environment'>('user');
+  readonly isFullScreen = signal(false);
+
   readonly handsDetected = signal(0);
   readonly handsTogether = signal(false);
   readonly handsRubbing = signal(false);
@@ -631,7 +655,10 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.stateService.resetPractice();
     this.currentStepIndex.set(0);
     this.evaluacionFinalizada.set(false);
-    this.startStepTimer();
+    this.effectiveSeconds = 0;
+    this.currentSeconds.set(0);
+    // REQUISITO 1: El temporizador NO debe iniciar automáticamente al cargar la vista.
+    // Solo arrancará cuando la cámara esté transmitiendo video.
   }
 
   ngOnDestroy(): void {
@@ -639,28 +666,41 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.stopCamera();
   }
 
+  toggleFullScreen(): void {
+    this.isFullScreen.update((v) => !v);
+  }
+
+  async alternarCamara(): Promise<void> {
+    const nuevoModo = this.camaraFacingMode() === 'user' ? 'environment' : 'user';
+    this.camaraFacingMode.set(nuevoModo);
+    if (this.cameraActive()) {
+      await this.startCamera();
+    }
+  }
+
   async startCamera(): Promise<void> {
     this.cameraLoading.set(true);
     this.cameraError.set('');
     try {
       if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-        throw new Error('Tu navegador móvil no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS.');
+        throw new Error('Tu navegador no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS.');
       }
 
       this.releaseStream();
 
+      const facing = this.camaraFacingMode();
       try {
         this.stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: 'user',
-            width: { ideal: 640 },
-            height: { ideal: 480 },
+            facingMode: facing,
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
           },
           audio: false,
         });
       } catch {
         this.stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user' },
+          video: { facingMode: facing },
           audio: false,
         });
       }
@@ -690,8 +730,9 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
 
       await video.play();
 
-      this.stopTimer();
+      // REQUISITO 1: El cronómetro arranca ESTRICTAMENTE aquí, cuando la cámara está activa y transmitiendo
       this.cameraActive.set(true);
+      this.startStepTimer();
 
       if (!this.detector) {
         const vision = await FilesetResolver.forVisionTasks(
@@ -724,10 +765,11 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     } catch (error: any) {
       this.releaseStream();
       this.cameraActive.set(false);
+      this.stopTimer();
       this.cameraError.set(
         error instanceof DOMException && error.name === 'NotAllowedError'
           ? 'Debes autorizar el permiso de acceso a la cámara en tu celular o navegador.'
-          : error?.message || 'No fue posible iniciar la cámara frontal en este dispositivo.'
+          : error?.message || 'No fue posible iniciar la cámara en este dispositivo.'
       );
     } finally {
       this.cameraLoading.set(false);
@@ -739,6 +781,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     if (this.autoAdvanceTimer !== null) clearTimeout(this.autoAdvanceTimer);
     this.animationFrame = null;
     this.cameraActive.set(false);
+    this.stopTimer();
     this.handsDetected.set(0);
     this.handsTogether.set(false);
     this.handsRubbing.set(false);
@@ -932,13 +975,9 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.currentSeconds.set(0);
     this.resetBiomechanicalState();
 
+    // REQUISITO 1: Si la cámara NO está activa, no arrancar temporizador
     if (!this.cameraActive()) {
-      const startTime = Date.now();
-      this.timerInterval = setInterval(() => {
-        const elapsedMs = Date.now() - startTime;
-        this.effectiveSeconds = Math.round((elapsedMs / 1000) * 10) / 10;
-        this.currentSeconds.set(this.effectiveSeconds);
-      }, 100);
+      return;
     }
   }
 
@@ -950,7 +989,9 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   }
 
   resetCurrentStepTimer(): void {
-    this.startStepTimer();
+    if (this.cameraActive()) {
+      this.startStepTimer();
+    }
   }
 
   completeStep(): void {
@@ -969,6 +1010,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     if (this.isLastStep()) {
       this.stopTimer();
       this.stopCamera();
+      this.isFullScreen.set(false);
       this.stateService.unlockStep(5);
       this.evaluacionFinalizada.set(true);
     } else {
@@ -981,7 +1023,6 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.stateService.resetPractice();
     this.currentStepIndex.set(0);
     this.evaluacionFinalizada.set(false);
-    this.startStepTimer();
     this.startCamera();
   }
 

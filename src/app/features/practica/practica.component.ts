@@ -513,13 +513,15 @@ export interface QualityAlert {
                   autoplay
                   muted
                   [muted]="true"
-                  class="w-full h-full object-cover scale-x-[-1]"
+                  class="w-full h-full object-cover"
+                  [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
                 ></video>
 
-                <!-- Canvas de Detección MediaPipe con dimensiones nativas y scale-x-[-1] -->
+                <!-- Canvas de Detección MediaPipe con dimensiones nativas y condicional de espejo -->
                 <canvas
                   #handOverlay
-                  class="absolute inset-0 w-full h-full pointer-events-none z-10 scale-x-[-1] object-cover"
+                  class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover"
+                  [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
                 ></canvas>
 
                 <!-- Overlay cuando la cámara está inactiva -->
@@ -530,22 +532,36 @@ export interface QualityAlert {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <h4 class="font-extrabold text-base mb-1">Cámara Frontal en Espera</h4>
+                    <h4 class="font-extrabold text-base mb-1">Cámara en Espera</h4>
                     <p class="text-xs text-slate-300 max-w-xs mb-4">
-                      Ubica tus manos frente a la cámara frontal para que MediaPipe detecte los 21 puntos articulares.
+                      Ubica tus manos frente a la cámara para que MediaPipe detecte los 21 puntos articulares.
                     </p>
-                    <button
-                      type="button"
-                      (click)="iniciarCamara()"
-                      [disabled]="cameraLoading()"
-                      class="px-5 py-2.5 rounded-full bg-[#00B39F] hover:bg-[#009988] text-white font-bold text-xs shadow-lg shadow-teal-500/30 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
-                    >
-                      @if (cameraLoading()) {
-                        <span>Iniciando Cámara Frontal...</span>
-                      } @else {
-                        <span>Activar Cámara Frontal</span>
-                      }
-                    </button>
+                    <div class="flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        (click)="iniciarCamara()"
+                        [disabled]="cameraLoading()"
+                        class="px-5 py-2.5 rounded-full bg-[#00B39F] hover:bg-[#009988] text-white font-bold text-xs shadow-lg shadow-teal-500/30 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                      >
+                        @if (cameraLoading()) {
+                          <span>Iniciando Cámara...</span>
+                        } @else {
+                          <span>Activar Cámara</span>
+                        }
+                      </button>
+
+                      <button
+                        type="button"
+                        (click)="alternarCamara()"
+                        class="px-3.5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
+                        title="Cambiar orientación de cámara"
+                      >
+                        <svg class="w-3.5 h-3.5 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>{{ camaraFacingMode() === 'user' ? 'Frontal' : 'Trasera' }}</span>
+                      </button>
+                    </div>
                     @if (cameraError()) {
                       <p class="text-xs text-[#FF6A4D] font-bold mt-3 max-w-xs">{{ cameraError() }}</p>
                     }
@@ -564,8 +580,8 @@ export interface QualityAlert {
                     </div>
                   </div>
 
-                  <!-- Top Right: Feedback de Alineación / Frotado -->
-                  <div class="absolute top-3 right-3 z-20 flex items-center gap-2">
+                  <!-- Top Right: Feedback de Alineación / Frotado y Selector de Cámara -->
+                  <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 sm:gap-2">
                     @if (handsTogether() && handsRubbing()) {
                       <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/90 text-white text-xs font-extrabold shadow-md backdrop-blur-md animate-pulse">
                         <span class="w-2 h-2 rounded-full bg-white"></span>
@@ -576,6 +592,19 @@ export interface QualityAlert {
                         <span>Manos juntas requeridas</span>
                       </div>
                     }
+
+                    <!-- Selector de Cámara Frontal / Trasera en Móvil -->
+                    <button
+                      type="button"
+                      (click)="alternarCamara()"
+                      class="px-2.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white text-[11px] font-bold border border-white/20 backdrop-blur-md transition-all active:scale-95 cursor-pointer flex items-center gap-1"
+                      [title]="camaraFacingMode() === 'user' ? 'Cambiar a cámara trasera' : 'Cambiar a cámara frontal'"
+                    >
+                      <svg class="w-3.5 h-3.5 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      <span>{{ camaraFacingMode() === 'user' ? 'Frontal' : 'Trasera' }}</span>
+                    </button>
 
                     <button
                       type="button"
@@ -926,6 +955,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly cameraActive = signal(false);
   readonly cameraLoading = signal(false);
   readonly cameraError = signal('');
+  readonly camaraFacingMode = signal<'user' | 'environment'>('user');
   readonly handsDetected = signal(0);
   readonly handsTogether = signal(false);
   readonly handsRubbing = signal(false);
@@ -1222,7 +1252,24 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   // Métodos del Asistente Virtual de Voz ManitaBot Coach (Web Speech API)
+  private desbloquearAudioMovil(): void {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.resume();
+      } catch {}
+    }
+  }
+
+  async alternarCamara(): Promise<void> {
+    const nuevoModo = this.camaraFacingMode() === 'user' ? 'environment' : 'user';
+    this.camaraFacingMode.set(nuevoModo);
+    if (this.cameraActive()) {
+      await this.startCamera();
+    }
+  }
+
   toggleVozAsistente(): void {
+    this.desbloquearAudioMovil();
     const nuevoEstado = !this.vozActiva();
     this.vozActiva.set(nuevoEstado);
     if (!nuevoEstado) {
@@ -1236,10 +1283,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   hablarGuiaPasoActual(): void {
+    this.desbloquearAudioMovil();
     this.anunciarPasoEnVoz(this.currentStepIndex(), true);
   }
 
   consultarTipClinicoRapido(tipo: 'anatomia' | 'tiempo'): void {
+    this.desbloquearAudioMovil();
     this.botEscribiendo.set(true);
     setTimeout(() => {
       this.botEscribiendo.set(false);
@@ -1283,15 +1332,19 @@ export class PracticaComponent implements OnInit, OnDestroy {
     }
     try {
       const synth = window.speechSynthesis;
+      if (synth.paused) {
+        try { synth.resume(); } catch {}
+      }
       if (forzar) {
         synth.cancel();
       } else if (synth.speaking) {
+        try { synth.resume(); } catch {}
         return;
       }
 
       const utterance = new SpeechSynthesisUtterance(texto);
       utterance.lang = 'es-ES';
-      utterance.rate = 1.03;
+      utterance.rate = 1.02;
       utterance.pitch = 1.05;
 
       const voices = synth.getVoices();
@@ -1311,6 +1364,9 @@ export class PracticaComponent implements OnInit, OnDestroy {
       utterance.onerror = () => this.manitaBotHablando.set(false);
 
       synth.speak(utterance);
+      if (synth.paused) {
+        try { synth.resume(); } catch {}
+      }
     } catch {
       this.manitaBotHablando.set(false);
     }
@@ -1326,6 +1382,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   async startCamera(): Promise<void> {
+    this.desbloquearAudioMovil();
     this.cameraLoading.set(true);
     this.cameraError.set('');
     try {
@@ -1336,19 +1393,20 @@ export class PracticaComponent implements OnInit, OnDestroy {
       // Liberar cualquier stream previo para evitar bloqueo de cámara en Android/iOS
       this.releaseStream();
 
+      const facing = this.camaraFacingMode();
       try {
         this.stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: 'user',
+            facingMode: facing,
             width: { ideal: 640 },
             height: { ideal: 480 },
           },
           audio: false,
         });
       } catch {
-        // Fallback directo con facingMode: 'user' sin restricciones de resolución
+        // Fallback directo sin restricciones de resolución
         this.stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user' },
+          video: { facingMode: facing },
           audio: false,
         });
       }
@@ -1382,6 +1440,11 @@ export class PracticaComponent implements OnInit, OnDestroy {
       // Activar visor de inmediato antes de cargar el modelo WASM de MediaPipe
       this.stopTimer();
       this.cameraActive.set(true);
+
+      // Iniciar guía hablada de Manitos Coach al arrancar la cámara
+      setTimeout(() => {
+        this.anunciarPasoEnVoz(this.currentStepIndex(), true);
+      }, 350);
 
       if (!this.detector) {
         const vision = await FilesetResolver.forVisionTasks(

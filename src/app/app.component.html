@@ -162,13 +162,24 @@
         </a>
       </nav>
 
-      <!-- Estado del Usuario / Docente -->
-      <div class="flex items-center gap-2.5 shrink-0">
+      <!-- Estado del Usuario / Docente y Botón Reto Extremo Móvil -->
+      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+        <!-- BOTÓN RETO EXTREMO EN MÓVIL: Siempre visible y destacado en celulares y tablets -->
+        <a
+          routerLink="/reto-extremo"
+          routerLinkActive="ring-2 ring-teal-300 shadow-teal-500/50"
+          class="flex lg:hidden items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 via-teal-600 to-emerald-600 active:scale-95 text-white font-extrabold text-xs shadow-md shadow-teal-900/40 border border-teal-400/30 transition-all duration-300"
+          title="Acceso directo al Modo Trivia Reto Extremo"
+        >
+          <span class="animate-pulse">⚡</span>
+          <span>Reto Extremo</span>
+        </a>
+
         @if (esDocente()) {
           <a
             routerLink="/admin"
             routerLinkActive="ring-2 ring-teal-400 bg-teal-500/25"
-            class="px-3.5 py-1.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border border-teal-500/35 text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shadow-xs"
+            class="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border border-teal-500/35 text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shadow-xs"
           >
             <span>👑 Panel Docente</span>
           </a>
