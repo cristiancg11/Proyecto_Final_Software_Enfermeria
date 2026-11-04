@@ -180,11 +180,11 @@ import {
         }
 
         <!-- Botones de Acción Inmediata -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 border-t border-slate-100 mt-8">
+        <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 pt-6 border-t border-slate-100 mt-8">
           <button
             type="button"
             (click)="repeatEvaluation()"
-            class="btn-primary py-4 px-8 text-base flex items-center gap-3 w-full sm:w-auto shadow-lg hover:scale-105 group"
+            class="btn-primary py-4 px-8 text-base flex items-center justify-center gap-3 w-full sm:w-auto shadow-lg hover:scale-105 group"
           >
             <svg class="w-5 h-5 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -195,26 +195,19 @@ import {
           <button
             type="button"
             (click)="repeatPractice()"
-            class="btn-secondary py-3.5 px-6 text-sm flex items-center gap-2 w-full sm:w-auto justify-center"
+            class="btn-secondary py-4 px-7 text-sm font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
           >
+            <svg class="w-4 h-4 text-[#008072]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <span>Práctica con Video</span>
           </button>
 
           <button
             type="button"
-            (click)="windowPrint()"
-            class="btn-secondary py-3.5 px-6 text-sm flex items-center gap-2 w-full sm:w-auto justify-center"
-          >
-            <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-            </svg>
-            <span>Imprimir / Guardar Informe</span>
-          </button>
-
-          <button
-            type="button"
             (click)="restartAll()"
-            class="text-xs text-slate-500 hover:text-[#FF6A4D] font-semibold transition py-2"
+            class="text-xs text-slate-500 hover:text-[#FF6A4D] font-semibold transition py-2 px-3"
           >
             Nueva sesión de estudiante
           </button>
