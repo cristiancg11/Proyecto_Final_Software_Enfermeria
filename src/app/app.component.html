@@ -1,102 +1,102 @@
-<div class="min-h-screen flex flex-col justify-between selection:bg-[#00B39F]/20 selection:text-[#50E7FF]">
+<div class="min-h-screen flex flex-col justify-between selection:bg-teal-500/25 selection:text-teal-200">
   <!-- Barra de Navegación Superior (oculta en pantalla de Login / Bienvenida y cuando no hay sesión activa) -->
-  <header *ngIf="isLoggedIn() && !esRutaLogin()" class="sticky top-0 z-50 bg-[#080B10]/85 backdrop-blur-xl border-b border-[#50E7FF]/20 shadow-lg transition-all">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
-      <!-- Logo y Título -->
-      <a routerLink="/introduccion" class="flex items-center gap-3 group text-decoration-none">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#00B39F] via-[#50E7FF] to-[#D9FF43] p-0.5 shadow-md group-hover:shadow-[#50E7FF]/30 transition-all duration-300">
-          <div class="w-full h-full bg-[#080B10] rounded-[14px] flex items-center justify-center text-[#50E7FF]">
-            <svg class="w-5 h-5 text-[#50E7FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <header *ngIf="isLoggedIn() && !esRutaLogin()" class="sticky top-0 z-50 bg-[#0B192C]/90 backdrop-blur-xl border-b border-slate-700/40 shadow-lg transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
+      <!-- Logo y Título Institucional -->
+      <a routerLink="/introduccion" class="flex items-center gap-3 group text-decoration-none shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 p-0.5 shadow-md shadow-teal-500/20 group-hover:shadow-teal-400/35 transition-all duration-300">
+          <div class="w-full h-full bg-[#0B192C] rounded-[10px] flex items-center justify-center text-teal-400">
+            <svg class="w-5 h-5 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
             </svg>
           </div>
         </div>
         <div>
-          <span class="font-heading text-xl md:text-2xl font-bold text-[#F5F8FF] tracking-tight group-hover:text-[#50E7FF] transition drop-shadow-sm">
+          <span class="font-heading text-lg md:text-xl font-extrabold text-white tracking-tight group-hover:text-teal-300 transition-colors duration-300 block leading-tight">
             Manos Seguras
           </span>
-          <span class="hidden sm:block text-[11px] font-semibold text-[#B4CDDE] uppercase tracking-wider -mt-1">
-            Simulador de Enfermería • OMS
+          <span class="hidden sm:block text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
+            Simulador Clínico • OMS
           </span>
         </div>
       </a>
 
       <!-- Navegación de Flujo de Pantallas (Solo usuarios autenticados) -->
-      <nav class="hidden md:flex items-center gap-1.5 text-xs font-semibold">
+      <nav class="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1 rounded-2xl border border-slate-700/50 text-xs font-semibold">
         <a
           routerLink="/introduccion"
-          routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-          class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
         >
           1. Introducción
         </a>
         <a
           routerLink="/preparacion"
-          routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-          class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
         >
           2. Preparación
         </a>
         <a
           routerLink="/practica"
-          routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-          class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
         >
-          3. Práctica Asistida
+          3. Práctica
         </a>
         <a
           routerLink="/evaluacion-practica"
-          routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-          class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
         >
-          4. Evaluación Práctica
+          4. Ev. Práctica
         </a>
         <a
           routerLink="/evaluacion-teorica"
-          routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-          class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
         >
-          5. Evaluación Teórica
+          5. Ev. Teórica
         </a>
         <a
           routerLink="/encuesta"
-          routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-          class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
         >
           6. Encuesta
         </a>
         <a
           routerLink="/resultado"
-          routerLinkActive="bg-[#50E7FF]/20 text-[#50E7FF] border-[#50E7FF]/40 shadow-sm"
-          class="px-3 py-1.5 rounded-full text-[#C5D7E8] hover:text-[#F5F8FF] hover:bg-white/10 transition border border-transparent"
+          routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs"
+          class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300 border border-transparent"
         >
           7. Resultados
         </a>
         <a
           routerLink="/reto-extremo"
-          routerLinkActive="ring-2 ring-white"
-          class="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#FF6A4D] to-amber-500 text-white font-black shadow-md hover:scale-105 transition flex items-center gap-1"
+          routerLinkActive="ring-2 ring-teal-300"
+          class="ml-1 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold shadow-md shadow-teal-900/30 hover:scale-[1.02] transition-all duration-300 flex items-center gap-1.5"
         >
           <span>⚡ Reto Extremo</span>
         </a>
       </nav>
 
       <!-- Estado del Usuario / Docente -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2.5 shrink-0">
         @if (esDocente()) {
           <a
             routerLink="/admin"
-            routerLinkActive="ring-2 ring-[#50E7FF] bg-[#50E7FF]/25"
-            class="px-3.5 py-1.5 rounded-full bg-[#00B39F]/20 hover:bg-[#00B39F]/30 text-[#00B39F] border border-[#00B39F]/40 text-xs font-black transition flex items-center gap-1.5 shadow-sm"
+            routerLinkActive="ring-2 ring-teal-400 bg-teal-500/25"
+            class="px-3.5 py-1.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border border-teal-500/35 text-xs font-bold transition-all duration-300 flex items-center gap-1.5 shadow-xs"
           >
             <span>👑 Panel Docente</span>
           </a>
         }
 
         @if (studentName()) {
-          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111A28] border border-[#50E7FF]/30 shadow-xs">
-            <span class="w-2 h-2 rounded-full bg-[#50E7FF] animate-pulse"></span>
-            <span class="text-xs font-bold text-[#F5F8FF] truncate max-w-[120px] sm:max-w-[180px]">
+          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700/70 shadow-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-semibold text-slate-100 truncate max-w-[120px] sm:max-w-[170px]">
               {{ studentName() }}
             </span>
           </div>
@@ -104,20 +104,13 @@
           <button
             type="button"
             (click)="cerrarSesion()"
-            class="p-1.5 rounded-full text-slate-400 hover:text-red-400 hover:bg-white/10 transition cursor-pointer"
+            class="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all duration-300 cursor-pointer"
             title="Cerrar Sesión"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
           </button>
-        } @else {
-          <a
-            routerLink="/bienvenida"
-            class="text-xs font-bold px-4 py-2 rounded-full bg-[#50E7FF]/15 hover:bg-[#50E7FF]/25 text-[#50E7FF] border border-[#50E7FF]/30 transition"
-          >
-            Iniciar Sesión
-          </a>
         }
       </div>
     </div>
@@ -132,38 +125,38 @@
   @if (isLoggedIn() && !esRutaLogin() && !esRutaPractica()) {
     <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 max-w-sm w-[calc(100vw-2rem)] sm:w-[390px]">
       @if (chatAbierto()) {
-        <div class="bg-white/95 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-[0_24px_60px_rgba(8,11,16,0.45)] border-2 border-[#00B39F] flex flex-col animate-fade-in">
-          <!-- Cabecera Institucional con Degradado y Avatar de GuaneñaBot Coach -->
-          <div class="bg-gradient-to-r from-[#0B2B29] via-[#0F3834] to-[#008072] p-4 text-white flex items-center justify-between gap-3">
+        <div class="bg-white/98 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-[0_24px_60px_-12px_rgba(11,25,44,0.48)] border border-slate-200/90 flex flex-col animate-fade-in">
+          <!-- Cabecera Institucional con Degradado Clínico y Avatar de GuaneñaBot Coach -->
+          <div class="bg-gradient-to-r from-[#0B192C] via-[#0F2942] to-[#0D9488] p-4 text-white flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
-              <div class="relative w-11 h-11 rounded-2xl bg-white/15 border border-white/30 flex items-center justify-center shrink-0">
+              <div class="relative w-11 h-11 rounded-xl bg-white/15 border border-white/25 flex items-center justify-center shrink-0 shadow-inner">
                 <span class="text-xl">🩺</span>
                 <span
-                  class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0B2B29]"
-                  [ngClass]="vozHablando() ? 'bg-[#50E7FF] animate-ping' : 'bg-emerald-400'"
+                  class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0B192C]"
+                  [ngClass]="vozHablando() ? 'bg-teal-300 animate-ping' : 'bg-emerald-400'"
                 ></span>
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h4 class="font-heading text-sm sm:text-base font-black text-white leading-tight">
+                  <h4 class="font-heading text-sm sm:text-base font-bold text-white leading-tight">
                     GuaneñaBot Coach
                   </h4>
-                  <span class="px-2 py-0.5 rounded-full bg-[#50E7FF]/20 text-[#50E7FF] border border-[#50E7FF]/40 text-[9px] font-black uppercase">
+                  <span class="px-2 py-0.5 rounded-md bg-teal-400/20 text-teal-200 border border-teal-300/30 text-[9px] font-bold uppercase tracking-wider">
                     IA Clínica
                   </span>
                 </div>
-                <p class="text-[11px] text-teal-100/90 font-medium">
+                <p class="text-[11px] text-slate-200/90 font-medium mt-0.5">
                   {{ escribiendoChat() ? '✍️ Escribiendo respuesta...' : vozHablando() ? '🔊 Hablando...' : 'Asistente de Bioseguridad OMS' }}
                 </p>
               </div>
             </div>
 
-            <div class="flex items-center gap-1">
+            <div class="flex items-center gap-1.5">
               <button
                 type="button"
                 (click)="toggleVozGlobal()"
-                class="p-2 rounded-xl border transition cursor-pointer"
-                [ngClass]="vozChatActiva() ? 'bg-white/15 border-white/25 text-[#50E7FF]' : 'bg-white/5 border-white/10 text-slate-400'"
+                class="p-2 rounded-xl border transition-all duration-300 cursor-pointer"
+                [ngClass]="vozChatActiva() ? 'bg-white/15 border-white/25 text-teal-200' : 'bg-white/5 border-white/10 text-slate-400'"
                 [title]="vozChatActiva() ? 'Silenciar voz' : 'Activar voz'"
               >
                 <span class="text-xs">{{ vozChatActiva() ? '🔊' : '🔇' }}</span>
@@ -171,7 +164,7 @@
               <button
                 type="button"
                 (click)="chatAbierto.set(false)"
-                class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+                class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all duration-300 cursor-pointer"
                 title="Minimizar chat"
               >
                 ✕
@@ -180,25 +173,25 @@
           </div>
 
           <!-- Historial de Mensajes con Avatares y Jerarquía Tipográfica -->
-          <div class="p-4 space-y-3 max-h-64 overflow-y-auto bg-slate-50/90 text-[#0B2B29]">
+          <div class="p-4 space-y-3 max-h-64 overflow-y-auto bg-slate-50 text-slate-800">
             @for (msg of mensajesChat(); track $index) {
               <div
                 class="flex items-start gap-2.5"
                 [ngClass]="msg.autor === 'usuario' ? 'flex-row-reverse' : ''"
               >
                 <div
-                  class="w-7 h-7 rounded-full text-xs font-black flex items-center justify-center shrink-0 mt-0.5 shadow-xs"
-                  [ngClass]="msg.autor === 'bot' ? 'bg-[#008072] text-white' : 'bg-[#0B2B29] text-[#50E7FF]'"
+                  class="w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 shadow-xs"
+                  [ngClass]="msg.autor === 'bot' ? 'bg-teal-600 text-white' : 'bg-[#0B192C] text-teal-300'"
                 >
                   {{ msg.autor === 'bot' ? '🩺' : '👤' }}
                 </div>
                 <div
                   class="max-w-[80%] rounded-2xl p-3 text-xs leading-relaxed shadow-xs"
                   [ngClass]="msg.autor === 'bot'
-                    ? 'bg-white border border-slate-200/90 text-[#0B2B29] rounded-tl-xs'
-                    : 'bg-[#00B39F] text-white font-semibold rounded-tr-xs'"
+                    ? 'bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs'
+                    : 'bg-teal-600 text-white font-medium rounded-tr-xs'"
                 >
-                  <div class="flex items-center justify-between gap-2 mb-0.5 text-[9px] uppercase font-black opacity-75">
+                  <div class="flex items-center justify-between gap-2 mb-0.5 text-[9px] uppercase font-bold opacity-75">
                     <span>{{ msg.autor === 'bot' ? 'GuaneñaBot' : 'Estudiante' }}</span>
                     <span>{{ msg.hora }}</span>
                   </div>
@@ -210,10 +203,10 @@
             <!-- Indicador animado "Escribiendo..." -->
             @if (escribiendoChat()) {
               <div class="flex items-center gap-2 pl-9 animate-fade-in">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-teal-50 border border-teal-200 text-[#008072] text-[11px] font-bold">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce"></span>
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce" style="animation-delay: 150ms"></span>
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce" style="animation-delay: 300ms"></span>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-semibold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-teal-600 animate-bounce"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-teal-600 animate-bounce" style="animation-delay: 150ms"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-teal-600 animate-bounce" style="animation-delay: 300ms"></span>
                   <span class="ml-1">Escribiendo...</span>
                 </div>
               </div>
@@ -221,25 +214,25 @@
           </div>
 
           <!-- Píldoras de Preguntas Rápidas y Acceso al Reto Extremo -->
-          <div class="px-4 py-2.5 bg-white border-t border-slate-100 flex flex-wrap gap-1.5">
+          <div class="px-4 py-3 bg-white border-t border-slate-100 flex flex-wrap gap-1.5">
             <button
               type="button"
               (click)="enviarPreguntaRapida('¿Cuáles son los 6 pasos de la OMS?')"
-              class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-[#CFFBF0] text-slate-700 hover:text-[#008072] text-[10px] font-extrabold transition cursor-pointer"
+              class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-700 text-[10px] font-bold transition-all duration-300 cursor-pointer"
             >
               🖐️ 6 Pasos OMS
             </button>
             <button
               type="button"
               (click)="enviarPreguntaRapida('¿Cuándo usar agua y jabón vs alcohol?')"
-              class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-[#CFFBF0] text-slate-700 hover:text-[#008072] text-[10px] font-extrabold transition cursor-pointer"
+              class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-700 text-[10px] font-bold transition-all duration-300 cursor-pointer"
             >
               🧼 Jabón vs Alcohol
             </button>
             <a
               routerLink="/reto-extremo"
               (click)="chatAbierto.set(false)"
-              class="px-2.5 py-1 rounded-full bg-gradient-to-r from-[#FF6A4D] to-amber-500 text-white text-[10px] font-black transition cursor-pointer"
+              class="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-[10px] font-bold transition-all duration-300 cursor-pointer shadow-xs"
             >
               ⚡ Ir al Reto Extremo
             </a>
@@ -249,25 +242,25 @@
         <button
           type="button"
           (click)="chatAbierto.set(true)"
-          class="ml-auto flex items-center gap-3 px-4 py-3 rounded-full bg-gradient-to-r from-[#0B2B29] to-[#008072] text-white shadow-2xl border-2 border-[#50E7FF]/60 hover:scale-105 transition-all cursor-pointer"
+          class="ml-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-gradient-to-r from-[#0B192C] via-[#0F2942] to-[#0D9488] text-white shadow-xl shadow-teal-950/40 border border-teal-400/40 hover:scale-[1.03] transition-all duration-300 cursor-pointer"
         >
-          <span class="w-2.5 h-2.5 rounded-full bg-[#50E7FF] animate-ping"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
           <span class="text-sm">🩺</span>
-          <span class="font-extrabold text-xs">GuaneñaBot Coach</span>
+          <span class="font-bold text-xs tracking-tight">GuaneñaBot Coach</span>
         </button>
       }
     </div>
   }
 
   <!-- Pie de Página Institucional -->
-  <footer class="bg-[#080B10]/85 backdrop-blur-md border-t border-[#50E7FF]/20 py-6 text-center text-xs text-[#C5D7E8]">
-    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+  <footer class="bg-[#07111E]/90 backdrop-blur-md border-t border-slate-800/80 py-6 text-center text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-2">
-        <span class="font-heading font-bold text-[#F5F8FF] tracking-wide">Manos Seguras</span>
-        <span class="text-[#50E7FF]">•</span>
-        <span class="text-[#D9E8F7]">Proyecto de Grado en Enfermería</span>
+        <span class="font-heading font-bold text-slate-100 tracking-tight">Manos Seguras</span>
+        <span class="text-teal-400">•</span>
+        <span class="text-slate-300">Facultad de Enfermería • Simulación Clínica</span>
       </div>
-      <div class="text-[11px] text-[#A5C2DE]">
+      <div class="text-[11px] text-slate-400">
         Protocolo oficial de 6 pasos de higiene de manos • Directrices OMS de Bioseguridad
       </div>
     </div>

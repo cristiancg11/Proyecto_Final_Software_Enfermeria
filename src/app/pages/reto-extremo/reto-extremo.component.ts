@@ -25,32 +25,32 @@ export interface PreguntaRetoExtremo {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
-    <div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 text-[#F5F8FF] relative overflow-hidden">
-      <!-- Destellos ambientales competitivos -->
-      <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#00B39F]/20 blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#FF6A4D]/20 blur-3xl pointer-events-none"></div>
+    <div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 text-slate-100 relative overflow-hidden">
+      <!-- Destellos ambientales clínicos -->
+      <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-teal-500/15 blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-sky-500/15 blur-3xl pointer-events-none"></div>
 
       <div class="max-w-5xl mx-auto relative z-10">
         <!-- Encabezado del Modo Reto Extremo -->
-        <div class="bg-gradient-to-r from-[#0B192C] via-[#0F292F] to-[#1A1423] rounded-3xl p-6 sm:p-8 border border-[#50E7FF]/35 shadow-2xl mb-8">
+        <div class="bg-gradient-to-br from-[#0B192C] via-[#0F2942] to-[#0D3B3E] rounded-2xl p-6 sm:p-8 border border-teal-500/30 shadow-[0_24px_50px_-12px_rgba(7,17,30,0.6)] mb-8">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div class="space-y-2">
-              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#FF6A4D]/25 to-amber-500/25 border border-[#FF6A4D]/50 text-[#FF9D85] text-xs font-black uppercase tracking-wider">
-                <span class="w-2 h-2 rounded-full bg-[#FF6A4D] animate-ping"></span>
+              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/15 border border-teal-400/35 text-teal-300 text-xs font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                 <span>Modo Competitivo • Velocidad + Precisión OMS</span>
               </div>
-              <h1 class="font-heading text-2xl sm:text-4xl font-black text-white tracking-tight">
+              <h1 class="font-heading text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
                 ⚡ Reto Extremo: Trivia de Alta Dificultad
               </h1>
-              <p class="text-xs sm:text-sm text-[#B4CDDE] max-w-2xl leading-relaxed">
-                Demuestra tu dominio de los protocolos clínicos de la OMS bajo presión de cronómetro. Quien logre el mayor número de aciertos en el <strong class="text-[#50E7FF]">menor tiempo total</strong> conquista el primer lugar del ranking.
+              <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                Demuestra tu dominio de los protocolos clínicos de la OMS bajo presión de cronómetro. Quien logre el mayor número de aciertos en el <strong class="text-teal-300">menor tiempo total</strong> conquista el primer lugar del ranking.
               </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3 self-start md:self-auto">
               <a
-                routerLink="/bienvenida"
-                class="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-bold border border-white/15 transition"
+                routerLink="/introduccion"
+                class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-semibold border border-white/15 transition-all duration-300"
               >
                 ← Volver al Panel
               </a>
@@ -58,7 +58,7 @@ export interface PreguntaRetoExtremo {
                 <button
                   type="button"
                   (click)="iniciarReto()"
-                  class="px-6 py-3 rounded-full bg-gradient-to-r from-[#FF6A4D] to-amber-500 hover:from-[#e8573a] hover:to-amber-600 text-white font-black text-xs sm:text-sm shadow-xl shadow-[#FF6A4D]/30 transition transform hover:scale-105 cursor-pointer"
+                  class="btn-primary py-3 px-6 text-xs sm:text-sm"
                 >
                   🔥 ¡Iniciar Reto Ahora!
                 </button>
@@ -73,40 +73,40 @@ export interface PreguntaRetoExtremo {
         @if (estadoJuego() === 'lobby') {
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 animate-fade-in">
             <!-- Panel de Configuración del Reto -->
-            <div class="lg:col-span-7 bg-white/95 backdrop-blur-xl text-[#0B2B29] rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 flex flex-col justify-between space-y-6">
+            <div class="lg:col-span-7 bg-white/98 backdrop-blur-xl text-slate-800 rounded-2xl p-6 sm:p-8 shadow-[0_18px_40px_-12px_rgba(7,17,30,0.35)] border border-slate-200/90 flex flex-col justify-between space-y-6">
               <div>
-                <span class="text-[11px] font-black uppercase tracking-wider text-[#008072] block mb-1">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-teal-700 block mb-1">
                   Configuración de Partida Competitiva
                 </span>
-                <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-[#0B2B29] mb-4">
+                <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight mb-4">
                   Prepárate para competir contra el reloj
                 </h2>
 
                 <!-- Identificación rápida del competidor -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
                   <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Tu Nombre o Alias Clínico</label>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">Tu Nombre o Alias Clínico</label>
                     <input
                       type="text"
                       [(ngModel)]="nombreCompetidor"
                       placeholder="Ej. Laura Ramírez"
-                      class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] text-xs sm:text-sm font-semibold text-slate-900 outline-none"
+                      class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 text-xs sm:text-sm font-medium text-slate-900 outline-none transition-all duration-300"
                     />
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Código Estudiantil</label>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">Código Estudiantil</label>
                     <input
                       type="text"
                       [(ngModel)]="codigoCompetidor"
                       placeholder="Ej. ENF-2026-101"
-                      class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] text-xs sm:text-sm font-semibold text-slate-900 outline-none"
+                      class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 text-xs sm:text-sm font-medium text-slate-900 outline-none transition-all duration-300"
                     />
                   </div>
                 </div>
 
                 <!-- Selector de Cantidad de Preguntas (5 a 10) -->
                 <div class="mb-5">
-                  <label class="block text-xs font-bold text-slate-700 mb-2">
+                  <label class="block text-xs font-semibold text-slate-700 mb-2">
                     Selecciona la intensidad del Reto Extremo:
                   </label>
                   <div class="grid grid-cols-3 gap-2.5">
@@ -114,13 +114,13 @@ export interface PreguntaRetoExtremo {
                       <button
                         type="button"
                         (click)="cantidadPreguntasSeleccionada.set(cant)"
-                        class="p-3 rounded-2xl border text-center transition cursor-pointer"
+                        class="p-3.5 rounded-xl border text-center transition-all duration-300 cursor-pointer"
                         [ngClass]="cantidadPreguntasSeleccionada() === cant
-                          ? 'bg-[#E6FBF7] border-[#00B39F] text-[#008072] shadow-sm ring-2 ring-[#00B39F]/30'
+                          ? 'bg-teal-50 border-teal-600 text-teal-800 shadow-xs ring-2 ring-teal-500/20'
                           : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'"
                       >
-                        <div class="font-heading text-lg font-black">{{ cant }} Preguntas</div>
-                        <div class="text-[10px] font-bold uppercase">
+                        <div class="font-heading text-lg font-extrabold">{{ cant }} Preguntas</div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider opacity-80">
                           {{ cant === 5 ? 'Sprint Rápido' : cant === 8 ? 'Estándar OMS' : 'Maratón Extremo' }}
                         </div>
                       </button>
@@ -129,19 +129,19 @@ export interface PreguntaRetoExtremo {
                 </div>
 
                 <!-- Reglas de Puntuación -->
-                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 text-xs space-y-2 text-slate-700">
-                  <div class="font-extrabold text-[#0B2B29] flex items-center gap-1.5">
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80 text-xs space-y-2 text-slate-600">
+                  <div class="font-bold text-slate-900 flex items-center gap-1.5">
                     <span>🎯 Reglas Oficiales del Ranking:</span>
                   </div>
-                  <p>• <strong>Prioridad 1 (Precisión):</strong> Quien logre el mayor porcentaje de aciertos sube a la cima.</p>
-                  <p>• <strong>Prioridad 2 (Velocidad):</strong> En caso de empate en aciertos, lidera quien responda en el <strong>menor tiempo total</strong>.</p>
+                  <p>• <strong class="text-slate-800">Prioridad 1 (Precisión):</strong> Quien logre el mayor porcentaje de aciertos sube a la cima.</p>
+                  <p>• <strong class="text-slate-800">Prioridad 2 (Velocidad):</strong> En caso de empate en aciertos, lidera quien responda en el <strong class="text-teal-700">menor tiempo total</strong>.</p>
                 </div>
               </div>
 
               <button
                 type="button"
                 (click)="iniciarReto()"
-                class="w-full py-4 px-6 rounded-full bg-gradient-to-r from-[#00B39F] to-[#008072] hover:from-[#009988] hover:to-[#006e62] text-white font-black text-base shadow-xl shadow-teal-500/25 transition transform hover:scale-[1.01] cursor-pointer flex items-center justify-center gap-2"
+                class="w-full btn-primary py-4 px-6 text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>🚀 Comenzar Trivia Cronometrada ({{ cantidadPreguntasSeleccionada() }} Preguntas)</span>
               </button>
@@ -151,26 +151,26 @@ export interface PreguntaRetoExtremo {
             <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
               <!-- Tarjeta Primer Lugar -->
               @if (primerLugar()) {
-                <div class="bg-gradient-to-br from-amber-500/20 via-[#0F292F] to-[#08151D] rounded-3xl p-5 border border-amber-400/50 shadow-xl">
+                <div class="bg-gradient-to-br from-[#0F2942] via-[#0B192C] to-[#0D3B3E] rounded-2xl p-5 border border-amber-400/40 shadow-xl transition-all duration-300">
                   <div class="flex items-center justify-between mb-2">
-                    <span class="px-3 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] uppercase tracking-wider">
+                    <span class="px-3 py-0.5 rounded-md bg-amber-400 text-slate-950 font-bold text-[10px] uppercase tracking-wider">
                       🥇 1.° Lugar • Líder Actual del Grupo
                     </span>
                     <span class="font-mono text-xs text-amber-300 font-bold">
                       ⚡ {{ primerLugar()!.tiempoSegundos }}s
                     </span>
                   </div>
-                  <h3 class="font-heading text-lg font-black text-white">
+                  <h3 class="font-heading text-lg font-extrabold text-white">
                     {{ primerLugar()!.nombre }}
                   </h3>
                   <p class="text-xs text-slate-300 mb-3">
-                    Código: <span class="font-mono text-[#50E7FF]">{{ primerLugar()!.codigoEstudiantil }}</span>
+                    Código: <span class="font-mono text-teal-300">{{ primerLugar()!.codigoEstudiantil }}</span>
                   </p>
-                  <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
-                    <span class="text-emerald-300 font-bold">
+                  <div class="flex items-center justify-between pt-2.5 border-t border-white/10 text-xs">
+                    <span class="text-emerald-300 font-semibold">
                       ✓ {{ primerLugar()!.aciertos }}/{{ primerLugar()!.totalPreguntas }} aciertos ({{ primerLugar()!.porcentajeExito }}%)
                     </span>
-                    <span class="px-2.5 py-0.5 rounded-lg bg-amber-400/20 text-amber-200 font-black">
+                    <span class="px-2.5 py-0.5 rounded-md bg-amber-400/20 text-amber-200 font-bold">
                       {{ primerLugar()!.puntajeCompetitivo }} pts
                     </span>
                   </div>
@@ -179,26 +179,26 @@ export interface PreguntaRetoExtremo {
 
               <!-- Tarjeta Último Lugar -->
               @if (ultimoLugar()) {
-                <div class="bg-gradient-to-br from-[#FF6A4D]/20 via-[#1A1423] to-[#08151D] rounded-3xl p-5 border border-[#FF6A4D]/45 shadow-xl">
+                <div class="bg-gradient-to-br from-slate-900 via-[#0B192C] to-slate-900 rounded-2xl p-5 border border-rose-500/35 shadow-xl transition-all duration-300">
                   <div class="flex items-center justify-between mb-2">
-                    <span class="px-3 py-0.5 rounded-full bg-[#FF6A4D] text-white font-black text-[10px] uppercase tracking-wider">
+                    <span class="px-3 py-0.5 rounded-md bg-rose-500/90 text-white font-bold text-[10px] uppercase tracking-wider">
                       🏁 Último Lugar (#{{ ultimoLugar()!.posicion }}) • Marca a Superar
                     </span>
-                    <span class="font-mono text-xs text-[#FF9D85] font-bold">
+                    <span class="font-mono text-xs text-rose-300 font-bold">
                       ⏱ {{ ultimoLugar()!.tiempoSegundos }}s
                     </span>
                   </div>
-                  <h3 class="font-heading text-lg font-black text-white">
+                  <h3 class="font-heading text-lg font-extrabold text-white">
                     {{ ultimoLugar()!.nombre }}
                   </h3>
                   <p class="text-xs text-slate-300 mb-3">
                     Código: <span class="font-mono text-slate-300">{{ ultimoLugar()!.codigoEstudiantil }}</span>
                   </p>
-                  <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
-                    <span class="text-[#FF9D85] font-bold">
+                  <div class="flex items-center justify-between pt-2.5 border-t border-white/10 text-xs">
+                    <span class="text-rose-300 font-semibold">
                       {{ ultimoLugar()!.aciertos }}/{{ ultimoLugar()!.totalPreguntas }} aciertos ({{ ultimoLugar()!.porcentajeExito }}%)
                     </span>
-                    <span class="px-2.5 py-0.5 rounded-lg bg-[#FF6A4D]/20 text-[#FF9D85] font-black">
+                    <span class="px-2.5 py-0.5 rounded-md bg-rose-500/20 text-rose-200 font-bold">
                       {{ ultimoLugar()!.puntajeCompetitivo }} pts
                     </span>
                   </div>
@@ -206,9 +206,9 @@ export interface PreguntaRetoExtremo {
               }
 
               <!-- Resumen rápido de la tabla -->
-              <div class="bg-[#0E1826]/90 rounded-2xl p-4 border border-white/10 text-xs text-slate-300">
-                <div class="font-bold text-white mb-1">💡 Consejo de GuaneñaBot Coach:</div>
-                <p>
+              <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-4 border border-slate-700/60 text-xs text-slate-300">
+                <div class="font-bold text-teal-300 mb-1">💡 Consejo de GuaneñaBot Coach:</div>
+                <p class="leading-relaxed">
                   Lee con atención los distractores clínicos sobre esporas bacterianas, concentraciones de alcohol y tiempos exactos OMS antes de marcar.
                 </p>
               </div>
@@ -220,18 +220,18 @@ export interface PreguntaRetoExtremo {
         <!-- FASE 2: JUEGO EN VIVO CON CRONÓMETRO DE ALTA PRECISIÓN                  -->
         <!-- ======================================================================= -->
         @if (estadoJuego() === 'jugando' && preguntaActual()) {
-          <div class="bg-white/95 backdrop-blur-xl text-[#0B2B29] rounded-3xl p-6 sm:p-8 shadow-2xl border border-white mb-8 animate-fade-in">
+          <div class="bg-white/98 backdrop-blur-xl text-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl border border-slate-200/90 mb-8 animate-fade-in">
             <!-- Barra superior del juego: Progreso, Racha y Cronómetro en Vivo -->
             <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-100">
-              <div class="flex items-center gap-2.5">
-                <span class="w-9 h-9 rounded-2xl bg-[#0B2B29] text-[#50E7FF] font-black text-sm flex items-center justify-center">
+              <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-[#0B192C] text-teal-300 font-bold text-sm flex items-center justify-center shadow-xs">
                   {{ indicePregunta() + 1 }}/{{ preguntasPartida().length }}
                 </span>
                 <div>
-                  <span class="text-[10px] font-black uppercase tracking-wider text-[#008072] block">
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-teal-700 block">
                     {{ preguntaActual()!.categoria }}
                   </span>
-                  <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-black uppercase">
+                  <span class="px-2 py-0.5 rounded-md bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-bold uppercase">
                     Dificultad {{ preguntaActual()!.dificultad }}
                   </span>
                 </div>
@@ -239,14 +239,14 @@ export interface PreguntaRetoExtremo {
 
               <div class="flex items-center gap-3">
                 @if (rachaActual() >= 2) {
-                  <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-xs font-black animate-bounce">
+                  <span class="px-3 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold animate-bounce">
                     🔥 Racha x{{ rachaActual() }}
                   </span>
                 }
 
                 <!-- Cronómetro Competitivo -->
-                <div class="px-4 py-2 rounded-2xl bg-[#0B2B29] text-white font-mono text-base sm:text-lg font-black flex items-center gap-2 shadow-md">
-                  <span class="w-2 h-2 rounded-full bg-[#FF6A4D] animate-ping"></span>
+                <div class="px-4 py-2 rounded-xl bg-[#0B192C] text-white font-mono text-base sm:text-lg font-bold flex items-center gap-2 shadow-md">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                   <span>{{ tiempoFormateado() }}s</span>
                 </div>
               </div>
@@ -255,13 +255,13 @@ export interface PreguntaRetoExtremo {
             <!-- Barra de progreso lineal -->
             <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden mb-6">
               <div
-                class="h-full bg-gradient-to-r from-[#00B39F] to-[#FF6A4D] transition-all duration-300"
+                class="h-full bg-gradient-to-r from-teal-600 to-emerald-500 transition-all duration-300"
                 [style.width.%]="((indicePregunta() + 1) / preguntasPartida().length) * 100"
               ></div>
             </div>
 
             <!-- Enunciado de la pregunta -->
-            <h2 class="font-heading text-lg sm:text-xl font-extrabold text-[#0B2B29] leading-snug mb-6">
+            <h2 class="font-heading text-lg sm:text-xl font-bold text-slate-900 leading-snug mb-6">
               {{ preguntaActual()!.enunciado }}
             </h2>
 
@@ -272,16 +272,16 @@ export interface PreguntaRetoExtremo {
                   type="button"
                   (click)="seleccionarOpcion(idx)"
                   [disabled]="opcionSeleccionada() !== null"
-                  class="w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 flex items-start gap-3 cursor-pointer"
+                  class="w-full text-left p-4 rounded-xl border-2 transition-all duration-300 flex items-start gap-3 cursor-pointer"
                   [ngClass]="obtenerClaseOpcion(idx)"
                 >
                   <span
-                    class="w-7 h-7 rounded-xl font-black text-xs flex items-center justify-center shrink-0 mt-0.5"
+                    class="w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center shrink-0 mt-0.5"
                     [ngClass]="obtenerClaseLetraOpcion(idx)"
                   >
                     {{ ['A', 'B', 'C', 'D'][idx] }}
                   </span>
-                  <span class="text-xs sm:text-sm font-semibold leading-relaxed">
+                  <span class="text-xs sm:text-sm font-medium leading-relaxed">
                     {{ opcion }}
                   </span>
                 </button>
@@ -291,12 +291,12 @@ export interface PreguntaRetoExtremo {
             <!-- Retroalimentación inmediata tras responder -->
             @if (opcionSeleccionada() !== null) {
               <div
-                class="p-4 rounded-2xl border mb-5 animate-fade-in text-xs sm:text-sm"
+                class="p-4 rounded-xl border mb-5 animate-fade-in text-xs sm:text-sm"
                 [ngClass]="opcionSeleccionada() === preguntaActual()!.indiceCorrecto
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
-                  : 'bg-red-50 border-red-300 text-red-950'"
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-950'
+                  : 'bg-rose-50 border-rose-200 text-rose-950'"
               >
-                <div class="font-black mb-1">
+                <div class="font-bold mb-1">
                   {{ opcionSeleccionada() === preguntaActual()!.indiceCorrecto
                     ? '✅ ¡Respuesta Correcta! Velocidad y criterio clínico impecables.'
                     : '❌ Respuesta Incorrecta. Revisa el fundamento OMS:' }}
@@ -310,7 +310,7 @@ export interface PreguntaRetoExtremo {
                 <button
                   type="button"
                   (click)="avanzarPregunta()"
-                  class="px-6 py-3 rounded-full bg-[#00B39F] hover:bg-[#008072] text-white font-black text-xs sm:text-sm shadow-lg transition cursor-pointer flex items-center gap-2"
+                  class="btn-primary py-3 px-6 text-xs sm:text-sm flex items-center gap-2"
                 >
                   <span>
                     {{ indicePregunta() + 1 < preguntasPartida().length ? 'Siguiente Pregunta →' : 'Finalizar y Ver Posición en el Ranking 🏆' }}
@@ -325,12 +325,12 @@ export interface PreguntaRetoExtremo {
         <!-- FASE 3: RESULTADO DEL RETO EXTREMO Y ACTUALIZACIÓN EN TIEMPO REAL       -->
         <!-- ======================================================================= -->
         @if (estadoJuego() === 'finalizado') {
-          <div class="bg-white/95 backdrop-blur-xl text-[#0B2B29] rounded-3xl p-6 sm:p-8 shadow-2xl border border-white mb-8 animate-fade-in">
+          <div class="bg-white/98 backdrop-blur-xl text-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl border border-slate-200/90 mb-8 animate-fade-in">
             <div class="text-center max-w-2xl mx-auto mb-6">
-              <span class="inline-block px-3.5 py-1 rounded-full bg-[#CFFBF0] text-[#008072] font-black text-xs uppercase tracking-wider mb-2">
+              <span class="inline-block px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 font-bold text-xs uppercase tracking-wider mb-2">
                 ¡Reto Extremo Completado!
               </span>
-              <h2 class="font-heading text-2xl sm:text-3xl font-black text-[#0B2B29]">
+              <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                 Obtuviste el Puesto #{{ miPosicionAlcanzada() }} del Ranking
               </h2>
               <p class="text-xs sm:text-sm text-slate-600 mt-1">
@@ -339,27 +339,27 @@ export interface PreguntaRetoExtremo {
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-6">
-              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
                 <span class="text-[10px] font-bold uppercase text-slate-500 block">Aciertos</span>
-                <span class="font-heading text-2xl font-black text-[#008072]">
+                <span class="font-heading text-2xl font-extrabold text-teal-700">
                   {{ aciertosTotales() }} / {{ preguntasPartida().length }}
                 </span>
               </div>
-              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
                 <span class="text-[10px] font-bold uppercase text-slate-500 block">Precisión</span>
-                <span class="font-heading text-2xl font-black text-slate-900">
+                <span class="font-heading text-2xl font-extrabold text-slate-900">
                   {{ porcentajeAciertos() }}%
                 </span>
               </div>
-              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
                 <span class="text-[10px] font-bold uppercase text-slate-500 block">Tiempo Total</span>
-                <span class="font-heading text-2xl font-black text-[#FF6A4D]">
+                <span class="font-heading text-2xl font-extrabold text-sky-700">
                   {{ tiempoFormateado() }}s
                 </span>
               </div>
-              <div class="p-4 rounded-2xl bg-[#0B2B29] text-white text-center">
-                <span class="text-[10px] font-bold uppercase text-teal-200 block">Puntaje Final</span>
-                <span class="font-heading text-2xl font-black text-[#50E7FF]">
+              <div class="p-4 rounded-xl bg-[#0B192C] text-white text-center">
+                <span class="text-[10px] font-bold uppercase text-teal-300 block">Puntaje Final</span>
+                <span class="font-heading text-2xl font-extrabold text-white">
                   {{ puntajeCalculado() }} pts
                 </span>
               </div>
@@ -369,14 +369,14 @@ export interface PreguntaRetoExtremo {
               <button
                 type="button"
                 (click)="iniciarReto()"
-                class="px-6 py-3 rounded-full bg-[#00B39F] hover:bg-[#008072] text-white font-black text-xs sm:text-sm shadow-lg transition cursor-pointer"
+                class="btn-primary py-3 px-6 text-xs sm:text-sm"
               >
                 🔄 Jugar de Nuevo para Mejorar mi Tiempo
               </button>
               <button
                 type="button"
                 (click)="estadoJuego.set('lobby')"
-                class="px-5 py-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition cursor-pointer"
+                class="btn-secondary py-3 px-5 text-xs sm:text-sm"
               >
                 Cambiar Número de Preguntas
               </button>
@@ -387,25 +387,25 @@ export interface PreguntaRetoExtremo {
         <!-- ======================================================================= -->
         <!-- TABLA DE RANKING COMPETITIVO EN TIEMPO REAL (PRIMERO AL ÚLTIMO LUGAR)   -->
         <!-- ======================================================================= -->
-        <div class="bg-white/95 backdrop-blur-xl text-[#0B2B29] rounded-3xl p-6 sm:p-8 shadow-2xl border border-white">
+        <div class="bg-white/98 backdrop-blur-xl text-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl border border-slate-200/90">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div>
-              <h3 class="font-heading text-xl sm:text-2xl font-black text-[#0B2B29] flex items-center gap-2">
+              <h3 class="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
                 <span>🏆 Ranking Competitivo en Tiempo Real</span>
               </h3>
-              <p class="text-xs text-slate-500">
+              <p class="text-xs text-slate-500 mt-0.5">
                 Ordenado por mayor cantidad de aciertos en el menor tiempo de respuesta (destacando primero y último lugar)
               </p>
             </div>
-            <span class="px-3 py-1 rounded-full bg-teal-50 text-[#008072] border border-teal-200 text-xs font-extrabold">
+            <span class="px-3.5 py-1.5 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-bold self-start sm:self-auto">
               {{ ranking().length }} Competidores Registrados
             </span>
           </div>
 
-          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
                   <th class="py-3.5 px-4">Posición / Estado</th>
                   <th class="py-3.5 px-4">Estudiante</th>
                   <th class="py-3.5 px-4 text-center">Aciertos</th>
@@ -416,33 +416,33 @@ export interface PreguntaRetoExtremo {
               <tbody class="divide-y divide-slate-100 text-xs">
                 @for (item of ranking(); track item.id) {
                   <tr
-                    class="transition-colors"
+                    class="transition-colors duration-200"
                     [ngClass]="{
-                      'bg-amber-50/90 font-bold': item.posicion === 1,
-                      'bg-red-50/70': item.posicion === ranking().length && ranking().length > 1,
-                      'ring-2 ring-inset ring-[#00B39F] bg-[#E6FBF7]/80': item.esUsuarioActual
+                      'bg-amber-50/70 font-semibold': item.posicion === 1,
+                      'bg-rose-50/50': item.posicion === ranking().length && ranking().length > 1,
+                      'ring-2 ring-inset ring-teal-500 bg-teal-50/60': item.esUsuarioActual
                     }"
                   >
                     <td class="py-3.5 px-4">
                       <div class="flex items-center gap-2">
                         @if (item.posicion === 1) {
-                          <span class="px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] uppercase">
+                          <span class="px-2.5 py-1 rounded-md bg-amber-400 text-slate-950 font-bold text-[10px] uppercase">
                             🥇 1.° LÍDER
                           </span>
                         } @else if (item.posicion === ranking().length) {
-                          <span class="px-2.5 py-1 rounded-full bg-[#FF6A4D] text-white font-black text-[10px] uppercase">
+                          <span class="px-2.5 py-1 rounded-md bg-rose-500 text-white font-bold text-[10px] uppercase">
                             🏁 #{{ item.posicion }} ÚLTIMO
                           </span>
                         } @else if (item.posicion === 2) {
-                          <span class="px-2.5 py-1 rounded-full bg-slate-200 text-slate-800 font-black text-[10px]">
+                          <span class="px-2.5 py-1 rounded-md bg-slate-200 text-slate-800 font-bold text-[10px]">
                             🥈 #2
                           </span>
                         } @else if (item.posicion === 3) {
-                          <span class="px-2.5 py-1 rounded-full bg-orange-100 text-orange-800 font-black text-[10px]">
+                          <span class="px-2.5 py-1 rounded-md bg-orange-100 text-orange-800 font-bold text-[10px]">
                             🥉 #3
                           </span>
                         } @else {
-                          <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px]">
+                          <span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 font-bold text-[10px]">
                             #{{ item.posicion }}
                           </span>
                         }
@@ -450,23 +450,23 @@ export interface PreguntaRetoExtremo {
                     </td>
                     <td class="py-3.5 px-4">
                       <div class="flex items-center gap-2">
-                        <span class="font-extrabold text-[#0B2B29]">{{ item.nombre }}</span>
+                        <span class="font-bold text-slate-900">{{ item.nombre }}</span>
                         @if (item.esUsuarioActual) {
-                          <span class="px-2 py-0.5 rounded-full bg-[#00B39F] text-white text-[9px] font-black uppercase">Tú</span>
+                          <span class="px-2 py-0.5 rounded-md bg-teal-600 text-white text-[9px] font-bold uppercase">Tú</span>
                         }
                       </div>
                       <span class="font-mono text-[11px] text-slate-400">{{ item.codigoEstudiantil }}</span>
                     </td>
                     <td class="py-3.5 px-4 text-center">
-                      <span class="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-extrabold">
+                      <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
                         {{ item.aciertos }}/{{ item.totalPreguntas }} ({{ item.porcentajeExito }}%)
                       </span>
                     </td>
-                    <td class="py-3.5 px-4 text-center font-mono font-black text-slate-800">
+                    <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-800">
                       ⏱ {{ item.tiempoSegundos.toFixed(1) }}s
                     </td>
                     <td class="py-3.5 px-4 text-right">
-                      <span class="px-3 py-1 rounded-xl bg-[#0B2B29] text-[#50E7FF] font-black">
+                      <span class="px-3 py-1 rounded-lg bg-[#0B192C] text-teal-300 font-bold">
                         {{ item.puntajeCompetitivo }} pts
                       </span>
                     </td>

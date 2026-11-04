@@ -15,33 +15,33 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="max-w-3xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
-      <!-- Badge de Encabezado -->
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#50E7FF]/15 border border-[#50E7FF]/35 text-[#50E7FF] text-xs md:text-sm font-semibold mb-4 shadow-[0_0_15px_rgba(80,231,255,0.15)]">
-          <svg class="w-4 h-4 text-[#50E7FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10 md:py-16 animate-fade-in">
+      <!-- Encabezado Institucional de Alta Gama -->
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 text-xs font-bold uppercase tracking-wider mb-5 shadow-sm">
+          <svg class="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
-          Proyecto de Grado • Facultad de Enfermería
+          <span>Plataforma Clínica • Facultad de Enfermería</span>
         </div>
-        <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl text-[#F5F8FF] tracking-tight mb-4 drop-shadow-[0_2px_16px_rgba(80,231,255,0.2)]">
-          Manos Seguras
+        <h1 class="font-heading text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-4">
+          Manos <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-sky-300">Seguras</span>
         </h1>
-        <p class="text-base md:text-lg text-[#D1E0EE] max-w-xl mx-auto leading-relaxed">
-          Plataforma de entrenamiento clínico y evaluación interactiva de la técnica de lavado de manos según la norma internacional de la OMS.
+        <p class="text-sm sm:text-base md:text-lg text-slate-300 max-w-xl mx-auto leading-relaxed">
+          Sistema inteligente de simulación, entrenamiento clínico y acreditación de higiene de manos bajo el protocolo oficial de la OMS.
         </p>
       </div>
 
       <!-- SELECTOR DE ACCESO: ESTUDIANTE vs DOCENTE / ADMIN -->
-      <div class="grid grid-cols-2 p-1.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-[#50E7FF]/30 shadow-xl mb-6">
+      <div class="grid grid-cols-2 p-1.5 rounded-2xl bg-slate-900/80 backdrop-blur-xl border border-slate-700/60 shadow-xl mb-6">
         <!-- Opción 1: Acceso Estudiante -->
         <button
           type="button"
           (click)="cambiarTipoAcceso('estudiante')"
-          class="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-extrabold text-xs sm:text-sm transition-all cursor-pointer"
-          [ngClass]="tipoAcceso() === 'estudiante' ? 'bg-[#00B39F] text-white shadow-lg' : 'text-slate-300 hover:text-white hover:bg-white/10'"
+          class="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 cursor-pointer"
+          [ngClass]="tipoAcceso() === 'estudiante' ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg shadow-teal-900/40' : 'text-slate-300 hover:text-white hover:bg-white/5'"
         >
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
           <span>Acceso Estudiante</span>
@@ -51,10 +51,10 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
         <button
           type="button"
           (click)="cambiarTipoAcceso('docente')"
-          class="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-extrabold text-xs sm:text-sm transition-all cursor-pointer"
-          [ngClass]="tipoAcceso() === 'docente' ? 'bg-[#00B39F] text-white shadow-lg' : 'text-slate-300 hover:text-white hover:bg-white/10'"
+          class="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 cursor-pointer"
+          [ngClass]="tipoAcceso() === 'docente' ? 'bg-gradient-to-r from-[#0F2942] to-teal-700 text-white shadow-lg shadow-slate-950/50 border border-teal-400/30' : 'text-slate-300 hover:text-white hover:bg-white/5'"
         >
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5" />
           </svg>
           <span>Acceso Docente / Admin</span>
@@ -62,23 +62,23 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
       </div>
 
       <!-- Tarjeta Principal del Formulario -->
-      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-10 shadow-xl border border-white/80 transition-all duration-300 hover:shadow-2xl">
+      <div class="bg-white/98 backdrop-blur-xl rounded-2xl p-6 sm:p-8 md:p-10 shadow-[0_24px_60px_-15px_rgba(7,17,30,0.55)] border border-slate-200/90 transition-all duration-300">
         <!-- ============================================================== -->
         <!-- CASO 1: FORMULARIO DOCENTE / ADMIN                             -->
         <!-- ============================================================== -->
         @if (tipoAcceso() === 'docente') {
           <div class="border-b border-slate-100 pb-5 mb-6">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-2xl bg-[#00B39F]/15 flex items-center justify-center text-[#00B39F]">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-xl bg-teal-50 border border-teal-200/70 flex items-center justify-center text-teal-700 shrink-0">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5" />
                 </svg>
               </div>
               <div>
-                <h2 class="font-heading text-xl md:text-2xl text-slate-900 font-bold">
+                <h2 class="font-heading text-xl md:text-2xl text-slate-900 font-bold tracking-tight">
                   Ingreso de Personal Docente
                 </h2>
-                <div class="inline-block px-2.5 py-0.5 mt-1 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/20 text-[#008072] text-[11px] font-bold">
+                <div class="inline-block px-2.5 py-0.5 mt-1 rounded-md bg-teal-50 border border-teal-200/60 text-teal-800 text-[11px] font-semibold">
                   Panel de Gestión Clínica y Supervisión Docente
                 </div>
               </div>
@@ -87,8 +87,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
           <!-- Alertas de Error / Éxito -->
           @if (mensajeError()) {
-            <div class="mb-5 p-4 rounded-2xl bg-red-50 border border-red-200 flex items-start gap-3 animate-fade-in text-red-700">
-              <svg class="w-5 h-5 shrink-0 mt-0.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="mb-5 p-4 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-3 animate-fade-in text-rose-700">
+              <svg class="w-5 h-5 shrink-0 mt-0.5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div class="text-xs md:text-sm">
@@ -98,7 +98,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           }
 
           @if (mensajeExito()) {
-            <div class="mb-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-start gap-3 animate-fade-in text-emerald-800">
+            <div class="mb-5 p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-3 animate-fade-in text-emerald-800">
               <svg class="w-5 h-5 shrink-0 mt-0.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
@@ -111,8 +111,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           <form [formGroup]="docenteForm" (ngSubmit)="onSubmitDocente()" class="space-y-5">
             <!-- Campo Correo Institucional -->
             <div>
-              <label for="docenteCorreo" class="block text-sm font-semibold text-slate-800 mb-2">
-                Correo Institucional <span class="text-[#FF6A4D]">*</span>
+              <label for="docenteCorreo" class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                Correo Institucional <span class="text-rose-500">*</span>
               </label>
               <div class="relative">
                 <input
@@ -120,7 +120,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   type="email"
                   formControlName="correo"
                   placeholder="docente@ucc.edu.co"
-                  class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
+                  class="w-full px-4 py-3.5 pl-11 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-slate-900 font-medium placeholder-slate-400"
                 />
                 <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -133,8 +133,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             <!-- Campo Contraseña -->
             <div>
               <div class="flex items-center justify-between mb-2">
-                <label for="docentePassword" class="block text-sm font-semibold text-slate-800">
-                  Contraseña <span class="text-[#FF6A4D]">*</span>
+                <label for="docentePassword" class="block text-xs sm:text-sm font-semibold text-slate-700">
+                  Contraseña <span class="text-rose-500">*</span>
                 </label>
               </div>
               <div class="relative">
@@ -143,7 +143,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   [type]="verPassword() ? 'text' : 'password'"
                   formControlName="password"
                   placeholder="Ingresa tu contraseña de docente"
-                  class="w-full px-4 py-3.5 pl-11 pr-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
+                  class="w-full px-4 py-3.5 pl-11 pr-11 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-slate-900 font-medium placeholder-slate-400"
                 />
                 <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -171,7 +171,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
               <button
                 type="submit"
                 [disabled]="docenteForm.invalid || cargando()"
-                class="w-full btn-primary py-4 text-base md:text-lg flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer shadow-lg hover:shadow-xl transition-all"
+                class="w-full btn-primary py-4 text-base flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer transition-all duration-300"
               >
                 @if (cargando()) {
                   <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -181,7 +181,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   <span>Verificando Credenciales de Docente...</span>
                 } @else {
                   <span>Acceder al Panel Docente</span>
-                  <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 }
@@ -195,38 +195,38 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
         <!-- ============================================================== -->
         @if (tipoAcceso() === 'estudiante') {
           <!-- Selector de Modo: Registro vs Ingreso -->
-          <div class="flex items-center justify-between border-b border-slate-100 pb-5 mb-6">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-2xl bg-[#00B39F]/15 flex items-center justify-center text-[#00B39F]">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5 mb-6">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-xl bg-teal-50 border border-teal-200/70 flex items-center justify-center text-teal-700 shrink-0">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
               <div>
-                <h2 class="font-heading text-xl md:text-2xl text-slate-900 font-bold">
+                <h2 class="font-heading text-xl md:text-2xl text-slate-900 font-bold tracking-tight">
                   {{ modo() === 'registro' ? 'Identificación del Estudiante' : 'Iniciar Sesión Clínica' }}
                 </h2>
-                <p class="text-xs md:text-sm text-slate-600">
-                  {{ modo() === 'registro' ? 'Conexión con la base de datos para registrar tu progreso' : 'Accede con tus credenciales registradas' }}
+                <p class="text-xs md:text-sm text-slate-500">
+                  {{ modo() === 'registro' ? 'Registra tus datos institucionales para tu práctica clínica' : 'Accede con tus credenciales registradas' }}
                 </p>
               </div>
             </div>
 
             <!-- Selector de Modo -->
-            <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200">
+            <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200/80 self-start sm:self-auto">
               <button
                 type="button"
                 (click)="cambiarModo('registro')"
-                class="px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer"
-                [ngClass]="modo() === 'registro' ? 'bg-[#00B39F] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 cursor-pointer"
+                [ngClass]="modo() === 'registro' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'"
               >
                 Registro
               </button>
               <button
                 type="button"
                 (click)="cambiarModo('login')"
-                class="px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer"
-                [ngClass]="modo() === 'login' ? 'bg-[#00B39F] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 cursor-pointer"
+                [ngClass]="modo() === 'login' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'"
               >
                 Ingresar
               </button>
@@ -235,8 +235,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
           <!-- Alertas de Error / Éxito -->
           @if (mensajeError()) {
-            <div class="mb-5 p-4 rounded-2xl bg-red-50 border border-red-200 flex items-start gap-3 animate-fade-in text-red-700">
-              <svg class="w-5 h-5 shrink-0 mt-0.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="mb-5 p-4 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-3 animate-fade-in text-rose-700">
+              <svg class="w-5 h-5 shrink-0 mt-0.5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div class="text-xs md:text-sm">
@@ -246,7 +246,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           }
 
           @if (mensajeExito()) {
-            <div class="mb-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-start gap-3 animate-fade-in text-emerald-800">
+            <div class="mb-5 p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-3 animate-fade-in text-emerald-800">
               <svg class="w-5 h-5 shrink-0 mt-0.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
@@ -261,8 +261,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             <form [formGroup]="studentForm" (ngSubmit)="onSubmitRegistro()" class="space-y-5">
               <!-- Campo Nombre Completo -->
               <div>
-                <label for="fullName" class="block text-sm font-semibold text-slate-800 mb-2">
-                  Nombre Completo <span class="text-[#FF6A4D]">*</span>
+                <label for="fullName" class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                  Nombre Completo <span class="text-rose-500">*</span>
                 </label>
                 <div class="relative">
                   <input
@@ -270,8 +270,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     type="text"
                     formControlName="fullName"
                     placeholder="Ej. Laura Marcela Ramírez Gómez"
-                    class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
-                    [class.border-red-400]="fullNameInvalid"
+                    class="w-full px-4 py-3.5 pl-11 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-slate-900 font-medium placeholder-slate-400"
+                    [class.border-rose-400]="fullNameInvalid"
                   />
                   <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -280,14 +280,14 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   </div>
                 </div>
                 @if (fullNameInvalid) {
-                  <p class="mt-1.5 text-xs text-red-500 font-medium">Por favor ingresa tu nombre completo (mínimo 3 caracteres).</p>
+                  <p class="mt-1.5 text-xs text-rose-500 font-medium">Por favor ingresa tu nombre completo (mínimo 3 caracteres).</p>
                 }
               </div>
 
               <!-- Campo Código Estudiantil -->
               <div>
-                <label for="studentCode" class="block text-sm font-semibold text-slate-800 mb-2">
-                  Código Estudiantil o Documento <span class="text-[#FF6A4D]">*</span>
+                <label for="studentCode" class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                  Código Estudiantil o Documento <span class="text-rose-500">*</span>
                 </label>
                 <div class="relative">
                   <input
@@ -296,8 +296,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     formControlName="studentCode"
                     placeholder="Ej. ENF-2026-101 o Documento de Identidad"
                     (input)="alCambiarCodigo()"
-                    class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
-                    [class.border-red-400]="studentCodeInvalid"
+                    class="w-full px-4 py-3.5 pl-11 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-slate-900 font-medium placeholder-slate-400"
+                    [class.border-rose-400]="studentCodeInvalid"
                   />
                   <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -306,14 +306,14 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   </div>
                 </div>
                 @if (studentCodeInvalid) {
-                  <p class="mt-1.5 text-xs text-red-500 font-medium">Ingresa un código estudiantil o documento válido (mínimo 4 caracteres).</p>
+                  <p class="mt-1.5 text-xs text-rose-500 font-medium">Ingresa un código estudiantil o documento válido (mínimo 4 caracteres).</p>
                 }
               </div>
 
               <!-- Campo Correo Electrónico Institucional -->
               <div>
-                <label for="correo" class="block text-sm font-semibold text-slate-800 mb-2">
-                  Correo Electrónico Institucional <span class="text-[#FF6A4D]">*</span>
+                <label for="correo" class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                  Correo Electrónico Institucional <span class="text-rose-500">*</span>
                 </label>
                 <div class="relative">
                   <input
@@ -321,8 +321,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     type="email"
                     formControlName="correo"
                     placeholder="estudiante@campusucc.edu.co"
-                    class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
-                    [class.border-red-400]="correoInvalid"
+                    class="w-full px-4 py-3.5 pl-11 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-slate-900 font-medium placeholder-slate-400"
+                    [class.border-rose-400]="correoInvalid"
                   />
                   <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -331,17 +331,17 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   </div>
                 </div>
                 @if (correoInvalid) {
-                  <p class="mt-1.5 text-xs text-red-500 font-medium">Ingresa un correo electrónico válido.</p>
+                  <p class="mt-1.5 text-xs text-rose-500 font-medium">Ingresa un correo electrónico válido.</p>
                 }
               </div>
 
               <!-- Campo Contraseña -->
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <label for="password" class="block text-sm font-semibold text-slate-800">
-                    Contraseña de Acceso <span class="text-[#FF6A4D]">*</span>
+                  <label for="password" class="block text-xs sm:text-sm font-semibold text-slate-700">
+                    Contraseña de Acceso <span class="text-rose-500">*</span>
                   </label>
-                  <span class="text-[11px] text-slate-500">Mínimo 6 caracteres</span>
+                  <span class="text-[11px] text-slate-400 font-medium">Mínimo 6 caracteres</span>
                 </div>
                 <div class="relative">
                   <input
@@ -349,8 +349,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     [type]="verPassword() ? 'text' : 'password'"
                     formControlName="password"
                     placeholder="Ej. Estudiante2026*"
-                    class="w-full px-4 py-3.5 pl-11 pr-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
-                    [class.border-red-400]="passwordInvalid"
+                    class="w-full px-4 py-3.5 pl-11 pr-11 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-slate-900 font-medium placeholder-slate-400"
+                    [class.border-rose-400]="passwordInvalid"
                   />
                   <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -372,26 +372,26 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   </button>
                 </div>
                 @if (passwordInvalid) {
-                  <p class="mt-1.5 text-xs text-red-500 font-medium">La contraseña debe tener al menos 6 caracteres.</p>
+                  <p class="mt-1.5 text-xs text-rose-500 font-medium">La contraseña debe tener al menos 6 caracteres.</p>
                 }
               </div>
 
               <!-- Consentimiento Informado -->
-              <div class="rounded-2xl border border-[#00B39F]/30 bg-[#CFFBF0]/25 p-4 md:p-5 transition-colors">
+              <div class="rounded-xl border border-teal-200/80 bg-teal-50/60 p-4 md:p-5 transition-all duration-300">
                 <label class="flex items-start gap-3.5 cursor-pointer">
                   <input
                     type="checkbox"
                     formControlName="consent"
                     id="consentCheck"
-                    class="mt-1 w-5 h-5 rounded text-[#00B39F] border-slate-300 focus:ring-[#00B39F] cursor-pointer transition accent-[#00B39F]"
+                    class="mt-1 w-5 h-5 rounded text-teal-600 border-slate-300 focus:ring-teal-500 cursor-pointer transition accent-teal-600"
                   />
-                  <div class="text-xs md:text-sm text-slate-800 leading-relaxed">
-                    <span class="font-bold text-[#008072]">Consentimiento Informado: </span>
+                  <div class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                    <span class="font-bold text-teal-800">Consentimiento Informado: </span>
                     Acepto participar voluntariamente en esta sesión pedagógica y de evaluación de bioseguridad. Comprendo que mis respuestas y tiempos de práctica se registrarán en la base de datos con fines de retroalimentación formativa y académica.
                   </div>
                 </label>
                 @if (consentInvalid) {
-                  <p class="mt-2 text-xs text-red-500 font-medium pl-8">Debes aceptar el consentimiento informado para continuar.</p>
+                  <p class="mt-2 text-xs text-rose-500 font-medium pl-8">Debes aceptar el consentimiento informado para continuar.</p>
                 }
               </div>
 
@@ -400,7 +400,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                 <button
                   type="submit"
                   [disabled]="studentForm.invalid || cargando()"
-                  class="w-full btn-primary py-4 text-base md:text-lg flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer shadow-lg hover:shadow-xl transition-all"
+                  class="w-full btn-primary py-4 text-base flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer transition-all duration-300"
                 >
                   @if (cargando()) {
                     <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -409,8 +409,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     </svg>
                     <span>Registrando en Base de Datos...</span>
                   } @else {
-                    <span>Registrar y Continuar al Cuestionario</span>
-                    <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <span>Registrar y Comenzar Entrenamiento</span>
+                    <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                   }
@@ -424,8 +424,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()" class="space-y-5">
               <!-- Campo Identificador -->
               <div>
-                <label for="identificador" class="block text-sm font-semibold text-slate-800 mb-2">
-                  Código Estudiantil o Correo <span class="text-[#FF6A4D]">*</span>
+                <label for="identificador" class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                  Código Estudiantil o Correo <span class="text-rose-500">*</span>
                 </label>
                 <div class="relative">
                   <input
@@ -433,7 +433,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     type="text"
                     formControlName="identificador"
                     placeholder="Ej. ENF-2026-101 o estudiante@campusucc.edu.co"
-                    class="w-full px-4 py-3.5 pl-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
+                    class="w-full px-4 py-3.5 pl-11 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-slate-900 font-medium placeholder-slate-400"
                   />
                   <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -445,8 +445,8 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
               <!-- Campo Contraseña -->
               <div>
-                <label for="loginPassword" class="block text-sm font-semibold text-slate-800 mb-2">
-                  Contraseña <span class="text-[#FF6A4D]">*</span>
+                <label for="loginPassword" class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
+                  Contraseña <span class="text-rose-500">*</span>
                 </label>
                 <div class="relative">
                   <input
@@ -454,7 +454,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     [type]="verPassword() ? 'text' : 'password'"
                     formControlName="password"
                     placeholder="Ingresa tu contraseña"
-                    class="w-full px-4 py-3.5 pl-11 pr-11 rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none transition duration-200 text-slate-900 font-medium placeholder-slate-400"
+                    class="w-full px-4 py-3.5 pl-11 pr-11 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-slate-900 font-medium placeholder-slate-400"
                   />
                   <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -482,7 +482,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                 <button
                   type="submit"
                   [disabled]="loginForm.invalid || cargando()"
-                  class="w-full btn-primary py-4 text-base md:text-lg flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer shadow-lg hover:shadow-xl transition-all"
+                  class="w-full btn-primary py-4 text-base flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer transition-all duration-300"
                 >
                   @if (cargando()) {
                     <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -492,7 +492,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                     <span>Verificando Credenciales...</span>
                   } @else {
                     <span>Iniciar Sesión y Continuar</span>
-                    <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                   }
@@ -503,41 +503,41 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
         }
       </div>
 
-      <!-- Resumen de Características -->
+      <!-- Indicadores Institucionales de Confianza -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-        <div class="bg-[#0e1626]/85 backdrop-blur-md rounded-2xl p-4 border border-[#50E7FF]/25 shadow-lg flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#50E7FF]/15 flex items-center justify-center text-[#50E7FF] shrink-0">
+        <div class="bg-slate-900/75 backdrop-blur-xl rounded-2xl p-4 border border-slate-700/50 shadow-lg flex items-center gap-3.5 transition-all duration-300 hover:border-teal-500/40">
+          <div class="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center text-teal-300 shrink-0">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div>
-            <h3 class="text-xs font-bold text-[#F5F8FF]">Base de Datos en Vivo</h3>
-            <p class="text-[11px] text-[#A5C2DE]">PostgreSQL & Supabase Sync</p>
+            <h3 class="text-xs font-bold text-white">Sincronización en Tiempo Real</h3>
+            <p class="text-[11px] text-slate-400">PostgreSQL & Supabase Cloud</p>
           </div>
         </div>
 
-        <div class="bg-[#0e1626]/85 backdrop-blur-md rounded-2xl p-4 border border-[#50E7FF]/25 shadow-lg flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#FF6A4D]/15 flex items-center justify-center text-[#FF9D85] shrink-0">
+        <div class="bg-slate-900/75 backdrop-blur-xl rounded-2xl p-4 border border-slate-700/50 shadow-lg flex items-center gap-3.5 transition-all duration-300 hover:border-teal-500/40">
+          <div class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/25 flex items-center justify-center text-sky-300 shrink-0">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" />
             </svg>
           </div>
           <div>
-            <h3 class="text-xs font-bold text-[#F5F8FF]">Banco Clínico OMS</h3>
-            <p class="text-[11px] text-[#A5C2DE]">Gestión dinámica del docente</p>
+            <h3 class="text-xs font-bold text-white">Estándar Clínico OMS</h3>
+            <p class="text-[11px] text-slate-400">Supervisión y analítica docente</p>
           </div>
         </div>
 
-        <div class="bg-[#0e1626]/85 backdrop-blur-md rounded-2xl p-4 border border-[#50E7FF]/25 shadow-lg flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#50E7FF]/15 flex items-center justify-center text-[#50E7FF] shrink-0">
+        <div class="bg-slate-900/75 backdrop-blur-xl rounded-2xl p-4 border border-slate-700/50 shadow-lg flex items-center gap-3.5 transition-all duration-300 hover:border-teal-500/40">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-300 shrink-0">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
           </div>
           <div>
-            <h3 class="text-xs font-bold text-[#F5F8FF]">Técnica OMS</h3>
-            <p class="text-[11px] text-[#A5C2DE]">Protocolo clínico de 6 pasos</p>
+            <h3 class="text-xs font-bold text-white">Visión Artificial IA</h3>
+            <p class="text-[11px] text-slate-400">Protocolo asistido de 6 pasos</p>
           </div>
         </div>
       </div>
