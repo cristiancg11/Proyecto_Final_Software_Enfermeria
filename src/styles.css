@@ -34,12 +34,27 @@
   --color-ink-subtle: #64748B;
 }
 
+html {
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+  touch-action: manipulation;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #F8FAFC;
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+  touch-action: manipulation;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background:
@@ -48,6 +63,14 @@ body {
     radial-gradient(circle at 50% 90%, rgba(13, 148, 136, 0.10), transparent 40rem),
     linear-gradient(180deg, #07111E 0%, #0B192C 50%, #091526 100%);
   background-attachment: fixed;
+}
+
+app-root {
+  display: block;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .font-heading {
