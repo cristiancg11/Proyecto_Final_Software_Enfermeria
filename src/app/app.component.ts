@@ -30,7 +30,7 @@ export class App {
   );
   readonly rutaActual = signal<string>(this.router.url);
 
-  // Estado del Chatbot Interactivo Global (GuaneñaBot Coach)
+  // Estado del Chatbot Interactivo Global (Manitos Coach)
   readonly chatAbierto = signal<boolean>(false);
   readonly escribiendoChat = signal<boolean>(false);
   readonly vozChatActiva = signal<boolean>(true);
@@ -41,7 +41,7 @@ export class App {
     {
       autor: 'bot',
       texto:
-        '¡Hola! Soy GuaneñaBot Coach 🩺. Estoy aquí para acompañarte en los 6 pasos OMS y prepararte para el Modo Reto Extremo.',
+        '¡Hola! Soy Manitos Coach 🩺. Estoy aquí para acompañarte en los 6 pasos OMS y prepararte para el Modo Reto Extremo.',
       hora: 'Ahora',
     },
   ]);

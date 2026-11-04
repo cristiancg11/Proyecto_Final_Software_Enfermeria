@@ -91,7 +91,10 @@ export class AuthService {
           return throwError(() => err);
         }),
         tap((res) => {
-          this.establecerSesion(res);
+          const rawUser = res.usuario || res.user;
+          if (rawUser) {
+            this.guardarUsuarioEnDirectorioLocal(rawUser);
+          }
         })
       );
   }

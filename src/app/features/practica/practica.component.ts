@@ -652,7 +652,7 @@ export interface QualityAlert {
                 >
                   <span>
                     @if (cameraActive() && !palmsValidated()) {
-                      Verificar Umbral con ManitaBot ({{ formattedTime() }}s / 3.0s)
+                      Verificar Umbral con Manitos ({{ formattedTime() }}s / 3.0s)
                     } @else if (isLastStep()) {
                       Ir a Evaluación Práctica
                     } @else {
@@ -723,7 +723,7 @@ export interface QualityAlert {
             </div>
           }
 
-          <!-- ASISTENTE VIRTUAL EN VIVO: GUANEÑABOT COACH (TARJETA FLOTANTE MODERNA CON CHAT E INDICADOR "ESCRIBIENDO...") -->
+          <!-- ASISTENTE VIRTUAL EN VIVO: MANITOS COACH (TARJETA FLOTANTE MODERNA CON CHAT E INDICADOR "ESCRIBIENDO...") -->
           <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 max-w-sm w-[calc(100vw-2rem)] sm:w-[400px] pointer-events-auto">
             @if (manitaBotExpandido()) {
               <div
@@ -737,7 +737,7 @@ export interface QualityAlert {
                 <!-- Cabecera Institucional con Degradado y Avatar Claro de Enfermería -->
                 <div class="bg-gradient-to-r from-[#0B2B29] via-[#0F3834] to-[#008072] p-4 text-white flex items-center justify-between gap-3">
                   <div class="flex items-center gap-3">
-                    <!-- Avatar de Enfermería GuaneñaBot Coach -->
+                    <!-- Avatar de Enfermería Manitos Coach -->
                     <div class="relative w-12 h-12 rounded-2xl bg-white/15 border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
                       <svg class="w-9 h-9" viewBox="0 0 64 64" fill="none">
                         <path d="M18 18L24 9H40L46 18H18Z" fill="#FFFFFF" stroke="#50E7FF" stroke-width="2" stroke-linejoin="round"/>
@@ -764,7 +764,7 @@ export interface QualityAlert {
                     <div>
                       <div class="flex items-center gap-2">
                         <h4 class="font-heading text-sm sm:text-base font-black text-white tracking-tight">
-                          GuaneñaBot Coach
+                          Manitos Coach
                         </h4>
                         <span
                           class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider"
@@ -813,7 +813,7 @@ export interface QualityAlert {
                       type="button"
                       (click)="manitaBotExpandido.set(false)"
                       class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
-                      title="Minimizar GuaneñaBot"
+                      title="Minimizar Manitos"
                     >
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -849,14 +849,14 @@ export interface QualityAlert {
                     </div>
                   </div>
 
-                  <!-- Indicador animado "GuaneñaBot está escribiendo..." -->
+                  <!-- Indicador animado "Manitos está escribiendo..." -->
                   @if (botEscribiendo()) {
                     <div class="flex items-center gap-2 pl-9 animate-fade-in">
                       <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-teal-50 border border-teal-200 text-[#008072] text-[11px] font-bold">
                         <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce"></span>
                         <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce" style="animation-delay: 150ms"></span>
                         <span class="w-1.5 h-1.5 rounded-full bg-[#00B39F] animate-bounce" style="animation-delay: 300ms"></span>
-                        <span class="ml-1">GuaneñaBot está escribiendo...</span>
+                        <span class="ml-1">Manitos está escribiendo...</span>
                       </div>
                     </div>
                   }
@@ -888,14 +888,14 @@ export interface QualityAlert {
                 </div>
               </div>
             } @else {
-              <!-- Botón Flotante Moderno cuando GuaneñaBot está minimizado -->
+              <!-- Botón Flotante Moderno cuando Manitos está minimizado -->
               <button
                 type="button"
                 (click)="manitaBotExpandido.set(true)"
                 class="ml-auto flex items-center gap-3 px-4 py-3 rounded-full bg-gradient-to-r from-[#0B2B29] to-[#008072] text-white shadow-2xl border-2 border-[#50E7FF]/60 hover:scale-105 transition-all cursor-pointer"
               >
                 <span class="w-2.5 h-2.5 rounded-full bg-[#50E7FF] animate-ping"></span>
-                <span class="font-extrabold text-xs">GuaneñaBot Coach</span>
+                <span class="font-extrabold text-xs">Manitos Coach</span>
                 <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/15 text-[#50E7FF] font-black">Abrir Chat</span>
               </button>
             }
@@ -931,14 +931,14 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly segundosGrifo = signal(5);
   private grifoInterval: any = null;
 
-  // Asistente Virtual en Vivo: GuaneñaBot Coach (Web Speech API + Indicador Escribiendo)
+  // Asistente Virtual en Vivo: Manitos Coach (Web Speech API + Indicador Escribiendo)
   readonly manitaBotExpandido = signal(true);
   readonly vozActiva = signal(true);
   readonly manitaBotHablando = signal(false);
   readonly botEscribiendo = signal(false);
   readonly manitaBotEstado = signal<'guia' | 'optimo' | 'alerta'>('guia');
   readonly manitaBotMensaje = signal(
-    '¡Hola! Soy GuaneñaBot Coach. Te guiaré con voz e indicadores en tiempo real para que cumplas los segundos y movimientos OMS en cada paso.'
+    '¡Hola! Soy Manitos Coach. Te guiaré con voz e indicadores en tiempo real para que cumplas los segundos y movimientos OMS en cada paso.'
   );
   readonly motionIntensityPercent = signal(0);
   private ultimoAvisoVozTimestamp = 0;

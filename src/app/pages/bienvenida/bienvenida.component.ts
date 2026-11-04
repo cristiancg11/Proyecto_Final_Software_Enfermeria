@@ -299,9 +299,20 @@ export class BienvenidaComponent {
     };
 
     this.authService.registro(datosRegistro).subscribe({
-      next: (res) => {
+      next: () => {
         this.cargando.set(false);
-        this.redirigirSegunRol(res);
+        this.authService.logout();
+        this.modo.set('login');
+        this.mensajeError.set(null);
+        this.mensajeExito.set('¡Registro exitoso! Por favor inicia sesión con tus credenciales');
+        this.loginForm.reset();
+        this.studentForm.reset({
+          fullName: '',
+          studentCode: '',
+          correo: '',
+          password: 'Estudiante2026*',
+          consent: true,
+        });
       },
       error: (err) => {
         this.cargando.set(false);

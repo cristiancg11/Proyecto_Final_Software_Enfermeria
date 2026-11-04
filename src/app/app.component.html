@@ -121,12 +121,12 @@
     <router-outlet></router-outlet>
   </main>
 
-  <!-- CHATBOT INTERACTIVO GLOBAL: GUANEÑABOT COACH (SOLO PARA USUARIOS AUTENTICADOS Y FUERA DE LOGIN/PRÁCTICA) -->
+  <!-- CHATBOT INTERACTIVO GLOBAL: MANITOS COACH (SOLO PARA USUARIOS AUTENTICADOS Y FUERA DE LOGIN/PRÁCTICA) -->
   @if (isLoggedIn() && !esRutaLogin() && !esRutaPractica()) {
     <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 max-w-sm w-[calc(100vw-2rem)] sm:w-[390px]">
       @if (chatAbierto()) {
         <div class="bg-white/98 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-[0_24px_60px_-12px_rgba(11,25,44,0.48)] border border-slate-200/90 flex flex-col animate-fade-in">
-          <!-- Cabecera Institucional con Degradado Clínico y Avatar de GuaneñaBot Coach -->
+          <!-- Cabecera Institucional con Degradado Clínico y Avatar de Manitos Coach -->
           <div class="bg-gradient-to-r from-[#0B192C] via-[#0F2942] to-[#0D9488] p-4 text-white flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
               <div class="relative w-11 h-11 rounded-xl bg-white/15 border border-white/25 flex items-center justify-center shrink-0 shadow-inner">
@@ -139,7 +139,7 @@
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="font-heading text-sm sm:text-base font-bold text-white leading-tight">
-                    GuaneñaBot Coach
+                    Manitos Coach
                   </h4>
                   <span class="px-2 py-0.5 rounded-md bg-teal-400/20 text-teal-200 border border-teal-300/30 text-[9px] font-bold uppercase tracking-wider">
                     IA Clínica
@@ -192,7 +192,7 @@
                     : 'bg-teal-600 text-white font-medium rounded-tr-xs'"
                 >
                   <div class="flex items-center justify-between gap-2 mb-0.5 text-[9px] uppercase font-bold opacity-75">
-                    <span>{{ msg.autor === 'bot' ? 'GuaneñaBot' : 'Estudiante' }}</span>
+                    <span>{{ msg.autor === 'bot' ? 'Manitos' : 'Estudiante' }}</span>
                     <span>{{ msg.hora }}</span>
                   </div>
                   <p class="font-medium">{{ msg.texto }}</p>
@@ -246,7 +246,7 @@
         >
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
           <span class="text-sm">🩺</span>
-          <span class="font-bold text-xs tracking-tight">GuaneñaBot Coach</span>
+          <span class="font-bold text-xs tracking-tight">Manitos Coach</span>
         </button>
       }
     </div>

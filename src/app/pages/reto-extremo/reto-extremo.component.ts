@@ -207,7 +207,7 @@ export interface PreguntaRetoExtremo {
 
               <!-- Resumen rápido de la tabla -->
               <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-4 border border-slate-700/60 text-xs text-slate-300">
-                <div class="font-bold text-teal-300 mb-1">💡 Consejo de GuaneñaBot Coach:</div>
+                <div class="font-bold text-teal-300 mb-1">💡 Consejo de Manitos Coach:</div>
                 <p class="leading-relaxed">
                   Lee con atención los distractores clínicos sobre esporas bacterianas, concentraciones de alcohol y tiempos exactos OMS antes de marcar.
                 </p>
