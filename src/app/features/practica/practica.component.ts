@@ -641,7 +641,7 @@ export interface QualityAlert {
                 <div class="flex items-center justify-between text-xs">
                   <div class="flex items-center gap-2">
                     <span class="font-extrabold text-[#0B2B29]">Progreso de Fricción:</span>
-                    <span class="text-slate-500 font-semibold">{{ formattedTime() }}s / 3.0s objetivo</span>
+                    <span class="text-slate-500 font-semibold">{{ formattedTime() }}s / 4.0s objetivo</span>
                   </div>
                   <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-bold text-xs"
                     [ngClass]="palmsValidated() ? 'bg-emerald-100 text-emerald-800' : isTechniqueActive() ? 'bg-teal-100 text-teal-800' : 'bg-slate-200 text-slate-700'">
@@ -649,13 +649,34 @@ export interface QualityAlert {
                   </div>
                 </div>
 
-                <!-- Barra lineal de progreso -->
+                <!-- Barra lineal de progreso de fricción acumulada -->
                 <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden p-0.5">
                   <div
                     class="h-full rounded-full transition-all duration-300"
                     [ngClass]="palmsValidated() ? 'bg-gradient-to-r from-emerald-400 to-[#00B39F]' : isTechniqueActive() ? 'bg-gradient-to-r from-[#00B39F] to-emerald-400' : 'bg-[#FF6A4D]/80'"
                     [style.width.%]="techniqueProgressPercent()"
                   ></div>
+                </div>
+
+                <!-- Barra de Estabilidad Gestual y Frames Consecutivos (REQUISITO OMS) -->
+                <div class="pt-2 border-t border-slate-200/70 space-y-1">
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="font-extrabold text-[#0B2B29] flex items-center gap-1">
+                      <span>🎯 Estabilidad Gestual MediaPipe:</span>
+                      <span class="text-[10px] text-slate-500 font-normal">({{ consecutiveFrames() }}/12 frames estables)</span>
+                    </span>
+                    <span class="font-mono text-xs font-black"
+                      [ngClass]="stabilityPercent() >= 80 ? 'text-emerald-700' : stabilityPercent() >= 45 ? 'text-amber-600' : 'text-[#FF6A4D]'">
+                      {{ stabilityPercent() }}%
+                    </span>
+                  </div>
+                  <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden p-0.5">
+                    <div
+                      class="h-full rounded-full transition-all duration-200"
+                      [ngClass]="stabilityPercent() >= 80 ? 'bg-gradient-to-r from-[#00B39F] to-emerald-500' : stabilityPercent() >= 45 ? 'bg-gradient-to-r from-amber-400 to-[#00B39F]' : 'bg-[#FF6A4D]'"
+                      [style.width.%]="stabilityPercent()"
+                    ></div>
+                  </div>
                 </div>
 
                 <!-- Feedback textual en vivo + Medidor de Energía Biomecánica -->
@@ -668,8 +689,8 @@ export interface QualityAlert {
                     <span
                       class="text-[10px] font-extrabold px-2 py-0.5 rounded-full"
                       [ngClass]="{
-                        'bg-emerald-100 text-emerald-800': isTechniqueActive() && currentSeconds() >= 3.0,
-                        'bg-teal-100 text-teal-800': isTechniqueActive() && currentSeconds() < 3.0,
+                        'bg-emerald-100 text-emerald-800': isTechniqueActive() && currentSeconds() >= 4.0,
+                        'bg-teal-100 text-teal-800': isTechniqueActive() && currentSeconds() < 4.0,
                         'bg-[#FFE9DE] text-[#FF6A4D]': !isTechniqueActive()
                       }"
                     >
@@ -691,7 +712,7 @@ export interface QualityAlert {
                 >
                   <span>
                     @if (cameraActive() && !palmsValidated()) {
-                      Verificar Umbral con Manitos ({{ formattedTime() }}s / 3.0s)
+                      Verificar Umbral con Manitos ({{ formattedTime() }}s / 4.0s)
                     } @else if (isLastStep()) {
                       Ir a Evaluación Práctica
                     } @else {
@@ -963,6 +984,8 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly palmsEvidence = signal(0);
   readonly palmsValidated = signal(false);
   readonly palmsFeedback = signal('Coloca ambas manos en el encuadre para comenzar.');
+  readonly consecutiveFrames = signal(0);
+  readonly stabilityPercent = computed(() => Math.min(100, Math.round((this.consecutiveFrames() / 12) * 100)));
   readonly videoDemoError = signal(false);
   readonly usingFallbackVideo = signal(false);
 
@@ -1114,9 +1137,9 @@ export class PracticaComponent implements OnInit, OnDestroy {
     return null;
   });
 
-  // Porcentaje de progreso de técnica para el paso actual (0% a 100%)
+  // Porcentaje de progreso de técnica para el paso actual (0% a 100%, objetivo OMS 4.0s)
   readonly techniqueProgressPercent = computed(() => {
-    return Math.min(100, Math.round((this.currentSeconds() / 3.0) * 100));
+    return Math.min(100, Math.round((this.currentSeconds() / 4.0) * 100));
   });
 
   // SVG circular timer config
@@ -1525,15 +1548,17 @@ export class PracticaComponent implements OnInit, OnDestroy {
     const elapsed = this.previousFrameAt ? Math.min(0.12, (now - this.previousFrameAt) / 1000) : 0;
     this.previousFrameAt = now;
     const instruction = this.currentStep().title;
+    const stepIdx = this.currentStepIndex();
 
-    // a) Validar presencia de ambas manos
+    // a) Validar presencia obligatoria de ambas manos en encuadre
     this.handsDetected.set(landmarks.length);
 
     if (landmarks.length < 2) {
       this.handsTogether.set(false);
       this.handsRubbing.set(false);
+      this.consecutiveFrames.update((f) => Math.max(0, f - 3));
       this.motionIntensityPercent.set(0);
-      this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre.`);
+      this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre para calibrar la postura.`);
       this.previousKeyPoints = null;
       this.framesSinCumplirUmbral++;
       if (this.framesSinCumplirUmbral > 45) {
@@ -1546,7 +1571,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // b) Proximidad de manos: distancia euclidiana entre muñecas (0) y centro de palmas
+    // b) Validación anatómica de precisión estricta por paso OMS
     const wrist0 = landmarks[0][0];
     const wrist1 = landmarks[1][0];
     const wristDistance = Math.hypot(wrist0.x - wrist1.x, wrist0.y - wrist1.y);
@@ -1563,26 +1588,58 @@ export class PracticaComponent implements OnInit, OnDestroy {
     const palmDistance = Math.hypot(palm0.x - palm1.x, palm0.y - palm1.y);
 
     const threshold = this.currentProximityThreshold();
-    const areHandsTogether = wristDistance < threshold || palmDistance < threshold;
+    let areHandsTogether = false;
+
+    // Validación anatómica específica según el paso OMS activo
+    if (stepIdx === 0) {
+      // Paso 1: Palma con Palma (Palmas enfrentadas en contacto estrecho)
+      areHandsTogether = palmDistance <= threshold && wristDistance <= threshold * 1.35;
+    } else if (stepIdx === 1) {
+      // Paso 2: Palma sobre Dorso (Superposición palma-dorso)
+      const dorsalDist0 = Math.hypot(palm0.x - landmarks[1][9].x, palm0.y - landmarks[1][9].y);
+      const dorsalDist1 = Math.hypot(palm1.x - landmarks[0][9].x, palm1.y - landmarks[0][9].y);
+      areHandsTogether = dorsalDist0 <= threshold || dorsalDist1 <= threshold || palmDistance <= threshold;
+    } else if (stepIdx === 2) {
+      // Paso 3: Espacios Interdigitales (Dedos entrelazados con palmas próximas)
+      const fingerTipDist = Math.hypot(landmarks[0][12].x - landmarks[1][12].x, landmarks[0][12].y - landmarks[1][12].y);
+      areHandsTogether = (palmDistance <= threshold && fingerTipDist <= threshold * 1.25) || wristDistance <= threshold * 1.2;
+    } else if (stepIdx === 3) {
+      // Paso 4: Dorso de Dedos en candado (Articulaciones trabadas en contra-posición)
+      const knuckleDist = Math.hypot(landmarks[0][8].x - landmarks[1][0].x, landmarks[0][8].y - landmarks[1][0].y);
+      const knuckleDistRev = Math.hypot(landmarks[1][8].x - landmarks[0][0].x, landmarks[1][8].y - landmarks[0][0].y);
+      areHandsTogether = knuckleDist <= threshold * 1.2 || knuckleDistRev <= threshold * 1.2 || palmDistance <= threshold;
+    } else if (stepIdx === 4) {
+      // Paso 5: Pulgares rotacionales (Punta del pulgar envuelta en palma contraria)
+      const thumb0InPalm1 = Math.hypot(landmarks[0][4].x - palm1.x, landmarks[0][4].y - palm1.y);
+      const thumb1InPalm0 = Math.hypot(landmarks[1][4].x - palm0.x, landmarks[1][4].y - palm0.y);
+      areHandsTogether = thumb0InPalm1 <= threshold || thumb1InPalm0 <= threshold || palmDistance <= threshold;
+    } else {
+      // Paso 6: Yemas y uñas sobre palma cóncava
+      const tips0InPalm1 = Math.hypot(landmarks[0][8].x - palm1.x, landmarks[0][8].y - palm1.y);
+      const tips1InPalm0 = Math.hypot(landmarks[1][8].x - palm0.x, landmarks[1][8].y - palm0.y);
+      areHandsTogether = tips0InPalm1 <= threshold || tips1InPalm0 <= threshold;
+    }
+
     this.handsTogether.set(areHandsTogether);
 
     if (!areHandsTogether) {
       this.handsRubbing.set(false);
+      this.consecutiveFrames.update((f) => Math.max(0, f - 2));
       this.motionIntensityPercent.set(0);
-      this.palmsFeedback.set(`Junta las manos para realizar la técnica de ${instruction.toLowerCase()}.`);
+      this.palmsFeedback.set(`Ajusta la postura anatómica: junta y alinea las manos para ${instruction.toLowerCase()}.`);
       this.previousKeyPoints = null;
       this.framesSinCumplirUmbral++;
       if (this.framesSinCumplirUmbral > 45) {
         this.emitirAlertaCorrectivaVoz(
-          `⚠️ Manos separadas en ${instruction}. Júntalas para activar la fricción.`,
-          `Aviso correctivo: junta tus manos para ejecutar ${instruction.toLowerCase()}.`
+          `⚠️ Postura desalineada en ${instruction}. Junta y posiciona correctamente las manos.`,
+          `Aviso correctivo: alinea y junta tus manos para la técnica de ${instruction.toLowerCase()}.`
         );
         this.framesSinCumplirUmbral = 0;
       }
       return;
     }
 
-    // c) Detección de frotado/movimiento
+    // c) Detección de frotado firme y filtrado de movimientos caóticos o falsos positivos
     const keyIndices = [4, 8, 12, 16, 20];
     const currentKeyPoints: { x: number; y: number }[][] = landmarks
       .slice(0, 2)
@@ -1606,61 +1663,78 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.previousKeyPoints = currentKeyPoints;
 
     const avgMovement = sampleCount > 0 ? deltaMovement / sampleCount : 0;
-    this.smoothedMotion = this.smoothedMotion * 0.65 + avgMovement * 0.35;
-    const intensity = Math.min(100, Math.round((this.smoothedMotion / 0.015) * 100));
+    this.smoothedMotion = this.smoothedMotion * 0.60 + avgMovement * 0.40;
+    const intensity = Math.min(100, Math.round((this.smoothedMotion / 0.020) * 100));
     this.motionIntensityPercent.set(intensity);
 
-    const isRubbing = this.smoothedMotion > 0.0035;
+    // RESTRICCIÓN DE PRECISIÓN: Umbral mínimo estricto (0.0075) y descarte de sacudidas caóticas (> 0.09)
+    const isTooFastOrChaotic = avgMovement > 0.095;
+    const isRubbing = this.smoothedMotion >= 0.0075 && !isTooFastOrChaotic;
     this.handsRubbing.set(isRubbing);
 
+    if (isTooFastOrChaotic) {
+      this.consecutiveFrames.update((f) => Math.max(0, f - 2));
+      this.palmsFeedback.set(`⚠️ Movimiento demasiado brusco: mantén una fricción constante y controlada.`);
+      return;
+    }
+
     if (!isRubbing) {
-      this.palmsFeedback.set(`⚠️ Frota activamente las manos.`);
+      this.consecutiveFrames.update((f) => Math.max(0, f - 2));
+      this.palmsFeedback.set(`⚠️ Fricción insuficiente: frota con firmeza mecánica continua.`);
       this.framesSinCumplirUmbral++;
-      if (this.framesSinCumplirUmbral > 38 && this.effectiveSeconds < 3.0) {
+      if (this.framesSinCumplirUmbral > 40 && this.effectiveSeconds < 4.0) {
         const idx = this.currentStepIndex();
         const avisoPaso =
           this.alertasVozCorrectivasPorPaso[idx] ||
-          `No detengas el movimiento en ${instruction}. Aún no alcanzas los 3 segundos requeridos.`;
+          `Mantén la fricción constante en ${instruction}. Aún no alcanzas los 4 segundos requeridos.`;
         this.emitirAlertaCorrectivaVoz(avisoPaso, avisoPaso);
         this.framesSinCumplirUmbral = 0;
       }
       return;
     }
 
-    // CONDICIÓN CUMPLIDA: Manos juntas y frotado continuo detectado
+    // d) ACUMULACIÓN DE FOTOGRAMAS CONSECUTIVOS DE ESTABILIDAD
+    this.consecutiveFrames.update((f) => Math.min(25, f + 1));
     this.framesSinCumplirUmbral = 0;
-    this.effectiveSeconds += elapsed;
-    const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
-    if (this.currentSeconds() !== roundedSeconds) {
-      this.currentSeconds.set(roundedSeconds);
-    }
 
-    const evidence = Math.min(3.0, this.palmsEvidence() + elapsed);
-    this.palmsEvidence.set(evidence);
+    // Solo acumula tiempo clínico si el estudiante mantiene al menos 8 frames consecutivos de técnica estable
+    if (this.consecutiveFrames() >= 8) {
+      this.effectiveSeconds += elapsed;
+      const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
+      if (this.currentSeconds() !== roundedSeconds) {
+        this.currentSeconds.set(roundedSeconds);
+      }
 
-    if (evidence >= 1.5 && !this.palmsValidated()) {
-      this.palmsValidated.set(true);
-    }
+      const evidence = Math.min(4.0, this.palmsEvidence() + elapsed);
+      this.palmsEvidence.set(evidence);
 
-    if (this.effectiveSeconds < 3.0) {
-      this.manitaBotEstado.set('guia');
-      this.manitaBotMensaje.set(
-        `Fricción activa detectada en ${instruction} (${roundedSeconds}s / 3.0s). ¡Sigue frotando con ritmo constante!`
-      );
-      this.palmsFeedback.set(
-        `¡Fricción continua en ${instruction}! Mantén el frotado activo hasta 3.0s mínimos.`
-      );
+      // Exige 2.8s de evidencia acumulada con estabilidad alta para considerar validado
+      if (evidence >= 2.8 && this.consecutiveFrames() >= 10 && !this.palmsValidated()) {
+        this.palmsValidated.set(true);
+      }
+
+      if (this.effectiveSeconds < 4.0) {
+        this.manitaBotEstado.set('guia');
+        this.manitaBotMensaje.set(
+          `Fricción óptima en ${instruction} (${roundedSeconds}s / 4.0s). Mantén la cadencia continua.`
+        );
+        this.palmsFeedback.set(
+          `✓ Fricción y postura correcta en ${instruction} (${roundedSeconds}s / 4.0s). Mantén la técnica estable.`
+        );
+      } else {
+        this.manitaBotEstado.set('optimo');
+        this.manitaBotMensaje.set(
+          `¡Excelente técnica OMS en ${instruction}! Tiempo y estabilidad de frotado acreditados (${roundedSeconds}s).`
+        );
+        this.palmsFeedback.set(`✓ ¡Técnica OMS acreditada y tiempo óptimo alcanzado (${roundedSeconds}s)!`);
+      }
+
+      // Avance automático solo tras alcanzar 4.0s sostenidos con alta estabilidad
+      if (this.palmsValidated() && this.effectiveSeconds >= 4.0 && this.autoAdvanceTimer === null) {
+        this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
+      }
     } else {
-      this.manitaBotEstado.set('optimo');
-      this.manitaBotMensaje.set(
-        `¡Excelente técnica en ${instruction}! Umbral de tiempo y movimiento cumplido (${roundedSeconds}s).`
-      );
-      this.palmsFeedback.set(`✓ ¡Excelente técnica y tiempo óptimo alcanzado (${roundedSeconds}s)!`);
-    }
-
-    // Avance automático al alcanzar técnica validada y tiempo óptimo (>= 3s)
-    if (this.palmsValidated() && this.effectiveSeconds >= 3.0 && this.autoAdvanceTimer === null) {
-      this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
+      this.palmsFeedback.set(`Estabilizando postura biomecánica... (${this.consecutiveFrames()}/12 frames)`);
     }
   }
 
@@ -1698,13 +1772,15 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   private currentProximityThreshold(): number {
-    return [0.42, 0.46, 0.42, 0.44, 0.4, 0.42][this.currentStepIndex()] ?? 0.42;
+    // Umbrales estrictos de proximidad anatómica OMS por paso (distancia normalizada máxima entre puntos clave)
+    return [0.22, 0.24, 0.20, 0.22, 0.18, 0.16][this.currentStepIndex()] ?? 0.22;
   }
 
   private resetBiomechanicalState(): void {
     this.palmsEvidence.set(0);
     this.palmsValidated.set(false);
     this.palmsFeedback.set('Coloca ambas manos en el encuadre para comenzar.');
+    this.consecutiveFrames.set(0);
     this.previousKeyPoints = null;
     this.previousFrameAt = null;
     this.smoothedMotion = 0;

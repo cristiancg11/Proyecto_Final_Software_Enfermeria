@@ -307,8 +307,8 @@ export interface QualityAlert {
                   <div class="font-heading text-2xl sm:text-4xl font-black tracking-tight"
                     [ngClass]="{
                       'text-slate-400': !cameraActive(),
-                      'text-[#FF6A4D]': cameraActive() && currentSeconds() < 3.0,
-                      'text-[#50E7FF]': cameraActive() && currentSeconds() >= 3.0 && currentSeconds() <= 8.0,
+                      'text-[#FF6A4D]': cameraActive() && currentSeconds() < 4.0,
+                      'text-[#50E7FF]': cameraActive() && currentSeconds() >= 4.0 && currentSeconds() <= 8.0,
                       'text-amber-400': cameraActive() && currentSeconds() > 8.0
                     }"
                   >
@@ -319,7 +319,7 @@ export interface QualityAlert {
                       {{ cameraActive() ? 'Tiempo de Fricción Registrado' : 'Cronómetro Listo (En Espera)' }}
                     </span>
                     <span class="text-slate-400 text-[11px]">
-                      Objetivo mínimo OMS: <strong class="text-[#50E7FF]">3.0s</strong> (Rango óptimo 3 a 8s)
+                      Objetivo mínimo OMS: <strong class="text-[#50E7FF]">4.0s</strong> (Rango óptimo 4 a 8s)
                     </span>
                   </div>
                 </div>
@@ -330,17 +330,17 @@ export interface QualityAlert {
                     class="text-[11px] font-extrabold px-3 py-1 rounded-full border shadow-xs"
                     [ngClass]="{
                       'bg-slate-800 text-slate-400 border-slate-700': !cameraActive(),
-                      'bg-[#FF6A4D]/20 text-[#FF6A4D] border-[#FF6A4D]/40': cameraActive() && currentSeconds() < 3.0,
-                      'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 animate-pulse': cameraActive() && currentSeconds() >= 3.0 && currentSeconds() <= 8.0,
+                      'bg-[#FF6A4D]/20 text-[#FF6A4D] border-[#FF6A4D]/40': cameraActive() && currentSeconds() < 4.0,
+                      'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 animate-pulse': cameraActive() && currentSeconds() >= 4.0 && currentSeconds() <= 8.0,
                       'bg-amber-500/20 text-amber-300 border-amber-500/40': cameraActive() && currentSeconds() > 8.0
                     }"
                   >
                     @if (!cameraActive()) {
                       <span>Cámara Inactiva</span>
-                    } @else if (currentSeconds() < 3.0) {
-                      <span>Fricción Insuficiente (&lt;3.0s)</span>
+                    } @else if (currentSeconds() < 4.0) {
+                      <span>Fricción Insuficiente (&lt;4.0s)</span>
                     } @else if (currentSeconds() <= 8.0) {
-                      <span>✓ Rango Óptimo OMS (3 a 8s)</span>
+                      <span>✓ Rango Óptimo OMS (4 a 8s)</span>
                     } @else {
                       <span>Tiempo Extenso (&gt;8.0s)</span>
                     }
@@ -364,6 +364,27 @@ export interface QualityAlert {
                     : 'bg-[#FF6A4D]/80'"
                   [style.width.%]="techniqueProgressPercent()"
                 ></div>
+              </div>
+
+              <!-- Barra de Estabilidad Gestual y Detección de Frames Consecutivos MediaPipe -->
+              <div class="pt-2 border-t border-white/10 space-y-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-slate-300 flex items-center gap-1.5">
+                    <span>🎯 Estabilidad Gestual MediaPipe:</span>
+                    <span class="text-[10px] text-slate-400">({{ consecutiveFrames() }}/12 frames continuos)</span>
+                  </span>
+                  <span class="font-mono text-xs font-bold"
+                    [ngClass]="stabilityPercent() >= 80 ? 'text-emerald-400' : stabilityPercent() >= 45 ? 'text-amber-300' : 'text-[#FF6A4D]'">
+                    {{ stabilityPercent() }}%
+                  </span>
+                </div>
+                <div class="w-full h-1.5 bg-black/60 rounded-full overflow-hidden">
+                  <div
+                    class="h-full rounded-full transition-all duration-200"
+                    [ngClass]="stabilityPercent() >= 80 ? 'bg-gradient-to-r from-[#00B39F] to-emerald-400' : stabilityPercent() >= 45 ? 'bg-gradient-to-r from-amber-400 to-[#50E7FF]' : 'bg-[#FF6A4D]'"
+                    [style.width.%]="stabilityPercent()"
+                  ></div>
+                </div>
               </div>
 
               <!-- Mensaje de Feedback Textual Discreto -->
@@ -401,7 +422,7 @@ export interface QualityAlert {
               >
                 <span>
                   @if (cameraActive() && !palmsValidated()) {
-                    Frotando técnica autónoma... (Mínimo 3.0s requeridos)
+                    Frotando técnica autónoma... (Mínimo 4.0s y estabilidad requeridos)
                   } @else if (isLastStep()) {
                     Finalizar Evaluación Práctica y Guardar Calificación
                   } @else {
@@ -579,6 +600,8 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   readonly palmsEvidence = signal(0);
   readonly palmsValidated = signal(false);
   readonly palmsFeedback = signal('Coloca ambas manos en el encuadre para comenzar.');
+  readonly consecutiveFrames = signal(0);
+  readonly stabilityPercent = computed(() => Math.min(100, Math.round((this.consecutiveFrames() / 12) * 100)));
 
   readonly evaluacionFinalizada = signal(false);
   readonly completedRecords = this.stateService.stepRecords;
@@ -618,7 +641,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   });
 
   readonly techniqueProgressPercent = computed(() => {
-    return Math.min(100, Math.round((this.currentSeconds() / 3.0) * 100));
+    return Math.min(100, Math.round((this.currentSeconds() / 4.0) * 100));
   });
 
   readonly formattedTime = computed(() => {
@@ -821,6 +844,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     const elapsed = this.previousFrameAt ? Math.min(0.12, (now - this.previousFrameAt) / 1000) : 0;
     this.previousFrameAt = now;
     const instruction = this.currentStep().title;
+    const stepIdx = this.currentStepIndex();
 
     // a) Validar presencia de ambas manos
     this.handsDetected.set(landmarks.length);
@@ -828,12 +852,13 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     if (landmarks.length < 2) {
       this.handsTogether.set(false);
       this.handsRubbing.set(false);
-      this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre.`);
+      this.consecutiveFrames.update((f) => Math.max(0, f - 3));
+      this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre para calibrar la postura.`);
       this.previousKeyPoints = null;
       return;
     }
 
-    // b) Proximidad de manos
+    // b) Proximidad y postura anatómica estricta según paso OMS
     const wrist0 = landmarks[0][0];
     const wrist1 = landmarks[1][0];
     const wristDistance = Math.hypot(wrist0.x - wrist1.x, wrist0.y - wrist1.y);
@@ -850,17 +875,42 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     const palmDistance = Math.hypot(palm0.x - palm1.x, palm0.y - palm1.y);
 
     const threshold = this.currentProximityThreshold();
-    const areHandsTogether = wristDistance < threshold || palmDistance < threshold;
+    let areHandsTogether = false;
+
+    if (stepIdx === 0) {
+      areHandsTogether = palmDistance <= threshold && wristDistance <= threshold * 1.35;
+    } else if (stepIdx === 1) {
+      const dorsalDist0 = Math.hypot(palm0.x - landmarks[1][9].x, palm0.y - landmarks[1][9].y);
+      const dorsalDist1 = Math.hypot(palm1.x - landmarks[0][9].x, palm1.y - landmarks[0][9].y);
+      areHandsTogether = dorsalDist0 <= threshold || dorsalDist1 <= threshold || palmDistance <= threshold;
+    } else if (stepIdx === 2) {
+      const fingerTipDist = Math.hypot(landmarks[0][12].x - landmarks[1][12].x, landmarks[0][12].y - landmarks[1][12].y);
+      areHandsTogether = (palmDistance <= threshold && fingerTipDist <= threshold * 1.25) || wristDistance <= threshold * 1.2;
+    } else if (stepIdx === 3) {
+      const knuckleDist = Math.hypot(landmarks[0][8].x - landmarks[1][0].x, landmarks[0][8].y - landmarks[1][0].y);
+      const knuckleDistRev = Math.hypot(landmarks[1][8].x - landmarks[0][0].x, landmarks[1][8].y - landmarks[0][0].y);
+      areHandsTogether = knuckleDist <= threshold * 1.2 || knuckleDistRev <= threshold * 1.2 || palmDistance <= threshold;
+    } else if (stepIdx === 4) {
+      const thumb0InPalm1 = Math.hypot(landmarks[0][4].x - palm1.x, landmarks[0][4].y - palm1.y);
+      const thumb1InPalm0 = Math.hypot(landmarks[1][4].x - palm0.x, landmarks[1][4].y - palm0.y);
+      areHandsTogether = thumb0InPalm1 <= threshold || thumb1InPalm0 <= threshold || palmDistance <= threshold;
+    } else {
+      const tips0InPalm1 = Math.hypot(landmarks[0][8].x - palm1.x, landmarks[0][8].y - palm1.y);
+      const tips1InPalm0 = Math.hypot(landmarks[1][8].x - palm0.x, landmarks[1][8].y - palm0.y);
+      areHandsTogether = tips0InPalm1 <= threshold || tips1InPalm0 <= threshold;
+    }
+
     this.handsTogether.set(areHandsTogether);
 
     if (!areHandsTogether) {
       this.handsRubbing.set(false);
-      this.palmsFeedback.set(`Junta las manos para realizar la técnica de ${instruction.toLowerCase()}.`);
+      this.consecutiveFrames.update((f) => Math.max(0, f - 2));
+      this.palmsFeedback.set(`Ajusta la postura anatómica: junta y alinea las manos para ${instruction.toLowerCase()}.`);
       this.previousKeyPoints = null;
       return;
     }
 
-    // c) Detección de frotado/movimiento
+    // c) Detección de frotado firme (filtra movimientos leves o caóticos)
     const keyIndices = [4, 8, 12, 16, 20];
     const currentKeyPoints: { x: number; y: number }[][] = landmarks
       .slice(0, 2)
@@ -884,41 +934,57 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.previousKeyPoints = currentKeyPoints;
 
     const avgMovement = sampleCount > 0 ? deltaMovement / sampleCount : 0;
-    this.smoothedMotion = this.smoothedMotion * 0.65 + avgMovement * 0.35;
+    this.smoothedMotion = this.smoothedMotion * 0.60 + avgMovement * 0.40;
 
-    const isRubbing = this.smoothedMotion > 0.0035;
+    // RESTRICCIÓN DE PRECISIÓN: Umbral mínimo 0.0075 y descarte de sacudidas caóticas
+    const isTooFastOrChaotic = avgMovement > 0.095;
+    const isRubbing = this.smoothedMotion >= 0.0075 && !isTooFastOrChaotic;
     this.handsRubbing.set(isRubbing);
 
-    if (!isRubbing) {
-      this.palmsFeedback.set(`⚠️ Frota activamente las manos.`);
+    if (isTooFastOrChaotic) {
+      this.consecutiveFrames.update((f) => Math.max(0, f - 2));
+      this.palmsFeedback.set(`⚠️ Movimiento muy brusco: mantén una cadencia rítmica controlada.`);
       return;
     }
 
-    // CONDICIÓN CUMPLIDA: Fricción continua
-    this.effectiveSeconds += elapsed;
-    const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
-    if (this.currentSeconds() !== roundedSeconds) {
-      this.currentSeconds.set(roundedSeconds);
+    if (!isRubbing) {
+      this.consecutiveFrames.update((f) => Math.max(0, f - 2));
+      this.palmsFeedback.set(`⚠️ Fricción insuficiente: frota con firmeza mecánica continua.`);
+      return;
     }
 
-    const evidence = Math.min(3.0, this.palmsEvidence() + elapsed);
-    this.palmsEvidence.set(evidence);
+    // d) ACUMULACIÓN DE FOTOGRAMAS CONSECUTIVOS DE ESTABILIDAD
+    this.consecutiveFrames.update((f) => Math.min(25, f + 1));
 
-    if (evidence >= 1.5 && !this.palmsValidated()) {
-      this.palmsValidated.set(true);
-    }
+    // Solo acumula tiempo si el estudiante sostiene al menos 8 frames consecutivos de técnica estable
+    if (this.consecutiveFrames() >= 8) {
+      this.effectiveSeconds += elapsed;
+      const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
+      if (this.currentSeconds() !== roundedSeconds) {
+        this.currentSeconds.set(roundedSeconds);
+      }
 
-    if (this.effectiveSeconds < 3.0) {
-      this.palmsFeedback.set(
-        `¡Fricción continua en ${instruction}! Mantén el frotado activo hasta 3.0s mínimos.`
-      );
+      const evidence = Math.min(4.0, this.palmsEvidence() + elapsed);
+      this.palmsEvidence.set(evidence);
+
+      if (evidence >= 2.8 && this.consecutiveFrames() >= 10 && !this.palmsValidated()) {
+        this.palmsValidated.set(true);
+      }
+
+      if (this.effectiveSeconds < 4.0) {
+        this.palmsFeedback.set(
+          `✓ Fricción activa en ${instruction} (${roundedSeconds}s / 4.0s). Mantén el frotado estable.`
+        );
+      } else {
+        this.palmsFeedback.set(`✓ ¡Excelente técnica autónoma y tiempo óptimo alcanzado (${roundedSeconds}s)!`);
+      }
+
+      // Avance automático solo tras alcanzar 4.0s de fricción continua y validada
+      if (this.palmsValidated() && this.effectiveSeconds >= 4.0 && this.autoAdvanceTimer === null) {
+        this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
+      }
     } else {
-      this.palmsFeedback.set(`✓ ¡Excelente técnica autónoma y tiempo óptimo alcanzado (${roundedSeconds}s)!`);
-    }
-
-    // Avance automático tras alcanzar técnica validada y tiempo óptimo (>= 3s)
-    if (this.palmsValidated() && this.effectiveSeconds >= 3.0 && this.autoAdvanceTimer === null) {
-      this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
+      this.palmsFeedback.set(`Estabilizando postura biomecánica... (${this.consecutiveFrames()}/12 frames)`);
     }
   }
 
@@ -956,13 +1022,14 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   }
 
   private currentProximityThreshold(): number {
-    return [0.42, 0.46, 0.42, 0.44, 0.4, 0.42][this.currentStepIndex()] ?? 0.42;
+    return [0.22, 0.24, 0.20, 0.22, 0.18, 0.16][this.currentStepIndex()] ?? 0.22;
   }
 
   private resetBiomechanicalState(): void {
     this.palmsEvidence.set(0);
     this.palmsValidated.set(false);
     this.palmsFeedback.set('Coloca ambas manos en el encuadre para comenzar.');
+    this.consecutiveFrames.set(0);
     this.previousKeyPoints = null;
     this.previousFrameAt = null;
     this.smoothedMotion = 0;
