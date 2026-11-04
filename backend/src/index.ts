@@ -1,8 +1,11 @@
+import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import { prisma, ejecutarConReconexion } from './lib/prisma';
 import { authRouter } from './routes/auth.routes';
 import { preguntaRouter } from './routes/pregunta.routes';
 import { practicasRouter } from './routes/practicas.routes';
@@ -11,7 +14,7 @@ import { iaRouter } from './routes/ia.routes';
 import { verificarCertificado } from './controllers/practica.controller';
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // Configuración dinámica de CORS para Angular Local y despliegues en Vercel
 const allowedOrigins = [
@@ -46,15 +49,26 @@ app.use(
 
 app.use(express.json());
 
-// Endpoint de Diagnóstico y Salud del Servicio
-app.get('/api/health', (_req: Request, res: Response) => {
-  res.json({
-    status: 'ok',
-    servicio: 'Manos Seguras API',
-    version: '1.0.0',
-    timestamp: new Date().toISOString(),
-    entorno: process.env.NODE_ENV || 'development',
-  });
+// Endpoint de Diagnóstico y Salud del Servicio (incluye verificación de conexión con Supabase)
+app.get('/api/health', async (_req: Request, res: Response) => {
+  try {
+    await ejecutarConReconexion(() => prisma.$queryRaw`SELECT 1`, 2);
+    res.json({
+      status: 'ok',
+      database: 'connected',
+      servicio: 'Manos Seguras API',
+      version: '1.0.0',
+      timestamp: new Date().toISOString(),
+      entorno: process.env.NODE_ENV || 'development',
+    });
+  } catch (err: any) {
+    res.status(503).json({
+      status: 'degraded',
+      database: 'disconnected',
+      error: err?.message || 'Error de conexión con Supabase',
+      timestamp: new Date().toISOString(),
+    });
+  }
 });
 
 // Rutas de la API

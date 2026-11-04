@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-import { prisma } from '../lib/prisma';
+import { prisma, ejecutarConReconexion, esErrorConexionTransitorio } from '../lib/prisma';
 import { Rol } from '@prisma/client';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'manos_seguras_default_secret_key';
@@ -43,12 +43,14 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
         ? `DOC-${Math.floor(1000 + Math.random() * 9000)}`
         : `EST-${Math.floor(1000 + Math.random() * 9000)}`);
 
-    // Validar si ya existe un usuario con ese correo o código estudiantil
-    const usuarioExistente = await prisma.usuario.findFirst({
-      where: {
-        OR: [{ correo: correoNormalizado }, { codigoEstudiantil: codigoNormalizado }],
-      },
-    });
+    // Validar si ya existe un usuario con ese correo o código estudiantil (con reconexión automática a Supabase)
+    const usuarioExistente = await ejecutarConReconexion(() =>
+      prisma.usuario.findFirst({
+        where: {
+          OR: [{ correo: correoNormalizado }, { codigoEstudiantil: codigoNormalizado }],
+        },
+      })
+    );
 
     if (usuarioExistente) {
       if (usuarioExistente.correo === correoNormalizado) {
@@ -63,26 +65,28 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
     const salt = await bcrypt.genSalt(10);
     const passwordHashed = await bcrypt.hash(data.password, salt);
 
-    // Guardar el nuevo usuario en PostgreSQL
-    const nuevoUsuario = await prisma.usuario.create({
-      data: {
-        nombre: data.nombre.trim(),
-        codigoEstudiantil: codigoNormalizado,
-        correo: correoNormalizado,
-        password: passwordHashed,
-        rol: data.rol,
-        consentimiento: data.consentimiento,
-      },
-      select: {
-        id: true,
-        nombre: true,
-        codigoEstudiantil: true,
-        correo: true,
-        rol: true,
-        consentimiento: true,
-        fechaRegistro: true,
-      },
-    });
+    // Guardar el nuevo usuario en PostgreSQL / Supabase con reconexión automática
+    const nuevoUsuario = await ejecutarConReconexion(() =>
+      prisma.usuario.create({
+        data: {
+          nombre: data.nombre.trim(),
+          codigoEstudiantil: codigoNormalizado,
+          correo: correoNormalizado,
+          password: passwordHashed,
+          rol: data.rol,
+          consentimiento: data.consentimiento,
+        },
+        select: {
+          id: true,
+          nombre: true,
+          codigoEstudiantil: true,
+          correo: true,
+          rol: true,
+          consentimiento: true,
+          fechaRegistro: true,
+        },
+      })
+    );
 
     // Generar el token JWT
     const token = jwt.sign(
@@ -119,6 +123,12 @@ export const registrarUsuario = async (req: Request, res: Response): Promise<voi
       return;
     }
     console.error('Error en registrarUsuario:', error);
+    if (esErrorConexionTransitorio(error)) {
+      res.status(503).json({
+        error: 'Reconectando con la base de datos de Supabase. Por favor intenta de nuevo en unos segundos.',
+      });
+      return;
+    }
     res.status(500).json({ error: 'Error interno del servidor al procesar el registro.' });
   }
 };
@@ -132,15 +142,17 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
     const data = LoginSchema.parse(req.body);
     const credencial = (data.correo || data.codigoEstudiantil || data.identificador || '').trim();
 
-    // Buscar por correo o por código estudiantil
-    const usuario = await prisma.usuario.findFirst({
-      where: {
-        OR: [
-          { correo: credencial.toLowerCase() },
-          { codigoEstudiantil: credencial },
-        ],
-      },
-    });
+    // Buscar por correo o por código estudiantil con reconexión automática a Supabase
+    const usuario = await ejecutarConReconexion(() =>
+      prisma.usuario.findFirst({
+        where: {
+          OR: [
+            { correo: credencial.toLowerCase() },
+            { codigoEstudiantil: credencial },
+          ],
+        },
+      })
+    );
 
     if (!usuario) {
       res.status(401).json({
@@ -197,6 +209,12 @@ export const loginUsuario = async (req: Request, res: Response): Promise<void> =
       return;
     }
     console.error('Error en loginUsuario:', error);
+    if (esErrorConexionTransitorio(error)) {
+      res.status(503).json({
+        error: 'Reconectando con la base de datos de Supabase. Por favor intenta de nuevo en unos segundos.',
+      });
+      return;
+    }
     res.status(500).json({ error: 'Error interno del servidor al iniciar sesión.' });
   }
 };
@@ -212,18 +230,20 @@ export const obtenerPerfil = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const usuario = await prisma.usuario.findUnique({
-      where: { id: req.user.id },
-      select: {
-        id: true,
-        nombre: true,
-        codigoEstudiantil: true,
-        correo: true,
-        rol: true,
-        consentimiento: true,
-        fechaRegistro: true,
-      },
-    });
+    const usuario = await ejecutarConReconexion(() =>
+      prisma.usuario.findUnique({
+        where: { id: req.user!.id },
+        select: {
+          id: true,
+          nombre: true,
+          codigoEstudiantil: true,
+          correo: true,
+          rol: true,
+          consentimiento: true,
+          fechaRegistro: true,
+        },
+      })
+    );
 
     if (!usuario) {
       res.status(404).json({ error: 'Usuario no encontrado' });
