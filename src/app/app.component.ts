@@ -30,6 +30,35 @@ export class App {
   );
   readonly rutaActual = signal<string>(this.router.url);
 
+  // Modo Simulador Móvil en Pantallas Grandes (Desktop)
+  readonly vistaSimuladorMovil = signal<boolean>(false);
+  toggleVistaSimulador(): void {
+    this.vistaSimuladorMovil.update((v) => !v);
+  }
+
+  // Menú Flotante / Drawer de Pasos 1 al 7 para Dispositivos Móviles
+  readonly menuPasosMovilAbierto = signal<boolean>(false);
+  toggleMenuPasosMovil(): void {
+    this.menuPasosMovilAbierto.update((v) => !v);
+  }
+  cerrarMenuPasosMovil(): void {
+    this.menuPasosMovilAbierto.set(false);
+  }
+
+  readonly infoPasoActual = computed(() => {
+    const ruta = this.rutaActual() || this.router.url || '';
+    if (ruta.includes('/introduccion')) return { numero: 1, nombre: '1. Introducción' };
+    if (ruta.includes('/preparacion')) return { numero: 2, nombre: '2. Preparación' };
+    if (ruta.includes('/practica')) return { numero: 3, nombre: '3. Práctica OMS' };
+    if (ruta.includes('/evaluacion-practica')) return { numero: 4, nombre: '4. Ev. Práctica' };
+    if (ruta.includes('/evaluacion-teorica')) return { numero: 5, nombre: '5. Ev. Teórica' };
+    if (ruta.includes('/encuesta')) return { numero: 6, nombre: '6. Encuesta' };
+    if (ruta.includes('/resultado')) return { numero: 7, nombre: '7. Resultados' };
+    if (ruta.includes('/reto-extremo')) return { numero: 0, nombre: '⚡ Reto Extremo' };
+    if (ruta.includes('/admin')) return { numero: 99, nombre: '👑 Panel Docente' };
+    return { numero: 1, nombre: 'Manos Seguras' };
+  });
+
   // Estado del Chatbot Interactivo Global (Manitos Coach)
   readonly chatAbierto = signal<boolean>(false);
   readonly escribiendoChat = signal<boolean>(false);
