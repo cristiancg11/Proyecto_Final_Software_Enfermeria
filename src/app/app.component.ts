@@ -21,6 +21,12 @@ export class App {
   readonly studentName = computed(
     () => this.student()?.fullName || this.authService.usuarioActual()?.nombre
   );
+  readonly studentSemester = computed(
+    () => this.authService.usuarioActual()?.semestre || 'Semestre VII'
+  );
+  readonly studentGroup = computed(
+    () => this.authService.usuarioActual()?.grupo || 'Grupo A-1'
+  );
   readonly esDocente = this.authService.esDocente;
   readonly isLoggedIn = computed(
     () =>
@@ -47,6 +53,7 @@ export class App {
 
   readonly infoPasoActual = computed(() => {
     const ruta = this.rutaActual() || this.router.url || '';
+    if (ruta.includes('/dashboard')) return { numero: 0, nombre: '📊 Dashboard' };
     if (ruta.includes('/introduccion')) return { numero: 1, nombre: '1. Introducción' };
     if (ruta.includes('/preparacion')) return { numero: 2, nombre: '2. Preparación' };
     if (ruta.includes('/practica')) return { numero: 3, nombre: '3. Práctica OMS' };
@@ -54,9 +61,9 @@ export class App {
     if (ruta.includes('/evaluacion-teorica')) return { numero: 5, nombre: '5. Ev. Teórica' };
     if (ruta.includes('/encuesta')) return { numero: 6, nombre: '6. Encuesta' };
     if (ruta.includes('/resultado')) return { numero: 7, nombre: '7. Resultados' };
-    if (ruta.includes('/reto-extremo')) return { numero: 0, nombre: '⚡ Reto Extremo' };
+    if (ruta.includes('/reto-extremo')) return { numero: 8, nombre: '⚡ Modo Desafío' };
     if (ruta.includes('/admin')) return { numero: 99, nombre: '👑 Panel Docente' };
-    return { numero: 1, nombre: 'Manos Seguras' };
+    return { numero: 0, nombre: 'Dashboard' };
   });
 
   // Estado del Chatbot Interactivo Global (Manitos Coach)

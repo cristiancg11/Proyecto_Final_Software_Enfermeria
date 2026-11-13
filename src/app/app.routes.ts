@@ -28,13 +28,22 @@ export const routes: Routes = [
     title: 'Manos Seguras — Panel de Supervisión Docente',
   },
   {
+    path: 'dashboard',
+    canActivate: [studentAuthGuard],
+    loadComponent: () =>
+      import('./pages/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
+      ),
+    title: 'Manos Seguras — Dashboard Académico • UCC',
+  },
+  {
     path: 'introduccion',
     canActivate: [studentAuthGuard],
     loadComponent: () =>
-      import('./pages/introduccion/introduccion.component').then(
-        (m) => m.IntroduccionComponent
+      import('./pages/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
       ),
-    title: 'Manos Seguras — Introducción Clínica y Fundamentos OMS',
+    title: 'Manos Seguras — Dashboard Académico • UCC',
   },
   {
     path: 'preparacion',

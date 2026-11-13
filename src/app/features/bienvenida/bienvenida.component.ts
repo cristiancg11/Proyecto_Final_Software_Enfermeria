@@ -353,7 +353,7 @@ export class BienvenidaComponent {
       this.router.navigate(['/admin']);
     } else {
       this.stateService.resetProgressToStepOne();
-      this.router.navigate(['/introduccion']);
+      this.router.navigate(['/dashboard']);
     }
   }
 }

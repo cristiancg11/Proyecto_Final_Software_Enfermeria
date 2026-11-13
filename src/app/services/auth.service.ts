@@ -10,6 +10,8 @@ export interface Usuario {
   rol: 'ESTUDIANTE' | 'DOCENTE';
   consentimiento: boolean;
   fechaRegistro?: string | Date;
+  semestre?: string;
+  grupo?: string;
 }
 
 export interface RegistroDatos {
