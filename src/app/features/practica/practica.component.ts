@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   OnDestroy,
@@ -17,6 +18,7 @@ import {
 } from '@mediapipe/tasks-vision';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 import { HandwashStep } from '../../core/models/handwash.models';
+import { AuthService } from '../../services/auth.service';
 
 export interface QualityAlert {
   type: 'hands-missing' | 'hands-apart' | 'still';
@@ -115,6 +117,15 @@ export interface QualityAlert {
           @if (mostrarFaseInicial()) {
             <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
               <div class="max-w-xl w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-teal-500/30 text-center relative overflow-hidden">
+                <!-- Botón de Cierre Rápido para Iniciar Directamente -->
+                <button
+                  type="button"
+                  (click)="iniciarFrotadoMecanico()"
+                  class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center font-bold text-sm transition-all cursor-pointer z-10"
+                  title="Omitir preparación y encender cámara"
+                >
+                  ✕
+                </button>
                 <!-- Decoración ambiental -->
                 <div class="absolute -top-20 -right-20 w-44 h-44 rounded-full bg-[#00B39F]/15 blur-2xl pointer-events-none"></div>
                 <div class="absolute -bottom-20 -left-20 w-44 h-44 rounded-full bg-sky-500/15 blur-2xl pointer-events-none"></div>
@@ -508,21 +519,23 @@ export interface QualityAlert {
                 <!-- Video Stream con atributos obligatorios para celulares (iOS Safari / Android Chrome) e inversión de espejo -->
                 <video
                   #cameraVideo
+                  id="cameraVideo"
                   playsinline
                   webkit-playsinline="true"
                   autoplay
                   muted
                   [muted]="true"
                   class="w-full h-full object-cover block"
-                  style="display: block; width: 100%; height: 100%; object-fit: cover;"
+                  style="display: block !important; width: 100% !important; height: 100% !important; object-fit: cover !important;"
                   [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
                 ></video>
 
                 <!-- Canvas de Detección MediaPipe con dimensiones nativas y condicional de espejo -->
                 <canvas
                   #handOverlay
+                  id="handOverlay"
                   class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover block"
-                  style="display: block; width: 100%; height: 100%; object-fit: cover;"
+                  style="display: block !important; width: 100% !important; height: 100% !important; object-fit: cover !important;"
                   [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
                 ></canvas>
 
@@ -1016,9 +1029,10 @@ export interface QualityAlert {
     </div>
   `,
 })
-export class PracticaComponent implements OnInit, OnDestroy {
+export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
+  private readonly authService = inject(AuthService);
 
   readonly student = this.stateService.student;
   readonly steps = this.stateService.steps;
@@ -1232,6 +1246,32 @@ export class PracticaComponent implements OnInit, OnDestroy {
   private currentUtterance: SpeechSynthesisUtterance | null = null;
 
   ngOnInit(): void {
+    // Sincronizar el estudiante desde AuthService o localStorage si no está presente en el stateService
+    if (!this.student()) {
+      const u = this.authService.usuarioActual();
+      if (u && u.nombre) {
+        this.stateService.setStudent({
+          fullName: u.nombre,
+          studentCode: u.codigoEstudiantil || '',
+          consent: u.consentimiento !== undefined ? !!u.consentimiento : true,
+        });
+      } else if (typeof window !== 'undefined') {
+        const rawUser = localStorage.getItem('usuario');
+        if (rawUser) {
+          try {
+            const parsed = JSON.parse(rawUser);
+            if (parsed && parsed.nombre) {
+              this.stateService.setStudent({
+                fullName: parsed.nombre,
+                studentCode: parsed.codigoEstudiantil || '',
+                consent: parsed.consentimiento !== undefined ? !!parsed.consentimiento : true,
+              });
+            }
+          } catch {}
+        }
+      }
+    }
+
     if (!this.student()) {
       this.router.navigate(['/bienvenida']);
       return;
@@ -1251,6 +1291,13 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.mostrarFaseInicial.set(true);
     this.segundosGrifo.set(5);
     this.iniciarCuentaRegresivaGrifo();
+  }
+
+  ngAfterViewInit(): void {
+    // Si la fase inicial fue descartada o no está activa, arrancar la cámara
+    if (!this.mostrarFaseInicial() && !this.cameraActive()) {
+      this.startCamera();
+    }
   }
 
   private iniciarCuentaRegresivaGrifo(): void {
@@ -1509,10 +1556,10 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.cameraError.set('');
     try {
       if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-        throw new Error('Tu navegador móvil no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS.');
+        throw new Error('Tu navegador no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS o localhost.');
       }
 
-      // Liberar cualquier stream previo para evitar bloqueo de cámara en Android/iOS
+      // Liberar cualquier stream previo para evitar bloqueo de cámara en Android/iOS/Windows
       this.releaseStream();
 
       const facing = this.camaraFacingMode();
@@ -1525,22 +1572,31 @@ export class PracticaComponent implements OnInit, OnDestroy {
           },
           audio: false,
         });
-      } catch {
-        // Fallback directo sin restricciones de resolución
-        this.stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: facing },
-          audio: false,
-        });
+      } catch (errFacing) {
+        console.warn('Fallback sin restricción de facingMode:', errFacing);
+        try {
+          this.stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+        } catch (errAny) {
+          this.stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { min: 320 }, height: { min: 240 } },
+            audio: false,
+          });
+        }
       }
 
       let video = this.cameraVideo?.nativeElement;
       if (!video) {
-        await new Promise((resolve) => setTimeout(resolve, 80));
-        video = this.cameraVideo?.nativeElement;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        video = this.cameraVideo?.nativeElement || (document.querySelector('video#cameraVideo, video[playsinline]') as HTMLVideoElement);
       }
       if (!video) throw new Error('Visor de video no disponible');
 
       // Garantizar atributos y propiedades requeridas en navegadores móviles (iOS Safari y Android Chrome)
+      video.pause();
+      video.removeAttribute('src');
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
       video.setAttribute('autoplay', 'true');
@@ -1550,6 +1606,11 @@ export class PracticaComponent implements OnInit, OnDestroy {
       video.autoplay = true;
       video.srcObject = this.stream;
 
+      // Activar visor de inmediato para que el canvas y el video se hagan visibles
+      this.cameraActive.set(true);
+      this.cameraLoading.set(false);
+      this.stopTimer();
+
       if (video.readyState < 1) {
         await new Promise<void>((resolve) => {
           const onLoaded = () => {
@@ -1557,24 +1618,23 @@ export class PracticaComponent implements OnInit, OnDestroy {
             resolve();
           };
           video?.addEventListener('loadedmetadata', onLoaded);
-          setTimeout(resolve, 1200);
+          setTimeout(resolve, 1000);
         });
       }
 
       try {
         await video.play();
       } catch (errPlay) {
-        console.warn('Reintento de reproducción de video:', errPlay);
-        try {
-          video.muted = true;
-          await video.play();
-        } catch {}
+        console.warn('Reintento diferido de reproducción:', errPlay);
+        setTimeout(async () => {
+          try {
+            if (video) {
+              video.muted = true;
+              await video.play();
+            }
+          } catch {}
+        }, 300);
       }
-
-      // Activar visor de inmediato con el stream de cámara en vivo
-      this.stopTimer();
-      this.cameraActive.set(true);
-      this.cameraLoading.set(false);
 
       // Iniciar guía hablada de Manitos Coach solo si no está hablando ya
       setTimeout(() => {
@@ -1589,7 +1649,6 @@ export class PracticaComponent implements OnInit, OnDestroy {
         this.detectHands();
       } catch (errMediaPipe: any) {
         console.error('[MediaPipe] Advertencia al calibrar modelo:', errMediaPipe);
-        this.cameraError.set('Visor de cámara activo.');
       }
     } catch (error: any) {
       console.error('[Cámara/MediaPipe] Error de inicialización:', error);

@@ -65,19 +65,6 @@ export const studentAuthGuard: CanActivateFn = (route) => {
     return false;
   }
 
-  // 4. EXCEPCIÓN: El "Reto Extremo" está siempre habilitado libremente para usuarios autenticados
-  const targetPath = (route.routeConfig?.path || '').trim();
-  if (targetPath === 'reto-extremo' || authService.esDocente()) {
-    return true;
-  }
-
-  // 5. Bloqueo secuencial estricto de los módulos del 1 al 7
-  const requiredStep = STEP_BY_ROUTE[targetPath];
-  if (requiredStep && !stateService.isStepUnlocked(requiredStep)) {
-    const currentAllowedRoute = stateService.getRouteForStep(stateService.maxUnlockedStep());
-    router.navigate([currentAllowedRoute]);
-    return false;
-  }
-
+  // 4. Si el estudiante o docente está autenticado, permitir acceso completo a todos los módulos clínicos y de práctica
   return true;
 };

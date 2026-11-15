@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   OnDestroy,
@@ -17,6 +18,7 @@ import {
 } from '@mediapipe/tasks-vision';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 import { HandwashStep } from '../../core/models/handwash.models';
+import { AuthService } from '../../services/auth.service';
 
 export interface QualityAlert {
   type: 'hands-missing' | 'hands-apart' | 'still';
@@ -187,21 +189,23 @@ export interface QualityAlert {
               <!-- Video Stream con atributos obligatorios para celulares (iOS Safari y Android) -->
               <video
                 #cameraVideo
+                id="cameraVideo"
                 playsinline
                 webkit-playsinline="true"
                 autoplay
                 muted
                 [muted]="true"
                 class="w-full h-full object-cover block"
-                style="display: block; width: 100%; height: 100%; object-fit: cover;"
+                style="display: block !important; width: 100% !important; height: 100% !important; object-fit: cover !important;"
                 [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
               ></video>
 
               <!-- Canvas Superpuesto para Dibujo de MediaPipe AI -->
               <canvas
                 #handOverlay
+                id="handOverlay"
                 class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover block"
-                style="display: block; width: 100%; height: 100%; object-fit: cover;"
+                style="display: block !important; width: 100% !important; height: 100% !important; object-fit: cover !important;"
                 [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
               ></canvas>
 
@@ -624,9 +628,10 @@ export interface QualityAlert {
     </div>
   `,
 })
-export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
+export class EvaluacionPracticaComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
+  private readonly authService = inject(AuthService);
 
   readonly student = this.stateService.student;
   readonly studentName = computed(() => this.student()?.fullName || 'Estudiante');
@@ -726,6 +731,32 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   private effectiveSeconds: number = 0;
 
   ngOnInit(): void {
+    // Sincronizar el estudiante desde AuthService o localStorage si no está presente en el stateService
+    if (!this.student()) {
+      const u = this.authService.usuarioActual();
+      if (u && u.nombre) {
+        this.stateService.setStudent({
+          fullName: u.nombre,
+          studentCode: u.codigoEstudiantil || '',
+          consent: u.consentimiento !== undefined ? !!u.consentimiento : true,
+        });
+      } else if (typeof window !== 'undefined') {
+        const rawUser = localStorage.getItem('usuario');
+        if (rawUser) {
+          try {
+            const parsed = JSON.parse(rawUser);
+            if (parsed && parsed.nombre) {
+              this.stateService.setStudent({
+                fullName: parsed.nombre,
+                studentCode: parsed.codigoEstudiantil || '',
+                consent: parsed.consentimiento !== undefined ? !!parsed.consentimiento : true,
+              });
+            }
+          } catch {}
+        }
+      }
+    }
+
     if (!this.student()) {
       this.router.navigate(['/bienvenida']);
       return;
@@ -736,8 +767,10 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.evaluacionFinalizada.set(false);
     this.effectiveSeconds = 0;
     this.currentSeconds.set(0);
-    // REQUISITO 1: El temporizador NO debe iniciar automáticamente al cargar la vista.
-    // Solo arrancará cuando la cámara esté transmitiendo video.
+  }
+
+  ngAfterViewInit(): void {
+    // Listo para recibir eventos de cámara
   }
 
   ngOnDestroy(): void {
@@ -762,7 +795,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.cameraError.set('');
     try {
       if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-        throw new Error('Tu navegador no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS.');
+        throw new Error('Tu navegador no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS o localhost.');
       }
 
       this.releaseStream();
@@ -777,20 +810,30 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
           },
           audio: false,
         });
-      } catch {
-        this.stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: facing },
-          audio: false,
-        });
+      } catch (errConstraint) {
+        console.warn('Fallback sin restricción de facingMode en examen:', errConstraint);
+        try {
+          this.stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+        } catch (errAny) {
+          this.stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { min: 320 }, height: { min: 240 } },
+            audio: false,
+          });
+        }
       }
 
       let video = this.cameraVideo?.nativeElement;
       if (!video) {
-        await new Promise((resolve) => setTimeout(resolve, 80));
-        video = this.cameraVideo?.nativeElement;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        video = this.cameraVideo?.nativeElement || (document.querySelector('video#cameraVideo, video[playsinline]') as HTMLVideoElement);
       }
       if (!video) throw new Error('Visor de video no disponible');
 
+      video.pause();
+      video.removeAttribute('src');
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
       video.setAttribute('autoplay', 'true');
@@ -800,6 +843,11 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
       video.autoplay = true;
       video.srcObject = this.stream;
 
+      // REQUISITO 1: Activar visor inmediatamente para mostrar el feed en vivo
+      this.cameraActive.set(true);
+      this.cameraLoading.set(false);
+      this.startStepTimer();
+
       if (video.readyState < 1) {
         await new Promise<void>((resolve) => {
           const onLoaded = () => {
@@ -807,7 +855,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
             resolve();
           };
           video?.addEventListener('loadedmetadata', onLoaded);
-          setTimeout(resolve, 1200);
+          setTimeout(resolve, 1000);
         });
       }
 
@@ -815,16 +863,15 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
         await video.play();
       } catch (errPlay) {
         console.warn('Reproducción de video diferida en examen:', errPlay);
-        try {
-          video.muted = true;
-          await video.play();
-        } catch {}
+        setTimeout(async () => {
+          try {
+            if (video) {
+              video.muted = true;
+              await video.play();
+            }
+          } catch {}
+        }, 300);
       }
-
-      // REQUISITO 1: El cronómetro arranca ESTRICTAMENTE aquí, cuando la cámara está activa y transmitiendo
-      this.cameraActive.set(true);
-      this.cameraLoading.set(false);
-      this.startStepTimer();
 
       this.lastVideoTimestamp = -1;
       try {
