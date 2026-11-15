@@ -794,26 +794,25 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
       video.autoplay = true;
       video.srcObject = this.stream;
 
-      if (video.readyState < 1) {
-        await new Promise<void>((resolve) => {
-          const onLoaded = () => {
-            video.removeEventListener('loadedmetadata', onLoaded);
-            resolve();
-          };
-          video.addEventListener('loadedmetadata', onLoaded);
-          setTimeout(resolve, 1500);
-        });
+      try {
+        await video.play();
+      } catch (errPlay) {
+        console.warn('Reproducción de video diferida:', errPlay);
       }
-
-      await video.play();
 
       // REQUISITO 1: El cronómetro arranca ESTRICTAMENTE aquí, cuando la cámara está activa y transmitiendo
       this.cameraActive.set(true);
+      this.cameraLoading.set(false);
       this.startStepTimer();
 
       this.lastVideoTimestamp = -1;
-      await this.inicializarMediaPipe();
-      this.detectHands();
+      try {
+        await this.inicializarMediaPipe();
+        this.detectHands();
+      } catch (errMediaPipe: any) {
+        console.error('[MediaPipe] Advertencia al calibrar modelo:', errMediaPipe);
+        this.cameraError.set('Visor de cámara activo.');
+      }
     } catch (error: any) {
       console.error('[Cámara/MediaPipe Evaluación] Error:', error);
       this.releaseStream();
@@ -832,7 +831,9 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   private async inicializarMediaPipe(): Promise<HandLandmarker> {
     if (this.detector) return this.detector;
 
-    const cdnCandidates = [
+    const wasmCandidates = [
+      '/wasm',
+      'wasm',
       'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm',
       'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm',
       'https://unpkg.com/@mediapipe/tasks-vision@0.10.14/wasm',
@@ -841,18 +842,18 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     let vision: any = null;
     let ultimoError: any = null;
 
-    for (const url of cdnCandidates) {
+    for (const path of wasmCandidates) {
       try {
-        vision = await FilesetResolver.forVisionTasks(url);
+        vision = await FilesetResolver.forVisionTasks(path);
         if (vision) break;
       } catch (err) {
         ultimoError = err;
-        console.warn(`[MediaPipe] Intento fallido con WASM en ${url}:`, err);
+        console.warn(`[MediaPipe] Intento con WASM en ${path}:`, err);
       }
     }
 
     if (!vision) {
-      throw ultimoError || new Error('No fue posible cargar los módulos WASM de MediaPipe desde CDN.');
+      throw ultimoError || new Error('No fue posible cargar los módulos WASM de MediaPipe.');
     }
 
     try {
@@ -1247,7 +1248,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
       playNote(659.25, 0.08, 0.22);
       playNote(783.99, 0.16, 0.3);
       playNote(1046.5, 0.25, 0.45);
-    } catch {}
+    } catch { }
   }
 
   async iniciarModoDemoVideo(): Promise<void> {
