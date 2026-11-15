@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   OnDestroy,
@@ -18,7 +17,6 @@ import {
 } from '@mediapipe/tasks-vision';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 import { HandwashStep } from '../../core/models/handwash.models';
-import { AuthService } from '../../services/auth.service';
 
 export interface QualityAlert {
   type: 'hands-missing' | 'hands-apart' | 'still';
@@ -117,15 +115,6 @@ export interface QualityAlert {
           @if (mostrarFaseInicial()) {
             <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
               <div class="max-w-xl w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-teal-500/30 text-center relative overflow-hidden">
-                <!-- Botón de Cierre Rápido para Iniciar Directamente -->
-                <button
-                  type="button"
-                  (click)="iniciarFrotadoMecanico()"
-                  class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center font-bold text-sm transition-all cursor-pointer z-10"
-                  title="Omitir preparación y encender cámara"
-                >
-                  ✕
-                </button>
                 <!-- Decoración ambiental -->
                 <div class="absolute -top-20 -right-20 w-44 h-44 rounded-full bg-[#00B39F]/15 blur-2xl pointer-events-none"></div>
                 <div class="absolute -bottom-20 -left-20 w-44 h-44 rounded-full bg-sky-500/15 blur-2xl pointer-events-none"></div>
@@ -519,23 +508,19 @@ export interface QualityAlert {
                 <!-- Video Stream con atributos obligatorios para celulares (iOS Safari / Android Chrome) e inversión de espejo -->
                 <video
                   #cameraVideo
-                  id="cameraVideo"
                   playsinline
                   webkit-playsinline="true"
                   autoplay
                   muted
                   [muted]="true"
-                  class="w-full h-full object-cover block"
-                  style="display: block !important; width: 100% !important; height: 100% !important; object-fit: cover !important;"
+                  class="w-full h-full object-cover"
                   [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
                 ></video>
 
                 <!-- Canvas de Detección MediaPipe con dimensiones nativas y condicional de espejo -->
                 <canvas
                   #handOverlay
-                  id="handOverlay"
-                  class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover block"
-                  style="display: block !important; width: 100% !important; height: 100% !important; object-fit: cover !important;"
+                  class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover"
                   [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
                 ></canvas>
 
@@ -845,13 +830,10 @@ export interface QualityAlert {
           }
 
           <!-- ASISTENTE VIRTUAL EN VIVO: MANITOS COACH (TARJETA FLOTANTE MODERNA CON CHAT E INDICADOR "ESCRIBIENDO...") -->
-          <div
-            class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 transition-all pointer-events-none"
-            [ngClass]="manitaBotExpandido() ? 'max-w-sm w-[calc(100vw-2rem)] sm:w-[400px]' : 'w-auto'"
-          >
+          <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 max-w-sm w-[calc(100vw-2rem)] sm:w-[400px] pointer-events-auto">
             @if (manitaBotExpandido()) {
               <div
-                class="pointer-events-auto bg-white/95 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(11,43,41,0.28)] border-2 transition-all duration-300 animate-fade-in"
+                class="bg-white/95 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(11,43,41,0.28)] border-2 transition-all duration-300 animate-fade-in"
                 [ngClass]="{
                   'border-emerald-400': manitaBotEstado() === 'optimo',
                   'border-[#FF6A4D]': manitaBotEstado() === 'alerta',
@@ -1016,7 +998,7 @@ export interface QualityAlert {
               <button
                 type="button"
                 (click)="manitaBotExpandido.set(true)"
-                class="pointer-events-auto ml-auto flex items-center gap-3 px-4 py-3 rounded-full bg-gradient-to-r from-[#0B2B29] to-[#008072] text-white shadow-2xl border-2 border-[#50E7FF]/60 hover:scale-105 transition-all cursor-pointer"
+                class="ml-auto flex items-center gap-3 px-4 py-3 rounded-full bg-gradient-to-r from-[#0B2B29] to-[#008072] text-white shadow-2xl border-2 border-[#50E7FF]/60 hover:scale-105 transition-all cursor-pointer"
               >
                 <span class="w-2.5 h-2.5 rounded-full bg-[#50E7FF] animate-ping"></span>
                 <span class="font-extrabold text-xs">Manitos Coach</span>
@@ -1029,10 +1011,9 @@ export interface QualityAlert {
     </div>
   `,
 })
-export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PracticaComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
-  private readonly authService = inject(AuthService);
 
   readonly student = this.stateService.student;
   readonly steps = this.stateService.steps;
@@ -1236,68 +1217,22 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
   private drawingUtils: DrawingUtils | null = null;
   private animationFrame: number | null = null;
   private autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
-  private lastVideoTimestamp: number = -1;
 
   // Variables biomecánicas para cálculo de delta de frotado y proximidad
   private previousKeyPoints: { x: number; y: number }[][] | null = null;
   private previousFrameAt: number | null = null;
   private smoothedMotion: number = 0;
   private effectiveSeconds: number = 0;
-  private currentUtterance: SpeechSynthesisUtterance | null = null;
 
   ngOnInit(): void {
-    // Sincronizar el estudiante desde AuthService o localStorage si no está presente en el stateService
-    if (!this.student()) {
-      const u = this.authService.usuarioActual();
-      if (u && u.nombre) {
-        this.stateService.setStudent({
-          fullName: u.nombre,
-          studentCode: u.codigoEstudiantil || '',
-          consent: u.consentimiento !== undefined ? !!u.consentimiento : true,
-        });
-      } else if (typeof window !== 'undefined') {
-        const rawUser = localStorage.getItem('usuario');
-        if (rawUser) {
-          try {
-            const parsed = JSON.parse(rawUser);
-            if (parsed && parsed.nombre) {
-              this.stateService.setStudent({
-                fullName: parsed.nombre,
-                studentCode: parsed.codigoEstudiantil || '',
-                consent: parsed.consentimiento !== undefined ? !!parsed.consentimiento : true,
-              });
-            }
-          } catch {}
-        }
-      }
-    }
-
     if (!this.student()) {
       this.router.navigate(['/bienvenida']);
       return;
     }
-
-    // Inicializar y precargar voces del navegador para Web Speech API
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      try {
-        window.speechSynthesis.getVoices();
-        window.speechSynthesis.onvoiceschanged = () => {
-          try { window.speechSynthesis.getVoices(); } catch {}
-        };
-      } catch {}
-    }
-
     // Iniciar cuenta regresiva orientativa de apertura de grifo (5 segundos)
     this.mostrarFaseInicial.set(true);
     this.segundosGrifo.set(5);
     this.iniciarCuentaRegresivaGrifo();
-  }
-
-  ngAfterViewInit(): void {
-    // Si la fase inicial fue descartada o no está activa, arrancar la cámara
-    if (!this.mostrarFaseInicial() && !this.cameraActive()) {
-      this.startCamera();
-    }
   }
 
   private iniciarCuentaRegresivaGrifo(): void {
@@ -1318,11 +1253,10 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
       clearInterval(this.grifoInterval);
       this.grifoInterval = null;
     }
-    this.desbloquearAudioMovil();
     this.mostrarFaseInicial.set(false);
     this.startStepTimer();
     this.startCamera();
-    this.anunciarPasoEnVoz(0, true);
+    this.anunciarPasoEnVoz(0);
   }
 
   goToBienvenida(): void {
@@ -1477,63 +1411,37 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
       if (synth.paused) {
         try { synth.resume(); } catch {}
       }
-
-      const ejecutarHabla = () => {
-        try {
-          if (synth.paused) {
-            try { synth.resume(); } catch {}
-          }
-          const utterance = new SpeechSynthesisUtterance(texto);
-          this.currentUtterance = utterance; // Evitar que el Garbage Collector destruya la locución en Chrome
-          utterance.lang = 'es-ES';
-          utterance.rate = 1.02;
-          utterance.pitch = 1.05;
-
-          const voices = synth.getVoices();
-          const vozEspanol = voices.find(
-            (v) =>
-              v.lang.toLowerCase().startsWith('es-co') ||
-              v.lang.toLowerCase().startsWith('es-mx') ||
-              v.lang.toLowerCase().startsWith('es-es') ||
-              v.lang.toLowerCase().startsWith('es')
-          );
-          if (vozEspanol) {
-            utterance.voice = vozEspanol;
-          }
-
-          utterance.onstart = () => this.manitaBotHablando.set(true);
-          utterance.onend = () => {
-            this.manitaBotHablando.set(false);
-            if (this.currentUtterance === utterance) {
-              this.currentUtterance = null;
-            }
-          };
-          utterance.onerror = (e) => {
-            console.warn('[Voz Manitos] Evento onerror:', e);
-            this.manitaBotHablando.set(false);
-            if (this.currentUtterance === utterance) {
-              this.currentUtterance = null;
-            }
-          };
-
-          synth.speak(utterance);
-          if (synth.paused) {
-            try { synth.resume(); } catch {}
-          }
-        } catch (err) {
-          console.warn('[Voz Manitos] Fallo al sintetizar:', err);
-          this.manitaBotHablando.set(false);
-        }
-      };
-
       if (forzar) {
         synth.cancel();
-        // Delay mínimo para permitir que Chrome/Edge procese el cancel() antes de hablar
-        setTimeout(ejecutarHabla, 60);
       } else if (synth.speaking) {
         try { synth.resume(); } catch {}
-      } else {
-        ejecutarHabla();
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(texto);
+      utterance.lang = 'es-ES';
+      utterance.rate = 1.02;
+      utterance.pitch = 1.05;
+
+      const voices = synth.getVoices();
+      const vozEspanol = voices.find(
+        (v) =>
+          v.lang.toLowerCase().startsWith('es-co') ||
+          v.lang.toLowerCase().startsWith('es-mx') ||
+          v.lang.toLowerCase().startsWith('es-es') ||
+          v.lang.toLowerCase().startsWith('es')
+      );
+      if (vozEspanol) {
+        utterance.voice = vozEspanol;
+      }
+
+      utterance.onstart = () => this.manitaBotHablando.set(true);
+      utterance.onend = () => this.manitaBotHablando.set(false);
+      utterance.onerror = () => this.manitaBotHablando.set(false);
+
+      synth.speak(utterance);
+      if (synth.paused) {
+        try { synth.resume(); } catch {}
       }
     } catch {
       this.manitaBotHablando.set(false);
@@ -1546,7 +1454,6 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
         window.speechSynthesis.cancel();
       } catch { }
     }
-    this.currentUtterance = null;
     this.manitaBotHablando.set(false);
   }
 
@@ -1556,10 +1463,10 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cameraError.set('');
     try {
       if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-        throw new Error('Tu navegador no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS o localhost.');
+        throw new Error('Tu navegador móvil no permite el acceso a la cámara. Asegúrate de ingresar mediante HTTPS.');
       }
 
-      // Liberar cualquier stream previo para evitar bloqueo de cámara en Android/iOS/Windows
+      // Liberar cualquier stream previo para evitar bloqueo de cámara en Android/iOS
       this.releaseStream();
 
       const facing = this.camaraFacingMode();
@@ -1572,31 +1479,18 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
           },
           audio: false,
         });
-      } catch (errFacing) {
-        console.warn('Fallback sin restricción de facingMode:', errFacing);
-        try {
-          this.stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false,
-          });
-        } catch (errAny) {
-          this.stream = await navigator.mediaDevices.getUserMedia({
-            video: { width: { min: 320 }, height: { min: 240 } },
-            audio: false,
-          });
-        }
+      } catch {
+        // Fallback directo sin restricciones de resolución
+        this.stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: facing },
+          audio: false,
+        });
       }
 
-      let video = this.cameraVideo?.nativeElement;
-      if (!video) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        video = this.cameraVideo?.nativeElement || (document.querySelector('video#cameraVideo, video[playsinline]') as HTMLVideoElement);
-      }
+      const video = this.cameraVideo?.nativeElement;
       if (!video) throw new Error('Visor de video no disponible');
 
       // Garantizar atributos y propiedades requeridas en navegadores móviles (iOS Safari y Android Chrome)
-      video.pause();
-      video.removeAttribute('src');
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
       video.setAttribute('autoplay', 'true');
@@ -1606,120 +1500,68 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
       video.autoplay = true;
       video.srcObject = this.stream;
 
-      // Activar visor de inmediato para que el canvas y el video se hagan visibles
-      this.cameraActive.set(true);
-      this.cameraLoading.set(false);
-      this.stopTimer();
-
       if (video.readyState < 1) {
         await new Promise<void>((resolve) => {
           const onLoaded = () => {
-            video?.removeEventListener('loadedmetadata', onLoaded);
+            video.removeEventListener('loadedmetadata', onLoaded);
             resolve();
           };
-          video?.addEventListener('loadedmetadata', onLoaded);
-          setTimeout(resolve, 1000);
+          video.addEventListener('loadedmetadata', onLoaded);
+          setTimeout(resolve, 1500);
         });
       }
 
-      try {
-        await video.play();
-      } catch (errPlay) {
-        console.warn('Reintento diferido de reproducción:', errPlay);
-        setTimeout(async () => {
-          try {
-            if (video) {
-              video.muted = true;
-              await video.play();
-            }
-          } catch {}
-        }, 300);
-      }
+      await video.play();
 
-      // Iniciar guía hablada de Manitos Coach solo si no está hablando ya
+      // Activar visor de inmediato antes de cargar el modelo WASM de MediaPipe
+      this.stopTimer();
+      this.cameraActive.set(true);
+
+      // Iniciar guía hablada de Manitos Coach al arrancar la cámara
       setTimeout(() => {
-        if (!this.manitaBotHablando()) {
-          this.anunciarPasoEnVoz(this.currentStepIndex(), false);
-        }
-      }, 500);
+        this.anunciarPasoEnVoz(this.currentStepIndex(), true);
+      }, 350);
 
-      this.lastVideoTimestamp = -1;
-      try {
-        await this.inicializarMediaPipe();
-        this.detectHands();
-      } catch (errMediaPipe: any) {
-        console.error('[MediaPipe] Advertencia al calibrar modelo:', errMediaPipe);
+      if (!this.detector) {
+        const vision = await FilesetResolver.forVisionTasks(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
+        );
+        try {
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'GPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        } catch {
+          // Fallback a CPU para GPUs móviles que no soporten texturas float16 en WebGL
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'CPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        }
       }
+
+      this.detectHands();
     } catch (error: any) {
-      console.error('[Cámara/MediaPipe] Error de inicialización:', error);
       this.releaseStream();
       this.cameraActive.set(false);
       this.cameraError.set(
-        error instanceof DOMException && (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError')
+        error instanceof DOMException && error.name === 'NotAllowedError'
           ? 'Debes autorizar el permiso de acceso a la cámara en tu celular o navegador.'
-          : error?.message || 'No fue posible iniciar la cámara en este dispositivo.'
+          : error?.message || 'No fue posible iniciar la cámara frontal en este dispositivo.'
       );
     } finally {
       this.cameraLoading.set(false);
     }
-  }
-
-  private async inicializarMediaPipe(): Promise<HandLandmarker> {
-    if (this.detector) return this.detector;
-
-    const wasmUrls = [
-      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm',
-      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm',
-      'https://unpkg.com/@mediapipe/tasks-vision@latest/wasm',
-    ];
-
-    let vision: any = null;
-    let ultimoError: any = null;
-
-    for (const url of wasmUrls) {
-      try {
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`Timeout cargando MediaPipe WASM desde ${url}`)), 5000)
-        );
-        vision = await Promise.race([
-          FilesetResolver.forVisionTasks(url),
-          timeoutPromise,
-        ]);
-        if (vision) break;
-      } catch (err) {
-        ultimoError = err;
-        console.warn(`[MediaPipe] Intento con WASM en ${url}:`, err);
-      }
-    }
-
-    if (!vision) {
-      throw ultimoError || new Error('No fue posible cargar los módulos WASM de MediaPipe.');
-    }
-
-    try {
-      this.detector = await HandLandmarker.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath:
-            'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-          delegate: 'GPU',
-        },
-        runningMode: 'VIDEO',
-        numHands: 2,
-      });
-    } catch (gpuError) {
-      console.warn('[MediaPipe] GPU delegate no disponible, cambiando a CPU:', gpuError);
-      this.detector = await HandLandmarker.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath:
-            'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-          delegate: 'CPU',
-        },
-        runningMode: 'VIDEO',
-        numHands: 2,
-      });
-    }
-
-    return this.detector;
   }
 
   stopCamera(): void {
@@ -1745,27 +1587,16 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!video || !this.detector || !this.cameraActive()) return;
 
     if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
-      let now = performance.now();
-      if (now <= this.lastVideoTimestamp) {
-        now = this.lastVideoTimestamp + 1;
-      }
-      this.lastVideoTimestamp = now;
+      const now = performance.now();
+      const result = this.detector.detectForVideo(video, now);
+      const handedness = (result as any).handedness || (result as any).handednesses || [];
 
-      try {
-        const result = this.detector.detectForVideo(video, now);
-        const handedness = (result as any).handedness || (result as any).handednesses || [];
-
-        this.updateHandednessHUD(result.landmarks, handedness);
-        this.evaluateTechnique(result.landmarks, now);
-        this.drawLandmarks(result.landmarks);
-      } catch (detectErr) {
-        console.warn('[MediaPipe] Fotograma omitido por variación de fotograma:', detectErr);
-      }
+      this.updateHandednessHUD(result.landmarks, handedness);
+      this.evaluateTechnique(result.landmarks, now);
+      this.drawLandmarks(result.landmarks);
     }
 
-    if (this.cameraActive()) {
-      this.animationFrame = requestAnimationFrame(() => this.detectHands());
-    }
+    this.animationFrame = requestAnimationFrame(() => this.detectHands());
   }
 
   private updateHandednessHUD(landmarks: { x: number; y: number }[][], handedness: any[]): void {
@@ -2208,8 +2039,33 @@ export class PracticaComponent implements OnInit, AfterViewInit, OnDestroy {
       this.stopTimer();
       this.cameraActive.set(true);
 
-      this.lastVideoTimestamp = -1;
-      await this.inicializarMediaPipe();
+      if (!this.detector) {
+        const vision = await FilesetResolver.forVisionTasks(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
+        );
+        try {
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'GPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        } catch {
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'CPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        }
+      }
+
       this.detectHands();
       this.reproducirChimeExito();
     } catch (err: any) {
