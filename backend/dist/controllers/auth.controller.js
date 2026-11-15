@@ -297,6 +297,9 @@ const ActualizarPerfilSchema = zod_1.z.object({
     correo: zod_1.z.string().email('Correo electrónico no válido').optional(),
     passwordActual: zod_1.z.string().optional(),
     passwordNuevo: zod_1.z.string().min(6, 'La nueva contraseña debe tener al menos 6 caracteres').optional(),
+    semestre: zod_1.z.string().optional(),
+    grupo: zod_1.z.string().optional(),
+    avatar: zod_1.z.string().optional(),
 });
 /**
  * Controlador para actualizar datos de perfil y cambio de contraseña
@@ -373,14 +376,22 @@ const actualizarPerfil = async (req, res) => {
             correo: usuarioActualizado.correo,
             rol: usuarioActualizado.rol,
             codigoEstudiantil: usuarioActualizado.codigoEstudiantil,
+            semestre: data.semestre || usuario.semestre || 'Semestre VII',
+            grupo: data.grupo || usuario.grupo || 'Grupo A-1',
+            avatar: data.avatar || usuario.avatar || '',
         };
-        console.log(`[Supabase DB] 🔑 Login exitoso desde tabla "Usuario": ${usuario.nombre} (${usuario.correo}) | Rol: ${usuario.rol}`);
+        console.log(`[Supabase DB] 👤 Perfil actualizado para: ${usuarioActualizado.nombre} (${usuarioActualizado.correo}) | Rol: ${usuarioActualizado.rol}`);
         res.json({
             mensaje: data.passwordNuevo
                 ? 'Contraseña actualizada correctamente'
                 : 'Datos de perfil actualizados exitosamente',
             user: userPayload,
-            usuario: usuarioActualizado,
+            usuario: {
+                ...usuarioActualizado,
+                semestre: userPayload.semestre,
+                grupo: userPayload.grupo,
+                avatar: userPayload.avatar,
+            },
         });
     }
     catch (error) {

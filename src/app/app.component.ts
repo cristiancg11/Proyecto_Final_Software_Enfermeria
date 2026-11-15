@@ -27,6 +27,7 @@ export class App {
   readonly studentGroup = computed(
     () => this.authService.usuarioActual()?.grupo || 'Grupo A-1'
   );
+  readonly avatarUsuario = this.authService.avatarUsuario;
   readonly esDocente = this.authService.esDocente;
   readonly isLoggedIn = computed(
     () =>
@@ -62,9 +63,15 @@ export class App {
     if (ruta.includes('/encuesta')) return { numero: 6, nombre: '6. Encuesta' };
     if (ruta.includes('/resultado')) return { numero: 7, nombre: '7. Resultados' };
     if (ruta.includes('/reto-extremo')) return { numero: 8, nombre: '⚡ Modo Desafío' };
+    if (ruta.includes('/perfil')) return { numero: 10, nombre: '👤 Mi Perfil' };
     if (ruta.includes('/admin')) return { numero: 99, nombre: '👑 Panel Docente' };
     return { numero: 0, nombre: 'Dashboard' };
   });
+
+  esImagenUrl(str: string | null | undefined): boolean {
+    if (!str) return false;
+    return str.startsWith('http://') || str.startsWith('https://') || str.startsWith('data:image/');
+  }
 
   // Estado del Chatbot Interactivo Global (Manitos Coach)
   readonly chatAbierto = signal<boolean>(false);

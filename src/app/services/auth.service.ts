@@ -12,6 +12,7 @@ export interface Usuario {
   fechaRegistro?: string | Date;
   semestre?: string;
   grupo?: string;
+  avatar?: string;
 }
 
 export interface RegistroDatos {
@@ -42,6 +43,9 @@ export interface ActualizarPerfilDatos {
   correo?: string;
   passwordActual?: string;
   passwordNuevo?: string;
+  semestre?: string;
+  grupo?: string;
+  avatar?: string;
 }
 
 export interface ActualizarPerfilResponse {
@@ -73,6 +77,7 @@ export class AuthService {
   readonly estaAutenticado = computed<boolean>(() => !!this.token());
   readonly esDocente = computed<boolean>(() => this.usuarioActual()?.rol === 'DOCENTE');
   readonly esEstudiante = computed<boolean>(() => this.usuarioActual()?.rol === 'ESTUDIANTE');
+  readonly avatarUsuario = computed<string>(() => this.usuarioActual()?.avatar || '');
 
   /**
    * Registra un nuevo estudiante o docente de forma persistente en Supabase PostgreSQL

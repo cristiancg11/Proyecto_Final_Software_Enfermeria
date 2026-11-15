@@ -203,6 +203,43 @@ export interface QualityAlert {
                 [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
               ></canvas>
 
+              <!-- ETIQUETADO DE MANOS EN TIEMPO REAL (MediaPipe Handedness) -->
+              @if (cameraActive()) {
+                <!-- Resumen fijo superior con chips indicadores -->
+                <div class="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-2 pointer-events-none">
+                  @for (mano of manosDetectadasHUD(); track mano.lado) {
+                    <div
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg backdrop-blur-md border animate-fade-in transition-all"
+                      [ngClass]="mano.lado === 'Izquierda'
+                        ? 'bg-teal-950/85 text-teal-200 border-teal-400/60 shadow-teal-950/50'
+                        : 'bg-sky-950/85 text-sky-200 border-sky-400/60 shadow-sky-950/50'"
+                    >
+                      <span class="w-2 h-2 rounded-full animate-ping" [ngClass]="mano.lado === 'Izquierda' ? 'bg-teal-400' : 'bg-sky-400'"></span>
+                      <span>{{ mano.etiqueta }}</span>
+                      <span class="text-[10px] opacity-80 font-mono">({{ mano.confianza }}%)</span>
+                    </div>
+                  }
+                </div>
+
+                <!-- Insignias flotantes que siguen anatómicamente a cada mano -->
+                <div class="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+                  @for (mano of manosDetectadasHUD(); track mano.lado) {
+                    <div
+                      class="absolute transition-all duration-75 ease-out flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-extrabold shadow-2xl backdrop-blur-md border pointer-events-none select-none"
+                      [style.left.%]="mano.x"
+                      [style.top.%]="mano.y"
+                      [ngClass]="mano.lado === 'Izquierda'
+                        ? 'bg-teal-950/90 text-teal-200 border-teal-400 shadow-teal-950/60'
+                        : 'bg-sky-950/90 text-sky-200 border-sky-400 shadow-sky-950/60'"
+                    >
+                      <span>{{ mano.lado === 'Izquierda' ? '✋' : '🤚' }}</span>
+                      <span>{{ mano.lado === 'Izquierda' ? 'Mano Izquierda' : 'Mano Derecha' }}</span>
+                      <span class="text-[9px] opacity-80 font-mono">({{ mano.confianza }}%)</span>
+                    </div>
+                  }
+                </div>
+              }
+
               <!-- OVERLAY ANTES DE ACTIVAR LA CÁMARA (El temporizador NO inicia hasta que se active) -->
               @if (!cameraActive()) {
                 <div class="absolute inset-0 z-20 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white">
@@ -594,6 +631,13 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   readonly isFullScreen = signal(false);
 
   readonly handsDetected = signal(0);
+  readonly manosDetectadasHUD = signal<{
+    lado: 'Izquierda' | 'Derecha';
+    etiqueta: string;
+    confianza: number;
+    x: number;
+    y: number;
+  }[]>([]);
   readonly handsTogether = signal(false);
   readonly handsRubbing = signal(false);
   readonly wristDistance = signal(0);
@@ -821,6 +865,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   private releaseStream(): void {
     this.stream?.getTracks().forEach((track) => track.stop());
     this.stream = null;
+    this.manosDetectadasHUD.set([]);
     const video = this.cameraVideo?.nativeElement;
     if (video) video.srcObject = null;
   }
@@ -832,12 +877,53 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
       const now = performance.now();
       const result = this.detector.detectForVideo(video, now);
+      const handedness = (result as any).handedness || (result as any).handednesses || [];
 
+      this.updateHandednessHUD(result.landmarks, handedness);
       this.evaluateTechnique(result.landmarks, now);
       this.drawLandmarks(result.landmarks);
     }
 
     this.animationFrame = requestAnimationFrame(() => this.detectHands());
+  }
+
+  private updateHandednessHUD(landmarks: { x: number; y: number }[][], handedness: any[]): void {
+    if (!landmarks || landmarks.length === 0) {
+      if (this.manosDetectadasHUD().length > 0) {
+        this.manosDetectadasHUD.set([]);
+      }
+      return;
+    }
+
+    const isMirrored = this.camaraFacingMode() === 'user';
+    const hud: { lado: 'Izquierda' | 'Derecha'; etiqueta: string; confianza: number; x: number; y: number }[] = [];
+
+    for (let i = 0; i < landmarks.length; i++) {
+      const hand = landmarks[i];
+      if (!hand || hand.length === 0) continue;
+
+      const handCat = handedness && handedness[i] && handedness[i][0] ? handedness[i][0] : null;
+      const rawCategory = handCat?.categoryName || handCat?.displayName || (i === 0 ? 'Right' : 'Left');
+      const isLeft = rawCategory.toLowerCase().includes('left');
+      const lado: 'Izquierda' | 'Derecha' = isLeft ? 'Izquierda' : 'Derecha';
+      const confianza = handCat ? Math.round(handCat.score * 100) : 96;
+
+      const normX = (hand[0].x + hand[9].x) / 2;
+      const normY = Math.min(hand[0].y, hand[9].y);
+
+      const visualX = isMirrored ? (1 - normX) * 100 : normX * 100;
+      const visualY = normY * 100;
+
+      hud.push({
+        lado,
+        etiqueta: isLeft ? '✋ Mano Izquierda' : '🤚 Mano Derecha',
+        confianza,
+        x: Math.max(4, Math.min(76, visualX - 10)),
+        y: Math.max(6, Math.min(84, visualY - 8)),
+      });
+    }
+
+    this.manosDetectadasHUD.set(hud);
   }
 
   private evaluateTechnique(landmarks: { x: number; y: number }[][], now: number): void {
@@ -1030,6 +1116,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     this.palmsValidated.set(false);
     this.palmsFeedback.set('Coloca ambas manos en el encuadre para comenzar.');
     this.consecutiveFrames.set(0);
+    this.manosDetectadasHUD.set([]);
     this.previousKeyPoints = null;
     this.previousFrameAt = null;
     this.smoothedMotion = 0;

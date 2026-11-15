@@ -366,6 +366,9 @@ const ActualizarPerfilSchema = z.object({
   correo: z.string().email('Correo electrónico no válido').optional(),
   passwordActual: z.string().optional(),
   passwordNuevo: z.string().min(6, 'La nueva contraseña debe tener al menos 6 caracteres').optional(),
+  semestre: z.string().optional(),
+  grupo: z.string().optional(),
+  avatar: z.string().optional(),
 });
 
 /**
@@ -454,10 +457,13 @@ export const actualizarPerfil = async (req: Request, res: Response): Promise<voi
       correo: usuarioActualizado.correo,
       rol: usuarioActualizado.rol,
       codigoEstudiantil: usuarioActualizado.codigoEstudiantil,
+      semestre: data.semestre || (usuario as any).semestre || 'Semestre VII',
+      grupo: data.grupo || (usuario as any).grupo || 'Grupo A-1',
+      avatar: data.avatar || (usuario as any).avatar || '',
     };
 
     console.log(
-      `[Supabase DB] 🔑 Login exitoso desde tabla "Usuario": ${usuario.nombre} (${usuario.correo}) | Rol: ${usuario.rol}`
+      `[Supabase DB] 👤 Perfil actualizado para: ${usuarioActualizado.nombre} (${usuarioActualizado.correo}) | Rol: ${usuarioActualizado.rol}`
     );
 
     res.json({
@@ -465,7 +471,12 @@ export const actualizarPerfil = async (req: Request, res: Response): Promise<voi
         ? 'Contraseña actualizada correctamente'
         : 'Datos de perfil actualizados exitosamente',
       user: userPayload,
-      usuario: usuarioActualizado,
+      usuario: {
+        ...usuarioActualizado,
+        semestre: userPayload.semestre,
+        grupo: userPayload.grupo,
+        avatar: userPayload.avatar,
+      },
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

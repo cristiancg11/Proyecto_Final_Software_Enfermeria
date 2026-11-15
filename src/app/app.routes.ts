@@ -37,6 +37,13 @@ export const routes: Routes = [
     title: 'Manos Seguras — Dashboard Académico • UCC',
   },
   {
+    path: 'perfil',
+    canActivate: [studentAuthGuard],
+    loadComponent: () =>
+      import('./pages/perfil/perfil.component').then((m) => m.PerfilComponent),
+    title: 'Manos Seguras — Mi Perfil Académico',
+  },
+  {
     path: 'introduccion',
     canActivate: [studentAuthGuard],
     loadComponent: () =>

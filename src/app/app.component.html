@@ -36,15 +36,25 @@
         <!-- Badge de Usuario Dinámico y Botón Salir -->
         <div class="flex items-center gap-2 sm:gap-3.5 shrink-0">
           
-          <!-- Badge del Usuario conectado desde Supabase -->
-          <div class="flex items-center gap-2.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-inner">
-            <div class="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-600 text-slate-950 font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
-              <span>{{ (studentName() || 'E').charAt(0).toUpperCase() }}</span>
+          <!-- Badge del Usuario conectado desde Supabase (Clic para ir a Mi Perfil) -->
+          <a
+            routerLink="/perfil"
+            class="flex items-center gap-2.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/80 shadow-inner group transition-all cursor-pointer"
+            title="Ver y editar Mi Perfil"
+          >
+            <div class="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-600 text-slate-950 font-black text-xs flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
+              @if (avatarUsuario() && esImagenUrl(avatarUsuario())) {
+                <img [src]="avatarUsuario()" [alt]="studentName()" class="w-full h-full object-cover" />
+              } @else if (avatarUsuario()) {
+                <span class="text-sm select-none">{{ avatarUsuario() }}</span>
+              } @else {
+                <span>{{ (studentName() || 'E').charAt(0).toUpperCase() }}</span>
+              }
               <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#0B192C]"></span>
             </div>
 
             <div class="flex flex-col">
-              <span class="text-xs sm:text-sm font-bold text-white truncate max-w-[120px] sm:max-w-[200px] leading-tight">
+              <span class="text-xs sm:text-sm font-bold text-white group-hover:text-teal-300 transition-colors truncate max-w-[120px] sm:max-w-[200px] leading-tight">
                 {{ studentName() }}
               </span>
               <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
@@ -53,7 +63,7 @@
                 <span class="truncate max-w-[100px]">{{ studentGroup() }}</span>
               </div>
             </div>
-          </div>
+          </a>
 
           <!-- Botón de Salir (Cerrar Sesión) -->
           <button
@@ -137,7 +147,7 @@
 
             <!-- 5. Mi Perfil -->
             <a
-              routerLink="/resultado"
+              routerLink="/perfil"
               routerLinkActive="bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-xs font-bold"
               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
             >
@@ -253,7 +263,7 @@
 
         <!-- 5. Mi Perfil -->
         <a
-          routerLink="/resultado"
+          routerLink="/perfil"
           routerLinkActive="text-teal-300 font-bold"
           class="flex flex-col items-center justify-center p-1.5 rounded-xl text-slate-400 hover:text-white transition-all text-center group"
         >
