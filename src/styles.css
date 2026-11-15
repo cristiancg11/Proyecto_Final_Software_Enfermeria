@@ -266,3 +266,48 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(13, 148, 136, 0.75);
 }
+
+/* ==========================================================================
+   ESTILOS DE IMPRESIÓN OFICIAL — DIPLOMA INSTITUCIONAL UCC PASTO
+   ========================================================================== */
+@media print {
+  @page {
+    size: letter landscape;
+    margin: 8mm;
+  }
+
+  /* Ocultar elementos generales no pertinentes para el diploma */
+  nav,
+  header,
+  aside,
+  footer,
+  button,
+  .no-print,
+  .sidebar,
+  .manitas-coach-bot {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Ocultar contenido interactivo en la vista de resultados */
+  .resultado-pantalla-web {
+    display: none !important;
+  }
+
+  /* Mostrar diploma oficial con borde institucional */
+  .diploma-oficial-print {
+    display: block !important;
+    width: 100% !important;
+    min-height: 95vh !important;
+    page-break-inside: avoid !important;
+    background: #ffffff !important;
+  }
+}

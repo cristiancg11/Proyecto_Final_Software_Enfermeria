@@ -15,7 +15,7 @@ import {
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="max-w-4xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
+    <div class="resultado-pantalla-web max-w-4xl mx-auto px-4 py-8 md:py-12 animate-fade-in">
       <!-- Certificado / Tarjeta de Calificación Principal -->
       <div class="bg-white/98 backdrop-blur-xl rounded-2xl p-6 md:p-10 shadow-[0_24px_60px_-15px_rgba(7,17,30,0.5)] border border-slate-200/90 relative overflow-hidden mb-8">
         
@@ -174,6 +174,17 @@ import {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
+                <button
+                  type="button"
+                  (click)="windowPrint()"
+                  class="mt-2.5 w-full px-3 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-[11px] shadow-sm transition-all flex items-center justify-center gap-1 cursor-pointer"
+                  title="Imprimir diploma oficial en formato PDF"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  </svg>
+                  <span>Imprimir Diploma</span>
+                </button>
               </div>
             </div>
           </div>
@@ -181,6 +192,18 @@ import {
 
         <!-- Botones de Acción Inmediata -->
         <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 pt-6 border-t border-slate-100 mt-8">
+          <button
+            type="button"
+            (click)="windowPrint()"
+            class="px-6 py-4 rounded-xl bg-gradient-to-r from-amber-600 via-teal-600 to-emerald-600 hover:brightness-110 text-white font-black text-sm shadow-xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2.5 w-full sm:w-auto cursor-pointer"
+            title="Generar e imprimir diploma oficial universitario en formato PDF"
+          >
+            <svg class="w-5 h-5 text-amber-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            <span>Descargar / Imprimir Diploma Oficial PDF</span>
+          </button>
+
           <button
             type="button"
             (click)="repeatEvaluation()"
@@ -659,6 +682,118 @@ import {
             </div>
           }
         </div>
+      </div>
+    </div>
+
+    <!-- DIPLOMA OFICIAL IMPRIMIBLE / DESCARGABLE (Visible únicamente en impresión o PDF) -->
+    <div class="hidden print:block diploma-oficial-print p-6 bg-white text-slate-900 border-[6px] border-double border-[#008072] rounded-3xl m-2 shadow-none font-sans">
+      <!-- Marco Interior Decorativo Dorado/Teal -->
+      <div class="border-2 border-amber-600/60 rounded-2xl p-6 relative flex flex-col justify-between min-h-[90vh]">
+        
+        <!-- Encabezado Institucional Universitario -->
+        <div class="text-center space-y-1.5 border-b-2 border-slate-200 pb-5">
+          <div class="flex items-center justify-center gap-4 mb-1">
+            <span class="text-3xl">🏛️</span>
+            <div class="text-center">
+              <h1 class="text-2xl font-black tracking-wider uppercase text-slate-900">
+                Universidad Cooperativa de Colombia
+              </h1>
+              <p class="text-xs font-bold tracking-widest uppercase text-[#008072]">
+                Sede Pasto • Facultad de Ciencias de la Salud • Programa de Enfermería
+              </p>
+            </div>
+            <span class="text-3xl">🩺</span>
+          </div>
+          <div class="inline-block px-4 py-1 rounded-full bg-teal-50 border border-teal-300 text-teal-800 text-[11px] font-black uppercase tracking-widest">
+            Sistema Autónomo de Certificación en Bioseguridad Clínica • Manos Seguras
+          </div>
+        </div>
+
+        <!-- Cuerpo del Certificado -->
+        <div class="text-center my-4 space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">
+            Otorga la presente
+          </p>
+          <h2 class="text-3xl font-black tracking-tight text-[#0B2B29] uppercase">
+            Acreditación de Competencia Clínica en Higiene de Manos
+          </h2>
+          <p class="text-xs text-slate-600">Conforme a las directrices oficiales de la Organización Mundial de la Salud (OMS)</p>
+
+          <div class="py-3">
+            <p class="text-xs uppercase tracking-wider text-slate-500">A favor del estudiante:</p>
+            <p class="text-3xl font-black text-[#008072] mt-1 font-serif tracking-wide underline decoration-amber-500 decoration-2 underline-offset-8">
+              {{ studentName() }}
+            </p>
+            <p class="text-xs text-slate-600 mt-2 font-mono">
+              Código Académico Institucional: <strong>{{ studentCode() }}</strong>
+            </p>
+          </div>
+
+          <p class="text-xs text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Por haber acreditado con rigor la técnica aséptica de lavado de manos en sus 6 pasos clínicos reglamentarios, demostrando destreza biomecánica supervisada mediante Visión Artificial MediaPipe y evaluado en fundamentos teóricos de los 5 Momentos de la OMS.
+          </p>
+
+          <!-- Cuadro de Calificaciones Oficiales -->
+          <div class="grid grid-cols-3 gap-4 max-w-xl mx-auto my-4 text-center">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[10px] font-bold uppercase text-slate-500 block">Práctica Biomecánica (60%)</span>
+              <span class="text-xl font-black text-teal-700">{{ (evaluation().notaPractica ?? 0).toFixed(1) }} / 10</span>
+            </div>
+            <div class="p-3 bg-teal-50 rounded-xl border-2 border-[#008072]">
+              <span class="text-[10px] font-black uppercase text-[#008072] block">Nota Final Consolidada</span>
+              <span class="text-2xl font-black text-[#0B2B29]">{{ (evaluation().notaFinal ?? evaluation().overallScore ?? 0).toFixed(1) }} / 10</span>
+              <span class="text-[9px] font-bold text-emerald-700 block uppercase">Aprobado con Excelencia</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[10px] font-bold uppercase text-slate-500 block">Evaluación Teórica (40%)</span>
+              <span class="text-xl font-black text-sky-700">{{ (evaluation().notaTeorica ?? 0).toFixed(1) }} / 10</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Firmas y Validación Institucional -->
+        <div class="border-t-2 border-slate-200 pt-5 mt-2">
+          <div class="grid grid-cols-3 items-end gap-6 text-center">
+            <!-- Firma Docente -->
+            <div class="space-y-1">
+              <div class="h-10 flex items-end justify-center">
+                <span class="font-serif italic text-base text-slate-700">Dra. Claudia Morales M.</span>
+              </div>
+              <div class="border-t border-slate-400 w-3/4 mx-auto pt-1">
+                <p class="text-xs font-bold text-slate-900">Docente Supervisora de Práctica</p>
+                <p class="text-[10px] text-slate-500">Programa de Enfermería • UCC Pasto</p>
+              </div>
+            </div>
+
+            <!-- Sello y QR Central -->
+            <div class="flex flex-col items-center justify-center space-y-1">
+              @if (qrCodeUrl()) {
+                <img [src]="qrCodeUrl()" alt="QR Validación" class="w-16 h-16 object-contain border border-slate-300 rounded-lg p-0.5 bg-white" />
+              }
+              <span class="text-[9px] font-mono font-bold text-slate-600 select-all">
+                COD: {{ codigoCertificado() || 'UCC-MED-2026-VAL' }}
+              </span>
+              <span class="text-[9px] text-emerald-700 font-bold">✓ Verificado en Supabase Cloud</span>
+            </div>
+
+            <!-- Firma Coordinación -->
+            <div class="space-y-1">
+              <div class="h-10 flex items-end justify-center">
+                <span class="font-serif italic text-base text-slate-700">Comité de Evaluación Clínica</span>
+              </div>
+              <div class="border-t border-slate-400 w-3/4 mx-auto pt-1">
+                <p class="text-xs font-bold text-slate-900">Coordinación de Prácticas y Simulación</p>
+                <p class="text-[10px] text-slate-500">Facultad de Ciencias de la Salud</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-4 pt-2 border-t border-slate-100">
+            <span>Fecha de expedición: {{ currentDate | date:'dd/MM/yyyy' }} • Pasto, Nariño, Colombia</span>
+            <span>Acreditación válida para registro de horas en historia clínica y práctica formativa</span>
+          </div>
+        </div>
+
       </div>
     </div>
   `,

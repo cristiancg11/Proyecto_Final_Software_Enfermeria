@@ -200,6 +200,32 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           }
         </div>
 
+        <!-- ACCESO RÁPIDO PARA JURADO / DEMOSTRACIÓN ACADÉMICA EN VIVO -->
+        <div class="mt-6 p-4 rounded-2xl bg-slate-900/85 border border-teal-500/40 text-center shadow-2xl backdrop-blur-md space-y-2.5">
+          <div class="flex items-center justify-center gap-2 text-xs font-bold text-teal-300">
+            <span class="animate-pulse">🧪</span>
+            <span>Acceso Rápido de Demostración para Jurados y Docentes</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              type="button"
+              (click)="iniciarDemoEstudiante()"
+              class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-extrabold text-xs shadow-md shadow-teal-950/40 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <span>👨‍🎓</span>
+              <span>Entrar como Estudiante Demo</span>
+            </button>
+            <button
+              type="button"
+              (click)="iniciarDemoDocente()"
+              class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <span>👑</span>
+              <span>Entrar como Jurado / Docente</span>
+            </button>
+          </div>
+        </div>
+
         <p class="mt-6 text-center text-xs text-slate-400">Universidad Cooperativa de Colombia • Programa de Enfermería</p>
       </div>
     </div>
@@ -355,5 +381,61 @@ export class BienvenidaComponent {
       this.stateService.resetProgressToStepOne();
       this.router.navigate(['/dashboard']);
     }
+  }
+
+  iniciarDemoEstudiante(): void {
+    const demoUser = {
+      id: 'demo-estudiante-2026',
+      nombre: 'Alejandro Morales Rivera',
+      codigoEstudiantil: '2026-ENF-701',
+      correo: 'alejandro.morales@campusucc.edu.co',
+      rol: 'ESTUDIANTE' as const,
+      consentimiento: true,
+      semestre: 'Semestre VII',
+      grupo: 'Grupo A-1 • Clínica',
+      avatar: '👨‍⚕️',
+      fechaRegistro: new Date(),
+    };
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', 'demo-jwt-token-estudiante-2026');
+      localStorage.setItem('usuario', JSON.stringify(demoUser));
+    }
+    this.authService.token.set('demo-jwt-token-estudiante-2026');
+    this.authService.usuarioActual.set(demoUser);
+    this.stateService.setStudent({
+      fullName: demoUser.nombre,
+      studentCode: demoUser.codigoEstudiantil,
+      consent: true,
+    });
+    this.stateService.resetProgressToStepOne();
+    this.router.navigate(['/dashboard']);
+  }
+
+  iniciarDemoDocente(): void {
+    const demoDocente = {
+      id: 'demo-docente-2026',
+      nombre: 'Dra. Claudia Martínez',
+      codigoEstudiantil: 'DOC-ENF-001',
+      correo: 'claudia.martinez@campusucc.edu.co',
+      rol: 'DOCENTE' as const,
+      consentimiento: true,
+      semestre: 'Coordinación Clínica',
+      grupo: 'Comité Evaluador OMS',
+      avatar: '👩‍⚕️',
+      fechaRegistro: new Date(),
+    };
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', 'demo-jwt-token-docente-2026');
+      localStorage.setItem('usuario', JSON.stringify(demoDocente));
+    }
+    this.authService.token.set('demo-jwt-token-docente-2026');
+    this.authService.usuarioActual.set(demoDocente);
+    this.stateService.setStudent({
+      fullName: demoDocente.nombre,
+      studentCode: demoDocente.codigoEstudiantil,
+      consent: true,
+    });
+    this.stateService.unlockStep(7);
+    this.router.navigate(['/admin']);
   }
 }

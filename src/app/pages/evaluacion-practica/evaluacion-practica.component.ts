@@ -278,6 +278,15 @@ export interface QualityAlert {
                     }
                   </button>
 
+                  <button
+                    type="button"
+                    (click)="iniciarModoDemoVideo()"
+                    class="mt-3 px-5 py-2.5 rounded-full bg-slate-800/90 hover:bg-slate-700 text-teal-300 hover:text-white border border-teal-500/40 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-md"
+                    title="Simular reconocimiento IA con video de prueba"
+                  >
+                    <span>🎬 Video de Prueba IA (Modo Contingencia / Jurado)</span>
+                  </button>
+
                   @if (cameraError()) {
                     <p class="text-xs text-[#FF6A4D] font-bold mt-3 max-w-sm">{{ cameraError() }}</p>
                   }
@@ -1158,6 +1167,9 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     const finalSeconds = Math.max(0.5, this.currentSeconds());
     const stepNum = this.currentStep().number;
 
+    // Feedback sonoro inmediato (Chime de éxito OMS)
+    this.reproducirChimeExito();
+
     // Guarda el puntaje de la práctica biomecánica en el servicio central
     this.stateService.recordStepTime(stepNum, finalSeconds);
 
@@ -1170,6 +1182,94 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     } else {
       this.currentStepIndex.update((idx) => idx + 1);
       this.startStepTimer();
+    }
+  }
+
+  reproducirChimeExito(): void {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const playNote = (freq: number, start: number, duration: number) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + start);
+        gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + start + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + start + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + start);
+        osc.stop(ctx.currentTime + start + duration);
+      };
+      playNote(523.25, 0.0, 0.22);
+      playNote(659.25, 0.08, 0.22);
+      playNote(783.99, 0.16, 0.3);
+      playNote(1046.5, 0.25, 0.45);
+    } catch {}
+  }
+
+  async iniciarModoDemoVideo(): Promise<void> {
+    try {
+      this.cameraLoading.set(true);
+      this.cameraError.set('');
+      this.releaseStream();
+
+      const video = this.cameraVideo?.nativeElement;
+      if (!video) throw new Error('Elemento de video no encontrado.');
+
+      video.srcObject = null;
+      video.src = `assets/videos/paso${this.currentStepIndex() + 1}.mp4`;
+      video.crossOrigin = 'anonymous';
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.autoplay = true;
+
+      try {
+        await video.play();
+      } catch {
+        video.src = 'https://upload.wikimedia.org/wikipedia/commons/8/89/Clean_hands_short.webm';
+        await video.play();
+      }
+
+      this.stopTimer();
+      this.cameraActive.set(true);
+
+      if (!this.detector) {
+        const vision = await FilesetResolver.forVisionTasks(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
+        );
+        try {
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'GPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        } catch {
+          this.detector = await HandLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath:
+                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+              delegate: 'CPU',
+            },
+            runningMode: 'VIDEO',
+            numHands: 2,
+          });
+        }
+      }
+
+      this.detectHands();
+      this.reproducirChimeExito();
+    } catch (err: any) {
+      this.cameraError.set('No se pudo cargar el video de demostración: ' + (err?.message || 'Error desconocido'));
+    } finally {
+      this.cameraLoading.set(false);
     }
   }
 
