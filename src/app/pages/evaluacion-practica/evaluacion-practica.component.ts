@@ -192,14 +192,16 @@ export interface QualityAlert {
                 autoplay
                 muted
                 [muted]="true"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover block"
+                style="display: block; width: 100%; height: 100%; object-fit: cover;"
                 [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
               ></video>
 
               <!-- Canvas Superpuesto para Dibujo de MediaPipe AI -->
               <canvas
                 #handOverlay
-                class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover"
+                class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover block"
+                style="display: block; width: 100%; height: 100%; object-fit: cover;"
                 [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
               ></canvas>
 
@@ -782,7 +784,11 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
         });
       }
 
-      const video = this.cameraVideo?.nativeElement;
+      let video = this.cameraVideo?.nativeElement;
+      if (!video) {
+        await new Promise((resolve) => setTimeout(resolve, 80));
+        video = this.cameraVideo?.nativeElement;
+      }
       if (!video) throw new Error('Visor de video no disponible');
 
       video.setAttribute('playsinline', 'true');
@@ -794,10 +800,25 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
       video.autoplay = true;
       video.srcObject = this.stream;
 
+      if (video.readyState < 1) {
+        await new Promise<void>((resolve) => {
+          const onLoaded = () => {
+            video?.removeEventListener('loadedmetadata', onLoaded);
+            resolve();
+          };
+          video?.addEventListener('loadedmetadata', onLoaded);
+          setTimeout(resolve, 1200);
+        });
+      }
+
       try {
         await video.play();
       } catch (errPlay) {
-        console.warn('Reproducción de video diferida:', errPlay);
+        console.warn('Reproducción de video diferida en examen:', errPlay);
+        try {
+          video.muted = true;
+          await video.play();
+        } catch {}
       }
 
       // REQUISITO 1: El cronómetro arranca ESTRICTAMENTE aquí, cuando la cámara está activa y transmitiendo
@@ -831,24 +852,28 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   private async inicializarMediaPipe(): Promise<HandLandmarker> {
     if (this.detector) return this.detector;
 
-    const wasmCandidates = [
-      '/wasm',
-      'wasm',
-      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm',
+    const wasmUrls = [
       'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm',
-      'https://unpkg.com/@mediapipe/tasks-vision@0.10.14/wasm',
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm',
+      'https://unpkg.com/@mediapipe/tasks-vision@latest/wasm',
     ];
 
     let vision: any = null;
     let ultimoError: any = null;
 
-    for (const path of wasmCandidates) {
+    for (const url of wasmUrls) {
       try {
-        vision = await FilesetResolver.forVisionTasks(path);
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`Timeout cargando MediaPipe WASM desde ${url}`)), 5000)
+        );
+        vision = await Promise.race([
+          FilesetResolver.forVisionTasks(url),
+          timeoutPromise,
+        ]);
         if (vision) break;
       } catch (err) {
         ultimoError = err;
-        console.warn(`[MediaPipe] Intento con WASM en ${path}:`, err);
+        console.warn(`[MediaPipe Evaluación] Intento con WASM en ${url}:`, err);
       }
     }
 

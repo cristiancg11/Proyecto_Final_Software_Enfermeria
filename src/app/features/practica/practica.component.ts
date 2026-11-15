@@ -513,14 +513,16 @@ export interface QualityAlert {
                   autoplay
                   muted
                   [muted]="true"
-                  class="w-full h-full object-cover"
+                  class="w-full h-full object-cover block"
+                  style="display: block; width: 100%; height: 100%; object-fit: cover;"
                   [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
                 ></video>
 
                 <!-- Canvas de Detección MediaPipe con dimensiones nativas y condicional de espejo -->
                 <canvas
                   #handOverlay
-                  class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover"
+                  class="absolute inset-0 w-full h-full pointer-events-none z-10 object-cover block"
+                  style="display: block; width: 100%; height: 100%; object-fit: cover;"
                   [ngClass]="camaraFacingMode() === 'user' ? 'scale-x-[-1]' : ''"
                 ></canvas>
 
@@ -1227,12 +1229,24 @@ export class PracticaComponent implements OnInit, OnDestroy {
   private previousFrameAt: number | null = null;
   private smoothedMotion: number = 0;
   private effectiveSeconds: number = 0;
+  private currentUtterance: SpeechSynthesisUtterance | null = null;
 
   ngOnInit(): void {
     if (!this.student()) {
       this.router.navigate(['/bienvenida']);
       return;
     }
+
+    // Inicializar y precargar voces del navegador para Web Speech API
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+          try { window.speechSynthesis.getVoices(); } catch {}
+        };
+      } catch {}
+    }
+
     // Iniciar cuenta regresiva orientativa de apertura de grifo (5 segundos)
     this.mostrarFaseInicial.set(true);
     this.segundosGrifo.set(5);
@@ -1257,10 +1271,11 @@ export class PracticaComponent implements OnInit, OnDestroy {
       clearInterval(this.grifoInterval);
       this.grifoInterval = null;
     }
+    this.desbloquearAudioMovil();
     this.mostrarFaseInicial.set(false);
     this.startStepTimer();
     this.startCamera();
-    this.anunciarPasoEnVoz(0);
+    this.anunciarPasoEnVoz(0, true);
   }
 
   goToBienvenida(): void {
@@ -1415,37 +1430,63 @@ export class PracticaComponent implements OnInit, OnDestroy {
       if (synth.paused) {
         try { synth.resume(); } catch {}
       }
+
+      const ejecutarHabla = () => {
+        try {
+          if (synth.paused) {
+            try { synth.resume(); } catch {}
+          }
+          const utterance = new SpeechSynthesisUtterance(texto);
+          this.currentUtterance = utterance; // Evitar que el Garbage Collector destruya la locución en Chrome
+          utterance.lang = 'es-ES';
+          utterance.rate = 1.02;
+          utterance.pitch = 1.05;
+
+          const voices = synth.getVoices();
+          const vozEspanol = voices.find(
+            (v) =>
+              v.lang.toLowerCase().startsWith('es-co') ||
+              v.lang.toLowerCase().startsWith('es-mx') ||
+              v.lang.toLowerCase().startsWith('es-es') ||
+              v.lang.toLowerCase().startsWith('es')
+          );
+          if (vozEspanol) {
+            utterance.voice = vozEspanol;
+          }
+
+          utterance.onstart = () => this.manitaBotHablando.set(true);
+          utterance.onend = () => {
+            this.manitaBotHablando.set(false);
+            if (this.currentUtterance === utterance) {
+              this.currentUtterance = null;
+            }
+          };
+          utterance.onerror = (e) => {
+            console.warn('[Voz Manitos] Evento onerror:', e);
+            this.manitaBotHablando.set(false);
+            if (this.currentUtterance === utterance) {
+              this.currentUtterance = null;
+            }
+          };
+
+          synth.speak(utterance);
+          if (synth.paused) {
+            try { synth.resume(); } catch {}
+          }
+        } catch (err) {
+          console.warn('[Voz Manitos] Fallo al sintetizar:', err);
+          this.manitaBotHablando.set(false);
+        }
+      };
+
       if (forzar) {
         synth.cancel();
+        // Delay mínimo para permitir que Chrome/Edge procese el cancel() antes de hablar
+        setTimeout(ejecutarHabla, 60);
       } else if (synth.speaking) {
         try { synth.resume(); } catch {}
-        return;
-      }
-
-      const utterance = new SpeechSynthesisUtterance(texto);
-      utterance.lang = 'es-ES';
-      utterance.rate = 1.02;
-      utterance.pitch = 1.05;
-
-      const voices = synth.getVoices();
-      const vozEspanol = voices.find(
-        (v) =>
-          v.lang.toLowerCase().startsWith('es-co') ||
-          v.lang.toLowerCase().startsWith('es-mx') ||
-          v.lang.toLowerCase().startsWith('es-es') ||
-          v.lang.toLowerCase().startsWith('es')
-      );
-      if (vozEspanol) {
-        utterance.voice = vozEspanol;
-      }
-
-      utterance.onstart = () => this.manitaBotHablando.set(true);
-      utterance.onend = () => this.manitaBotHablando.set(false);
-      utterance.onerror = () => this.manitaBotHablando.set(false);
-
-      synth.speak(utterance);
-      if (synth.paused) {
-        try { synth.resume(); } catch {}
+      } else {
+        ejecutarHabla();
       }
     } catch {
       this.manitaBotHablando.set(false);
@@ -1458,6 +1499,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
         window.speechSynthesis.cancel();
       } catch { }
     }
+    this.currentUtterance = null;
     this.manitaBotHablando.set(false);
   }
 
@@ -1491,7 +1533,11 @@ export class PracticaComponent implements OnInit, OnDestroy {
         });
       }
 
-      const video = this.cameraVideo?.nativeElement;
+      let video = this.cameraVideo?.nativeElement;
+      if (!video) {
+        await new Promise((resolve) => setTimeout(resolve, 80));
+        video = this.cameraVideo?.nativeElement;
+      }
       if (!video) throw new Error('Visor de video no disponible');
 
       // Garantizar atributos y propiedades requeridas en navegadores móviles (iOS Safari y Android Chrome)
@@ -1504,10 +1550,25 @@ export class PracticaComponent implements OnInit, OnDestroy {
       video.autoplay = true;
       video.srcObject = this.stream;
 
+      if (video.readyState < 1) {
+        await new Promise<void>((resolve) => {
+          const onLoaded = () => {
+            video?.removeEventListener('loadedmetadata', onLoaded);
+            resolve();
+          };
+          video?.addEventListener('loadedmetadata', onLoaded);
+          setTimeout(resolve, 1200);
+        });
+      }
+
       try {
         await video.play();
       } catch (errPlay) {
-        console.warn('Reproducción de video diferida:', errPlay);
+        console.warn('Reintento de reproducción de video:', errPlay);
+        try {
+          video.muted = true;
+          await video.play();
+        } catch {}
       }
 
       // Activar visor de inmediato con el stream de cámara en vivo
@@ -1515,10 +1576,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.cameraActive.set(true);
       this.cameraLoading.set(false);
 
-      // Iniciar guía hablada de Manitos Coach al arrancar la cámara
+      // Iniciar guía hablada de Manitos Coach solo si no está hablando ya
       setTimeout(() => {
-        this.anunciarPasoEnVoz(this.currentStepIndex(), true);
-      }, 350);
+        if (!this.manitaBotHablando()) {
+          this.anunciarPasoEnVoz(this.currentStepIndex(), false);
+        }
+      }, 500);
 
       this.lastVideoTimestamp = -1;
       try {
@@ -1545,24 +1608,28 @@ export class PracticaComponent implements OnInit, OnDestroy {
   private async inicializarMediaPipe(): Promise<HandLandmarker> {
     if (this.detector) return this.detector;
 
-    const wasmCandidates = [
-      '/wasm',
-      'wasm',
-      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm',
+    const wasmUrls = [
       'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm',
-      'https://unpkg.com/@mediapipe/tasks-vision@0.10.14/wasm',
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm',
+      'https://unpkg.com/@mediapipe/tasks-vision@latest/wasm',
     ];
 
     let vision: any = null;
     let ultimoError: any = null;
 
-    for (const path of wasmCandidates) {
+    for (const url of wasmUrls) {
       try {
-        vision = await FilesetResolver.forVisionTasks(path);
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`Timeout cargando MediaPipe WASM desde ${url}`)), 5000)
+        );
+        vision = await Promise.race([
+          FilesetResolver.forVisionTasks(url),
+          timeoutPromise,
+        ]);
         if (vision) break;
       } catch (err) {
         ultimoError = err;
-        console.warn(`[MediaPipe] Intento con WASM en ${path}:`, err);
+        console.warn(`[MediaPipe] Intento con WASM en ${url}:`, err);
       }
     }
 
