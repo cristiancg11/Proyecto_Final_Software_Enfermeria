@@ -715,6 +715,7 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   private drawingUtils: DrawingUtils | null = null;
   private animationFrame: number | null = null;
   private autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastVideoTimestamp: number = -1;
   private timerInterval: any = null;
 
   private previousKeyPoints: { x: number; y: number }[][] | null = null;
@@ -810,46 +811,74 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
       this.cameraActive.set(true);
       this.startStepTimer();
 
-      if (!this.detector) {
-        const vision = await FilesetResolver.forVisionTasks(
-          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
-        );
-        try {
-          this.detector = await HandLandmarker.createFromOptions(vision, {
-            baseOptions: {
-              modelAssetPath:
-                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-              delegate: 'GPU',
-            },
-            runningMode: 'VIDEO',
-            numHands: 2,
-          });
-        } catch {
-          this.detector = await HandLandmarker.createFromOptions(vision, {
-            baseOptions: {
-              modelAssetPath:
-                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-              delegate: 'CPU',
-            },
-            runningMode: 'VIDEO',
-            numHands: 2,
-          });
-        }
-      }
-
+      this.lastVideoTimestamp = -1;
+      await this.inicializarMediaPipe();
       this.detectHands();
     } catch (error: any) {
+      console.error('[Cámara/MediaPipe Evaluación] Error:', error);
       this.releaseStream();
       this.cameraActive.set(false);
       this.stopTimer();
       this.cameraError.set(
-        error instanceof DOMException && error.name === 'NotAllowedError'
+        error instanceof DOMException && (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError')
           ? 'Debes autorizar el permiso de acceso a la cámara en tu celular o navegador.'
           : error?.message || 'No fue posible iniciar la cámara en este dispositivo.'
       );
     } finally {
       this.cameraLoading.set(false);
     }
+  }
+
+  private async inicializarMediaPipe(): Promise<HandLandmarker> {
+    if (this.detector) return this.detector;
+
+    const cdnCandidates = [
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm',
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm',
+      'https://unpkg.com/@mediapipe/tasks-vision@0.10.14/wasm',
+    ];
+
+    let vision: any = null;
+    let ultimoError: any = null;
+
+    for (const url of cdnCandidates) {
+      try {
+        vision = await FilesetResolver.forVisionTasks(url);
+        if (vision) break;
+      } catch (err) {
+        ultimoError = err;
+        console.warn(`[MediaPipe] Intento fallido con WASM en ${url}:`, err);
+      }
+    }
+
+    if (!vision) {
+      throw ultimoError || new Error('No fue posible cargar los módulos WASM de MediaPipe desde CDN.');
+    }
+
+    try {
+      this.detector = await HandLandmarker.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath:
+            'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+          delegate: 'GPU',
+        },
+        runningMode: 'VIDEO',
+        numHands: 2,
+      });
+    } catch (gpuError) {
+      console.warn('[MediaPipe] GPU delegate no disponible en examen, cambiando a CPU:', gpuError);
+      this.detector = await HandLandmarker.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath:
+            'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+          delegate: 'CPU',
+        },
+        runningMode: 'VIDEO',
+        numHands: 2,
+      });
+    }
+
+    return this.detector;
   }
 
   stopCamera(): void {
@@ -884,16 +913,27 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
     if (!video || !this.detector || !this.cameraActive()) return;
 
     if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
-      const now = performance.now();
-      const result = this.detector.detectForVideo(video, now);
-      const handedness = (result as any).handedness || (result as any).handednesses || [];
+      let now = performance.now();
+      if (now <= this.lastVideoTimestamp) {
+        now = this.lastVideoTimestamp + 1;
+      }
+      this.lastVideoTimestamp = now;
 
-      this.updateHandednessHUD(result.landmarks, handedness);
-      this.evaluateTechnique(result.landmarks, now);
-      this.drawLandmarks(result.landmarks);
+      try {
+        const result = this.detector.detectForVideo(video, now);
+        const handedness = (result as any).handedness || (result as any).handednesses || [];
+
+        this.updateHandednessHUD(result.landmarks, handedness);
+        this.evaluateTechnique(result.landmarks, now);
+        this.drawLandmarks(result.landmarks);
+      } catch (detectErr) {
+        console.warn('[MediaPipe Examen] Fotograma omitido:', detectErr);
+      }
     }
 
-    this.animationFrame = requestAnimationFrame(() => this.detectHands());
+    if (this.cameraActive()) {
+      this.animationFrame = requestAnimationFrame(() => this.detectHands());
+    }
   }
 
   private updateHandednessHUD(landmarks: { x: number; y: number }[][], handedness: any[]): void {
@@ -1237,33 +1277,8 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
       this.stopTimer();
       this.cameraActive.set(true);
 
-      if (!this.detector) {
-        const vision = await FilesetResolver.forVisionTasks(
-          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
-        );
-        try {
-          this.detector = await HandLandmarker.createFromOptions(vision, {
-            baseOptions: {
-              modelAssetPath:
-                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-              delegate: 'GPU',
-            },
-            runningMode: 'VIDEO',
-            numHands: 2,
-          });
-        } catch {
-          this.detector = await HandLandmarker.createFromOptions(vision, {
-            baseOptions: {
-              modelAssetPath:
-                'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-              delegate: 'CPU',
-            },
-            runningMode: 'VIDEO',
-            numHands: 2,
-          });
-        }
-      }
-
+      this.lastVideoTimestamp = -1;
+      await this.inicializarMediaPipe();
       this.detectHands();
       this.reproducirChimeExito();
     } catch (err: any) {

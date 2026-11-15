@@ -15,7 +15,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="relative isolate min-h-[100dvh] overflow-hidden bg-gradient-to-br from-[#06182E] via-[#0B3A6B] to-[#0A4F6E]">
+    <div class="relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto bg-gradient-to-br from-[#06182E] via-[#0B3A6B] to-[#0A4F6E]">
       <!-- Decoración de fondo -->
       <div class="pointer-events-none absolute -left-24 -top-24 h-96 w-96 rounded-full bg-emerald-400/20 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-32 -right-24 h-[28rem] w-[28rem] rounded-full bg-sky-400/20 blur-3xl"></div>
