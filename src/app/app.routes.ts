@@ -103,7 +103,16 @@ export const routes: Routes = [
   },
   {
     path: 'diagnostico',
-    redirectTo: 'evaluacion-teorica',
+    canActivate: [studentAuthGuard],
+    loadComponent: () =>
+      import('./features/diagnostico/diagnostico.component').then(
+        (m) => m.DiagnosticoComponent
+      ),
+    title: 'Manos Seguras — Cuestionario Pre-Práctica OMS',
+  },
+  {
+    path: 'pre-practica',
+    redirectTo: 'diagnostico',
   },
   {
     path: 'resultado',

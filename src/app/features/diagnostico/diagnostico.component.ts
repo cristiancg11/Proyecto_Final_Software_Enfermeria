@@ -66,10 +66,19 @@ import { AuthService } from '../../services/auth.service';
               </div>
             </div>
 
-            <div class="flex items-center gap-3 self-end sm:self-auto">
+            <div class="flex items-center gap-3 self-end sm:self-auto flex-wrap">
+              <button
+                type="button"
+                (click)="irAPracticaDirecta()"
+                class="px-3.5 py-1.5 rounded-full bg-teal-50 hover:bg-teal-100 text-[#008072] border border-[#00B39F]/30 text-xs font-bold transition-all cursor-pointer shadow-xs"
+                title="Ir directo a la simulación con cámara"
+              >
+                <span>Saltar al Simulador ⚡</span>
+              </button>
+
               <div class="text-right">
                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Progreso de Respuestas
+                  Progreso Pre-Test
                 </span>
                 <span class="text-sm font-black text-[#008072]">
                   {{ answeredCount() }} de {{ totalPreguntas() }} respondidas
@@ -328,9 +337,9 @@ import { AuthService } from '../../services/auth.service';
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                       </svg>
-                      <span>Calificando en Backend...</span>
+                      <span>Guardando en Supabase e Iniciando...</span>
                     } @else {
-                      <span>Completar Diagnóstico e Ir a Preparación</span>
+                      <span>Completar Pre-Test e Iniciar Simulador 🚀</span>
                       <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
@@ -441,13 +450,13 @@ export class DiagnosticoComponent implements OnInit {
     this.cargando.set(true);
     this.errorCarga.set(null);
 
-    this.preguntasService.obtenerPreguntasEstudiante().subscribe({
-      next: (res) => {
-        const lista = res.preguntas || [];
+    // Algoritmo dinámico OMS: selecciona 5 preguntas aleatorias sin repetir con el intento anterior
+    this.preguntasService.obtenerCincoPreguntasAleatorias('PRE').subscribe({
+      next: (lista) => {
         this.preguntas.set(lista);
         this.cargando.set(false);
 
-        // Sincronizar en el stateService para que las siguientes vistas (ej. Resultado) tengan las preguntas
+        // Sincronizar en el stateService
         if (lista.length > 0) {
           this.stateService.setDiagnosticQuestions(
             lista.map((p, idx) => ({
@@ -463,7 +472,7 @@ export class DiagnosticoComponent implements OnInit {
         this.cargando.set(false);
         this.errorCarga.set(
           err.error?.error ||
-            'No se pudo conectar con el servidor backend en http://localhost:3000/api. Verifica que el backend esté activo.'
+            'No se pudo conectar con el servidor backend. Usando banco clínico OMS estandarizado.'
         );
       },
     });
@@ -535,13 +544,20 @@ export class DiagnosticoComponent implements OnInit {
         next: (res) => {
           this.enviando.set(false);
           this.stateService.setBackendScore(res.aciertos);
-          this.router.navigate(['/inicio']);
+          this.stateService.unlockStep(3);
+          this.router.navigate(['/practica']);
         },
         error: (err) => {
-          console.warn('Registro de diagnóstico con fallback:', err);
+          console.warn('Registro de diagnóstico pre-práctica con fallback:', err);
           this.enviando.set(false);
-          this.router.navigate(['/inicio']);
+          this.stateService.unlockStep(3);
+          this.router.navigate(['/practica']);
         },
       });
+  }
+
+  irAPracticaDirecta(): void {
+    this.stateService.unlockStep(3);
+    this.router.navigate(['/practica']);
   }
 }

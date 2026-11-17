@@ -307,7 +307,7 @@ interface PreguntaEvaluacion {
                 (click)="continuarAEncuesta()"
                 class="px-10 py-4 rounded-full bg-[#00B39F] hover:bg-[#008072] text-white font-black text-base shadow-xl shadow-teal-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer inline-flex items-center gap-3"
               >
-                <span>Continuar a Evaluación de la Plataforma</span>
+                <span>Continuar a Encuesta de Satisfacción ⭐</span>
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
@@ -358,12 +358,15 @@ export class EvaluacionTeoricaComponent implements OnInit {
   cargarPreguntas(): void {
     this.cargando.set(true);
 
-    this.preguntasService.obtenerPreguntasEstudiante().subscribe({
-      next: (res) => {
-        if (res.preguntas && res.preguntas.length > 0) {
-          const formatted: PreguntaEvaluacion[] = res.preguntas.map((p) => ({
+    // Algoritmo dinámico OMS: selecciona 5 preguntas aleatorias diferentes a las de su intento anterior
+    this.preguntasService.obtenerCincoPreguntasAleatorias('POST').subscribe({
+      next: (lista) => {
+        if (lista && lista.length > 0) {
+          const formatted: PreguntaEvaluacion[] = lista.map((p) => ({
             id: String(p.id),
             enunciado: p.enunciado,
+            justificacionFallback: p.justificacion,
+            correctIndexFallback: p.correctIndexFallback,
             opciones: p.opciones.map((o) => ({ id: String(o.id), texto: o.texto })),
           }));
           this.preguntas.set(formatted);

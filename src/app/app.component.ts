@@ -57,9 +57,10 @@ export class App {
     if (ruta.includes('/dashboard')) return { numero: 0, nombre: '📊 Dashboard' };
     if (ruta.includes('/introduccion')) return { numero: 1, nombre: '1. Introducción' };
     if (ruta.includes('/preparacion')) return { numero: 2, nombre: '2. Preparación' };
+    if (ruta.includes('/diagnostico')) return { numero: 2, nombre: '2B. Pre-Test OMS' };
     if (ruta.includes('/practica')) return { numero: 3, nombre: '3. Práctica OMS' };
     if (ruta.includes('/evaluacion-practica')) return { numero: 4, nombre: '4. Ev. Práctica' };
-    if (ruta.includes('/evaluacion-teorica')) return { numero: 5, nombre: '5. Ev. Teórica' };
+    if (ruta.includes('/evaluacion-teorica')) return { numero: 5, nombre: '5. Post-Test OMS' };
     if (ruta.includes('/encuesta')) return { numero: 6, nombre: '6. Encuesta' };
     if (ruta.includes('/resultado')) return { numero: 7, nombre: '7. Resultados' };
     if (ruta.includes('/reto-extremo')) return { numero: 8, nombre: '⚡ Modo Desafío' };

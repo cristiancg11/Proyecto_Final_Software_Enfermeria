@@ -275,7 +275,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
               : 'bg-slate-800 text-slate-500 border border-slate-700/60 opacity-60 cursor-not-allowed select-none shadow-none'"
           >
             @if (checklistCompleto()) {
-              <span>Continuar a Práctica Asistida</span>
+              <span>Continuar a Evaluación Pre-Práctica OMS</span>
               <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
@@ -345,6 +345,6 @@ export class PreparacionComponent {
   continuarAPractica(): void {
     if (!this.checklistCompleto()) return;
     this.stateService.unlockStep(3);
-    this.router.navigate(['/practica']);
+    this.router.navigate(['/diagnostico']);
   }
 }

@@ -90,6 +90,156 @@ export class HandwashStateService {
       rationale:
         'La OMS estipula que la fricción antiséptica con formulaciones a base de alcohol debe durar entre 20 y 30 segundos (frotando sistemáticamente hasta que el producto se evapore por completo y las manos queden secas). Por su parte, el lavado clínico con agua y jabón requiere entre 40 y 60 segundos para permitir la humectación, jabonado completo en los 6 pasos, enjuague y secado aséptico.',
     },
+    {
+      id: 6,
+      question:
+        'Caso Clínico 6: El profesional de enfermería termina de administrar medicación oral y acomodar la postura de un paciente encamado en hospitalización general. No hubo contacto con sangre ni drenajes, y el paciente no tiene aislamiento infeccioso. Al salir del cubículo del paciente, ¿cuál es la conducta inmediata que exige el Momento 4 de la OMS?',
+      context: '5 Momentos OMS • Momento 4 (Después del Contacto con el Paciente)',
+      options: [
+        'Realizar fricción antiséptica con formulación de base alcohólica inmediatamente al abandonar la unidad del paciente (Momento 4), para no diseminar microorganismos al resto del área clínica.',
+        'Omitir la higiene si las manos se sienten secas y limpias, postergando la desinfección hasta el final de la ronda de medicamentos.',
+        'Higienizarse las manos únicamente si el próximo paciente en la lista se encuentra en estado de inmunosupresión.',
+        'Lavar las manos con agua y jabón únicamente al finalizar el turno de enfermería para evitar la resequedad dérmica.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'El Momento 4 de la OMS ("Después del contacto con el paciente") protege el entorno asistencial circundante y a los próximos pacientes atendidos, eliminando la colonización de flora transitoria que se haya adherido a las manos tras la interacción clínica.',
+    },
+    {
+      id: 7,
+      question:
+        'Caso Clínico 7: Una estudiante de enfermería ingresa a la habitación de un paciente sedado únicamente para silenciar una alarma de la bomba de infusión y ajustar la barandilla de seguridad de la cama. En ningún instante entra en contacto directo con la piel del paciente. Según la directriz del Momento 5 de la OMS, ¿qué acción es obligatoria antes de salir?',
+      context: '5 Momentos OMS • Momento 5 (Después del Contacto con el Entorno)',
+      options: [
+        'Realizar fricción de manos con solución hidroalcohólica (Momento 5), debido a que las superficies inanimadas del entorno inmediato del paciente están colonizadas por microorganismos patógenos viables.',
+        'No es necesaria la higiene de manos ya que no se produjo contacto físico directo con la epidermis del paciente.',
+        'Basta con rociar alcohol sobre la pantalla táctil de la bomba de infusión sin realizar higiene personal de manos.',
+        'Colocarse guantes limpios antes de tocar las barandillas y conservarlos puestos para entrar a la habitación vecina.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'El Momento 5 ("Después del contacto con el entorno del paciente") es mandatorio porque los objetos inanimados del entorno inmediato (barandillas, monitores, mesas de noche) están intensamente colonizados por la microbiota del paciente y constituyen fómites de transmisión.',
+    },
+    {
+      id: 8,
+      question:
+        'Caso Clínico 8: Durante la ronda supervisada en el servicio de medicina interna, el docente observa que un estudiante porta reloj de pulsera y un anillo de bodas liso bajo los guantes de examen. De acuerdo con las recomendaciones de técnica aséptica de la OMS y el principio "brazos limpios bajo el codo" (bare below the elbows), ¿cuál es la fundamentación científica para exigir el retiro de estos accesorios?',
+      context: 'Técnica Aséptica OMS • Bare Below the Elbows y Joyas',
+      options: [
+        'La piel debajo de anillos y relojes presenta conteos bacterianos significativamente más elevados, dificulta la fricción completa de pliegues cutáneos y aumenta el riesgo de rasgado de guantes.',
+        'Las joyas no interfieren con la antisepsia siempre que se aplique el doble de volumen de gel alcohólico sobre ellas.',
+        'Solo se prohíben anillos con piedras preciosas incrustadas; los aros lisos y pulseras de goma están universalmente autorizados.',
+        'El uso de reloj analógico es mandatorio según la OMS para controlar los segundos del cronómetro durante el lavado clínico.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'La evidencia microbiológica de la OMS demuestra que la piel debajo de anillos y relojes alberga conteos bacterianos significativamente mayores de bacilos gramnegativos y estafilococos, dificulta la cobertura de fricción y eleva el riesgo de rotura de guantes.',
+    },
+    {
+      id: 9,
+      question:
+        'Caso Clínico 9: Una profesional de enfermería labora en la unidad de cuidados intensivos neonatales luciendo uñas esculpidas en acrílico con esmalte semipermanente intacto. En relación con las Directrices de la OMS sobre Higiene de Manos en la Atención Sanitaria, ¿por qué está terminantemente desaconsejado el uso de uñas postizas en profesionales sanitarios?',
+      context: 'Bioseguridad Hospitalaria • Uñas Artificiales y Esmalte',
+      options: [
+        'Porque el espacio subungueal de las uñas artificiales alberga una mayor carga bacteriana de Pseudomonas aeruginosa y hongos, habiéndose asociado a brotes de bacteriemias hospitalarias.',
+        'Porque el polímero acrílico absorbe el alcohol en gel, neutralizando químicamente su propiedad bactericida.',
+        'Porque las uñas largas no permiten colocarse guantes quirúrgicos de tallas estándar.',
+        'La OMS solo restringe el esmalte cuando tiene más de 3 días de aplicación y presenta grietas visibles.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'La OMS desaconseja de manera enfática el uso de uñas artificiales o extensiones en personal sanitario debido a que el espacio subungueal colonizado acumula una altísima carga de bacilos gramnegativos oportunistas (como Pseudomonas aeruginosa) y levaduras (Candida spp.), vinculándose a brotes hospitalarios.',
+    },
+    {
+      id: 10,
+      question:
+        'Caso Clínico 10: Al evaluar los insumos antisépticos para la estación de higiene del servicio de urgencias, el comité de infecciones hospitalarias revisa formulaciones hidroalcohólicas. ¿Qué rango de concentración de alcohol (etanol o isopropanol) recomienda la OMS para garantizar una rápida desnaturalización proteica y óptima eficacia virucida/bactericida?',
+      context: 'Insumos Antisépticos OMS • Concentración de Alcohol',
+      options: [
+        'Concentración de alcohol entre el 60% y el 80% (v/v), complementada con humectantes como glicerol para proteger la barrera dérmica.',
+        'Alcohol puro absoluto al 96% o 100%, ya que la ausencia de agua potencia la deshidratación y muerte osmótica microbiana.',
+        'Concentración baja entre el 30% y el 40%, con el fin de minimizar la irritación y resequedad cutánea en el personal asistencial.',
+        'Cualquier preparado con más del 10% de alcohol tiene idéntico poder desinfectante según el estándar de la OMS.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'Las formulaciones con 60% a 80% (v/v) de alcohol son las más eficaces microbiológicamente porque la presencia de agua es indispensable para permitir la coagulación y lisis de proteínas celulares; el alcohol al 100% evapora demasiado rápido sin penetrar las membranas.',
+    },
+    {
+      id: 11,
+      question:
+        'Caso Clínico 11: Tras completar los 40 a 60 segundos de lavado de manos clínico con agua y jabón, un enfermero procede a secarse en el lavamanos de la central de procedimientos. Según el protocolo estandarizado de la OMS, ¿cuál es el procedimiento correcto de secado y cierre de la grifería manual?',
+      context: 'Técnica de Lavado OMS • Secado Aséptico y Cierre de Grifo',
+      options: [
+        'Secar minuciosamente con toalla de papel desechable mediante palpación suave y utilizar la misma toalla para cerrar el grifo manual sin recontaminar las manos.',
+        'Frotar enérgicamente con toalla de tela comunitaria y cerrar la llave utilizando la palma de la mano recién lavada.',
+        'Permitir que las manos se sequen agitando los brazos al aire ambiente para no transferir celulosa del papel a la piel.',
+        'Cerrar el grifo con la mano mojada antes de tomar la toalla de papel para evitar desperdicio de agua en el servicio.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'Cerrar el grifo con la mano recién lavada recontamina la piel inmediatamente con los microorganismos depositados previamente en la manija. La OMS estipula secar con toalla de papel desechable mediante toques suaves y emplear la misma toalla para cerrar el grifo.',
+    },
+    {
+      id: 12,
+      question:
+        'Caso Clínico 12: En una sesión de inducción clínica, se profundiza sobre las bases microbiológicas de la higiene de manos. ¿Cuál es la diferencia fundamental entre la flora residente y la flora transitoria de la piel humana y su relevancia en las Infecciones Asociadas a la Atención en Salud (IAAS)?',
+      context: 'Microbiología Clínica • Flora Transitoria vs. Residente',
+      options: [
+        'La flora transitoria coloniza capas superficiales de la piel tras contacto asistencial, es la causa principal de infecciones cruzadas y se remueve fácilmente con higiene de manos apropiada.',
+        'La flora transitoria está incrustada en folículos pilosos profundos y no puede ser removida con fricción hidroalcohólica convencional.',
+        'La flora residente está compuesta exclusivamente por virus patógenos letales adquiridos durante intervenciones quirúrgicas.',
+        'La flora transitoria protege permanentemente la piel del profesional y no debe removerse durante la atención sanitaria.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'La flora transitoria (Staphylococcus aureus, enterobacterias) se adquiere por contacto asistencial, coloniza capas superficiales, sobrevive poco tiempo y causa la gran mayoría de IAAS, eliminándose fácilmente con higiene de manos apropiada.',
+    },
+    {
+      id: 13,
+      question:
+        'Caso Clínico 13: El personal asistencial culmina la atención de un paciente en aislamiento por gotas y contacto en la unidad de cuidados especiales. Viste bata impermeable, guantes, mascarilla de alta eficiencia N95 y protector ocular. Conforme a las recomendaciones de bioseguridad de la OMS, ¿en qué momento exacto de la secuencia de retiro de EPP debe realizarse la fricción de manos intermedia?',
+      context: 'Bioseguridad Hospitalaria • Secuencia de Retiro de EPP',
+      options: [
+        'Inmediatamente después de retirarse los guantes contaminados y antes de proceder a retirar la protección ocular y la mascarilla facial.',
+        'Únicamente tras haber retirado absolutamente todas las prendas del EPP y encontrarse fuera del área clínica.',
+        'Antes de descalzarse los guantes, rociándolos con hipoclorito de sodio para manipular las prendas limpias.',
+        'No es necesaria la higiene intermedia ya que la superficie interna de los guantes es estéril.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'Los guantes son la pieza más densamente contaminada del EPP. Retirarlos primero e higienizarse las manos de inmediato con solución alcohólica previene la autoinoculación al manipular el protector ocular o la mascarilla.',
+    },
+    {
+      id: 14,
+      question:
+        'Caso Clínico 14: En una auditoría de calidad asistencial con lámpara de luz ultravioleta y reactivo fluorescente, se constata que varios estudiantes dejan áreas no alcanzadas tras la fricción. ¿Cuáles son las regiones anatómicas de las manos que con mayor frecuencia se omiten involuntariamente y cómo lo soluciona la técnica protocolaria de 6 pasos de la OMS?',
+      context: 'Biomecánica del Frotado OMS • Pulgares y Yemas',
+      options: [
+        'Los pulgares, las puntas de los dedos (yemas/lechos ungueales) y los espacios interdigitales; se corrigen mediante el frotado en rotación del pulgar y la fricción de yemas contra la palma opuesta.',
+        'El centro de la palma; se soluciona únicamente frotando palma contra palma con mayor presión mecánica.',
+        'La cara dorsal del antebrazo; se corrige ampliando el lavado obligatorio hasta el tercio medio del brazo.',
+        'Las líneas de flexión palmar; se corrigen sumergiendo las manos durante 3 minutos en cubetas antisépticas.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'Estudios de fluorescencia demuestran que los pulgares, los lechos ungueales y los espacios interdigitales son las áreas más omitidas. Por ello, la OMS diseñó el Paso 5 (rotación de pulgares) y el Paso 6 (rotación de yemas sobre palma).',
+    },
+    {
+      id: 15,
+      question:
+        'Caso Clínico 15: Un profesional de enfermería en área de urgencias experimenta eritema, ardor y pequeñas grietas dérmicas en el dorso de las manos por el elevado volumen de procedimientos diarios. ¿Cuál es la recomendación formal de la OMS para preservar la barrera epidérmica y prevenir la dermatitis ocupacional?',
+      context: 'Salud Ocupacional • Prevención de Dermatitis y Emolientes',
+      options: [
+        'Priorizar la fricción con soluciones hidroalcohólicas que contengan emolientes protectores (como glicerol) por encima del lavado reiterado con jabón, y aplicar lociones hidratantes al terminar el turno.',
+        'Reducir a menos de la mitad las indicaciones de higiene de manos durante el turno para permitir la cicatrización dérmica.',
+        'Utilizar agua muy caliente con detergente quirúrgico para desinfectar y cauterizar las microfisuras de la piel.',
+        'Permanecer con el mismo par de guantes de látex durante todo el turno laboral sin retirarlos en ningún momento.',
+      ],
+      correctIndex: 0,
+      rationale:
+        'Las formulaciones hidroalcohólicas de grado hospitalario enriquecidas con humectantes (como glicerol al 1.45%) son sustancialmente menos lesivas para el estrato córneo que el lavado repetido con jabón y agua, reduciendo el riesgo de dermatitis.',
+    },
   ];
 
   private readonly _clinicalQuestions = signal<DiagnosticQuestion[]>(this.clinicalQuestions);
