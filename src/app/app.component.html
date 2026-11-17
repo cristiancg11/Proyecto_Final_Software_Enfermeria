@@ -35,6 +35,16 @@
 
         <!-- Badge de Usuario Dinámico y Botón Salir -->
         <div class="flex items-center gap-2 sm:gap-3.5 shrink-0">
+
+          <!-- Botón de Encuesta de Satisfacción y Retroalimentación -->
+          <a
+            routerLink="/encuesta"
+            class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl bg-amber-400/10 hover:bg-amber-400/20 text-amber-300 hover:text-amber-200 border border-amber-400/30 transition-all text-xs font-bold cursor-pointer shadow-xs active:scale-95"
+            title="Cuestionario de Satisfacción y Opinión de la Plataforma"
+          >
+            <span class="text-sm">⭐</span>
+            <span class="hidden sm:inline">Encuesta</span>
+          </a>
           
           <!-- Badge del Usuario conectado desde Supabase (Clic para ir a Mi Perfil) -->
           <a
@@ -155,6 +165,23 @@
                 👤
               </span>
               <span>Mi Perfil</span>
+            </a>
+
+            <!-- 6. Encuesta de Satisfacción -->
+            <a
+              routerLink="/encuesta"
+              routerLinkActive="bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-xs font-bold"
+              class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
+            >
+              <div class="flex items-center gap-3">
+                <span class="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                  ⭐
+                </span>
+                <span>Encuesta Final</span>
+              </div>
+              <span class="px-1.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-amber-400/15 text-amber-300 border border-amber-400/30">
+                Feedback
+              </span>
             </a>
 
             <!-- Panel Docente (Si aplica) -->

@@ -588,8 +588,8 @@ export interface QualityAlert {
                 </div>
               </div>
 
-              <!-- BOTÓN: CONTINUAR A EVALUACIÓN TEÓRICA -->
-              <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <!-- BOTÓN: CONTINUAR A EVALUACIÓN TEÓRICA / ENCUESTA -->
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap">
                 <button
                   type="button"
                   (click)="continuarAEvaluacionTeorica()"
@@ -599,6 +599,14 @@ export interface QualityAlert {
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="irAEncuestaSatisfaccion()"
+                  class="w-full sm:w-auto px-6 py-4 rounded-full bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 font-bold text-sm transition border border-amber-400/40 flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95"
+                >
+                  <span>⭐ Dejar Opinión (Encuesta)</span>
                 </button>
 
                 <button
@@ -1283,5 +1291,10 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   continuarAEvaluacionTeorica(): void {
     this.stateService.unlockStep(5);
     this.router.navigate(['/evaluacion-teorica']);
+  }
+
+  irAEncuestaSatisfaccion(): void {
+    this.stateService.unlockStep(6);
+    this.router.navigate(['/encuesta']);
   }
 }

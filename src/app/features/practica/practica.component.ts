@@ -224,6 +224,15 @@ export interface QualityAlert {
 
                 <button
                   type="button"
+                  (click)="irAEncuesta()"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/30 text-amber-300 text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
+                  title="Dar tu opinión y retroalimentación sobre la práctica"
+                >
+                  <span>⭐ Dejar Opinión</span>
+                </button>
+
+                <button
+                  type="button"
                   (click)="irAEvaluacionPractica()"
                   [disabled]="completedRecords().length < 6"
                   [ngClass]="completedRecords().length >= 6
@@ -2083,5 +2092,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.stopCamera();
     this.stateService.unlockStep(4);
     this.router.navigate(['/evaluacion-practica']);
+  }
+
+  irAEncuesta(): void {
+    this.stopTimer();
+    this.stopCamera();
+    this.stateService.unlockStep(6);
+    this.router.navigate(['/encuesta']);
   }
 }

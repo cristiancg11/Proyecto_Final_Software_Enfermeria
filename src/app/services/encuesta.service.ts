@@ -4,10 +4,12 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 export interface RegistrarEncuestaDto {
-  facilidadUso: number;
-  utilidadGuia: number;
-  claridadFeed: number;
-  recomendacion: number;
+  facilidadUso?: number;
+  utilidadGuia?: number;
+  claridadFeed?: number;
+  recomendacion?: number;
+  gustoExperiencia?: number;
+  mejoraTecnica?: 'Sí' | 'Parcialmente' | 'No' | string;
   comentarios?: string | null;
   usuarioId?: string;
   codigoEstudiantil?: string;

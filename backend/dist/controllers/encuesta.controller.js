@@ -7,10 +7,12 @@ const CrearEncuestaSchema = zod_1.z.object({
     usuarioId: zod_1.z.string().optional(),
     codigoEstudiantil: zod_1.z.string().optional(),
     correo: zod_1.z.string().optional(),
-    facilidadUso: zod_1.z.number().int().min(1).max(5, 'La calificación debe estar entre 1 y 5'),
-    utilidadGuia: zod_1.z.number().int().min(1).max(5, 'La calificación debe estar entre 1 y 5'),
-    claridadFeed: zod_1.z.number().int().min(1).max(5, 'La calificación debe estar entre 1 y 5'),
-    recomendacion: zod_1.z.number().int().min(1).max(5, 'La calificación debe estar entre 1 y 5'),
+    facilidadUso: zod_1.z.number().int().min(1).max(5, 'La calificación debe estar entre 1 y 5').optional(),
+    utilidadGuia: zod_1.z.number().int().min(1).max(5, 'La calificación debe estar entre 1 y 5').optional(),
+    claridadFeed: zod_1.z.number().int().min(1).max(5, 'La calificación debe estar entre 1 y 5').optional(),
+    recomendacion: zod_1.z.number().int().min(1).max(5, 'La calificación debe estar entre 1 y 5').optional(),
+    gustoExperiencia: zod_1.z.number().int().min(1).max(5).optional(),
+    mejoraTecnica: zod_1.z.string().optional(),
     comentarios: zod_1.z.string().optional().nullable(),
 });
 /**
@@ -50,14 +52,32 @@ const registrarEncuesta = async (req, res) => {
                 }
             }
         }
+        const valorEstrellas = data.gustoExperiencia ?? data.recomendacion ?? data.facilidadUso ?? 5;
+        const facilidadUsoFinal = data.facilidadUso ?? valorEstrellas;
+        const recomendacionFinal = data.recomendacion ?? valorEstrellas;
+        let utilidadFinal = data.utilidadGuia ?? valorEstrellas;
+        if (data.mejoraTecnica) {
+            const resp = data.mejoraTecnica.toLowerCase();
+            if (resp.includes('sí') || resp.includes('si'))
+                utilidadFinal = 5;
+            else if (resp.includes('parcial'))
+                utilidadFinal = 3;
+            else if (resp.includes('no'))
+                utilidadFinal = 1;
+        }
+        const claridadFinal = data.claridadFeed ?? valorEstrellas;
+        let comentariosFinales = data.comentarios ? data.comentarios.trim() : '';
+        if (data.mejoraTecnica && !comentariosFinales.includes('[Mejora Técnica:')) {
+            comentariosFinales = `[Mejora Técnica: ${data.mejoraTecnica}] ${comentariosFinales}`.trim();
+        }
         const nuevaEncuesta = await prisma_1.prisma.encuestaPlataforma.create({
             data: {
                 usuarioId,
-                facilidadUso: data.facilidadUso,
-                utilidadGuia: data.utilidadGuia,
-                claridadFeed: data.claridadFeed,
-                recomendacion: data.recomendacion,
-                comentarios: data.comentarios ? data.comentarios.trim() : null,
+                facilidadUso: facilidadUsoFinal,
+                utilidadGuia: utilidadFinal,
+                claridadFeed: claridadFinal,
+                recomendacion: recomendacionFinal,
+                comentarios: comentariosFinales || null,
             },
             include: {
                 usuario: {
@@ -70,7 +90,7 @@ const registrarEncuesta = async (req, res) => {
                 },
             },
         });
-        console.log(`[Encuesta] ✅ Encuesta y calificación guardada en Supabase para el usuario ${usuarioId} (${nuevaEncuesta.usuario?.nombre || 'Estudiante'}): recomendación ${data.recomendacion}/5, facilidad ${data.facilidadUso}/5. Comentarios: "${data.comentarios || 'Sin comentarios'}"`);
+        console.log(`[Encuesta] ✅ Encuesta y calificación guardada en Supabase para el usuario ${usuarioId} (${nuevaEncuesta.usuario?.nombre || 'Estudiante'}): recomendación ${recomendacionFinal}/5, facilidad ${facilidadUsoFinal}/5. Mejora Técnica: "${data.mejoraTecnica || 'N/A'}". Comentarios: "${comentariosFinales || 'Sin comentarios'}"`);
         res.status(201).json({
             mensaje: 'Encuesta registrada exitosamente.',
             encuesta: nuevaEncuesta,
