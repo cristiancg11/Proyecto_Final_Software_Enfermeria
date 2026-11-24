@@ -23,7 +23,7 @@ interface PreguntaEvaluacion {
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="min-h-full py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#08151D] via-[#0E2428] to-[#081E1C] text-slate-100 relative">
+    <div class="min-h-full py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#CFFBF0] via-[#E8FCF7] to-[#FFE9DE] text-[#0B2B29] relative">
       <!-- Glows y Efectos Asépticos de Fondo -->
       <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#00B39F]/15 blur-3xl pointer-events-none"></div>
       <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#50E7FF]/15 blur-3xl pointer-events-none"></div>
@@ -32,7 +32,7 @@ interface PreguntaEvaluacion {
       <div class="max-w-4xl mx-auto relative z-10">
         
         <!-- ENCABEZADO DE LA EVALUACIÓN TEÓRICA -->
-        <div class="bg-gradient-to-r from-[#0d1e26] via-[#10292f] to-[#0c2420] rounded-3xl p-5 sm:p-7 border border-[#00B39F]/30 shadow-2xl mb-6 relative overflow-hidden animate-fade-in">
+        <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-7 border border-teal-200/80 shadow-xl mb-6 relative overflow-hidden animate-fade-in text-[#0B2B29]">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
               <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#00B39F] to-[#50E7FF] text-[#080B10] flex items-center justify-center font-black text-xl shadow-lg shrink-0">
@@ -45,10 +45,10 @@ interface PreguntaEvaluacion {
                   <span class="w-2 h-2 rounded-full bg-[#50E7FF] animate-pulse"></span>
                   <span>Fase 5 • Post-Test Clínico Docente</span>
                 </div>
-                <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight">
+                <h1 class="text-xl sm:text-2xl font-black text-[#0B2B29] tracking-tight">
                   Evaluación Teórica de Bioseguridad y 5 Momentos OMS
                 </h1>
-                <p class="text-xs text-[#A5C2DE]">
+                <p class="text-xs text-slate-600">
                   Estudiante: <strong class="text-white">{{ studentName() }}</strong> • Cód: <span class="font-mono text-[#50E7FF]">{{ studentCode() }}</span>
                 </p>
               </div>

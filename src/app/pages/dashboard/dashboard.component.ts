@@ -201,23 +201,23 @@ export interface RegistroHistorialPractica {
           </p>
         </a>
 
-        <!-- Opción 3: Modo Desafío (Reto Extremo) -->
+                <!-- Opción 3: Cuestionario Teórico OMS y Encuesta -->
         <a
-          routerLink="/reto-extremo"
+          routerLink="/evaluacion-teorica"
           class="bg-gradient-to-br from-[#0B192C] to-[#122A30] p-5 sm:p-6 rounded-2xl border border-teal-500/35 hover:border-emerald-400/60 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 block group relative overflow-hidden"
         >
           <div class="absolute -right-10 -bottom-10 w-28 h-28 rounded-full bg-teal-500/10 blur-xl pointer-events-none"></div>
           <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-500 text-white flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform shadow-md">
-            ⚡
+            📋
           </div>
           <div class="flex items-center justify-between mb-1">
             <h3 class="font-heading text-base font-bold text-white group-hover:text-teal-300 transition-colors">
-              Modo Desafío
+              Cuestionario Teórico OMS
             </h3>
-            <span class="text-teal-300 text-xs font-bold">Trivia Extrema →</span>
+            <span class="text-teal-300 text-xs font-bold">Post-Test →</span>
           </div>
           <p class="text-xs text-slate-300 leading-relaxed">
-            Trivia de alta velocidad sobre los 5 momentos y bioseguridad. Compite en el ranking universitario en tiempo real.
+            Evaluación oficial sobre los 5 momentos y técnica aséptica OMS, con retroalimentación inmediata.
           </p>
         </a>
       </div>
@@ -424,7 +424,7 @@ export class DashboardComponent implements OnInit {
     {
       id: 'prac-003',
       modo: 'desafio',
-      tituloModo: 'Modo Desafío (Trivia)',
+      tituloModo: 'Cuestionario Teórico OMS',
       iconoModo: '⚡',
       fecha: 'Ayer, 04:30 PM',
       duracionSegundos: 35,
@@ -485,7 +485,7 @@ export class DashboardComponent implements OnInit {
     } else if (modo === 'simulacion') {
       this.router.navigate(['/evaluacion-practica']);
     } else if (modo === 'desafio') {
-      this.router.navigate(['/reto-extremo']);
+      this.router.navigate(['/evaluacion-teorica']);
     }
   }
 }

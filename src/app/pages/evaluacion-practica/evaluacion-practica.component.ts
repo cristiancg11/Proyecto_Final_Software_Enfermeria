@@ -30,7 +30,7 @@ export interface QualityAlert {
   template: `
     <!-- Contenedor Maestro con Fondo Aséptico y Efectos de Luz -->
     <div
-      class="min-h-screen py-4 sm:py-6 md:py-8 px-3 sm:px-6 lg:px-8 bg-gradient-to-br from-[#08151D] via-[#0E2428] to-[#081E1C] text-slate-100 relative overflow-hidden"
+      class="min-h-screen py-4 sm:py-6 md:py-8 px-3 sm:px-6 lg:px-8 bg-gradient-to-br from-[#CFFBF0] via-[#E8FCF7] to-[#FFE9DE] text-[#0B2B29] relative overflow-hidden"
       [ngClass]="{ 'p-0 sm:p-0 min-h-0 h-[100dvh] overflow-hidden': isFullScreen() }"
     >
       <!-- Glows y Efectos Ambientales (ocultos en pantalla completa inmersiva) -->
@@ -46,7 +46,7 @@ export interface QualityAlert {
 
           <!-- 1. ENCABEZADO MINIMALISTA DE EVALUACIÓN PRÁCTICA (Ocultable en Fullscreen Móvil) -->
           @if (!isFullScreen()) {
-            <div class="bg-gradient-to-r from-[#0d1e26] via-[#10292f] to-[#0c2420] rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#00B39F]/30 shadow-2xl mb-4 sm:mb-6 relative overflow-hidden animate-fade-in">
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-teal-200/80 shadow-xl mb-4 sm:mb-6 text-[#0B2B29] relative overflow-hidden animate-fade-in">
               <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
                 
                 <div class="flex items-start sm:items-center gap-3">
@@ -63,15 +63,21 @@ export interface QualityAlert {
                       </span>
 
                       <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#00B39F]/20 text-[#50E7FF] text-[11px] font-bold border border-[#00B39F]/30">
-                        <span>Paso {{ currentStepIndex() + 1 }} de 6</span>
+                        <span>Paso {{ currentStepIndex() + 1 }} de {{ steps.length }}</span>
                       </span>
                     </div>
 
-                    <h1 class="text-lg sm:text-2xl font-black text-white tracking-tight">
+                    <h1 class="text-lg sm:text-2xl font-black text-[#0B2B29] tracking-tight">
                       {{ currentClinicalTitle() }}
                     </h1>
+                    <div class="mt-2 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-[#008072] text-xs font-bold">
+                      <span>⏱️ Cronómetro Global: <strong>{{ tiempoTotalAcumulado() }}s / 60s (Meta OMS)</strong></span>
+                      <div class="w-16 h-2 bg-teal-200/80 rounded-full overflow-hidden">
+                        <div class="bg-[#00B39F] h-full rounded-full transition-all" [style.width.%]="Math.min(100, (tiempoTotalAcumulado() / 60) * 100)"></div>
+                      </div>
+                    </div>
 
-                    <p class="text-xs text-[#A5C2DE] mt-0.5">
+                    <p class="text-xs text-slate-600 mt-0.5">
                       Estudiante: <strong class="text-white">{{ studentName() }}</strong>
                       <span class="mx-1 text-slate-500">•</span>
                       Código: <span class="font-mono text-[#50E7FF]">{{ studentCode() }}</span>
@@ -123,7 +129,7 @@ export interface QualityAlert {
               <div class="flex items-center gap-2">
                 <span class="w-3 h-3 rounded-full bg-[#00B39F] animate-ping"></span>
                 <span class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
-                  Paso {{ currentStepIndex() + 1 }}/6: {{ currentStep().title }}
+                  Paso {{ currentStepIndex() + 1 }}/{{ steps.length }}: {{ currentStep().title }}
                 </span>
               </div>
 
@@ -181,7 +187,7 @@ export interface QualityAlert {
               class="relative w-full bg-slate-950 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 flex items-center justify-center group mx-auto transition-all duration-300"
               [ngClass]="isFullScreen()
                 ? 'grow min-h-0 h-full w-full'
-                : 'min-h-[280px] sm:min-h-[380px] aspect-[4/3] sm:aspect-[16/10] max-h-[650px]'"
+                : 'min-h-[440px] sm:min-h-[560px] md:min-h-[640px] aspect-[4/3] sm:aspect-[16/10] max-h-[850px]'"
             >
               
               <!-- Video Stream con atributos obligatorios para celulares (iOS Safari y Android) -->
@@ -555,7 +561,7 @@ export interface QualityAlert {
               </h2>
 
               <p class="text-sm sm:text-base text-slate-300 mb-8 leading-relaxed">
-                Has ejecutado de manera autónoma los 6 pasos oficiales de la OMS frente a la cámara web. La biomecánica de frotado y tus tiempos individuales han sido procesados y guardados en el sistema.
+                Has ejecutado de manera autónoma los 11 pasos oficiales de la OMS frente a la cámara web. La biomecánica de frotado y tus tiempos individuales han sido procesados y guardados en el sistema.
               </p>
 
               <!-- Tarjeta de Puntaje Práctico Biomecánico -->
@@ -573,8 +579,8 @@ export interface QualityAlert {
                   <span>{{ notaPractica() >= 8.5 ? '★ Técnica Biomecánica Sobresaliente' : '✓ Técnica Biomecánica Aprobada' }}</span>
                 </div>
 
-                <!-- Resumen de los 6 pasos -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mt-6 pt-6 border-t border-white/10 text-left">
+                <!-- Resumen de los 11 pasos -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-11 gap-2 mt-6 pt-6 border-t border-white/10 text-left">
                   @for (rec of completedRecords(); track rec.stepNumber) {
                     <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
                       <span class="text-[10px] text-slate-400 font-bold block">Paso {{ rec.stepNumber }}</span>
@@ -630,7 +636,8 @@ export interface QualityAlert {
     </div>
   `,
 })
-export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
+export class EvaluacionPracticaComponent {
+  readonly Math = Math;
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
 
@@ -667,13 +674,23 @@ export class EvaluacionPracticaComponent implements OnInit, OnDestroy {
   readonly evaluacionFinalizada = signal(false);
   readonly completedRecords = this.stateService.stepRecords;
 
+  readonly tiempoTotalAcumulado = computed(() => {
+    const sumPasos = this.completedRecords().reduce((acc, r) => acc + r.seconds, 0);
+    return Math.round((sumPasos + this.currentSeconds()) * 10) / 10;
+  });
+
   readonly clinicalTitles: string[] = [
-    'Paso 1: Frotar palmas entre sí',
-    'Paso 2: Palma derecha sobre dorso izquierdo y viceversa',
-    'Paso 3: Frotar palmas con dedos entrelazados',
-    'Paso 4: Frotar dorso de dedos contra la palma opuesta',
-    'Paso 5: Frotación rotacional de los pulgares',
-    'Paso 6: Frotado concéntrico de yemas y uñas sobre la palma',
+    'Paso 1: Mojar las manos con agua',
+    'Paso 2: Aplicar suficiente jabón',
+    'Paso 3: Frotar palmas entre sí',
+    'Paso 4: Palma derecha sobre dorso izquierdo y viceversa',
+    'Paso 5: Palma con palma y dedos entrelazados',
+    'Paso 6: Dorso de dedos contra la palma opuesta',
+    'Paso 7: Frotación rotacional de los pulgares',
+    'Paso 8: Yemas de los dedos en círculos sobre la palma',
+    'Paso 9: Enjuagar completamente con agua',
+    'Paso 10: Secar con toalla desechable',
+    'Paso 11: Cerrar el grifo con la misma toalla',
   ];
 
   readonly currentClinicalTitle = computed(() => {

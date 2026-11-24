@@ -63,7 +63,7 @@ export class App {
     if (ruta.includes('/evaluacion-teorica')) return { numero: 5, nombre: '5. Post-Test OMS' };
     if (ruta.includes('/encuesta')) return { numero: 6, nombre: '6. Encuesta' };
     if (ruta.includes('/resultado')) return { numero: 7, nombre: '7. Resultados' };
-    if (ruta.includes('/reto-extremo')) return { numero: 8, nombre: '⚡ Modo Desafío' };
+    // Modo desafío retirado según requerimiento docente
     if (ruta.includes('/perfil')) return { numero: 10, nombre: '👤 Mi Perfil' };
     if (ruta.includes('/admin')) return { numero: 99, nombre: '👑 Panel Docente' };
     return { numero: 0, nombre: 'Dashboard' };

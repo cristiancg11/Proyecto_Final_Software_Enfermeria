@@ -155,17 +155,7 @@
               <span>Simulación Cámara IA</span>
             </a>
 
-            <!-- 4. Modo Desafío (Reto Extremo) -->
-            <a
-              routerLink="/reto-extremo"
-              routerLinkActive="bg-gradient-to-r from-teal-500/25 to-emerald-500/25 text-teal-200 border-teal-400/40 shadow-xs font-bold"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
-            >
-              <span class="w-7 h-7 rounded-lg bg-gradient-to-tr from-teal-500 to-emerald-500 text-white flex items-center justify-center text-sm group-hover:scale-110 transition-transform shadow-xs">
-                ⚡
-              </span>
-              <span>Modo Desafío</span>
-            </a>
+            
 
             <!-- 5. Mi Perfil -->
             <a
@@ -277,15 +267,15 @@
           <span class="text-[10px] tracking-tight">Práctica</span>
         </a>
 
-        <!-- 3. HERO CENTRAL: MODO DESAFÍO (Reto Extremo) -->
+        <!-- 3. HERO CENTRAL: EVALUACIÓN PRÁCTICA -->
         <a
-          routerLink="/reto-extremo"
+          routerLink="/evaluacion-practica"
           routerLinkActive="ring-2 ring-teal-300 shadow-teal-400/50 scale-105"
           class="relative -top-3 flex flex-col items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-500 via-teal-600 to-emerald-500 text-white shadow-lg shadow-teal-500/40 border-2 border-teal-300/40 active:scale-95 transition-all duration-300 group cursor-pointer"
-          title="Modo Desafío (Trivia Competitiva)"
+          title="Evaluación Práctica Autónoma"
         >
-          <span class="text-base leading-none animate-pulse">⚡</span>
-          <span class="text-[9px] font-extrabold tracking-tight mt-0.5">Reto</span>
+          <span class="text-base leading-none animate-pulse">🎯</span>
+          <span class="text-[9px] font-extrabold tracking-tight mt-0.5">Examen</span>
         </a>
 
         <!-- 4. Simulación IA (Examen) -->
@@ -425,13 +415,7 @@
             >
               🧼 Jabón vs Alcohol
             </button>
-            <a
-              routerLink="/reto-extremo"
-              (click)="chatAbierto.set(false)"
-              class="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-[10px] font-bold transition-all duration-300 cursor-pointer shadow-xs"
-            >
-              ⚡ Ir al Reto Extremo
-            </a>
+            
           </div>
         </div>
       } @else {

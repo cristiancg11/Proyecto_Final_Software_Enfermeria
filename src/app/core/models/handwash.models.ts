@@ -27,7 +27,7 @@ export interface HandwashStep {
   subtitle: string;
   description: string;
   clinicalKey: string;
-  iconType: 'palms' | 'dorsal' | 'interdigital' | 'fingers-locked' | 'thumbs' | 'nails';
+  iconType: 'water' | 'soap' | 'palms' | 'dorsal' | 'interdigital' | 'fingers-locked' | 'thumbs' | 'nails' | 'rinse' | 'dry' | 'faucet' | string;
   demoUrl?: string;
   videoDemo?: string;
   imageDemo?: string;

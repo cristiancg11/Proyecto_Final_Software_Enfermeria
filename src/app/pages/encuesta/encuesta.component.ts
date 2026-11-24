@@ -296,7 +296,7 @@ type RespuestaMejora = 'Sí' | 'Parcialmente' | 'No';
               </div>
 
               <p class="text-xs sm:text-sm text-slate-300 mb-3.5">
-                Cuéntanos tus comentarios o sugerencias (ej. detección de cámara, sonidos, interfaz, modo desafío o guía de voz) para enriquecer la experiencia de los estudiantes.
+                Cuéntanos tus comentarios o sugerencias (ej. detección de cámara, sonidos, interfaz, simulador o guía de voz) para enriquecer la experiencia de los estudiantes.
               </p>
 
               <textarea

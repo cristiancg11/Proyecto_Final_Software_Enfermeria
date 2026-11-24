@@ -43,10 +43,10 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             </div>
 
             <a
-              routerLink="/reto-extremo"
+              routerLink="/practica"
               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-teal-950/40 hover:scale-[1.02] transition-all duration-300 border border-teal-400/30"
             >
-              <span>⚡ ¡Modo Reto Extremo: Demuestra tu Nivel!</span>
+              <span>💧 Iniciar Práctica Guiada de 11 Pasos OMS</span>
             </a>
           </div>
         </div>

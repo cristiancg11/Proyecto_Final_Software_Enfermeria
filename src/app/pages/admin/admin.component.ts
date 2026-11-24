@@ -272,9 +272,9 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                     <th class="py-3.5 px-4">Estudiante</th>
                     <th class="py-3.5 px-4">Código</th>
                     <th class="py-3.5 px-4">Fecha / Hora</th>
-                    <th class="py-3.5 px-3 text-center">Nota Práctica (/10)</th>
-                    <th class="py-3.5 px-3 text-center">Nota Cuestionario (/10)</th>
-                    <th class="py-3.5 px-3 text-center">Nota Final Consolidada (/10)</th>
+                    <th class="py-3.5 px-3 text-center">Nota Práctica (% Acierto)</th>
+                    <th class="py-3.5 px-3 text-center">Nota Cuestionario (% OMS)</th>
+                    <th class="py-3.5 px-3 text-center">% Cumplimiento Consolidado</th>
                     <th class="py-3.5 px-4 text-center">Estado</th>
                     <th class="py-3.5 px-4 text-right">Acción</th>
                   </tr>
@@ -294,18 +294,21 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                       </td>
                       <td class="py-3.5 px-3 text-center">
                         <span class="inline-block px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-800 border border-slate-200">
-                          {{ (p.notaPractica !== undefined ? p.notaPractica : p.calificacion).toFixed(1) }} / 10
+                          {{ (((p.notaPractica !== undefined ? p.notaPractica : p.calificacion) / 10) * 100).toFixed(0) }}%
+                          <span class="text-[10px] text-slate-500 font-normal">({{ (p.notaPractica !== undefined ? p.notaPractica : p.calificacion).toFixed(1) }}/10)</span>
                         </span>
                       </td>
                       <td class="py-3.5 px-3 text-center">
                         <span class="inline-block px-2.5 py-1 rounded-xl text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200">
-                          {{ (p.notaTeorica !== undefined ? p.notaTeorica : 0).toFixed(1) }} / 10
+                          {{ (((p.notaTeorica !== undefined ? p.notaTeorica : 0) / 10) * 100).toFixed(0) }}%
+                          <span class="text-[10px] text-blue-600 font-normal">({{ (p.notaTeorica !== undefined ? p.notaTeorica : 0).toFixed(1) }}/10)</span>
                         </span>
                       </td>
                       <td class="py-3.5 px-3 text-center">
                         <span class="inline-block px-3 py-1 rounded-full text-xs font-black shadow-xs"
                               [ngClass]="(p.notaFinal !== undefined ? p.notaFinal : p.calificacion) >= 6.0 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-red-100 text-red-800 border border-red-300'">
-                          {{ (p.notaFinal !== undefined ? p.notaFinal : p.calificacion).toFixed(1) }} / 10
+                          {{ (((p.notaFinal !== undefined ? p.notaFinal : p.calificacion) / 10) * 100).toFixed(0) }}%
+                          <span class="text-[10px] opacity-80 font-normal">({{ (p.notaFinal !== undefined ? p.notaFinal : p.calificacion).toFixed(1) }}/10)</span>
                         </span>
                       </td>
                       <td class="py-3.5 px-4 text-center">

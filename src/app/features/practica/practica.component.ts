@@ -96,7 +96,7 @@ export interface QualityAlert {
               Identificación Requerida
             </h2>
             <p class="text-sm md:text-base text-[#0B2B29]/75 mb-8 leading-relaxed">
-              Para iniciar la práctica clínica supervisada de los 6 pasos y calibrar el cronómetro biomecánico, primero debes registrar tus datos en el módulo de bienvenida.
+              Para iniciar la práctica clínica supervisada de los 11 pasos y calibrar el cronómetro biomecánico, primero debes registrar tus datos en el módulo de bienvenida.
             </p>
             <button
               type="button"
@@ -152,7 +152,7 @@ export interface QualityAlert {
                 </h2>
 
                 <p class="text-sm text-slate-600 mb-6 leading-relaxed">
-                  Antes de iniciar el frotado mecánico de los 6 pasos, abre el grifo con el codo, humedece completamente tus manos con agua corriente y dosifica de 3 a 5 ml de jabón o antiséptico para cubrir toda la superficie palmar.
+                  Antes de iniciar el lavado completo de los 11 pasos, abre el grifo con el codo, humedece completamente tus manos con agua corriente y dosifica de 3 a 5 ml de jabón o antiséptico para cubrir toda la superficie palmar.
                 </p>
 
                 <!-- Instrucciones Rápidas de Seguridad -->
@@ -205,7 +205,7 @@ export interface QualityAlert {
                   <h1 class="text-sm sm:text-base font-extrabold text-[#0B2B29] uppercase tracking-wide flex items-center gap-2">
                     <span>Práctica Clínica Supervisada</span>
                     <span class="text-[#00B39F]">•</span>
-                    <span class="text-[#00B39F] font-bold">Paso {{ currentStepIndex() + 1 }} de 6</span>
+                    <span class="text-[#00B39F] font-bold">Paso {{ currentStepIndex() + 1 }} de {{ steps.length }}</span>
                   </h1>
                   <p class="text-xs text-[#0B2B29]/70 hidden sm:block">
                     Evaluación por Calidad de Técnica Biomecánica • Protocolo OMS
@@ -215,11 +215,14 @@ export interface QualityAlert {
 
               <!-- Badge Objetivo de Tiempo y Acceso Directo a Evaluacion Practica -->
               <div class="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/25 text-[#008072] text-xs font-bold shadow-xs">
-                  <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-teal-50 border border-teal-300 text-[#008072] text-xs font-extrabold shadow-sm">
+                  <svg class="w-4 h-4 text-[#00B39F] animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>Frotado Requerido: 3 a 8s</span>
+                  <span>Tiempo Total: {{ tiempoTotalLavado() }}s / 60s (Meta OMS)</span>
+                  <div class="w-16 h-2 bg-teal-200 rounded-full overflow-hidden">
+                    <div class="bg-[#00B39F] h-full rounded-full transition-all duration-300" [style.width.%]="Math.min(100, (tiempoTotalLavado() / 60) * 100)"></div>
+                  </div>
                 </div>
 
                 <button
@@ -234,14 +237,14 @@ export interface QualityAlert {
                 <button
                   type="button"
                   (click)="irAEvaluacionPractica()"
-                  [disabled]="completedRecords().length < 6"
-                  [ngClass]="completedRecords().length >= 6
+                  [disabled]="completedRecords().length < steps.length"
+                  [ngClass]="completedRecords().length >= steps.length
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-orange-500/25 cursor-pointer active:scale-95'
                     : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed opacity-70'"
                   class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black transition-all"
-                  [title]="completedRecords().length >= 6 ? 'Ir a Evaluación Práctica' : 'Completa los 6 pasos de práctica para desbloquear la Evaluación Práctica'"
+                  [title]="completedRecords().length >= steps.length ? 'Ir a Evaluación Práctica' : 'Completa los 6 pasos de práctica para desbloquear la Evaluación Práctica'"
                 >
-                  <span>{{ completedRecords().length >= 6 ? 'Ir a Evaluación Práctica' : '🔒 Ev. Práctica (6/6 pasos)' }}</span>
+                  <span>{{ completedRecords().length >= steps.length ? 'Ir a Evaluación Práctica' : '🔒 Ev. Práctica (' + completedRecords().length + '/' + steps.length + ' pasos)' }}</span>
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -249,8 +252,8 @@ export interface QualityAlert {
               </div>
             </div>
 
-            <!-- Stepper visual de 6 pasos con píldoras e indicadores dinámicos de estado -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sm:gap-3 items-stretch">
+            <!-- Stepper visual de 11 pasos con píldoras e indicadores dinámicos de estado -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11 gap-1.5 sm:gap-2 items-stretch">
               @for (step of steps; track step.number; let idx = $index) {
                 <div
                   class="flex flex-col items-center justify-between gap-1.5 p-2.5 rounded-2xl border transition-all duration-300 text-center group"
@@ -316,7 +319,7 @@ export interface QualityAlert {
                     Demostración Guía del Paso • Infografía OMS
                   </span>
                   <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                    Paso Activo: <strong class="text-teal-700">{{ currentStepIndex() + 1 }}</strong> de 6
+                    Paso Activo: <strong class="text-teal-700">{{ currentStepIndex() + 1 }}</strong> de {{ steps.length }}
                   </span>
                 </div>
 
@@ -512,7 +515,7 @@ export interface QualityAlert {
               </div>
 
               <!-- Contenedor del Feed de Cámara Web Amplio con Canvas Superpuesto (Optimizado para Celulares y Escritorio) -->
-              <div class="relative w-full min-h-[260px] sm:min-h-[320px] aspect-[4/3] sm:aspect-[16/10] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 flex items-center justify-center group">
+              <div class="relative w-full min-h-[440px] sm:min-h-[540px] md:min-h-[620px] lg:min-h-[660px] aspect-[4/3] sm:aspect-[16/10] bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/80 flex items-center justify-center group">
                 
                 <!-- Video Stream con atributos obligatorios para celulares (iOS Safari / Android Chrome) e inversión de espejo -->
                 <video
@@ -898,7 +901,7 @@ export interface QualityAlert {
                         } @else if (manitaBotHablando()) {
                           <span>🔊 Hablando en tiempo real...</span>
                         } @else {
-                          <span>Mentora Clínica OMS • Paso {{ currentStepIndex() + 1 }} de 6</span>
+                          <span>Mentora Clínica OMS • Paso {{ currentStepIndex() + 1 }} de {{ steps.length }}</span>
                         }
                       </p>
                     </div>
@@ -1021,6 +1024,7 @@ export interface QualityAlert {
   `,
 })
 export class PracticaComponent implements OnInit, OnDestroy {
+  readonly Math = Math;
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
 
@@ -1089,25 +1093,40 @@ export class PracticaComponent implements OnInit, OnDestroy {
     'https://upload.wikimedia.org/wikipedia/commons/8/89/Clean_hands_short.webm',
   ];
 
-  // 2. SINCRONIZACIÓN DINÁMICA DEL RECURSO GUÍA OMS Y DETALLES PEDAGÓGICOS
+  // 2. SINCRONIZACIÓN DINÁMICA DEL RECURSO GUÍA OMS Y DETALLES PEDAGÓGICOS (11 PASOS TÉCNICOS)
   readonly whoMinSecondsPerStep = 5;
 
+  readonly tiempoTotalLavado = computed(() => {
+    const sumPasos = this.completedRecords().reduce((acc, r) => acc + r.seconds, 0);
+    return Math.round((sumPasos + this.currentSeconds()) * 10) / 10;
+  });
+
   readonly clinicalNames: string[] = [
-    'Frotar Palma con Palma con Espuma',
-    'Palma Derecha sobre Dorso Izquierdo',
-    'Palmas Entrelazadas en Espacios Interdigitales',
-    'Dorso de Dedos Trabados contra Palma (Candado)',
-    'Fricción Rotatoria de Pulgares',
-    'Fricción de Yemas y Lecho Ungueal en Palma Opuesta',
+    'Paso 1: Mojar las Manos con Agua',
+    'Paso 2: Aplicar Jabón para Cubrir la Superficie',
+    'Paso 3: Frotar Palma con Palma',
+    'Paso 4: Palma con Dorso y Dedos Entrelazados',
+    'Paso 5: Palma con Palma y Dedos Entrelazados',
+    'Paso 6: Dorso de Dedos contra Palma Opuesta',
+    'Paso 7: Frotación Rotacional de Pulgares',
+    'Paso 8: Yemas de Dedos en Círculos sobre la Palma',
+    'Paso 9: Enjuagar con Abundante Agua',
+    'Paso 10: Secar con Toalla Desechable',
+    'Paso 11: Cerrar el Grifo con la Misma Toalla',
   ];
 
   readonly anatomicalTips: string[] = [
-    'Mantén ambas palmas firmes y realiza fricción vigorosa en círculos para activar la espuma antiséptica en toda la superficie palmar.',
-    'Cubre toda la superficie del dorso intercalando los dedos para arrastrar la flora microbiana transitoria hacia el exterior.',
-    'Asegura la fricción profunda en los pliegues y comisuras interdigitales deslizando de la base a las puntas de los dedos.',
-    'Traba las falanges firmemente en flexión contra la palma contraria para limpiar nudillos, surcos y articulaciones interfalángicas.',
-    'Atrapa el pulgar en la palma opuesta con rotación completa de 360° abarcando la eminencia tenar y la base del primer metacarpiano.',
-    'Junta las puntas de los dedos sobre la palma cóncava girando en círculos concéntricos para desinfectar el lecho subungueal.',
+    'Colocar ambas manos debajo del chorro de agua corriente para humedecer toda la superficie dérmica.',
+    'Depositar suficiente jabón para cubrir toda la superficie de las manos y generar una emulsión adecuada.',
+    'Frotar ambas palmas entre sí con movimientos circulares enérgicos para distribuir el jabón.',
+    'Frotar la palma derecha sobre el dorso de la mano izquierda, con los dedos entrelazados, y viceversa.',
+    'Frotar ambas palmas entre sí, entrelazando los dedos para limpiar a fondo los espacios interdigitales.',
+    'Frotar el dorso de los dedos contra la palma de la mano contraria, manteniendo los dedos unidos.',
+    'Rodear el pulgar izquierdo con la palma derecha y frotar con movimientos circulares; repetir con el otro pulgar.',
+    'Frotar las yemas de los dedos de una mano contra la palma de la otra, realizando movimientos circulares. Repetir con la otra mano.',
+    'Colocar ambas manos debajo del agua para retirar completamente el jabón y los microorganismos arrastrados.',
+    'Secar las manos cuidadosamente con una toalla desechable mediante toques suaves.',
+    'Utilizar la misma toalla desechable para cerrar la llave del agua, evitando tocar el grifo con la piel limpia.',
   ];
 
   readonly currentClinicalName = computed(() => {
@@ -1119,7 +1138,13 @@ export class PracticaComponent implements OnInit, OnDestroy {
   });
 
   readonly currentSvgIllustration = computed(() => {
-    return `assets/svg/paso${this.currentStepIndex() + 1}.svg`;
+    const idx = this.currentStepIndex();
+    if (idx === 0) return 'assets/svg/paso1.svg';
+    if (idx === 1) return 'assets/svg/paso1.svg';
+    if (idx >= 2 && idx <= 7) return `assets/svg/paso${idx - 1}.svg`;
+    if (idx === 8) return 'assets/svg/paso1.svg';
+    if (idx === 9) return 'assets/svg/paso2.svg';
+    return 'assets/svg/paso4.svg';
   });
 
   readonly whoTimeProgressPercent = computed(() => {
@@ -1136,21 +1161,31 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly svgFallbackUrl = computed(() => `assets/svg/paso${this.currentStepIndex() + 1}.svg`);
 
   readonly clinicalTitles: string[] = [
-    'Paso 1: Frotar palmas entre sí',
-    'Paso 2: Palma derecha sobre dorso izquierdo y viceversa',
-    'Paso 3: Frotar palmas con dedos entrelazados',
-    'Paso 4: Frotar dorso de dedos contra la palma opuesta',
-    'Paso 5: Frotación rotacional de los pulgares',
-    'Paso 6: Frotado concéntrico de yemas y uñas sobre la palma',
+    'Paso 1: Mojar las manos',
+    'Paso 2: Aplicar jabón',
+    'Paso 3: Palma con palma',
+    'Paso 4: Palma con dorso',
+    'Paso 5: Palma con palma y dedos entrelazados',
+    'Paso 6: Dorso de los dedos',
+    'Paso 7: Pulgares',
+    'Paso 8: Yemas de los dedos',
+    'Paso 9: Enjuagar',
+    'Paso 10: Secar',
+    'Paso 11: Cerrar el grifo',
   ];
 
   readonly techniqueInstructions: string[] = [
-    'Realiza movimientos circulares constantes cubriendo toda la superficie palmar.',
-    'Frota firmemente la palma sobre el dorso de la otra mano entrelazando los dedos, luego alterna.',
-    'Mantén las palmas enfrentadas y desliza los dedos entrelazados de la base a las puntas.',
-    'Traba los dedos en gancho contra la palma opuesta realizando un movimiento de vaivén horizontal.',
-    'Rodea el pulgar con la palma opuesta y realiza giros completos de 360 grados en rotación.',
-    'Agrupa las yemas de los dedos sobre la palma cóncava opuesta con movimientos circulares en espiral.',
+    'Colocar ambas manos debajo del chorro de agua.',
+    'Depositar suficiente jabón para cubrir toda la superficie de las manos.',
+    'Frotar ambas palmas entre sí.',
+    'Frotar la palma derecha sobre el dorso de la mano izquierda, con los dedos entrelazados, y viceversa.',
+    'Frotar ambas palmas entre sí, entrelazando los dedos.',
+    'Frotar el dorso de los dedos contra la palma de la mano contraria, manteniendo los dedos unidos.',
+    'Rodear el pulgar izquierdo con la palma derecha y frotar con movimientos circulares; repetir con el otro pulgar.',
+    'Frotar las yemas de los dedos de una mano contra la palma de la otra, realizando movimientos circulares. Repetir con la otra mano.',
+    'Colocar ambas manos debajo del agua para retirar completamente el jabón.',
+    'Secar las manos con una toalla desechable.',
+    'Utilizar la misma toalla desechable para cerrar la llave del agua.',
   ];
 
   readonly currentClinicalTitle = computed(() => {
@@ -1693,34 +1728,46 @@ export class PracticaComponent implements OnInit, OnDestroy {
     const threshold = this.currentProximityThreshold();
     let areHandsTogether = false;
 
-    // Validación anatómica específica según el paso OMS activo
-    if (stepIdx === 0) {
-      // Paso 1: Palma con Palma (Palmas enfrentadas en contacto estrecho)
-      areHandsTogether = palmDistance <= threshold && wristDistance <= threshold * 1.35;
+    // Validación anatómica específica según el paso OMS activo (11 Pasos Técnicos)
+    if (stepIdx === 0 || stepIdx === 8) {
+      // Pasos 1 y 9: Mojar y Enjuagar bajo el agua
+      areHandsTogether = (palmDistance <= threshold * 1.6 || wristDistance <= threshold * 1.6);
     } else if (stepIdx === 1) {
-      // Paso 2: Palma sobre Dorso (Superposición palma-dorso)
+      // Paso 2: Aplicar jabón
+      areHandsTogether = palmDistance <= threshold * 1.5;
+    } else if (stepIdx === 2) {
+      // Paso 3: Palma con Palma (Palmas enfrentadas en contacto estrecho)
+      areHandsTogether = palmDistance <= threshold && wristDistance <= threshold * 1.35;
+    } else if (stepIdx === 3) {
+      // Paso 4: Palma sobre Dorso (Superposición palma-dorso)
       const dorsalDist0 = Math.hypot(palm0.x - landmarks[1][9].x, palm0.y - landmarks[1][9].y);
       const dorsalDist1 = Math.hypot(palm1.x - landmarks[0][9].x, palm1.y - landmarks[0][9].y);
       areHandsTogether = dorsalDist0 <= threshold || dorsalDist1 <= threshold || palmDistance <= threshold;
-    } else if (stepIdx === 2) {
-      // Paso 3: Espacios Interdigitales (Dedos entrelazados con palmas próximas)
+    } else if (stepIdx === 4) {
+      // Paso 5: Palma con palma y dedos entrelazados
       const fingerTipDist = Math.hypot(landmarks[0][12].x - landmarks[1][12].x, landmarks[0][12].y - landmarks[1][12].y);
       areHandsTogether = (palmDistance <= threshold && fingerTipDist <= threshold * 1.25) || wristDistance <= threshold * 1.2;
-    } else if (stepIdx === 3) {
-      // Paso 4: Dorso de Dedos en candado (Articulaciones trabadas en contra-posición)
+    } else if (stepIdx === 5) {
+      // Paso 6: Dorso de Dedos en candado (Articulaciones trabadas en contra-posición)
       const knuckleDist = Math.hypot(landmarks[0][8].x - landmarks[1][0].x, landmarks[0][8].y - landmarks[1][0].y);
       const knuckleDistRev = Math.hypot(landmarks[1][8].x - landmarks[0][0].x, landmarks[1][8].y - landmarks[0][0].y);
       areHandsTogether = knuckleDist <= threshold * 1.2 || knuckleDistRev <= threshold * 1.2 || palmDistance <= threshold;
-    } else if (stepIdx === 4) {
-      // Paso 5: Pulgares rotacionales (Punta del pulgar envuelta en palma contraria)
+    } else if (stepIdx === 6) {
+      // Paso 7: Pulgares rotacionales (Punta del pulgar envuelta en palma contraria)
       const thumb0InPalm1 = Math.hypot(landmarks[0][4].x - palm1.x, landmarks[0][4].y - palm1.y);
       const thumb1InPalm0 = Math.hypot(landmarks[1][4].x - palm0.x, landmarks[1][4].y - palm0.y);
       areHandsTogether = thumb0InPalm1 <= threshold || thumb1InPalm0 <= threshold || palmDistance <= threshold;
-    } else {
-      // Paso 6: Yemas y uñas sobre palma cóncava
+    } else if (stepIdx === 7) {
+      // Paso 8: Yemas y uñas sobre palma cóncava
       const tips0InPalm1 = Math.hypot(landmarks[0][8].x - palm1.x, landmarks[0][8].y - palm1.y);
       const tips1InPalm0 = Math.hypot(landmarks[1][8].x - palm0.x, landmarks[1][8].y - palm0.y);
       areHandsTogether = tips0InPalm1 <= threshold || tips1InPalm0 <= threshold;
+    } else if (stepIdx === 9) {
+      // Paso 10: Secar con toalla
+      areHandsTogether = palmDistance <= threshold * 1.5;
+    } else {
+      // Paso 11: Cerrar el grifo con la toalla
+      areHandsTogether = (palmDistance <= threshold * 1.8 || wristDistance <= threshold * 1.8);
     }
 
     this.handsTogether.set(areHandsTogether);
@@ -2085,7 +2132,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   irAEvaluacionPractica(): void {
-    if (this.completedRecords().length < 6 && !this.stateService.isStepUnlocked(4)) {
+    if (this.completedRecords().length < this.steps.length && !this.stateService.isStepUnlocked(4)) {
       return;
     }
     this.stopTimer();

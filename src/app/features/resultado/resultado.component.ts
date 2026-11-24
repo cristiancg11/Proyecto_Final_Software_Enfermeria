@@ -53,10 +53,13 @@ import {
               <span class="text-[11px] font-bold uppercase tracking-widest text-teal-700 block mb-1">
                 Calificación Final Consolidada
               </span>
-              <div class="font-heading text-5xl sm:text-6xl font-extrabold tracking-tight text-slate-900 my-2">
-                {{ evaluation().overallScore.toFixed(1) }}
-                <span class="text-2xl font-normal text-slate-400">/10</span>
+              <div class="font-heading text-5xl sm:text-6xl font-black tracking-tight text-teal-800 my-2 flex items-baseline justify-center gap-2">
+                <span>{{ porcentajeCumplimiento() }}%</span>
+                <span class="text-xl sm:text-2xl font-bold text-slate-500">({{ evaluation().overallScore.toFixed(1) }}/10)</span>
               </div>
+              <span class="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-extrabold text-xs uppercase tracking-wider mb-2">
+                Cumplimiento Técnico OMS
+              </span>
             </div>
 
             <!-- Nivel de Desempeño Badge -->
@@ -284,7 +287,7 @@ import {
                 </div>
                 <div>
                   <span class="text-slate-500">Puntos: </span>
-                  <strong class="text-sm text-[#008072]">{{ rec.score.toFixed(2) }} / 1.67</strong>
+                  <strong class="text-sm text-[#008072]">{{ rec.score.toFixed(2) }} / 0.91</strong>
                 </div>
               </div>
 
@@ -298,7 +301,7 @@ import {
       </div>
 
       <!-- ========================================================================== -->
-      <!-- MODO "DESAFÍO CONTRA COMPAÑEROS" CON ANALÍTICA DE IA Y SISTEMA DE LOGROS -->
+      <!-- ANÁLISIS DE EVOLUCIÓN Y PROGRESIÓN TÉCNICA OMS -->
       <!-- ========================================================================== -->
       <div class="mb-10 bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-2xl border border-[#00B39F]/30 relative overflow-hidden">
         <!-- Destellos ambientales de Gamificación e IA -->
@@ -317,7 +320,7 @@ import {
               <div class="flex flex-wrap items-center gap-2 mb-1">
                 <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#CFFBF0] text-[#008072] text-[11px] font-black uppercase tracking-wider border border-[#00B39F]/30">
                   <span class="w-2 h-2 rounded-full bg-[#00B39F] animate-ping"></span>
-                  <span>Modo Desafío contra Compañeros • Analítica IA</span>
+                  <span>Progreso y Evolución Técnica OMS • Analítica IA</span>
                 </span>
                 <span class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full">
                   Curva de Aprendizaje: Intento 1 al 3
@@ -807,6 +810,10 @@ export class ResultadoComponent {
   readonly questions = this.stateService.diagnosticQuestions;
   readonly student = this.stateService.student;
   readonly evaluation = this.stateService.evaluationResult;
+  readonly porcentajeCumplimiento = computed(() => {
+    const score = this.evaluation().overallScore || 0;
+    return Math.min(100, Math.max(0, Math.round((score / 10) * 100)));
+  });
   readonly codigoCertificado = signal<string | null>(null);
   private intentoGuardado = false;
 

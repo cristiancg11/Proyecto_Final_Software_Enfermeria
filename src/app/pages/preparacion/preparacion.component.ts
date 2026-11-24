@@ -30,7 +30,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           </h1>
 
           <p class="text-sm sm:text-base md:text-lg text-[#C5D7E8] max-w-2xl leading-relaxed mb-6">
-            Condiciones asépticas obligatorias según el protocolo clínico. Antes de encender la cámara y realizar los 6 pasos biomecánicos de la OMS, debes preparar físicamente tus manos y antebrazos.
+            Condiciones asépticas obligatorias según el protocolo clínico. Antes de encender la cámara y realizar los 11 pasos oficiales de la OMS, debes preparar físicamente tus manos y antebrazos.
           </p>
 
           <div class="inline-flex flex-wrap items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 border border-white/10 text-xs sm:text-sm text-slate-300">
