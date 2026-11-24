@@ -436,10 +436,38 @@ export class HandwashStateService {
     }
   }
 
+  marcarPracticaGuiadaCompletada(): void {
+    this.unlockStep(4);
+    if (typeof window !== 'undefined') {
+      const code = this._student()?.studentCode || '';
+      if (code) {
+        localStorage.setItem(`manos_seguras_practica_completada_${code}`, 'true');
+      }
+      sessionStorage.setItem('manos_seguras_practica_completada', 'true');
+    }
+  }
+
+  haCompletadoPracticaGuiada(): boolean {
+    if (this._maxUnlockedStep() >= 4) {
+      return true;
+    }
+    if (typeof window !== 'undefined') {
+      const code = this._student()?.studentCode || '';
+      if (code && localStorage.getItem(`manos_seguras_practica_completada_${code}`) === 'true') {
+        return true;
+      }
+      if (sessionStorage.getItem('manos_seguras_practica_completada') === 'true') {
+        return true;
+      }
+    }
+    return false;
+  }
+
   resetProgressToStepOne(): void {
     this._maxUnlockedStep.set(1);
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('manos_seguras_max_step', '1');
+      sessionStorage.removeItem('manos_seguras_practica_completada');
     }
   }
 

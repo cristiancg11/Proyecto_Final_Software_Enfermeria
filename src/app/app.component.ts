@@ -21,11 +21,11 @@ export class App {
   readonly studentName = computed(
     () => this.student()?.fullName || this.authService.usuarioActual()?.nombre
   );
-  readonly studentSemester = computed(
-    () => this.authService.usuarioActual()?.semestre || 'Semestre VII'
-  );
-  readonly studentGroup = computed(
-    () => this.authService.usuarioActual()?.grupo || 'Grupo A-1'
+  readonly studentCode = computed(
+    () =>
+      this.student()?.studentCode ||
+      this.authService.usuarioActual()?.codigoEstudiantil ||
+      '2026-ENF-UCC'
   );
   readonly avatarUsuario = this.authService.avatarUsuario;
   readonly esDocente = this.authService.esDocente;
@@ -35,6 +35,23 @@ export class App {
       (!!this.authService.usuarioActual()?.nombre ||
         (!!this.student() && !!this.student()?.fullName))
   );
+
+  readonly simulacionHabilitada = computed(() => {
+    return this.esDocente() || this.stateService.haCompletadoPracticaGuiada();
+  });
+  readonly alertaBloqueoSimulacion = signal<boolean>(false);
+
+  abrirSimulacionIa(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (!this.simulacionHabilitada()) {
+      this.alertaBloqueoSimulacion.set(true);
+      return;
+    }
+    this.router.navigate(['/evaluacion-practica']);
+  }
   readonly rutaActual = signal<string>(this.router.url);
 
   // Modo Simulador Móvil en Pantallas Grandes (Desktop)

@@ -67,11 +67,9 @@
               <span class="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-sky-600 transition-colors truncate max-w-[120px] sm:max-w-[200px] leading-tight">
                 {{ studentName() }}
               </span>
-              <div class="flex items-center gap-1.5 text-[10px] text-slate-500">
-                <span class="text-sky-700 font-semibold">{{ studentSemester() }}</span>
-                <span>•</span>
-                <span class="truncate max-w-[100px]">{{ studentGroup() }}</span>
-              </div>
+              <span class="text-[10px] text-slate-400 font-mono truncate max-w-[120px] sm:max-w-[160px]">
+                ID: {{ studentCode() }}
+              </span>
             </div>
           </a>
 
@@ -143,17 +141,31 @@
               <span>Práctica Guiada</span>
             </a>
 
-            <!-- 3. Simulación Cámara IA (MediaPipe) -->
-            <a
-              routerLink="/evaluacion-practica"
-              routerLinkActive="bg-sky-50 text-sky-700 border-sky-300 font-bold shadow-xs"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-sky-700 hover:bg-slate-50 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
+            <!-- 3. Simulación Cámara IA (MediaPipe) con bloqueo estricto -->
+            <button
+              type="button"
+              (click)="abrirSimulacionIa($event)"
+              [ngClass]="simulacionHabilitada()
+                ? 'text-slate-700 hover:text-sky-700 hover:bg-slate-50 cursor-pointer'
+                : 'text-slate-400 hover:bg-amber-50/50 hover:text-amber-800 opacity-80 cursor-pointer'"
+              class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-transparent group text-left"
+              [title]="simulacionHabilitada() ? 'Simulación Cámara IA' : 'Bloqueado: Completa primero la Práctica Guiada'"
             >
-              <span class="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
-                🎯
-              </span>
-              <span>Simulación Cámara IA</span>
-            </a>
+              <div class="flex items-center gap-3">
+                <span
+                  class="w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-transform"
+                  [ngClass]="simulacionHabilitada() ? 'bg-sky-100 text-sky-700 group-hover:scale-110' : 'bg-slate-100 text-slate-400'"
+                >
+                  {{ simulacionHabilitada() ? '🎯' : '🔒' }}
+                </span>
+                <span>Simulación Cámara IA</span>
+              </div>
+              @if (!simulacionHabilitada()) {
+                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
+                  Bloqueada
+                </span>
+              }
+            </button>
 
             <!-- 5. Mi Perfil -->
             <a
@@ -283,27 +295,30 @@
         </a>
 
         <!-- 3. HERO CENTRAL: EVALUACIÓN PRÁCTICA -->
-        <a
-          routerLink="/evaluacion-practica"
-          routerLinkActive="ring-2 ring-sky-300 shadow-sky-500/40 scale-105"
-          class="relative -top-3 flex flex-col items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-600 via-sky-500 to-teal-500 text-white shadow-md border-2 border-sky-300/40 active:scale-95 transition-all duration-300 group cursor-pointer"
-          title="Evaluación Práctica Autónoma"
+        <button
+          type="button"
+          (click)="abrirSimulacionIa($event)"
+          class="relative -top-3 flex flex-col items-center justify-center w-12 h-12 rounded-2xl text-white shadow-md border-2 border-sky-300/40 active:scale-95 transition-all duration-300 group cursor-pointer"
+          [ngClass]="simulacionHabilitada()
+            ? 'bg-gradient-to-tr from-sky-600 via-sky-500 to-teal-500'
+            : 'bg-gradient-to-tr from-slate-500 to-slate-600 opacity-80'"
+          [title]="simulacionHabilitada() ? 'Evaluación Práctica Autónoma' : 'Bloqueado: Completa primero la Práctica Guiada'"
         >
-          <span class="text-base leading-none animate-pulse">🎯</span>
-          <span class="text-[9px] font-extrabold tracking-tight mt-0.5">Examen</span>
-        </a>
+          <span class="text-base leading-none">{{ simulacionHabilitada() ? '🎯' : '🔒' }}</span>
+          <span class="text-[9px] font-extrabold tracking-tight mt-0.5">{{ simulacionHabilitada() ? 'Examen' : 'Bloq' }}</span>
+        </button>
 
         <!-- 4. Simulación IA (Examen) -->
-        <a
-          routerLink="/evaluacion-practica"
-          routerLinkActive="text-sky-600 font-bold"
-          class="flex flex-col items-center justify-center p-1.5 rounded-xl text-slate-500 hover:text-sky-600 transition-all text-center group"
+        <button
+          type="button"
+          (click)="abrirSimulacionIa($event)"
+          class="flex flex-col items-center justify-center p-1.5 rounded-xl transition-all text-center group cursor-pointer"
+          [ngClass]="simulacionHabilitada() ? 'text-slate-500 hover:text-sky-600' : 'text-slate-400 opacity-80'"
+          [title]="simulacionHabilitada() ? 'Simulación Cámara IA' : 'Bloqueado: Completa primero la Práctica Guiada'"
         >
-          <svg class="w-5 h-5 mb-0.5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+          <span class="text-sm mb-0.5">{{ simulacionHabilitada() ? '🎯' : '🔒' }}</span>
           <span class="text-[10px] tracking-tight">Simulación</span>
-        </a>
+        </button>
 
         <!-- 5. Mi Perfil -->
         <a
@@ -318,5 +333,41 @@
         </a>
       </div>
     </nav>
+  }
+
+  <!-- Modal Global de Alerta de Bloqueo de Simulación IA -->
+  @if (alertaBloqueoSimulacion()) {
+    <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-amber-300 shadow-2xl text-center space-y-4">
+        <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 border border-amber-200 flex items-center justify-center text-3xl mx-auto shadow-sm">
+          🔒
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 text-xs font-bold uppercase tracking-wider">
+          <span>Módulo Bloqueado</span>
+        </div>
+        <h3 class="text-lg sm:text-xl font-black text-slate-900">
+          Práctica Guiada Requerida
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          Para ingresar a la <strong>Simulación Cámara IA</strong> con evaluación autónoma, primero debes completar y registrar los <strong>11 pasos de la Práctica Guiada OMS</strong>.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
+          <a
+            routerLink="/practica"
+            (click)="alertaBloqueoSimulacion.set(false)"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-sm transition-all cursor-pointer"
+          >
+            <span>🖐️ Iniciar Práctica Guiada</span>
+          </a>
+          <button
+            type="button"
+            (click)="alertaBloqueoSimulacion.set(false)"
+            class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
   }
 </div>

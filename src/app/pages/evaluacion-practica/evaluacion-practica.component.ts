@@ -784,7 +784,7 @@ export class EvaluacionPracticaComponent {
     }
 
     // BLOQUEO OBLIGATORIO: Impedir acceso a la simulación IA si no ha completado la práctica guiada previa
-    if (!this.esDocente() && !this.stateService.isStepUnlocked(4)) {
+    if (!this.esDocente() && !this.stateService.haCompletadoPracticaGuiada()) {
       this.accesoBloqueado.set(true);
       return;
     }

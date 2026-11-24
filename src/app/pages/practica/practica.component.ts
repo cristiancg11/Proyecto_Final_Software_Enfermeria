@@ -9,7 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   DrawingUtils,
   FilesetResolver,
@@ -196,6 +196,23 @@ export interface QualityAlert {
             </div>
           }
 
+          <!-- Banner de Bloqueo Previo de Simulación IA -->
+          @if (avisoBloqueoPrevio()) {
+            <div class="mb-4 p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 shadow-sm animate-fade-in">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xl">🔒</span>
+                <span><strong>Acceso restringido a Simulación IA:</strong> Primero debes completar los 11 pasos de esta Práctica Guiada OMS.</span>
+              </div>
+              <button
+                type="button"
+                (click)="avisoBloqueoPrevio.set(false)"
+                class="px-2.5 py-1 rounded-lg bg-amber-200/60 hover:bg-amber-200 text-amber-900 text-xs font-bold cursor-pointer"
+              >
+                Entendido
+              </button>
+            </div>
+          }
+
           <!-- BARRA SUPERIOR DE PROGRESO DE LOS 11 PASOS -->
           <div class="bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-6 mb-6 shadow-xl border border-white/50 animate-fade-in">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
@@ -225,14 +242,14 @@ export interface QualityAlert {
                 <button
                   type="button"
                   (click)="irAEvaluacionPractica()"
-                  [disabled]="completedRecords().length < steps.length && !stateService.isStepUnlocked(4)"
-                  [ngClass]="completedRecords().length >= steps.length || stateService.isStepUnlocked(4)
+                  [disabled]="!evaluacionPracticaDesbloqueada()"
+                  [ngClass]="evaluacionPracticaDesbloqueada()
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-orange-500/25 cursor-pointer active:scale-95'
                     : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed opacity-70'"
                   class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black transition-all"
-                  [title]="completedRecords().length >= steps.length || stateService.isStepUnlocked(4) ? 'Ir a Evaluación Práctica' : 'Completa los 11 pasos de práctica para desbloquear la Evaluación Práctica'"
+                  [title]="evaluacionPracticaDesbloqueada() ? 'Ir a Evaluación Práctica' : 'Completa los 11 pasos de práctica para desbloquear la Evaluación Práctica'"
                 >
-                  <span>{{ completedRecords().length >= steps.length || stateService.isStepUnlocked(4) ? 'Ir a Evaluación Práctica' : '🔒 Ev. Práctica (11/11 pasos)' }}</span>
+                  <span>{{ evaluacionPracticaDesbloqueada() ? 'Ir a Evaluación Práctica' : '🔒 Ev. Práctica (11/11 pasos)' }}</span>
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -1013,7 +1030,12 @@ export interface QualityAlert {
 })
 export class PracticaComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   readonly stateService = inject(HandwashStateService);
+  readonly avisoBloqueoPrevio = signal<boolean>(false);
+  readonly evaluacionPracticaDesbloqueada = computed(
+    () => this.completedRecords().length >= this.steps.length || this.stateService.haCompletadoPracticaGuiada()
+  );
 
   readonly student = this.stateService.student;
   readonly steps = this.stateService.steps;
@@ -1229,6 +1251,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.router.navigate(['/bienvenida']);
       return;
     }
+    // Verificar si viene redirigido por intento de entrar a Simulación IA sin práctica previa
+    this.route.queryParams.subscribe((params) => {
+      if (params['bloqueo'] === 'simulacion_ia') {
+        this.avisoBloqueoPrevio.set(true);
+      }
+    });
     // Iniciar cuenta regresiva orientativa de apertura de grifo (5 segundos)
     this.mostrarFaseInicial.set(true);
     this.segundosGrifo.set(5);
@@ -1332,7 +1360,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.resume();
-      } catch {}
+      } catch { }
     }
   }
 
@@ -1409,12 +1437,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
     try {
       const synth = window.speechSynthesis;
       if (synth.paused) {
-        try { synth.resume(); } catch {}
+        try { synth.resume(); } catch { }
       }
       if (forzar) {
         synth.cancel();
       } else if (synth.speaking) {
-        try { synth.resume(); } catch {}
+        try { synth.resume(); } catch { }
         return;
       }
 
@@ -1441,7 +1469,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
       synth.speak(utterance);
       if (synth.paused) {
-        try { synth.resume(); } catch {}
+        try { synth.resume(); } catch { }
       }
     } catch {
       this.manitaBotHablando.set(false);
@@ -1973,7 +2001,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       );
       this.stopTimer();
       this.stopCamera();
-      this.stateService.unlockStep(4);
+      this.stateService.marcarPracticaGuiadaCompletada();
       this.router.navigate(['/evaluacion-practica']);
     } else {
       const nextIdx = this.currentStepIndex() + 1;
@@ -2009,7 +2037,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       playNote(659.25, 0.08, 0.22);
       playNote(783.99, 0.16, 0.3);
       playNote(1046.5, 0.25, 0.45);
-    } catch {}
+    } catch { }
   }
 
   async iniciarModoDemoVideo(): Promise<void> {
@@ -2076,12 +2104,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   irAEvaluacionPractica(): void {
-    if (this.completedRecords().length < this.steps.length && !this.stateService.isStepUnlocked(4)) {
+    if (this.completedRecords().length < this.steps.length && !this.stateService.haCompletadoPracticaGuiada()) {
       return;
     }
     this.stopTimer();
     this.stopCamera();
-    this.stateService.unlockStep(4);
+    this.stateService.marcarPracticaGuiadaCompletada();
     this.router.navigate(['/evaluacion-practica']);
   }
 }

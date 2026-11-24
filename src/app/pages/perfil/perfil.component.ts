@@ -54,12 +54,6 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
               <span class="px-3 py-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 font-mono">
                 ID: {{ codigoEstudiantil() }}
               </span>
-              <span class="px-3 py-1 rounded-lg bg-sky-50 border border-sky-200 text-sky-800 font-medium">
-                📚 {{ semestre() }}
-              </span>
-              <span class="px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium">
-                👥 {{ grupo() }}
-              </span>
             </div>
           </div>
         </div>
@@ -164,39 +158,6 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   required
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-800 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600"
                 />
-              </div>
-
-              <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-700">Semestre</label>
-                <select
-                  name="semestre"
-                  [(ngModel)]="semestreInput"
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-800 focus:outline-none focus:border-teal-600"
-                >
-                  <option value="Semestre I">Semestre I</option>
-                  <option value="Semestre II">Semestre II</option>
-                  <option value="Semestre III">Semestre III</option>
-                  <option value="Semestre IV">Semestre IV</option>
-                  <option value="Semestre V">Semestre V</option>
-                  <option value="Semestre VI">Semestre VI</option>
-                  <option value="Semestre VII">Semestre VII</option>
-                  <option value="Semestre VIII">Semestre VIII</option>
-                  <option value="Internado Rotatorio">Internado Rotatorio</option>
-                </select>
-              </div>
-
-              <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-700">Grupo</label>
-                <select
-                  name="grupo"
-                  [(ngModel)]="grupoInput"
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-800 focus:outline-none focus:border-teal-600"
-                >
-                  <option value="Grupo A-1 • Clínica">Grupo A-1 • Clínica</option>
-                  <option value="Grupo A-2 • Simulación">Grupo A-2 • Simulación</option>
-                  <option value="Grupo B-1 • Clínica">Grupo B-1 • Clínica</option>
-                  <option value="Grupo B-2 • Laboratorio">Grupo B-2 • Laboratorio</option>
-                </select>
               </div>
             </div>
 

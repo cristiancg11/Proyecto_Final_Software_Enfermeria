@@ -14,7 +14,7 @@ export const simulacionIaGuard: CanActivateFn = () => {
   }
 
   // Verificar si la práctica previa (Paso 4 desbloqueado) ha sido completada
-  if (!stateService.isStepUnlocked(4)) {
+  if (!stateService.haCompletadoPracticaGuiada()) {
     router.navigate(['/practica'], {
       queryParams: { bloqueo: 'simulacion_ia' },
     });

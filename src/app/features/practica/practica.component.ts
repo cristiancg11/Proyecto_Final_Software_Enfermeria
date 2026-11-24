@@ -1886,7 +1886,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
       );
       this.stopTimer();
       this.stopCamera();
-      this.stateService.unlockStep(4);
+      this.stateService.marcarPracticaGuiadaCompletada();
       this.router.navigate(['/evaluacion-practica']);
     } else {
       const nextIdx = this.currentStepIndex() + 1;
@@ -1995,12 +1995,12 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   irAEvaluacionPractica(): void {
-    if (this.completedRecords().length < this.steps.length && !this.stateService.isStepUnlocked(4)) {
+    if (this.completedRecords().length < this.steps.length && !this.stateService.haCompletadoPracticaGuiada()) {
       return;
     }
     this.stopTimer();
     this.stopCamera();
-    this.stateService.unlockStep(4);
+    this.stateService.marcarPracticaGuiadaCompletada();
     this.router.navigate(['/evaluacion-practica']);
   }
 

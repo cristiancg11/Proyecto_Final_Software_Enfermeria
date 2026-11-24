@@ -58,12 +58,20 @@ export interface RegistroHistorialPractica {
               <span>🖐️ Iniciar Práctica Guiada</span>
             </a>
 
-            <a
-              routerLink="/evaluacion-practica"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-sky-700 border border-slate-300 font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-300 cursor-pointer"
+            <button
+              type="button"
+              (click)="irASimulacionIa()"
+              [ngClass]="simulacionHabilitada()
+                ? 'bg-white hover:bg-slate-50 text-sky-700 border-slate-300'
+                : 'bg-slate-100 text-slate-400 border-slate-200 opacity-80'"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-300 cursor-pointer"
+              [title]="simulacionHabilitada() ? 'Simulación Cámara IA' : 'Bloqueado: Requiere completar la Práctica Guiada'"
             >
-              <span>🎯 Simulación Cámara IA</span>
-            </a>
+              <span>{{ simulacionHabilitada() ? '🎯 Simulación Cámara IA' : '🔒 Simulación Cámara IA' }}</span>
+              @if (!simulacionHabilitada()) {
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold border border-amber-200">Bloqueada</span>
+              }
+            </button>
 
             <a
               routerLink="/cuanto-sabes"
@@ -192,24 +200,39 @@ export interface RegistroHistorialPractica {
           </p>
         </a>
 
-        <!-- Opción 2: Simulación Cámara IA -->
-        <a
-          routerLink="/evaluacion-practica"
-          class="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-sky-400 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block group"
+        <!-- Opción 2: Simulación Cámara IA con bloqueo condicional -->
+        <div
+          (click)="irASimulacionIa()"
+          class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm transition-all duration-300 block group cursor-pointer relative overflow-hidden"
+          [ngClass]="simulacionHabilitada() ? 'hover:border-sky-400 hover:shadow-md hover:-translate-y-0.5' : 'hover:border-amber-400 bg-slate-50/50'"
         >
-          <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center text-xl mb-3.5 group-hover:scale-105 transition-transform">
-            🎯
+          <div class="flex items-center justify-between mb-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+              {{ simulacionHabilitada() ? '🎯' : '🔒' }}
+            </div>
+            <span
+              class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border"
+              [ngClass]="simulacionHabilitada() ? 'bg-sky-50 text-sky-700 border-sky-200' : 'bg-amber-50 text-amber-800 border-amber-200'"
+            >
+              {{ simulacionHabilitada() ? 'Habilitada' : 'Requiere Práctica' }}
+            </span>
           </div>
           <div class="flex items-center justify-between mb-1">
             <h3 class="font-heading text-sm font-bold text-slate-900 group-hover:text-sky-700 transition-colors">
               Simulación Cámara IA
             </h3>
-            <span class="text-sky-700 text-xs font-bold">Evaluación →</span>
+            <span class="text-xs font-bold" [ngClass]="simulacionHabilitada() ? 'text-sky-700' : 'text-amber-700'">
+              {{ simulacionHabilitada() ? 'Evaluación →' : 'Bloqueada 🔒' }}
+            </span>
           </div>
           <p class="text-xs text-slate-600 leading-relaxed">
-            Evaluación autónoma con MediaPipe HandLandmarker. Análisis de postura, fricción y tiempo sin asistencia.
+            @if (simulacionHabilitada()) {
+              Evaluación autónoma con MediaPipe HandLandmarker. Análisis de postura, fricción y tiempo sin asistencia.
+            } @else {
+              Completa primero la Práctica Guiada de los 11 pasos para desbloquear este módulo de evaluación autónoma con IA.
+            }
           </p>
-        </a>
+        </div>
 
         <!-- Opción 3: Cuestionario Teórico OMS y Encuesta -->
         <a
@@ -397,6 +420,42 @@ export interface RegistroHistorialPractica {
           <span class="text-[11px] text-teal-600">Directrices Oficiales OMS • Lavado de Manos Clínico (11 Pasos)</span>
         </div>
       </div>
+
+      <!-- Modal de Bloqueo de Simulación IA -->
+      @if (alertaBloqueoSimulacion()) {
+        <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+          <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-amber-300 shadow-2xl text-center space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 border border-amber-200 flex items-center justify-center text-3xl mx-auto shadow-sm">
+              🔒
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 text-xs font-bold uppercase tracking-wider">
+              <span>Módulo Bloqueado</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-black text-slate-900">
+              Práctica Guiada Requerida
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Para ingresar a la <strong>Simulación Cámara IA</strong> con evaluación autónoma, primero debes completar y registrar los <strong>11 pasos de la Práctica Guiada OMS</strong>.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
+              <a
+                routerLink="/practica"
+                (click)="alertaBloqueoSimulacion.set(false)"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-sm transition-all cursor-pointer"
+              >
+                <span>🖐️ Iniciar Práctica Guiada</span>
+              </a>
+              <button
+                type="button"
+                (click)="alertaBloqueoSimulacion.set(false)"
+                class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   `,
 })
@@ -533,11 +592,25 @@ export class DashboardComponent implements OnInit {
     this.historialCompleto.set(registros);
   }
 
+  readonly alertaBloqueoSimulacion = signal<boolean>(false);
+
+  readonly simulacionHabilitada = computed(() => {
+    return this.authService.esDocente() || this.stateService.haCompletadoPracticaGuiada();
+  });
+
+  irASimulacionIa(): void {
+    if (!this.simulacionHabilitada()) {
+      this.alertaBloqueoSimulacion.set(true);
+      return;
+    }
+    this.router.navigate(['/evaluacion-practica']);
+  }
+
   repetirModo(modo: 'guiado' | 'simulacion' | 'desafio'): void {
     if (modo === 'guiado') {
       this.router.navigate(['/practica']);
     } else if (modo === 'simulacion') {
-      this.router.navigate(['/evaluacion-practica']);
+      this.irASimulacionIa();
     } else if (modo === 'desafio') {
       this.router.navigate(['/evaluacion-teorica']);
     }
