@@ -46,9 +46,24 @@ const registrarUsuario = async (req, res) => {
     });
     try {
         const data = RegistroSchema.parse(req.body);
+        // REGLA DE SEGURIDAD ESTRICTA: El registro público siempre crea usuarios con rol ESTUDIANTE.
+        // Solo un docente o administrador autenticado con token válido puede registrar a otro docente.
+        let rolFinal = client_1.Rol.ESTUDIANTE;
+        if (data.rol === client_1.Rol.DOCENTE && req.headers.authorization) {
+            try {
+                const token = req.headers.authorization.split(' ')[1];
+                const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+                if (decoded && ['DOCENTE', 'ADMIN', 'PROFESOR', 'PROFESORA', 'ADMINISTRADOR'].includes(String(decoded.rol).toUpperCase())) {
+                    rolFinal = client_1.Rol.DOCENTE;
+                }
+            }
+            catch {
+                rolFinal = client_1.Rol.ESTUDIANTE;
+            }
+        }
         const correoNormalizado = data.correo.trim().toLowerCase();
         const codigoNormalizado = data.codigoEstudiantil?.trim() ||
-            (data.rol === client_1.Rol.DOCENTE
+            (rolFinal === client_1.Rol.DOCENTE
                 ? `DOC-${Math.floor(1000 + Math.random() * 9000)}`
                 : `EST-${Math.floor(1000 + Math.random() * 9000)}`);
         // Validar si ya existe un usuario con ese correo o código estudiantil (con reconexión automática a Supabase)
@@ -87,7 +102,7 @@ const registrarUsuario = async (req, res) => {
                 codigoEstudiantil: codigoNormalizado,
                 correo: correoNormalizado,
                 password: passwordHashed,
-                rol: data.rol,
+                rol: rolFinal,
                 consentimiento: data.consentimiento,
             },
             select: {
@@ -186,29 +201,42 @@ const loginUsuario = async (req, res) => {
     try {
         const data = LoginSchema.parse(req.body);
         const credencial = (data.correo || data.codigoEstudiantil || data.identificador || '').trim();
+        const credencialLower = credencial.toLowerCase();
         console.log(`🔍 [LOGIN INICIADO] Buscando usuario en Supabase ("Usuario") con credencial: "${credencial}"`);
-        // Buscar por correo o por código estudiantil con reconexión automática a Supabase
+        // Buscar por correo, código estudiantil/docente, UUID o nombre (case-insensitive) con reconexión automática a Supabase
         const usuario = await (0, prisma_1.ejecutarConReconexion)((db) => db.usuario.findFirst({
             where: {
                 OR: [
-                    { correo: credencial.toLowerCase() },
+                    { correo: credencialLower },
                     { codigoEstudiantil: credencial },
+                    { codigoEstudiantil: credencialLower },
+                    { id: credencial },
+                    { nombre: { equals: credencial, mode: 'insensitive' } },
                 ],
             },
         }));
         if (!usuario) {
             console.warn(`⚠️ [LOGIN RECHAZADO - 401] El usuario "${credencial}" NO existe en la tabla "Usuario" de Supabase.`);
             res.status(401).json({
-                error: 'Credenciales inválidas. Verifica tu correo/código y contraseña.',
+                error: 'Credenciales inválidas. Verifica tu correo, código o nombre y tu contraseña.',
             });
             return;
         }
-        // Verificar contraseña con bcrypt
-        const passwordValida = await bcryptjs_1.default.compare(data.password, usuario.password);
+        // Verificar contraseña con bcrypt o comparación directa (permite contraseñas cargadas en texto plano o con bcrypt en Supabase)
+        let passwordValida = false;
+        try {
+            passwordValida = await bcryptjs_1.default.compare(data.password, usuario.password);
+        }
+        catch {
+            passwordValida = false;
+        }
+        if (!passwordValida && (data.password === usuario.password || (usuario.password === 'Docente2026*' && data.password === 'Docente2026*'))) {
+            passwordValida = true;
+        }
         if (!passwordValida) {
             console.warn(`⚠️ [LOGIN RECHAZADO - 401] Contraseña incorrecta para usuario "${usuario.correo}" (ID: ${usuario.id}).`);
             res.status(401).json({
-                error: 'Credenciales inválidas. Verifica tu correo/código y contraseña.',
+                error: 'Credenciales inválidas. Verifica tu correo, código o nombre y tu contraseña.',
             });
             return;
         }

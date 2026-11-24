@@ -91,8 +91,10 @@ import { ThemeService } from '../../services/theme.service';
 
             <form [formGroup]="docenteForm" (ngSubmit)="onSubmitDocente()" class="space-y-5">
               <div>
-                <label for="docenteCorreo" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Correo institucional <span class="text-rose-500">*</span></label>
-                <input id="docenteCorreo" type="email" formControlName="correo" placeholder="docente@ucc.edu.co" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15" />
+                <label for="docenteIdentificador" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">
+                  Código, correo o nombre institucional <span class="text-rose-500">*</span>
+                </label>
+                <input id="docenteIdentificador" type="text" formControlName="identificador" placeholder="Ej. DOC-2026, docente@ucc.edu.co o tu nombre" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15" />
               </div>
               <div>
                 <label for="docentePassword" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Contraseña <span class="text-rose-500">*</span></label>
@@ -259,7 +261,7 @@ export class BienvenidaComponent {
   readonly verPassword = signal<boolean>(false);
 
   readonly docenteForm = new FormGroup({
-    correo: new FormControl('', [Validators.required, Validators.email]),
+    identificador: new FormControl('', [Validators.required, Validators.minLength(2)]),
     password: new FormControl('', [Validators.required, Validators.minLength(1)]),
   });
 
@@ -301,13 +303,13 @@ export class BienvenidaComponent {
       this.docenteForm.markAllAsTouched();
       return;
     }
-    const { correo, password } = this.docenteForm.getRawValue();
+    const { identificador, password } = this.docenteForm.getRawValue();
     this.cargando.set(true);
     this.mensajeError.set(null);
 
-    const emailNorm = (correo || '').trim().toLowerCase();
+    const idNorm = (identificador || '').trim();
 
-    this.authService.login({ identificador: emailNorm, password: password || '' }).subscribe({
+    this.authService.login({ identificador: idNorm, password: password || '' }).subscribe({
       next: (res) => {
         this.cargando.set(false);
         const user = res.user || res.usuario;
@@ -316,10 +318,10 @@ export class BienvenidaComponent {
           this.stateService.unlockStep(12);
           this.router.navigate(['/admin']);
         } else {
-          // La cuenta existe pero está registrada como estudiante: no se abre una sesión docente ficticia
+          // La cuenta existe pero está registrada como estudiante
           this.authService.logout();
           this.mensajeError.set(
-            'Esta cuenta está registrada con rol de Estudiante. Ingresa por la pestaña "Estudiante" o solicita a un docente que te registre como Docente desde el panel.'
+            'Esta cuenta no tiene asignado el rol de Docente en la base de datos de Supabase. Ingresa con tus credenciales de docente o contacta al administrador.'
           );
         }
       },
@@ -327,7 +329,7 @@ export class BienvenidaComponent {
         this.cargando.set(false);
         const status = err?.status ?? 0;
         if (status === 401 || status === 400) {
-          this.mensajeError.set('Correo o contraseña incorrectos. Verifica tus credenciales de docente e intenta nuevamente.');
+          this.mensajeError.set('Identificador (código, correo o nombre) o contraseña incorrectos. Verifica que la cuenta exista en Supabase con rol DOCENTE.');
         } else if (status === 0 || status >= 500) {
           this.mensajeError.set(
             'No fue posible conectar con el servidor en este momento (la base de datos puede estar reactivándose). Espera unos segundos e intenta de nuevo.'
