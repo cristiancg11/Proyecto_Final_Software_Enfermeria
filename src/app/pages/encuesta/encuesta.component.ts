@@ -56,12 +56,12 @@ type RespuestaMejora = 'Sí' | 'Parcialmente' | 'No';
               </div>
             </div>
 
-            <!-- Badge de Sincronización Supabase -->
+            <!-- Badge de Sincronización de Servidor -->
             <div class="bg-black/40 px-3.5 py-2 rounded-2xl border border-white/10 self-start sm:self-auto flex items-center gap-2.5">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <div class="text-left sm:text-right">
                 <span class="text-[10px] uppercase font-bold text-slate-400 block">Sincronización</span>
-                <span class="text-xs font-black text-emerald-300">Supabase DB</span>
+                <span class="text-xs font-black text-emerald-300">Servidor Clínico</span>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@ type RespuestaMejora = 'Sí' | 'Parcialmente' | 'No';
               ¡Muchas gracias por tu retroalimentación!
             </h2>
             <p class="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto mb-6">
-              Tus respuestas han sido guardadas de forma segura en la base de datos de <strong>Supabase</strong>. Tu experiencia servirá para continuar optimizando el software y validando los protocolos pedagógicos de bioseguridad.
+              Tus respuestas han sido guardadas de forma segura en el <strong>registro institucional</strong>. Tu experiencia servirá para continuar optimizando el software y validando los protocolos pedagógicos de bioseguridad.
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
@@ -309,7 +309,7 @@ type RespuestaMejora = 'Sí' | 'Parcialmente' | 'No';
               ></textarea>
 
               <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[11px] text-slate-400 mt-2 gap-1">
-                <span>Tus comentarios quedarán registrados junto a tu usuario en Supabase.</span>
+                <span>Tus comentarios quedarán registrados en tu historial académico.</span>
                 <span class="font-mono text-slate-400">{{ comentariosTexto.length }} caracteres</span>
               </div>
             </div>
@@ -327,7 +327,7 @@ type RespuestaMejora = 'Sí' | 'Parcialmente' | 'No';
               </div>
             }
 
-            <!-- BOTÓN PRINCIPAL DE ACCIÓN: GUARDAR EN SUPABASE -->
+            <!-- BOTÓN PRINCIPAL DE ACCIÓN: GUARDAR ENCUESTA -->
             <div class="bg-gradient-to-r from-[#0d1e26] via-[#10292f] to-[#0c2420] rounded-3xl p-5 sm:p-7 border border-white/10 shadow-2xl text-center space-y-3">
               <button
                 type="submit"
@@ -342,9 +342,9 @@ type RespuestaMejora = 'Sí' | 'Parcialmente' | 'No';
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                   </svg>
-                  <span>Guardando opinión en Supabase...</span>
+                  <span>Guardando opinión en el sistema...</span>
                 } @else {
-                  <span>💾 Enviar Cuestionario y Guardar en Supabase</span>
+                  <span>💾 Enviar Cuestionario y Registrar Respuestas</span>
                   <svg class="w-5 h-5 text-[#080B10]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -352,7 +352,7 @@ type RespuestaMejora = 'Sí' | 'Parcialmente' | 'No';
               </button>
 
               <p class="text-[11px] text-slate-400">
-                Al enviar este cuestionario se registrará tu opinión en Supabase y desbloquearás la <strong>Fase 7: Resultados y Certificado Oficial</strong>.
+                Al enviar este cuestionario se registrará tu opinión institucional y desbloquearás la <strong>Fase 7: Resultados y Certificado Oficial</strong>.
               </p>
             </div>
 

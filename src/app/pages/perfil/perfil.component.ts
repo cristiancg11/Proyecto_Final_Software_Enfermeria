@@ -171,7 +171,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                   <span class="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin"></span>
                   <span>Guardando...</span>
                 } @else {
-                  <span>💾 Guardar en Supabase</span>
+                  <span>💾 Guardar Cambios</span>
                 }
               </button>
             </div>
@@ -320,7 +320,7 @@ export class PerfilComponent implements OnInit {
         const errMsg =
           err?.error?.error ||
           err?.error?.message ||
-          'Ocurrió un error al actualizar los datos en Supabase.';
+          'Ocurrió un error al actualizar los datos en la base académica.';
         this.mensajeError.set(errMsg);
       },
     });

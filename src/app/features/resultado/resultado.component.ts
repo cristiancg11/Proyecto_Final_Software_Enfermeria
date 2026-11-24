@@ -776,7 +776,7 @@ import {
               <span class="text-[9px] font-mono font-bold text-slate-600 select-all">
                 COD: {{ codigoCertificado() || 'UCC-MED-2026-VAL' }}
               </span>
-              <span class="text-[9px] text-emerald-700 font-bold">✓ Verificado en Supabase Cloud</span>
+              <span class="text-[9px] text-emerald-700 font-bold">✓ Verificado en Registro Institucional</span>
             </div>
 
             <!-- Firma Coordinación -->

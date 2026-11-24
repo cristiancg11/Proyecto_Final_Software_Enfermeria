@@ -122,7 +122,7 @@ export interface PreguntaRetoExtremo {
                 </div>
               </div>
               <p class="text-xs text-slate-600 leading-relaxed pt-1">
-                • El cronómetro corre en vivo. Al completar las 7 preguntas, tu tiempo y puntaje se registrarán en la tabla de <strong>Supabase</strong> para disputar el Podio.
+                • El cronómetro corre en vivo. Al completar las 7 preguntas, tu tiempo y puntaje se registrarán en la <strong>tabla de posiciones oficial</strong> para disputar el Podio.
               </p>
             </div>
 
@@ -225,7 +225,7 @@ export interface PreguntaRetoExtremo {
                   class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer flex items-center gap-2"
                 >
                   <span>
-                    {{ indicePregunta() + 1 < 7 ? 'Siguiente Pregunta →' : 'Finalizar y Guardar en Supabase 🏆' }}
+                    {{ indicePregunta() + 1 < 7 ? 'Siguiente Pregunta →' : 'Finalizar y Registrar Puntuación 🏆' }}
                   </span>
                 </button>
               </div>
@@ -240,7 +240,7 @@ export interface PreguntaRetoExtremo {
           <div class="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6 animate-fade-in text-center">
             
             <div class="inline-block px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-xs uppercase tracking-wider mb-2">
-              ✓ Reto Registrado en Supabase Cloud
+              ✓ Reto Registrado Oficialmente
             </div>
 
             <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900">
@@ -248,7 +248,7 @@ export interface PreguntaRetoExtremo {
             </h2>
 
             <p class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
-              Tus resultados han sido guardados en Supabase. Mira a continuación tu ubicación en el Podio y la tabla de posiciones.
+              Tus resultados han sido registrados exitosamente. Mira a continuación tu ubicación en el Podio y la tabla de posiciones.
             </p>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 max-w-2xl mx-auto pt-2">
@@ -310,7 +310,7 @@ export interface PreguntaRetoExtremo {
                   Podio y Tabla de Posiciones
                 </h3>
                 <p class="text-xs text-slate-500">
-                  Sincronizado con Supabase • Ordenado por mayor puntaje (aciertos + velocidad)
+                  Sincronizado en tiempo real • Ordenado por mayor puntaje (aciertos + velocidad)
                 </p>
               </div>
               <button
