@@ -12,47 +12,47 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 animate-fade-in text-slate-100">
       
       <!-- ENCABEZADO DE PREPARACIÓN CLÍNICA -->
-      <div class="relative bg-gradient-to-r from-[#08151D] via-[#0E2428] to-[#081E1C] rounded-3xl p-6 sm:p-10 border border-[#00B39F]/30 shadow-2xl overflow-hidden mb-10">
-        <!-- Glows ambientales -->
-        <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-[#00B39F]/15 blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-[#50E7FF]/15 blur-3xl pointer-events-none"></div>
+      <div class="relative bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm overflow-hidden mb-10">
+        <!-- Glows ambientales suaves -->
+        <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-sky-100/60 blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-teal-100/60 blur-3xl pointer-events-none"></div>
 
         <div class="relative z-10">
-          <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#00B39F]/20 border border-[#00B39F]/40 text-[#50E7FF] text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
-            <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-bold uppercase tracking-wider mb-4 shadow-xs">
+            <svg class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
             <span>Fase 1 • Protocolo de Bioseguridad Hospitalaria</span>
           </div>
 
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight mb-3 drop-shadow-md">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-3">
             Preparación Previa al Lavado de Manos
           </h1>
 
-          <p class="text-sm sm:text-base md:text-lg text-[#C5D7E8] max-w-2xl leading-relaxed mb-6">
+          <p class="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl leading-relaxed mb-6">
             Condiciones asépticas obligatorias según el protocolo clínico. Antes de encender la cámara y realizar los 11 pasos oficiales de la OMS, debes preparar físicamente tus manos y antebrazos.
           </p>
 
-          <div class="inline-flex flex-wrap items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 border border-white/10 text-xs sm:text-sm text-slate-300">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#50E7FF] animate-pulse"></span>
+          <div class="inline-flex flex-wrap items-center gap-3 px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-600">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Estudiante en formación:</span>
-            <strong class="text-white">{{ nombreEstudiante() }}</strong>
-            <span class="text-slate-500">•</span>
-            <span class="font-mono text-[#50E7FF]">{{ codigoEstudiante() }}</span>
+            <strong class="text-slate-900">{{ nombreEstudiante() }}</strong>
+            <span class="text-slate-300">•</span>
+            <span class="font-mono text-sky-700 font-semibold">{{ codigoEstudiante() }}</span>
           </div>
         </div>
       </div>
 
             <!-- AVISO IMPORTANTE: RETIRAR RELOJES/OBJETOS Y SIMULACIÓN GESTUAL SIN AGUA -->
-      <div class="mb-8 p-5 sm:p-6 rounded-3xl bg-amber-500/15 border-2 border-amber-400/40 backdrop-blur-md flex flex-col sm:flex-row items-start sm:items-center gap-4 text-amber-100 shadow-xl animate-fade-in">
-        <div class="w-12 h-12 rounded-2xl bg-amber-500/25 text-amber-300 border border-amber-400/50 flex items-center justify-center text-2xl shrink-0 shadow-sm">
+      <div class="mb-8 p-5 sm:p-6 rounded-3xl bg-amber-50 border border-amber-300 flex flex-col sm:flex-row items-start sm:items-center gap-4 text-amber-900 shadow-sm animate-fade-in">
+        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 border border-amber-300 flex items-center justify-center text-2xl shrink-0 shadow-xs">
           ⚠️
         </div>
         <div class="space-y-1">
-          <h4 class="text-sm sm:text-base font-black text-amber-200 uppercase tracking-wide">
+          <h4 class="text-sm sm:text-base font-bold text-amber-900 uppercase tracking-wide">
             Recordatorio de Seguridad Previo a la Cámara
           </h4>
-          <p class="text-xs sm:text-sm text-amber-100/90 leading-relaxed font-medium">
+          <p class="text-xs sm:text-sm text-amber-800 leading-relaxed font-medium">
             Por favor, <strong>retírate relojes, manillas, anillos u objetos</strong> que puedan estorbar o interrumpir durante la práctica. Recuerda que la simulación frente a cámara se realiza de <strong>forma gestual / guiada sin agua real</strong>, cuidando de no mojar tus dispositivos (computador o celular).
           </p>
         </div>
@@ -284,10 +284,10 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             type="button"
             (click)="continuarAPractica()"
             [disabled]="!checklistCompleto()"
-            class="w-full sm:w-auto px-10 py-4 rounded-full font-extrabold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-3 shadow-lg group"
+            class="w-full sm:w-auto px-10 py-3.5 rounded-xl font-bold text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-3 group"
             [ngClass]="checklistCompleto()
-              ? 'bg-[#00B39F] hover:bg-[#008072] text-white shadow-[0_4px_24px_rgba(0,179,159,0.4)] hover:shadow-[0_6px_30px_rgba(0,179,159,0.6)] hover:scale-105 active:scale-95 cursor-pointer'
-              : 'bg-slate-800 text-slate-500 border border-slate-700/60 opacity-60 cursor-not-allowed select-none shadow-none'"
+              ? 'bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 cursor-pointer'
+              : 'bg-slate-200 text-slate-400 border border-slate-300 opacity-70 cursor-not-allowed select-none shadow-none'"
           >
             @if (checklistCompleto()) {
               <span>Continuar a Evaluación Pre-Práctica OMS</span>

@@ -11,11 +11,11 @@ import { AuthService } from '../../services/auth.service';
   imports: [CommonModule],
   template: `
     <!-- Contenedor Maestro con Degradado Menta a Durazno -->
-    <div class="min-h-screen py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#CFFBF0] via-[#E8FCF7] to-[#FFE9DE] text-[#0B2B29] relative overflow-hidden">
-      <!-- Efectos y Resplandores Ambientales -->
-      <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#00B39F]/15 blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#FF6A4D]/15 blur-3xl pointer-events-none"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-white/20 blur-3xl pointer-events-none"></div>
+    <div class="min-h-screen py-6 sm:py-8 md:py-10 px-4 sm:px-6 lg:px-8 bg-slate-50 text-slate-900 relative overflow-hidden">
+      <!-- Efectos y Resplandores Ambientales Suaves -->
+      <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-sky-200/30 blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-teal-200/30 blur-3xl pointer-events-none"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-white/40 blur-3xl pointer-events-none"></div>
 
       <div class="max-w-4xl mx-auto relative z-10">
         @if (!student() && !authService.estaAutenticado()) {

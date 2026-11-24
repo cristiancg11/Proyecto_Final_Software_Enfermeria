@@ -30,7 +30,7 @@ export interface QualityAlert {
   template: `
     <!-- Contenedor Maestro con Fondo Aséptico y Efectos de Luz -->
     <div
-      class="min-h-screen py-4 sm:py-6 md:py-8 px-3 sm:px-6 lg:px-8 bg-gradient-to-br from-[#CFFBF0] via-[#E8FCF7] to-[#FFE9DE] text-[#0B2B29] relative overflow-hidden"
+      class="min-h-screen py-4 sm:py-6 md:py-8 px-3 sm:px-6 lg:px-8 bg-slate-50 text-slate-900 relative overflow-hidden"
       [ngClass]="{ 'p-0 sm:p-0 min-h-0 h-[100dvh] overflow-hidden': isFullScreen() }"
     >
       <!-- Glows y Efectos Ambientales (ocultos en pantalla completa inmersiva) -->
