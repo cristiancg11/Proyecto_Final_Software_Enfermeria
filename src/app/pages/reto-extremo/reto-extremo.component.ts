@@ -489,7 +489,7 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly practicasService = inject(PracticasService);
 
-  // 7 PREGUNTAS CLÍNICAS DE ALTA DIFICULTAD OMS (CON 4 OPCIONES A, B, C, D)
+  // BANCO DE 50 PREGUNTAS CLÍNICAS DE ALTA DIFICULTAD OMS (CON 4 OPCIONES A, B, C, D)
   private readonly bancoPreguntasExtremas: PreguntaRetoExtremo[] = [
     {
       id: 1,
@@ -603,6 +603,694 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
       explicacionClinica:
         'La combinación secuencial de agua, jabón y alcohol elimina los lípidos epidérmicos y produce microfisuras en la piel que facilitan la colonización por patógenos nosocomiales.',
     },
+    {
+      id: 8,
+      categoria: 'Microbiología Clínica • Flora Cutánea',
+      dificultad: 'Alta',
+      enunciado:
+        'En el contexto del control de infecciones intrahospitalarias, ¿cuál es la distinción microbiológica fundamental entre la flora cutánea residente y la transitoria?',
+      opciones: [
+        'La flora transitoria coloniza las capas superficiales de la epidermis, se adquiere por contacto con pacientes o fómites y es la principal responsable de las IAAS; se remueve con facilidad con la higiene de manos.',
+        'La flora residente está compuesta exclusivamente por patógenos esporulados anaerobios de alta virulencia.',
+        'La flora transitoria habita en los estratos profundos y folículos pilosos, requiriendo 10 minutos de cepillado con yodopovidona para eliminarse.',
+        'La flora residente no puede sobrevivir más de 5 minutos sobre la piel debido a los ácidos grasos sebáceos.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La flora transitoria (S. aureus, enterobacterias, Pseudomonas) coloniza la capa córnea superficial tras el contacto asistencial y causa la mayoría de las infecciones hospitalarias. Se elimina mediante fricción alcohólica o lavado clínico.',
+    },
+    {
+      id: 9,
+      categoria: 'Formulaciones Locales OMS • Control Químico',
+      dificultad: 'Extrema',
+      enunciado:
+        'En las formulaciones magistrales recomendadas por la OMS para la preparación local de soluciones hidroalcohólicas, ¿cuál es el objetivo específico de incluir peróxido de hidrógeno al 0.125%?',
+      opciones: [
+        'Actuar como el antiséptico principal para desinfectar la piel del operador.',
+        'Inactivar esporas bacterianas contaminantes presentes en las botellas o soluciones durante su preparación y envasado.',
+        'Otorgar viscosidad y adherencia para evitar el goteo durante la aplicación en dispensador.',
+        'Aclarar la solución y neutralizar los malos olores del alcohol desnaturalizado.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'El peróxido de hidrógeno en baja concentración (0.125%) no posee efecto antiséptico sobre la piel, pero destruye endosporas contaminantes en el recipiente o insumos durante su preparación.',
+    },
+    {
+      id: 10,
+      categoria: 'Bioseguridad Hospitalaria • Dispensadores',
+      dificultad: 'Extrema',
+      enunciado:
+        'La OMS y los CDC prohíben de forma estricta rellenar o completar recipientes de jabón líquido ("topping-up") sin previa desinfección y secado total. ¿Cuál es la justificación microbiológica?',
+      opciones: [
+        'La mezcla de jabones de diferente fabricante causa una reacción exotérmica que quema la piel.',
+        'Los dispensadores rellenados sobre remanentes se contaminan masivamente con biopelículas de bacilos Gram negativos oportunistas, como Pseudomonas aeruginosa y Serratia marcescens.',
+        'El jabón líquido se evapora en menos de 24 horas si entra aire fresco al contenedor.',
+        'El plástico del dispensador neutraliza los surfactantes convirtiendo el jabón en agua inerte.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'El "topping-up" favorece la formación de biofilms resistentes en el fondo de los dispensadores que albergan bacilos Gram negativos nosocomiales, transformando el jabón en foco de brotes.',
+    },
+    {
+      id: 11,
+      categoria: 'Barreras de Bioseguridad • Guantes Médicos',
+      dificultad: 'Alta',
+      enunciado:
+        'Respecto al uso de guantes clínicos y su relación con la higiene de manos, ¿cuál de las siguientes afirmaciones es correcta según la OMS?',
+      opciones: [
+        'El uso de guantes exime de realizar higiene de manos si no se aprecian rasgaduras visibles.',
+        'Es una práctica recomendada frotar con alcohol los guantes entre paciente y paciente para optimizar recursos.',
+        'Los guantes proporcionan una barrera imperfecta; hasta en un 30% pueden presentar microperforaciones y las manos se contaminan al retirarlos, exigiendo higiene inmediata tras el retiro.',
+        'Los guantes clínicos pueden lavarse con agua y jabón puestos para atender hasta 3 pacientes consecutivos.',
+      ],
+      indiceCorrecto: 2, // Opción C
+      explicacionClinica:
+        'Los guantes no sustituyen la higiene de manos. Durante la atención pueden ocurrir microfisuras inadvertidas y la técnica de retiro frecuentemente contamina las manos del operador con la superficie externa.',
+    },
+    {
+      id: 12,
+      categoria: 'Antisepsia Quirúrgica • Bloque Quirúrgico',
+      dificultad: 'Extrema',
+      enunciado:
+        'En la antisepsia prequirúrgica de las manos del equipo quirúrgico, ¿cuál es una directriz explícita de la OMS para evitar infecciones del sitio quirúrgico?',
+      opciones: [
+        'Cepillar vigorosamente toda la piel de antebrazos y manos con cerdas rígidas durante 10 minutos.',
+        'El cepillado de la piel está contraindicado por provocar microabrasiones que favorecen la proliferación bacteriana; solo se aconseja cepillo o limpiador blando para uñas en el primer lavado.',
+        'Aplicar alcohol al 96% puro sin agente emoliente para deshidratar de inmediato la epidermis.',
+        'Enjuagar los brazos con agua hirviendo antes de calzar los guantes estériles.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'La OMS desaconseja el cepillado cutáneo vigoroso ya que erosiona la epidermis y multiplica la dispersión bacteriana. El frotado quirúrgico debe realizarse con las manos desnudas usando técnica adecuada.',
+    },
+    {
+      id: 13,
+      categoria: 'Epidemiología y Métricas • Indicador OMS',
+      dificultad: 'Alta',
+      enunciado:
+        'En los programas de vigilancia epidemiológica con metodología de observación directa de la OMS, ¿cómo se calcula la tasa global de adherencia a la higiene de manos?',
+      opciones: [
+        '(Litros de alcohol consumidos en el servicio / Número de camas ocupadas) × 100',
+        '(Número de acciones de higiene de manos realizadas / Número total de oportunidades observadas) × 100',
+        '(Número de pacientes sin infecciones intrahospitalarias / Total de camas activas) × 100',
+        '(Horas de turno del personal / Número de dispensadores instalados) × 100',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'La métrica estandarizada mundial de la OMS es: [Acciones observadas realizadas (fricción o lavado) / Total de oportunidades observadas correspondientes a los 5 Momentos] × 100.',
+    },
+    {
+      id: 14,
+      categoria: 'Control de Brotes • Gastroenteritis Viral',
+      dificultad: 'Extrema',
+      enunciado:
+        'Durante un brote nosocomial de gastroenteritis aguda por Norovirus en una sala de internación, ¿cuál es la indicación prioritaria de la OMS respecto a la higiene de manos?',
+      opciones: [
+        'Utilizar únicamente alcohol en gel al 70%, pues lisa la cápside proteica en 3 segundos.',
+        'Priorizar el lavado de manos con agua y jabón, ya que los virus sin envoltura lipídica (como Norovirus) son menos susceptibles al alcohol y requieren arrastre físico-mecánico.',
+        'Sumergir las manos en hipoclorito de sodio al 5% antes de cada contacto clínico.',
+        'Suspender la higiene de manos para evitar la sequedad cutánea durante el turno.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Norovirus es un virus sin envoltura lipídica con alta tolerancia a los alcoholes convencionales. El lavado vigoroso con agua y jabón es la recomendación prioritaria para su remoción mecánica.',
+    },
+    {
+      id: 15,
+      categoria: '5 Momentos OMS • Riesgo Biológico',
+      dificultad: 'Alta',
+      enunciado:
+        'Al canalizar una vía periférica difícil, se produce una salpicadura de sangre en el guante y el dorso de la mano del enfermero. Tras desechar el cortopunzante en el contenedor rígido, ¿cómo debe actuar según el Momento 3?',
+      opciones: [
+        'Frotar alcohol sobre el guante para desinfectar la superficie antes de tocar al paciente.',
+        'Retirarse los guantes y lavarse de inmediato con agua y jabón, ya que existe contaminación con materia biológica visible.',
+        'Colocarse un guante limpio por encima del manchado para continuar el procedimiento.',
+        'Frotarse gel alcohólico directamente sobre la sangre fresca visible de la mano.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'El Momento 3 (después del riesgo de exposición a fluidos corporales) con suciedad macroscópica exige obligatoriamente agua y jabón; la materia orgánica inactiva los alcoholes y fija proteínas a la dermis.',
+    },
+    {
+      id: 16,
+      categoria: 'Bioseguridad • Política Bare Below the Elbows',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Cuál es la justificación microbiológica de la OMS para exigir que las manos y muñecas del personal de salud estén libres de anillos, relojes y pulseras en áreas clínicas?',
+      opciones: [
+        'Criterios estrictamente estéticos e institucionales de presentación personal.',
+        'La piel debajo de los anillos retiene humedad y alberga hasta 10 veces más bacilos Gram negativos y levaduras, además de interferir con la fricción y rasgar guantes.',
+        'Los metales nobles reaccionan con el alcohol formando vapores tóxicos en el ambiente.',
+        'Las pulseras bloquean el flujo de retorno venoso en la muñeca del trabajador.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'La evidencia demuestra que las áreas subungueales y debajo de anillos actúan como reservorios persistentes de Gram negativos multirresistentes y levaduras, impidiendo una fricción antiséptica homogénea.',
+    },
+    {
+      id: 17,
+      categoria: 'IAAS y Reservorios • Uñas y Cosmética',
+      dificultad: 'Extrema',
+      enunciado:
+        'Respecto al uso de uñas postizas, acrílicas o esmalte agrietado en el personal de enfermería en áreas de cuidados intensivos, ¿qué evidencia epidemiológica documenta la OMS?',
+      opciones: [
+        'No representan riesgo si tienen un largo menor a 2 centímetros desde el pulpejo.',
+        'Se han vinculado directamente como el origen causal de brotes epidémicos letales por Serratia marcescens, Pseudomonas aeruginosa y Candida en UCI y neonatología.',
+        'El material acrílico absorbe el alcohol y prolonga el efecto antiséptico durante el turno.',
+        'Solo están restringidas en el personal que prepara alimentos en el comedor hospitalario.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Las uñas artificiales acumulan microorganismos multirresistentes difíciles de erradicar con la higiene regular, habiendo sido el foco comprobado de múltiples brotes nosocomiales graves.',
+    },
+    {
+      id: 18,
+      categoria: 'Mecanismos Biocidas • Alcoholes',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Cuál es el mecanismo bioquímico fundamental por el cual los alcoholes (etanol e isopropanol) ejercen su acción destructiva sobre bacterias vegetativas y hongos?',
+      opciones: [
+        'Bloqueo irreversible de la replicación del ADN mitocondrial por intercalación de bases.',
+        'Desnaturalización y precipitación rápida de proteínas celulares junto con la lisis de la membrana celular fosfolipídica.',
+        'Inhibición competitiva exclusiva de la enzima transcriptasa reversa.',
+        'Producción masiva de radicales libres que destruyen la cápsula polisacárida bacteriana.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Los alcoholes actúan desnaturalizando proteínas y disolviendo los componentes lipídicos de las membranas, lo que causa la lisis osmótica casi inmediata en presencia de agua.',
+    },
+    {
+      id: 19,
+      categoria: 'Equipamiento Hospitalario • Secado de Manos',
+      dificultad: 'Alta',
+      enunciado:
+        'En áreas clínicas y de hospitalización, ¿por qué la OMS desaconseja el uso de secadores de aire caliente o aire a alta velocidad para el secado de manos?',
+      opciones: [
+        'Por su elevado costo de mantenimiento eléctrico en comparación con las toallas descartables.',
+        'Porque provocan recirculación de aire turbulento que dispersa bioaerosoles bacterianos a varios metros recontaminando manos y superficies clínicas.',
+        'Porque el aire caliente inactiva la queratina dérmica causando descamación inmediata.',
+        'Porque alteran la calibración de los termómetros de mercurio de la sala.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Los secadores de aire generan turbulencias que aerosolizan microorganismos ambientales y del lavamanos a más de 2 metros; la toalla de papel descartable ofrece secado rápido y fricción mecánica sin bioaerosoles.',
+    },
+    {
+      id: 20,
+      categoria: 'Farmacología Antiséptica • Efecto Residual',
+      dificultad: 'Alta',
+      enunciado:
+        'En el lavado antiséptico de manos, ¿qué propiedad farmacológica sustancial diferencia al gluconato de clorhexidina respecto al alcohol simple?',
+      opciones: [
+        'Su capacidad esporicida instantánea en menos de 5 segundos de contacto.',
+        'Su marcada actividad antimicrobiana residual acumulativa (sustantividad) gracias a su unión electrostática persistente a las proteínas del estrato córneo.',
+        'Su evaporación inmediata en menos de 3 segundos sin dejar residuos en la piel.',
+        'Su completa ausencia de citotoxicidad al contacto con mucosas y oído interno.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'La clorhexidina posee alta sustantividad (afinidad catiónica por la queratina dérmica), lo que le confiere un efecto inhibitorio residual prolongado de varias horas tras el lavado.',
+    },
+    {
+      id: 21,
+      categoria: 'Bundles de Infección • Accesos Vasculares',
+      dificultad: 'Extrema',
+      enunciado:
+        'En el paquete de medidas (bundle) para la prevención de infecciones del torrente sanguíneo asociadas a Catéter Venoso Central (CVC), ¿cuál es el antiséptico cutáneo de elección para la curación del sitio de inserción?',
+      opciones: [
+        'Alcohol al 96% puro aplicado mediante fricción concéntrica sin esperar secado.',
+        'Gluconato de clorhexidina al 2% en base alcohólica al 70%, dejándolo secar al aire por completo antes de cualquier manipulación.',
+        'Solución salina normal al 0.9% para proteger la integridad del endotelio vascular.',
+        'Yodopovidona al 10% enjuagada inmediatamente con agua destilada.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'La clorhexidina al 2% en alcohol al 70% es el preparado recomendado con mayor evidencia para inserción y curación de vías centrales, combinando acción rápida con persistencia residual.',
+    },
+    {
+      id: 22,
+      categoria: '5 Momentos OMS • Delimitación de Zonas',
+      dificultad: 'Alta',
+      enunciado:
+        'Un enfermero ingresa a la habitación de un paciente, silencia la alarma del monitor multiparámetro y acomoda los cables en la mesa de noche sin tocar directamente al paciente. ¿A qué Momento de la OMS corresponde la higiene al retirarse?',
+      opciones: [
+        'Momento 1: Antes de tocar al paciente.',
+        'Momento 2: Antes de una tarea limpia/aséptica.',
+        'Momento 5: Después del contacto con el entorno del paciente.',
+        'No requiere higiene ya que no existió contacto físico con el paciente.',
+      ],
+      indiceCorrecto: 2, // Opción C
+      explicacionClinica:
+        'El Momento 5 exige higiene tras tocar cualquier objeto, mueble o equipo dentro del área inmediata del paciente al abandonarla, ya que el entorno está intensamente colonizado por su microbiota.',
+    },
+    {
+      id: 23,
+      categoria: 'Virología Clínica • Espectro Antiséptico',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Por qué las soluciones hidroalcohólicas son altamente eficaces contra virus como SARS-CoV-2, Influenza y VIH, en comparación con Enterovirus o Rotavirus?',
+      opciones: [
+        'Porque los virus respiratorios y retrovirus poseen una envoltura lipídica que el alcohol disuelve rápidamente, inactivando sus proteínas de anclaje celular.',
+        'Porque los virus con envoltura carecen de genoma al exponerse al oxígeno atmosférico.',
+        'Porque el alcohol al 70% genera mutaciones letales espontáneas en el ARN viral.',
+        'Porque los virus sin envoltura son eliminados exclusivamente por luz solar.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'Los virus envueltos poseen una membrana lipídica muy sensible a los solventes alcohólicos que disuelven su cubierta e impiden su infectividad celular; los virus desnudos o no envueltos son mucho más estables.',
+    },
+    {
+      id: 24,
+      categoria: 'Resistencia Antimicrobiana • Bacterias Panresistentes',
+      dificultad: 'Extrema',
+      enunciado:
+        'Al atender a un paciente con infección por Klebsiella pneumoniae productora de carbapenemasas (KPC) o Acinetobacter baumannii multirresistente sin presencia de fluidos corporales, ¿cuál es la conducta validada por la OMS para la antisepsia de manos?',
+      opciones: [
+        'El alcohol en gel es inútil contra bacterias panresistentes; se debe utilizar obligatoriamente formaldehído diluido.',
+        'La fricción con preparados hidroalcohólicos sigue siendo el método de elección, ya que los mecanismos plasmídicos de resistencia a antibióticos no confieren protección frente a la desnaturalización proteica del alcohol.',
+        'Se debe sumergir las manos en cloruro de benzalconio al 5% durante 5 minutos seguidos.',
+        'Solo se permite el lavado con agua destilada caliente sin jabón ni alcohol.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Las mutaciones o plásmidos que confieren resistencia a los antibióticos (como betalactamasas) no protegen a las bacterias de la lisis física y desnaturalización de proteínas provocada por los preparados alcohólicos.',
+    },
+    {
+      id: 25,
+      categoria: 'Técnica de Antisepsia • Evaporación y Secado',
+      dificultad: 'Alta',
+      enunciado:
+        'Al realizar la fricción con solución hidroalcohólica, ¿por qué la OMS exige frotar hasta que las manos queden totalmente secas y prohíbe sacudirlas o soplarlas?',
+      opciones: [
+        'Porque sacudir o soplar las manos las recontamina con microorganismos orales y aerosoles del entorno, interrumpiendo el tiempo de contacto biocida óptimo del antiséptico.',
+        'Porque el alcohol en estado líquido absorbe la luz ultravioleta del techo y decolora la piel.',
+        'Únicamente para evitar manchar con gel el uniforme o la historia clínica del paciente.',
+        'Porque el alcohol que gotea en el suelo deteriora el piso de vinilo conductivo del hospital.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'Soplar proyecta microbiota respiratoria del operador sobre la piel, y sacudir las manos genera corrientes de bioaerosoles. La antisepsia se completa únicamente cuando el producto se evapora tras cubrir toda la superficie.',
+    },
+    {
+      id: 26,
+      categoria: 'Micología Hospitalaria • Candida auris',
+      dificultad: 'Extrema',
+      enunciado:
+        'Ante un paciente colonizado o infectado por Candida auris multirresistente en una unidad de cuidados intensivos, ¿cuál es la consideración clave de la OMS y el CDC sobre la higiene de manos?',
+      opciones: [
+        'Los alcoholes son totalmente ineficaces contra todas las levaduras; solo se debe usar hipoclorito de sodio en piel.',
+        'Las soluciones alcohólicas con formulaciones de la OMS conservan actividad fungicida frente a C. auris, pero si las manos tienen sospecha de contaminación con materia orgánica o fluidos, se debe priorizar agua y jabón.',
+        'C. auris no se transmite por las manos del personal de salud, sino exclusivamente por vía aérea.',
+        'Basta con frotar las manos durante 3 segundos con solución salina.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Las preparaciones alcohólicas bien formuladas son eficaces contra C. auris en manos limpias, pero la persistencia ambiental y la presencia de fluidos requieren lavado estricto con agua y jabón y desinfección rigurosa de superficies con esporicidas.',
+    },
+    {
+      id: 27,
+      categoria: 'Bundles de Infección • Sonda Vesical (CAUTI)',
+      dificultad: 'Alta',
+      enunciado:
+        'Para prevenir Infecciones del Tracto Urinario Asociadas a Catéter (CAUTI), ¿cuál es la indicación crítica de higiene de manos al manipular el sistema de drenaje urinario cerrado?',
+      opciones: [
+        'Realizar higiene de manos y colocarse guantes limpios inmediatamente antes de abrir el puerto de drenaje de la bolsa colectora, evitando que el grifo toque el recipiente receptor.',
+        'Solo se requiere higiene de manos si la orina tiene olor fétido o hematuria franca.',
+        'Desconectar la sonda vesical de la bolsa colectora para lavarla con alcohol al 70%.',
+        'Vaciar la orina con guantes usados en otros pacientes si pertenecen a la misma habitación.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La manipulación del sistema colector cerrado exige higiene de manos y guantes limpios (Momento 2) para prevenir la migración bacteriana intraluminal hacia la vejiga, asegurando que el tubo de vaciado nunca toque el receptáculo.',
+    },
+    {
+      id: 28,
+      categoria: 'Terapia Intensiva • Prevención de NAV',
+      dificultad: 'Extrema',
+      enunciado:
+        'En un paciente intubado con ventilación mecánica invasiva, ¿cómo se articulan los 5 Momentos de la OMS al realizar una aspiración de secreciones endotraqueales con circuito abierto?',
+      opciones: [
+        'Higiene de manos únicamente al finalizar el procedimiento completo.',
+        'Higiene de manos antes de ponerse el EPP y manipular el circuito (Momento 2: tarea aséptica) y nueva higiene obligatoria tras desechar el material y retirarse los guantes (Momento 3).',
+        'No es necesaria la higiene previa porque la sonda de aspiración ya viene con empaque de fábrica.',
+        'Realizar solo lavado de manos si el paciente tiene diagnóstico de neumonía bacteriana confirmada.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'La aspiración endotraqueal accede a la vía aérea inferior estéril (Momento 2: riesgo crítico de NAV); inmediatamente después de retirar la sonda y los guantes con secreciones respiratorias se debe realizar higiene (Momento 3).',
+    },
+    {
+      id: 29,
+      categoria: 'Aislamiento Hospitalario • Retiro de EPP',
+      dificultad: 'Extrema',
+      enunciado:
+        'Durante el protocolo de desvestido (doffing) del Equipo de Protección Personal (EPP) en un aislamiento de contacto por patógenos multirresistentes, ¿en qué punto es crucial realizar higiene de manos?',
+      opciones: [
+        'Únicamente al llegar a su domicilio al finalizar la jornada laboral.',
+        'Inmediatamente después del retiro de los guantes contaminados, antes de tocar la mascarilla, gafas o bata en la zona de la cabeza o cuello.',
+        'Solo si se observan roturas de la tela plástica de la bata.',
+        'Frotando alcohol sobre la superficie exterior de la bata antes de desatarla.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Los guantes son el elemento más densamente contaminado; tras retirarlos, se debe realizar higiene de manos inmediata para evitar autoinocularse en conjuntiva o mucosas al retirar la mascarilla o las gafas.',
+    },
+    {
+      id: 30,
+      categoria: 'Farmacología Antiséptica • Humectantes OMS',
+      dificultad: 'Alta',
+      enunciado:
+        'En la formulación estandarizada de fricción alcohólica de la OMS, ¿por qué se especifica una concentración exacta de glicerol al 1.45% v/v?',
+      opciones: [
+        'Porque concentraciones mayores al 1.5% reducen la eficacia biocida del alcohol al prolongar excesivamente el tiempo de secado y disminuir el contacto bacteriano.',
+        'Porque el glicerol al 1.45% es el agente que destruye las paredes de las bacterias Gram positivas.',
+        'Para dar un color azul distintivo que identifique el preparado hospitalario.',
+        'Para acelerar la evaporación del alcohol a menos de 5 segundos.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'El glicerol previene la resequedad dérmica, pero un exceso (>1.5%) reduce la actividad antimicrobiana intrínseca de los alcoholes y deja una sensación pegajosa indeseable.',
+    },
+    {
+      id: 31,
+      categoria: 'Microbiología Cuantitativa • Reducción Logarítmica',
+      dificultad: 'Extrema',
+      enunciado:
+        'En los ensayos de eficacia microbiológica de antisépticos cutáneos, ¿qué implicación clínica tiene una "reducción de 5 log10" en el recuento bacteriano de las manos?',
+      opciones: [
+        'Disminuye la carga microbiana en un 50% de las colonias.',
+        'Reduce la población bacteriana inicial en un 99.999% (un factor de cien mil veces).',
+        'Inactiva exactamente 5 bacterias individuales por centímetro cuadrado de piel.',
+        'Aumenta la resistencia de la piel a 5 antibióticos diferentes.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Una reducción de 1 log equivale al 90%, 2 log al 99%, 3 log al 99.9%, 4 log al 99.99% y 5 log al 99.999%. Las soluciones alcohólicas de calidad logran reducciones de 3.5 a 5 log10 en menos de 30 segundos.',
+    },
+    {
+      id: 32,
+      categoria: 'Bloque Quirúrgico • Fricción Quirúrgica OMS',
+      dificultad: 'Alta',
+      enunciado:
+        'Según las guías de la OMS para la preparación preoperatoria del equipo quirúrgico, ¿qué ventajas ofrece la fricción alcohólica quirúrgica frente al lavado quirúrgico acuoso con antiséptico?',
+      opciones: [
+        'Menor tiempo total de preparación (alrededor de 3 minutos vs 5 minutos), mejor tolerancia cutánea del personal y un efecto antimicrobiano inicial igual o superior sin riesgo de recontaminación por el agua del grifo.',
+        'Permite operar sin guantes estériles en cirugías menores.',
+        'No requiere que las manos estén limpias ni secas antes de aplicarse el producto.',
+        'El alcohol quirúrgico dura activo más de 48 horas continuas en la piel.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La fricción quirúrgica con solución hidroalcohólica es más rápida, ahorra grandes volúmenes de agua tratada, cuida la integridad cutánea y elimina el riesgo de recontaminación bacteriana a través de los grifos del lavamanos.',
+    },
+    {
+      id: 33,
+      categoria: 'Cuidados Críticos • Paciente Gran Quemado',
+      dificultad: 'Extrema',
+      enunciado:
+        'Al atender a un paciente con quemaduras de segundo y tercer grado con pérdida extensa de la barrera epidérmica, ¿cuál es la conducta de bioseguridad mandatoria antes de la curación?',
+      opciones: [
+        'Utilizar únicamente guantes de examen sin realizar higiene previa porque la piel del paciente ya está abierta.',
+        'Higiene minuciosa de manos con técnica completa (Momento 2) y uso de técnica y campos estériles estrictos, dado el riesgo crítico de sepsis invasiva por Pseudomonas y Staphylococcus.',
+        'Aplicar alcohol al 70% directamente sobre las áreas cruentas quemadas para desinfectar la fascia.',
+        'Realizar higiene de manos únicamente con agua destilada fría para evitar el olor a jabón.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'En quemaduras extensas la pérdida de epidermis elimina la primera línea defensiva del organismo; la higiene rigurosa previa al procedimiento (Momento 2) con barrera estéril es vital para prevenir bacteriemias y shock séptico.',
+    },
+    {
+      id: 34,
+      categoria: 'Vectores de Transmisión • Fómites Clínicos',
+      dificultad: 'Alta',
+      enunciado:
+        'Un estudio de cultivo bacteriológico demuestra que los diafragmas de los estetoscopios albergan cargas bacterianas similares a las yemas de las manos del personal de salud. ¿Cómo debe proceder el clínico al examinar pacientes sucesivos?',
+      opciones: [
+        'Basta con lavar el estetoscopio una vez por semana con agua jabonosa.',
+        'Realizar higiene de manos (Momento 1) y desinfectar el diafragma del estetoscopio con alcohol isopropílico al 70% antes y después de examinar a cada paciente.',
+        'Examinar al paciente únicamente a través de tres capas de sábanas gruesas para no tocar la piel.',
+        'Sustituir el estetoscopio por la palpación manual con guantes sin desinfectar.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Los estetoscopios actúan como fómites directos de transmisión cruzada entre pacientes; desinfectar la campana/diafragma con alcohol al 70% antes y después de la auscultación, junto con la higiene de manos, previene brotes intrahospitalarios.',
+    },
+    {
+      id: 35,
+      categoria: 'Farmacología Antiséptica • Incompatibilidad Química',
+      dificultad: 'Extrema',
+      enunciado:
+        '¿Por qué el gluconato de clorhexidina no debe combinarse con jabones duros corrientes o cremas hidratantes que contengan surfactantes aniónicos (como laurilsulfato sódico)?',
+      opciones: [
+        'Porque los surfactantes aniónicos forman complejos insolubles con la molécula catiónica de clorhexidina, neutralizando completamente su actividad bactericida.',
+        'Porque produce una reacción que tiñe permanentemente la dermis de color negro.',
+        'Porque genera gas cloro tóxico en el ambiente de la habitación.',
+        'Porque duplica su poder oxidante provocando necrosis tisular inmediata.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La clorhexidina es un catión orgánico; al entrar en contacto con sustancias aniónicas (como jabones tradicionales o ciertos humectantes) precipita químicamente y pierde toda su eficacia antimicrobiana.',
+    },
+    {
+      id: 36,
+      categoria: 'Toxicología y Bioseguridad • Antisépticos vs Desinfectantes',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Cuál es la diferencia regulatoria y biológica fundamental entre un antiséptico y un desinfectante en el entorno sanitario?',
+      opciones: [
+        'Los antisépticos son formulaciones formuladas para aplicarse sobre tejidos vivos y piel; los desinfectantes son sustancias químicas diseñadas para objetos inanimados y superficies inertes por su toxicidad tisular.',
+        'Los antisépticos eliminan esporas en 1 segundo y los desinfectantes tardan 24 horas.',
+        'Los desinfectantes pueden ingerirse con seguridad en dosis bajas.',
+        'No existe ninguna diferencia; son términos sinónimos intercambiables en todos los niveles clínicos.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'Los antisépticos están diseñados para reducir la carga microbiana en piel y mucosas sin provocar daño citotóxico severo. Los desinfectantes son para fómites y mobiliario inerte debido a su elevada toxicidad en tejidos humanos.',
+    },
+    {
+      id: 37,
+      categoria: 'Microbiología Nosocomial • Enterococo Resistente (VRE)',
+      dificultad: 'Extrema',
+      enunciado:
+        'Enterococcus faecium resistente a vancomicina (VRE) es conocido por persistir semanas en superficies secas del entorno del paciente. ¿Cuál es la implicación directa para el Momento 5 de la OMS?',
+      opciones: [
+        'No requiere higiene si el trabajador solo apoyó las manos en las barandas de la cama sin tocar las sábanas.',
+        'Tocar veladores, barandas o monitores en la habitación de un paciente con VRE contamina las manos con la misma densidad que el contacto cutáneo directo, obligando a realizar higiene rigurosa al salir (Momento 5).',
+        'VRE muere instantáneamente al contacto con el aire seco de la habitación.',
+        'Solo se requiere higiene de manos si el trabajador sufre una cortadura en el dedo.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'VRE tiene una gran resistencia a la desecación ambiental y coloniza fuertemente el mobiliario circundante. La higiene al dejar el entorno (Momento 5) es esencial para frenar su diseminación a otros enfermos.',
+    },
+    {
+      id: 38,
+      categoria: 'Procedimientos Clínicos • Curación de Herida Quirúrgica',
+      dificultad: 'Alta',
+      enunciado:
+        'Al realizar la curación de una laparotomía con drenaje purulento activo, ¿cuál es la secuencia correcta de higiene de manos entre la retirada del vendaje sucio y la aplicación de la nueva gasa estéril?',
+      opciones: [
+        'Retirar apósito con guantes limpios, desecharlos, realizar higiene de manos inmediata (Momento 3), calzarse guantes estériles (Momento 2) y colocar el nuevo apósito estéril.',
+        'Mantener los mismos guantes de la retirada para manipular las gasas limpias y ahorrar tiempo.',
+        'Aplicar alcohol sobre el vendaje sucio antes de despegar el esparadrapo.',
+        'Soplar sobre la herida quirúrgica para secar el exudado antes de la nueva gasa.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'Al retirar material sucio con fluidos se activa el Momento 3 (retirar guantes y descontaminar manos); antes de tocar insumos estériles o el lecho de la incisión se activa el Momento 2 (higiene y colocación de guantes estériles).',
+    },
+    {
+      id: 39,
+      categoria: 'Pediatría y Neonatología • Toxicidad por Yodo',
+      dificultad: 'Extrema',
+      enunciado:
+        '¿Por qué la OMS y las sociedades de neonatología contraindican el uso rutinario de yodopovidona para la antisepsia de piel en recién nacidos de muy bajo peso al nacer (< 1500 g)?',
+      opciones: [
+        'Porque la inmadurez del estrato córneo permite la absorción sistémica masiva de yodo, causando hipotiroidismo transitorio o disfunción tiroidea en el prematuro.',
+        'Porque el yodo descompone el surfactante pulmonar a través de la piel.',
+        'Porque la yodopovidona decolora permanentemente las mantas térmicas de la incubadora.',
+        'Porque atrae insectos hacia la cuna de calor radiante.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La piel del prematuro es sumamente delgada y permeable; la absorción transcutánea de yodo bloquea la glándula tiroides (efecto Wolff-Chaikoff), provocando hipotiroidismo yatrogénico grave.',
+    },
+    {
+      id: 40,
+      categoria: 'Formulaciones Locales OMS • Isopropanol vs Etanol',
+      dificultad: 'Alta',
+      enunciado:
+        'La OMS estipula dos fórmulas oficiales para preparar fricción hidroalcohólica: Fórmula 1 (con etanol al 80%) y Fórmula 2 (con alcohol isopropílico al 75%). ¿Cuál es una diferencia técnica relevante entre ambos?',
+      opciones: [
+        'El isopropanol es ligeramente más activo frente a bacterias vegetativas pero menos eficaz contra ciertos virus sin envoltura (como poliovirus y hepatitis A) en comparación con el etanol.',
+        'El etanol no destruye bacterias Gram negativas en ninguna concentración.',
+        'La fórmula con isopropanol requiere añadir aceite de oliva para estabilizarse.',
+        'El etanol al 80% está prohibido en hospitales por considerarse material combustible explosivo.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'El etanol al 80% ofrece un espectro antiviral ligeramente más amplio contra ciertos enterovirus y virus no envueltos en comparación con el isopropanol al 75%, aunque ambos son excelentes bactericidas para uso hospitalario.',
+    },
+    {
+      id: 41,
+      categoria: 'Infectología • Mycobacterium tuberculosis',
+      dificultad: 'Extrema',
+      enunciado:
+        'Respecto a la susceptibilidad de Mycobacterium tuberculosis (bacilo de Koch) frente a los agentes de higiene de manos, ¿cuál es el comportamiento de las soluciones hidroalcohólicas?',
+      opciones: [
+        'El alcohol no puede penetrar la gruesa pared rica en ácidos micólicos de las micobacterias.',
+        'Las soluciones alcohólicas concentradas (60-80%) poseen una potente actividad tuberculicida rápida, superando ampliamente a los jabones comunes y a los amonios cuaternarios.',
+        'M. tuberculosis prolifera dentro de los frascos de alcohol al 70%.',
+        'Solo se logra destruir micobacterias mediante lavado con agua a 100 °C sobre la piel.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'A pesar del alto contenido lipídico y ácidos micólicos de la pared micobacteriana, los preparados con alcohol al 70-80% penetran y lisan Mycobacterium tuberculosis con rapidez, siendo biocidas de primera línea.',
+    },
+    {
+      id: 42,
+      categoria: 'Niveles de Higiene • Objetivos Clínicos',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Cuál es el objetivo primario que diferencia el "lavado clínico de manos" respecto a la simple higiene doméstica o "lavado social"?',
+      opciones: [
+        'El lavado clínico busca eliminar la suciedad visible, materia orgánica y reducir sustancialmente la flora bacteriana transitoria adquirida en el contacto asistencial mediante técnica estandarizada y tiempos protocolizados.',
+        'El lavado clínico solo busca aromatizar las manos para comodidad del paciente.',
+        'El lavado social utiliza agua estéril y el clínico agua de grifo sin tratar.',
+        'El lavado clínico no requiere jabón ni secado.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'El lavado clínico tiene como fin primordial remover suciedad y reducir la microbiota transitoria patógena entre pacientes mediante la técnica sistemática de 11 pasos y un tiempo estandarizado de 40 a 60 segundos.',
+    },
+    {
+      id: 43,
+      categoria: 'Normativa OMS • Prohibición de Toallas de Tela',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Por qué las directrices de bioseguridad hospitalaria prohíben taxativamente el uso de toallas de tela comunitarias o compartidas para el secado de manos del personal?',
+      opciones: [
+        'Porque las toallas de tela húmedas compartidas se convierten en focos masivos de colonización bacteriana y recontaminan las manos limpias de los profesionales de inmediato.',
+        'Porque la tela desgasta los uniformes quirúrgicos al frotarla.',
+        'Porque el hilo de algodón absorbe los rayos gamma de los equipos de radiología.',
+        'Porque el costo del lavado textil en lavandería es más alto que comprar toallas de papel.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'Las toallas de tela comunitarias retienen humedad constante y detritos orgánicos, actuando como vectores de recontaminación bacteriana masiva entre usuarios; solo se autorizan toallas de papel desechable de un solo uso.',
+    },
+    {
+      id: 44,
+      categoria: 'Urgencias y Accesos Vasculares • Retirada Precoz',
+      dificultad: 'Extrema',
+      enunciado:
+        'En una reanimación cardiopulmonar en el servicio de urgencias, se inserta un catéter venoso periférico sin tiempo para realizar la antisepsia adecuada de la piel. Según los protocolos de prevención de infecciones, ¿qué medida debe adoptarse?',
+      opciones: [
+        'Dejar el catéter durante 7 días para no molestar las venas del paciente.',
+        'Retirar el catéter y canalizar uno nuevo bajo condiciones asépticas tan pronto como el paciente esté estabilizado, preferiblemente antes de 24 a 48 horas.',
+        'Inyectar alcohol al 70% por la luz del catéter para esterilizar la vena desde adentro.',
+        'Colocar dos apósitos encima sin cambiar la vía.',
+      ],
+      indiceCorrecto: 1, // Opción B
+      explicacionClinica:
+        'Cualquier catéter colocado en situaciones de emergencia sin estricta asepsia cutánea se considera potencialmente contaminado y debe reemplazarse en un sitio nuevo bajo técnica estéril dentro de las primeras 24-48 horas.',
+    },
+    {
+      id: 45,
+      categoria: 'Bioquímica Antimicrobiana • Neutralización por Pus',
+      dificultad: 'Extrema',
+      enunciado:
+        '¿Cuál es el motivo fundamental por el cual un lecho de herida o piel con restos abundantes de sangre coagulada y secreción purulenta debe lavarse primero con solución fisiológica antes de aplicar antisépticos?',
+      opciones: [
+        'La albúmina, restos celulares y proteínas del exudado ligan y neutralizan químicamente los agentes antisépticos activos, creando un escudo protector para las bacterias subyacentes.',
+        'El pus cataliza la evaporación instantánea de cualquier líquido en 1 segundo.',
+        'Los glóbulos blancos del pus se vuelven cancerígenos al entrar en contacto con antisépticos.',
+        'Porque la solución salina al 0.9% es el único esporicida aprobado por la OMS.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La materia orgánica (sangre, proteínas séricas, pus) inactiva gran parte de los antisépticos (yodóforos, clorhexidina, alcoholes) al quelarlos o consumirlos, exigiendo la limpieza mecánica previa para permitir su contacto con los microorganismos.',
+    },
+    {
+      id: 46,
+      categoria: 'Inmunología Cutánea • Microbiota Residente',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Cuál es la función beneficiosa esencial de la microbiota cutánea residente comensal (como Staphylococcus epidermidis y Corynebacterium) en la piel de las manos sanas?',
+      opciones: [
+        'Interferir por competencia biológica y producción de péptidos antimicrobianos (bacteriocinas) impidiendo la colonización por patógenos nosocomiales invasores.',
+        'Estimular la producción de sudor ácido para disolver los guantes clínicos.',
+        'Almacenar glucógeno para alimentar las células nerviosas de los dedos.',
+        'Facilitar la entrada de virus para inducir inmunidad de rebaño.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La flora residente forma una barrera ecológica protectora por competencia de nicho y secreción de bacteriocinas que impiden que patógenos virulentos transitorios colonicen la piel de forma persistente.',
+    },
+    {
+      id: 47,
+      categoria: 'Salud Ocupacional • Temperatura del Agua',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Por qué las directrices de la OMS recomiendan evitar el uso de agua caliente durante el lavado de manos del personal sanitario?',
+      opciones: [
+        'Porque el agua caliente despoja la barrera lipídica protectora de la epidermis, aumentando el riesgo de dermatitis por contacto sin aportar ningún beneficio bactericida adicional.',
+        'Porque el agua caliente congela el jabón en el lavamanos.',
+        'Porque las bacterias hospitalarias solo se multiplican en agua fría.',
+        'Por regulaciones estrictas de conservación de energía del departamento de mantenimiento.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'El agua caliente no mejora la remoción bacteriana (la temperatura tolerable para la piel no es biocida) y en cambio deseca y degrada los lípidos cutáneos, provocando eccemas que facilitan la colonización patógena.',
+    },
+    {
+      id: 48,
+      categoria: 'Gestión de la Calidad • Estrategia Multimodal OMS',
+      dificultad: 'Extrema',
+      enunciado:
+        'La OMS promueve la "Estrategia Multimodal para la Mejora de la Higiene de las Manos" como el estándar global de intervención. ¿Cuáles son sus cinco componentes fundamentales?',
+      opciones: [
+        'Cambio del sistema (acceso a insumos en el punto de atención), Formación y aprendizaje, Evaluación y retroalimentación, Recordatorios en el lugar de trabajo y Clima institucional de seguridad.',
+        'Sanciones económicas, Inspección policial, Aislamiento total de enfermeros, Multas a pacientes y Cierre de salas.',
+        'Cambio de directores, Compra de guantes negros, Aumento salarial, Instalación de cámaras y Despidos inmediatos.',
+        'Uso de jabón en barra, Secadores de aire, Eliminación de soluciones alcohólicas, Cero supervisión y Turnos de 24 horas.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'Los 5 pilares de la Estrategia Multimodal de la OMS han demostrado un incremento sostenido del cumplimiento del personal al articular infraestructura disponible, capacitación continua, auditoría con feedback, cartelería clave y cultura institucional de seguridad.',
+    },
+    {
+      id: 49,
+      categoria: 'Hemodiálisis y Nefrología • Acceso Vascular (FAV)',
+      dificultad: 'Alta',
+      enunciado:
+        'En la sala de hemodiálisis, antes de canular una Fístula Arteriovenosa (FAV) nativa para iniciar la terapia de reemplazo renal, ¿cuál es el paso de higiene indispensable?',
+      opciones: [
+        'Higiene de manos con fricción alcohólica o lavado antiséptico (Momento 2) y aplicación rigurosa de antiséptico cutáneo en el brazo con técnica aséptica, dejando secar totalmente.',
+        'Limpiar el brazo con agua corriente de grifo y puncionar inmediatamente con la piel mojada.',
+        'No realizar ninguna higiene si el paciente se bañó en su casa por la mañana.',
+        'Soplar sobre el sitio de punción para identificar el latido del frémito.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La fístula es la línea de vida del paciente en hemodiálisis; canularla sin higiene estricta previa (Momento 2) expone al paciente a bacteriemia por S. aureus y pérdida definitiva del acceso vascular.',
+    },
+    {
+      id: 50,
+      categoria: '5 Momentos OMS • Diferenciación Epidemiológica',
+      dificultad: 'Alta',
+      enunciado:
+        '¿Cuál es la razón epidemiológica por la cual la OMS definió el Momento 4 ("después del contacto con el paciente") y el Momento 5 ("después del contacto con el entorno del paciente") como momentos separados?',
+      opciones: [
+        'Para diferenciar claramente los riesgos microbiológicos y evitar la diseminación cruzada hacia otras áreas asistenciales, reconociendo que tocar muebles o monitores transfiere patógenos con idéntica frecuencia que tocar la piel del enfermo.',
+        'Únicamente para hacer más largas las listas de chequeo de los supervisores.',
+        'Porque el entorno del paciente nunca se contamina con bacterias humanas.',
+        'Porque el Momento 5 solo aplica para el personal de limpieza y maestranza.',
+      ],
+      indiceCorrecto: 0, // Opción A
+      explicacionClinica:
+        'La distinción formal refuerza la toma de conciencia: el entorno inmediato está saturado con la microbiota del paciente. Salir de la unidad tras tocar la cama o los equipos sin lavarse las manos es una de las causas más frecuentes de propagación nosocomial en el puesto de enfermería.',
+    },
   ];
 
   nombreCompetidor = '';
@@ -689,8 +1377,47 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Baraja las 4 opciones de una pregunta y reubica adecuadamente el índice correcto.
+   */
+  private barajarOpcionesPregunta(pregunta: PreguntaRetoExtremo): PreguntaRetoExtremo {
+    const opcionesConEstado = pregunta.opciones.map((texto, idx) => ({
+      texto,
+      esCorrecta: idx === pregunta.indiceCorrecto,
+    }));
+
+    // Algoritmo Fisher-Yates para barajar las 4 opciones
+    for (let i = opcionesConEstado.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [opcionesConEstado[i], opcionesConEstado[j]] = [opcionesConEstado[j], opcionesConEstado[i]];
+    }
+
+    return {
+      ...pregunta,
+      opciones: opcionesConEstado.map((item) => item.texto),
+      indiceCorrecto: opcionesConEstado.findIndex((item) => item.esCorrecta),
+    };
+  }
+
+  /**
+   * Selecciona 7 preguntas al azar del banco disponible y baraja las opciones de cada una.
+   */
+  private seleccionarPreguntasAleatorias(): PreguntaRetoExtremo[] {
+    const bancoCopia = [...this.bancoPreguntasExtremas];
+
+    // Algoritmo Fisher-Yates para seleccionar preguntas aleatorias del banco
+    for (let i = bancoCopia.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [bancoCopia[i], bancoCopia[j]] = [bancoCopia[j], bancoCopia[i]];
+    }
+
+    const seleccionadas = bancoCopia.slice(0, Math.min(7, bancoCopia.length));
+    return seleccionadas.map((preg) => this.barajarOpcionesPregunta(preg));
+  }
+
   iniciarReto(): void {
-    this.preguntasPartida.set(this.bancoPreguntasExtremas);
+    const seleccionadas = this.seleccionarPreguntasAleatorias();
+    this.preguntasPartida.set(seleccionadas);
     this.indicePregunta.set(0);
     this.opcionSeleccionada.set(null);
     this.aciertosTotales.set(0);
