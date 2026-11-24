@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
+import { AuthService } from '../../services/auth.service';
 import {
   InsigniaDigitalIA,
   ParticipanteRankingIA,
@@ -55,7 +56,7 @@ import {
               </span>
               <div class="font-heading text-5xl sm:text-6xl font-black tracking-tight text-teal-800 my-2 flex items-baseline justify-center gap-2">
                 <span>{{ porcentajeCumplimiento() }}%</span>
-                <span class="text-xl sm:text-2xl font-bold text-slate-500">({{ evaluation().overallScore.toFixed(1) }}/10)</span>
+                <span class="text-xl sm:text-2xl font-bold text-slate-500">({{ (evaluation().overallScore || 0).toFixed(1) }}/10)</span>
               </div>
               <span class="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-extrabold text-xs uppercase tracking-wider mb-2">
                 Cumplimiento Técnico OMS
@@ -287,7 +288,7 @@ import {
                 </div>
                 <div>
                   <span class="text-slate-500">Puntos: </span>
-                  <strong class="text-sm text-[#008072]">{{ rec.score.toFixed(2) }} / 0.91</strong>
+                  <strong class="text-sm text-[#008072]">{{ (rec.score || 0).toFixed(2) }} / 0.91</strong>
                 </div>
               </div>
 
@@ -805,6 +806,7 @@ export class ResultadoComponent {
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
   private readonly practicasService = inject(PracticasService);
+  private readonly authService = inject(AuthService);
 
   readonly currentDate = new Date();
   readonly questions = this.stateService.diagnosticQuestions;
@@ -814,11 +816,17 @@ export class ResultadoComponent {
     const score = this.evaluation().overallScore || 0;
     return Math.min(100, Math.max(0, Math.round((score / 10) * 100)));
   });
-  readonly codigoCertificado = signal<string | null>(null);
+  readonly codigoCertificado = signal<string>(
+    `UCC-OMS-${Date.now().toString(36).toUpperCase()}`
+  );
   private intentoGuardado = false;
 
-  readonly studentName = computed(() => this.student()?.fullName || 'Estudiante Evaluado');
-  readonly studentCode = computed(() => this.student()?.studentCode || 'No registrado');
+  readonly studentName = computed(
+    () => this.student()?.fullName || this.authService.usuarioActual()?.nombre || 'Estudiante de Enfermería'
+  );
+  readonly studentCode = computed(
+    () => this.student()?.studentCode || this.authService.usuarioActual()?.codigoEstudiantil || '2026-ENF-UCC'
+  );
 
   readonly qrCodeUrl = computed(() => {
     const cod = this.codigoCertificado();
@@ -830,7 +838,7 @@ export class ResultadoComponent {
   });
 
   readonly optimalStepsCount = computed(() => {
-    return this.evaluation().records.filter((r) => r.status === 'optimal').length;
+    return (this.evaluation().records || []).filter((r) => r.status === 'optimal').length;
   });
 
   // Estado reactivo para Modo "Desafío contra Compañeros" con Analítica de IA

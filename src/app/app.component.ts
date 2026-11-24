@@ -50,9 +50,19 @@ export class App {
       this.alertaBloqueoSimulacion.set(true);
       return;
     }
+    this.cerrarMenuMovil();
     this.router.navigate(['/evaluacion-practica']);
   }
   readonly rutaActual = signal<string>(this.router.url);
+
+  // Menú Móvil / Drawer de Navegación Lateral
+  readonly menuMovilAbierto = signal<boolean>(false);
+  toggleMenuMovil(): void {
+    this.menuMovilAbierto.update((v) => !v);
+  }
+  cerrarMenuMovil(): void {
+    this.menuMovilAbierto.set(false);
+  }
 
   // Modo Simulador Móvil en Pantallas Grandes (Desktop)
   readonly vistaSimuladorMovil = signal<boolean>(false);
@@ -120,6 +130,7 @@ export class App {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.rutaActual.set(event.urlAfterRedirects || this.router.url);
+        this.cerrarMenuMovil();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
   }

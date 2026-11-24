@@ -28,19 +28,19 @@ export interface RegistroHistorialPractica {
     <div class="space-y-6 sm:space-y-8 animate-fade-in text-slate-100 max-w-7xl mx-auto">
       
       <!-- 1. ENCABEZADO DE BIENVENIDA CLÍNICA Y ACCESO RÁPIDO -->
-      <div class="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-slate-200/90 shadow-sm overflow-hidden">
+      <div class="relative bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-slate-200/90 shadow-sm overflow-hidden">
         <!-- Destellos lumínicos clínicos suaves -->
         <div class="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-sky-100/60 blur-3xl pointer-events-none"></div>
         <div class="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-teal-100/60 blur-3xl pointer-events-none"></div>
 
-        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-bold uppercase tracking-wider">
               <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span>Facultad de Enfermería • Simulación Clínica OMS</span>
             </div>
             
-            <h1 class="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+            <h1 class="font-heading text-xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight break-words">
               Bienvenido/a, <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-teal-700 to-emerald-700">{{ nombreEstudiante() }}</span>
             </h1>
             
@@ -49,11 +49,11 @@ export interface RegistroHistorialPractica {
             </p>
           </div>
 
-          <!-- Botones de Acción Rápida -->
-          <div class="flex flex-wrap items-center gap-3 shrink-0">
+          <!-- Botones de Acción Rápida (Adaptables a ancho completo en celular) -->
+          <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 shrink-0 w-full lg:w-auto">
             <a
               routerLink="/practica"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white font-bold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+              class="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white font-bold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-98"
             >
               <span>🖐️ Iniciar Práctica Guiada</span>
             </a>
@@ -64,7 +64,7 @@ export interface RegistroHistorialPractica {
               [ngClass]="simulacionHabilitada()
                 ? 'bg-white hover:bg-slate-50 text-sky-700 border-slate-300'
                 : 'bg-slate-100 text-slate-400 border-slate-200 opacity-80'"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-300 cursor-pointer"
+              class="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl border font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-300 cursor-pointer active:scale-98"
               [title]="simulacionHabilitada() ? 'Simulación Cámara IA' : 'Bloqueado: Requiere completar la Práctica Guiada'"
             >
               <span>{{ simulacionHabilitada() ? '🎯 Simulación Cámara IA' : '🔒 Simulación Cámara IA' }}</span>
@@ -75,7 +75,7 @@ export interface RegistroHistorialPractica {
 
             <a
               routerLink="/cuanto-sabes"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-300 cursor-pointer"
+              class="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-300 cursor-pointer active:scale-98"
             >
               <span>🧠 ¿Cuánto sabes?</span>
             </a>
@@ -84,10 +84,10 @@ export interface RegistroHistorialPractica {
       </div>
 
       <!-- 2. TARJETAS DE RESUMEN CON MÉTRICAS CLAVE -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
         
         <!-- Métrica 1: Puntaje Promedio -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all duration-300">
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all duration-300">
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Puntaje Promedio</span>
             <div class="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-700 group-hover:scale-110 transition-transform">
@@ -110,7 +110,7 @@ export interface RegistroHistorialPractica {
         </div>
 
         <!-- Métrica 2: Mejor Puntaje -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300">
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300">
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Mejor Puntaje</span>
             <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 group-hover:scale-110 transition-transform">
@@ -133,7 +133,7 @@ export interface RegistroHistorialPractica {
         </div>
 
         <!-- Métrica 3: Tiempo Acumulado -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all duration-300">
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all duration-300">
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tiempo Acumulado</span>
             <div class="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-700 group-hover:scale-110 transition-transform">
@@ -155,7 +155,7 @@ export interface RegistroHistorialPractica {
         </div>
 
         <!-- Métrica 4: Pasos Dominados -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all duration-300">
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all duration-300">
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Técnica Biomecánica</span>
             <div class="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700 group-hover:scale-110 transition-transform">
@@ -179,7 +179,7 @@ export interface RegistroHistorialPractica {
       </div>
 
       <!-- 3. ACCESOS DIRECTOS A MODOS CLÍNICOS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
         
         <!-- Opción 1: Práctica Guiada -->
         <a
@@ -274,7 +274,7 @@ export interface RegistroHistorialPractica {
       </div>
 
       <!-- 4. SECCIÓN DE HISTORIAL Y PRÁCTICAS RECIENTES CON FILTROS -->
-      <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-sm space-y-5">
+      <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-slate-200/90 shadow-sm space-y-5">
         
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div>
@@ -316,7 +316,7 @@ export interface RegistroHistorialPractica {
         </div>
 
         <!-- Tabla de Registros Interactiva -->
-        <div class="overflow-x-auto -mx-5 sm:mx-0">
+        <div class="overflow-x-auto -mx-4 sm:mx-0 px-1 sm:px-0">
           <table class="w-full text-left text-xs whitespace-nowrap">
             <thead>
               <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider">
