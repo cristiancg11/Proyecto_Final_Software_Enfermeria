@@ -260,6 +260,9 @@ html.dark .card-soft-elevated {
 html.dark app-dashboard .bg-white,
 html.dark app-perfil .bg-white,
 html.dark app-admin .bg-white,
+html.dark app-admin .bg-white\/95,
+html.dark app-admin .bg-white\/90,
+html.dark app-admin .bg-white\/80,
 html.dark app-diagnostico .bg-white,
 html.dark app-resultado .bg-white\/98,
 html.dark app-resultado .bg-white {
@@ -309,6 +312,9 @@ html.dark app-dashboard .bg-slate-100,
 html.dark app-perfil .bg-slate-50,
 html.dark app-perfil .bg-slate-50\/70,
 html.dark app-perfil .bg-slate-100,
+html.dark app-admin .bg-slate-50,
+html.dark app-admin .bg-slate-50\/80,
+html.dark app-admin .bg-slate-100,
 html.dark app-resultado .bg-slate-50 {
   background-color: #132247 !important;
   border-color: rgba(51, 65, 85, 0.8) !important;
@@ -320,6 +326,8 @@ html.dark app-dashboard .border-slate-200\/90,
 html.dark app-dashboard .border-slate-100,
 html.dark app-perfil .border-slate-200,
 html.dark app-perfil .border-slate-100,
+html.dark app-admin .border-slate-200,
+html.dark app-admin .border-slate-100,
 html.dark app-resultado .border-slate-200,
 html.dark app-resultado .border-slate-100 {
   border-color: rgba(51, 65, 85, 0.8) !important;

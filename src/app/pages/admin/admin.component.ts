@@ -137,19 +137,19 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
       }
 
       <!-- PESTAÑAS DE NAVEGACIÓN DOCENTE (3 PESTAÑAS) -->
-      <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 border-b border-slate-200 pb-3">
+      <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 border-b border-slate-200 dark:border-slate-800 pb-3">
         <!-- Pestaña 0: Seguimiento de la investigación -->
         <button
           type="button"
           (click)="pestanaActiva.set('seguimiento')"
-          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
-          [ngClass]="pestanaActiva() === 'seguimiento' ? 'bg-[#00B39F] text-white shadow-md' : 'bg-white/80 text-slate-700 hover:bg-white'"
+          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
+          [ngClass]="pestanaActiva() === 'seguimiento' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
           <span>Seguimiento y Porcentajes</span>
-          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'seguimiento' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'seguimiento' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'">
             {{ resumenSeguimiento().totalEstudiantes }}
           </span>
         </button>
@@ -158,14 +158,14 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <button
           type="button"
           (click)="pestanaActiva.set('practicas')"
-          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
-          [ngClass]="pestanaActiva() === 'practicas' ? 'bg-[#00B39F] text-white shadow-md' : 'bg-white/80 text-slate-700 hover:bg-white'"
+          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
+          [ngClass]="pestanaActiva() === 'practicas' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
           <span>1. Supervisión de Prácticas de Lavado</span>
-          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'practicas' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'practicas' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'">
             {{ practicas().length }}
           </span>
         </button>
@@ -174,14 +174,14 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <button
           type="button"
           (click)="pestanaActiva.set('preguntas')"
-          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
-          [ngClass]="pestanaActiva() === 'preguntas' ? 'bg-[#00B39F] text-white shadow-md' : 'bg-white/80 text-slate-700 hover:bg-white'"
+          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
+          [ngClass]="pestanaActiva() === 'preguntas' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
           <span>2. Creador de Preguntas Clínicas</span>
-          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'preguntas' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'preguntas' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'">
             {{ preguntas().length }}
           </span>
         </button>
@@ -190,14 +190,14 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <button
           type="button"
           (click)="pestanaActiva.set('encuestas')"
-          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
-          [ngClass]="pestanaActiva() === 'encuestas' ? 'bg-[#00B39F] text-white shadow-md' : 'bg-white/80 text-slate-700 hover:bg-white'"
+          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
+          [ngClass]="pestanaActiva() === 'encuestas' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
           </svg>
           <span>3. Evaluación de la Plataforma</span>
-          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'encuestas' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'encuestas' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'">
             {{ totalEncuestas() }}
           </span>
         </button>
@@ -206,8 +206,8 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <button
           type="button"
           (click)="pestanaActiva.set('perfil')"
-          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
-          [ngClass]="pestanaActiva() === 'perfil' ? 'bg-[#00B39F] text-white shadow-md' : 'bg-white/80 text-slate-700 hover:bg-white'"
+          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
+          [ngClass]="pestanaActiva() === 'perfil' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -429,7 +429,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
       <!-- PESTAÑA 1: SUPERVISIÓN DE PRÁCTICAS DE LAVADO                  -->
       <!-- ============================================================== -->
       @if (pestanaActiva() === 'practicas') {
-        <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 animate-fade-in">
+        <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 dark:border-slate-800 animate-fade-in">
           <!-- Buscador y Filtros -->
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-6">
             <div class="relative grow max-w-md">
@@ -438,7 +438,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                 [value]="busqueda()"
                 (input)="alBuscar($event)"
                 placeholder="Buscar por estudiante, código o correo..."
-                class="w-full px-4 py-3 pl-11 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                class="w-full px-4 py-3 pl-11 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
               />
               <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -449,7 +449,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                 <button
                   type="button"
                   (click)="busqueda.set('')"
-                  class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 font-bold"
+                  class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-bold"
                 >
                   &times;
                 </button>
@@ -468,8 +468,8 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                 <span>Exportar Resultados (CSV/Excel)</span>
               </button>
 
-              <div class="text-xs text-slate-500 font-semibold text-right">
-                Mostrando <strong class="text-slate-900">{{ practicasFiltradas().length }}</strong> de {{ practicas().length }} prácticas registradas
+              <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold text-right">
+                Mostrando <strong class="text-slate-900 dark:text-white">{{ practicasFiltradas().length }}</strong> de {{ practicas().length }} prácticas registradas
               </div>
             </div>
           </div>
@@ -481,24 +481,24 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
               </svg>
-              <p class="text-sm text-slate-600">Consultando prácticas de estudiantes en la base de datos...</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Consultando prácticas de estudiantes en la base de datos...</p>
             </div>
           } @else if (practicasFiltradas().length === 0) {
-            <div class="py-16 text-center border-2 border-dashed border-slate-200 rounded-2xl">
-              <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
+            <div class="py-16 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 rounded-2xl">
+              <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mx-auto mb-3 text-slate-400">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <p class="text-sm font-bold text-slate-700 mb-1">No se encontraron prácticas registradas</p>
-              <p class="text-xs text-slate-500">
+              <p class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1">No se encontraron prácticas registradas</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
                 {{ busqueda() ? 'Intenta con otro término de búsqueda.' : 'Los estudiantes evaluados aparecerán automáticamente aquí.' }}
               </p>
             </div>
           } @else {
-            <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
               <table class="w-full text-left text-xs sm:text-sm">
-                <thead class="bg-slate-50/90 text-slate-700 font-extrabold uppercase text-[11px] border-b border-slate-200">
+                <thead class="bg-slate-50/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 font-extrabold uppercase text-[11px] border-b border-slate-200 dark:border-slate-700">
                   <tr>
                     <th class="py-3.5 px-4">Estudiante</th>
                     <th class="py-3.5 px-4">Código</th>
@@ -510,41 +510,41 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                     <th class="py-3.5 px-4 text-right">Acción</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                   @for (p of practicasFiltradas(); track p.id) {
-                    <tr class="hover:bg-slate-50/80 transition-colors">
+                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
                       <td class="py-3.5 px-4">
-                        <div class="font-extrabold text-slate-900">{{ p.nombre }}</div>
-                        <div class="text-[11px] text-slate-500">{{ p.correo }}</div>
+                        <div class="font-extrabold text-slate-900 dark:text-white">{{ p.nombre }}</div>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ p.correo }}</div>
                       </td>
-                      <td class="py-3.5 px-4 font-mono font-bold text-slate-700">
+                      <td class="py-3.5 px-4 font-mono font-bold text-slate-700 dark:text-slate-300">
                         {{ p.codigo }}
                       </td>
-                      <td class="py-3.5 px-4 text-slate-600 text-xs">
+                      <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400 text-xs">
                         {{ p.fecha | date:'dd/MM/yyyy HH:mm' }}
                       </td>
                       <td class="py-3.5 px-3 text-center">
-                        <span class="inline-block px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-800 border border-slate-200">
+                        <span class="inline-block px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                           {{ (((p.notaPractica !== undefined ? p.notaPractica : p.calificacion) / 10) * 100).toFixed(0) }}%
-                          <span class="text-[10px] text-slate-500 font-normal">({{ (p.notaPractica !== undefined ? p.notaPractica : p.calificacion).toFixed(1) }}/10)</span>
+                          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal">({{ (p.notaPractica !== undefined ? p.notaPractica : p.calificacion).toFixed(1) }}/10)</span>
                         </span>
                       </td>
                       <td class="py-3.5 px-3 text-center">
-                        <span class="inline-block px-2.5 py-1 rounded-xl text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                        <span class="inline-block px-2.5 py-1 rounded-xl text-xs font-bold bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                           {{ (((p.notaTeorica !== undefined ? p.notaTeorica : 0) / 10) * 100).toFixed(0) }}%
-                          <span class="text-[10px] text-blue-600 font-normal">({{ (p.notaTeorica !== undefined ? p.notaTeorica : 0).toFixed(1) }}/10)</span>
+                          <span class="text-[10px] text-blue-600 dark:text-blue-400 font-normal">({{ (p.notaTeorica !== undefined ? p.notaTeorica : 0).toFixed(1) }}/10)</span>
                         </span>
                       </td>
                       <td class="py-3.5 px-3 text-center">
                         <span class="inline-block px-3 py-1 rounded-full text-xs font-black shadow-xs"
-                              [ngClass]="(p.notaFinal !== undefined ? p.notaFinal : p.calificacion) >= 6.0 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-red-100 text-red-800 border border-red-300'">
+                              [ngClass]="(p.notaFinal !== undefined ? p.notaFinal : p.calificacion) >= 6.0 ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800'">
                           {{ (((p.notaFinal !== undefined ? p.notaFinal : p.calificacion) / 10) * 100).toFixed(0) }}%
                           <span class="text-[10px] opacity-80 font-normal">({{ (p.notaFinal !== undefined ? p.notaFinal : p.calificacion).toFixed(1) }}/10)</span>
                         </span>
                       </td>
                       <td class="py-3.5 px-4 text-center">
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
-                              [ngClass]="p.aprobado ? 'bg-[#CFFBF0] text-[#008072] border border-[#00B39F]/30' : 'bg-[#FFE9DE] text-[#FF6A4D] border border-[#FF6A4D]/30'">
+                              [ngClass]="p.aprobado ? 'bg-[#CFFBF0] dark:bg-teal-950/60 text-[#008072] dark:text-teal-300 border border-[#00B39F]/30 dark:border-teal-700/60' : 'bg-[#FFE9DE] dark:bg-rose-950/60 text-[#FF6A4D] dark:text-rose-300 border border-[#FF6A4D]/30 dark:border-rose-700/60'">
                           <span class="w-1.5 h-1.5 rounded-full" [ngClass]="p.aprobado ? 'bg-[#00B39F]' : 'bg-[#FF6A4D]'"></span>
                           {{ p.aprobado ? 'Aprobado' : 'Reprobado' }}
                         </span>
@@ -577,28 +577,28 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
       @if (pestanaActiva() === 'preguntas') {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
           <!-- Formulario de Creación (Columna Izquierda) -->
-          <div class="lg:col-span-5 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
-            <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
+          <div class="lg:col-span-5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 dark:border-slate-800">
+            <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4 mb-5">
               <div class="w-10 h-10 rounded-2xl bg-[#00B39F]/15 text-[#00B39F] flex items-center justify-center font-bold">
                 +
               </div>
               <div>
-                <h3 class="font-heading text-lg font-bold text-slate-900">Nueva Pregunta Clínica</h3>
-                <p class="text-xs text-slate-500">Agrega un caso clínico con 4 opciones de respuesta</p>
+                <h3 class="font-heading text-lg font-bold text-slate-900 dark:text-white">Nueva Pregunta Clínica</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Agrega un caso clínico con 4 opciones de respuesta</p>
               </div>
             </div>
 
             <form [formGroup]="formPregunta" (ngSubmit)="guardarPregunta()" class="space-y-4">
               <!-- Enunciado -->
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5 uppercase tracking-wider">
                   Enunciado del Caso Clínico *
                 </label>
                 <textarea
                   formControlName="enunciado"
                   rows="3"
                   placeholder="Ej. Durante el aislamiento de un paciente con sospecha de C. difficile, ¿cuál es el procedimiento indicado tras el contacto?"
-                  class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition resize-none"
+                  class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition resize-none"
                 ></textarea>
                 @if (formPregunta.controls.enunciado.touched && formPregunta.controls.enunciado.invalid) {
                   <p class="text-[11px] text-red-500 mt-1 font-semibold">El enunciado debe tener al menos 5 caracteres.</p>
@@ -607,25 +607,25 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
 
               <!-- Justificación Pedagógica -->
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5 uppercase tracking-wider">
                   Justificación Clínica Pedagógica
                 </label>
                 <textarea
                   formControlName="justificacion"
                   rows="2"
                   placeholder="Explicación basada en la evidencia científica OMS para retroalimentar al estudiante..."
-                  class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition resize-none"
+                  class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition resize-none"
                 ></textarea>
               </div>
 
               <!-- 4 Opciones de Respuesta con Radio Button -->
               <div class="space-y-3 pt-2">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
                   Opciones de Respuesta (Marca la opción correcta con el círculo) *
                 </label>
 
                 <!-- Opción 1 -->
-                <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-slate-200 bg-slate-50/80 has-[:checked]:border-[#00B39F] has-[:checked]:bg-[#00B39F]/5 transition">
+                <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 has-[:checked]:border-[#00B39F] dark:has-[:checked]:border-[#00B39F] has-[:checked]:bg-[#00B39F]/5 dark:has-[:checked]:bg-[#00B39F]/10 transition">
                   <input
                     type="radio"
                     name="correctaIndex"
@@ -638,13 +638,13 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                     type="text"
                     formControlName="opcion1"
                     placeholder="Opción A (Texto)"
-                    class="grow bg-transparent text-xs sm:text-sm font-medium outline-none text-slate-900"
+                    class="grow bg-transparent text-xs sm:text-sm font-medium outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
                   />
-                  <span class="text-xs font-extrabold text-slate-400">A</span>
+                  <span class="text-xs font-extrabold text-slate-400 dark:text-slate-500">A</span>
                 </div>
 
                 <!-- Opción 2 -->
-                <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-slate-200 bg-slate-50/80 has-[:checked]:border-[#00B39F] has-[:checked]:bg-[#00B39F]/5 transition">
+                <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 has-[:checked]:border-[#00B39F] dark:has-[:checked]:border-[#00B39F] has-[:checked]:bg-[#00B39F]/5 dark:has-[:checked]:bg-[#00B39F]/10 transition">
                   <input
                     type="radio"
                     name="correctaIndex"
@@ -657,13 +657,13 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                     type="text"
                     formControlName="opcion2"
                     placeholder="Opción B (Texto)"
-                    class="grow bg-transparent text-xs sm:text-sm font-medium outline-none text-slate-900"
+                    class="grow bg-transparent text-xs sm:text-sm font-medium outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
                   />
-                  <span class="text-xs font-extrabold text-slate-400">B</span>
+                  <span class="text-xs font-extrabold text-slate-400 dark:text-slate-500">B</span>
                 </div>
 
                 <!-- Opción 3 -->
-                <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-slate-200 bg-slate-50/80 has-[:checked]:border-[#00B39F] has-[:checked]:bg-[#00B39F]/5 transition">
+                <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 has-[:checked]:border-[#00B39F] dark:has-[:checked]:border-[#00B39F] has-[:checked]:bg-[#00B39F]/5 dark:has-[:checked]:bg-[#00B39F]/10 transition">
                   <input
                     type="radio"
                     name="correctaIndex"
@@ -676,13 +676,13 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                     type="text"
                     formControlName="opcion3"
                     placeholder="Opción C (Texto)"
-                    class="grow bg-transparent text-xs sm:text-sm font-medium outline-none text-slate-900"
+                    class="grow bg-transparent text-xs sm:text-sm font-medium outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
                   />
-                  <span class="text-xs font-extrabold text-slate-400">C</span>
+                  <span class="text-xs font-extrabold text-slate-400 dark:text-slate-500">C</span>
                 </div>
 
                 <!-- Opción 4 -->
-                <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-slate-200 bg-slate-50/80 has-[:checked]:border-[#00B39F] has-[:checked]:bg-[#00B39F]/5 transition">
+                <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 has-[:checked]:border-[#00B39F] dark:has-[:checked]:border-[#00B39F] has-[:checked]:bg-[#00B39F]/5 dark:has-[:checked]:bg-[#00B39F]/10 transition">
                   <input
                     type="radio"
                     name="correctaIndex"
@@ -695,9 +695,9 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                     type="text"
                     formControlName="opcion4"
                     placeholder="Opción D (Texto)"
-                    class="grow bg-transparent text-xs sm:text-sm font-medium outline-none text-slate-900"
+                    class="grow bg-transparent text-xs sm:text-sm font-medium outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
                   />
-                  <span class="text-xs font-extrabold text-slate-400">D</span>
+                  <span class="text-xs font-extrabold text-slate-400 dark:text-slate-500">D</span>
                 </div>
               </div>
 
@@ -728,27 +728,27 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
           <!-- Listado de Preguntas Vigentes (Columna Derecha) -->
           <div class="lg:col-span-7 space-y-4">
             <div class="flex items-center justify-between">
-              <h3 class="font-heading text-lg font-bold text-slate-900">
+              <h3 class="font-heading text-lg font-bold text-slate-900 dark:text-white">
                 Banco de Preguntas Activas ({{ preguntas().length }})
               </h3>
-              <span class="text-xs text-slate-500">Actualizado con base de datos</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">Actualizado con base de datos</span>
             </div>
 
             @if (cargandoPreguntas()) {
-              <div class="p-12 text-center bg-white/80 rounded-3xl border border-slate-200">
+              <div class="p-12 text-center bg-white/80 dark:bg-slate-900/80 rounded-3xl border border-slate-200 dark:border-slate-800">
                 <svg class="animate-spin h-8 w-8 text-[#00B39F] mx-auto mb-2" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                 </svg>
-                <p class="text-xs text-slate-500">Cargando preguntas...</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Cargando preguntas...</p>
               </div>
             } @else if (preguntas().length === 0) {
-              <div class="p-8 text-center bg-white/80 rounded-3xl border border-slate-200 text-slate-500 text-xs">
+              <div class="p-8 text-center bg-white/80 dark:bg-slate-900/80 rounded-3xl border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-xs">
                 No hay preguntas creadas. Utiliza el formulario para añadir la primera.
               </div>
             } @else {
               @for (p of preguntas(); track p.id; let pIdx = $index) {
-                <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-md border border-slate-200/90 relative">
+                <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-md border border-slate-200/90 dark:border-slate-800 relative">
                   <!-- Cabecera de Pregunta -->
                   <div class="flex items-start justify-between gap-3 mb-3">
                     <div class="flex items-start gap-3">
@@ -756,11 +756,11 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                         {{ pIdx + 1 }}
                       </span>
                       <div>
-                        <h4 class="text-sm font-extrabold text-slate-900 leading-snug">
+                        <h4 class="text-sm font-extrabold text-slate-900 dark:text-white leading-snug">
                           {{ p.enunciado }}
                         </h4>
                         @if (p.justificacion) {
-                          <p class="text-xs text-slate-600 mt-1 italic">
+                          <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 italic">
                             💡 Justificación: {{ p.justificacion }}
                           </p>
                         }
@@ -770,7 +770,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                     <button
                       type="button"
                       (click)="eliminarPregunta(p.id)"
-                      class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
+                      class="px-2.5 py-1.5 rounded-xl bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-950/70 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-800 text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
                       title="Eliminar o desactivar pregunta"
                     >
                       <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -781,14 +781,14 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                   </div>
 
                   <!-- Lista de 4 opciones -->
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                     @for (opt of p.opciones; track opt.id; let oIdx = $index) {
                       <div
                         class="p-2.5 rounded-xl text-xs flex items-start gap-2 border"
-                        [ngClass]="opt.esCorrecta ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-bold' : 'bg-slate-50 border-slate-200 text-slate-700'"
+                        [ngClass]="opt.esCorrecta ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 font-bold' : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200'"
                       >
                         <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 font-extrabold"
-                              [ngClass]="opt.esCorrecta ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'">
+                              [ngClass]="opt.esCorrecta ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'">
                           {{ opt.esCorrecta ? '✓' : optionLetters[oIdx] }}
                         </span>
                         <span class="grow leading-relaxed">{{ opt.texto }}</span>
@@ -809,16 +809,16 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <div class="space-y-6 animate-fade-in">
           
           <!-- Tarjeta de Desglose de Promedios por Categoría -->
-          <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
+          <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 dark:border-slate-800">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00B39F]/10 text-[#008072] text-xs font-black uppercase mb-1">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00B39F]/10 text-[#008072] dark:text-teal-300 text-xs font-black uppercase mb-1">
                   <span>Instrumento de Calidad Docente</span>
                 </span>
-                <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                   Percepción Pedagógica y Usabilidad de la Plataforma
                 </h2>
-                <p class="text-xs text-slate-600 mt-0.5">
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                   Métricas de satisfacción recopiladas de los estudiantes antes de emitir su certificación oficial.
                 </p>
               </div>
@@ -838,54 +838,54 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
             <!-- 4 Tarjetas de Promedios Específicos -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               
-              <div class="bg-gradient-to-br from-[#E8FCF7] to-white p-5 rounded-2xl border border-[#00B39F]/20 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-slate-600 block mb-1">1. Facilidad de Navegación</span>
+              <div class="bg-gradient-to-br from-[#E8FCF7] to-white dark:from-teal-950/40 dark:to-slate-900 p-5 rounded-2xl border border-[#00B39F]/20 dark:border-[#00B39F]/40 shadow-xs flex flex-col justify-between">
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">1. Facilidad de Navegación</span>
                 <div class="flex items-baseline justify-between mt-2">
-                  <span class="text-3xl font-black text-[#008072]">
+                  <span class="text-3xl font-black text-[#008072] dark:text-teal-300">
                     {{ promedioFacilidad() > 0 ? (promedioFacilidad() | number:'1.1-1') : '—' }}
                   </span>
-                  <span class="text-xs text-slate-400 font-bold">/ 5.0</span>
+                  <span class="text-xs text-slate-400 dark:text-slate-500 font-bold">/ 5.0</span>
                 </div>
-                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+                <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-3">
                   <div class="bg-[#00B39F] h-full rounded-full" [style.width.%]="(promedioFacilidad() / 5) * 100"></div>
                 </div>
               </div>
 
-              <div class="bg-gradient-to-br from-sky-50 to-white p-5 rounded-2xl border border-sky-200 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-slate-600 block mb-1">2. Utilidad Guías y Videos</span>
+              <div class="bg-gradient-to-br from-sky-50 to-white dark:from-sky-950/40 dark:to-slate-900 p-5 rounded-2xl border border-sky-200 dark:border-sky-800 shadow-xs flex flex-col justify-between">
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">2. Utilidad Guías y Videos</span>
                 <div class="flex items-baseline justify-between mt-2">
-                  <span class="text-3xl font-black text-sky-700">
+                  <span class="text-3xl font-black text-sky-700 dark:text-sky-300">
                     {{ promedioGuia() > 0 ? (promedioGuia() | number:'1.1-1') : '—' }}
                   </span>
-                  <span class="text-xs text-slate-400 font-bold">/ 5.0</span>
+                  <span class="text-xs text-slate-400 dark:text-slate-500 font-bold">/ 5.0</span>
                 </div>
-                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+                <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-3">
                   <div class="bg-sky-500 h-full rounded-full" [style.width.%]="(promedioGuia() / 5) * 100"></div>
                 </div>
               </div>
 
-              <div class="bg-gradient-to-br from-amber-50 to-white p-5 rounded-2xl border border-amber-200 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-slate-600 block mb-1">3. Claridad Visión por Cámara</span>
+              <div class="bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/40 dark:to-slate-900 p-5 rounded-2xl border border-amber-200 dark:border-amber-800 shadow-xs flex flex-col justify-between">
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">3. Claridad Visión por Cámara</span>
                 <div class="flex items-baseline justify-between mt-2">
-                  <span class="text-3xl font-black text-amber-700">
+                  <span class="text-3xl font-black text-amber-700 dark:text-amber-300">
                     {{ promedioCamara() > 0 ? (promedioCamara() | number:'1.1-1') : '—' }}
                   </span>
-                  <span class="text-xs text-slate-400 font-bold">/ 5.0</span>
+                  <span class="text-xs text-slate-400 dark:text-slate-500 font-bold">/ 5.0</span>
                 </div>
-                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+                <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-3">
                   <div class="bg-amber-500 h-full rounded-full" [style.width.%]="(promedioCamara() / 5) * 100"></div>
                 </div>
               </div>
 
-              <div class="bg-gradient-to-br from-rose-50 to-white p-5 rounded-2xl border border-rose-200 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-slate-600 block mb-1">4. Recomendación Formativa</span>
+              <div class="bg-gradient-to-br from-rose-50 to-white dark:from-rose-950/40 dark:to-slate-900 p-5 rounded-2xl border border-rose-200 dark:border-rose-800 shadow-xs flex flex-col justify-between">
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">4. Recomendación Formativa</span>
                 <div class="flex items-baseline justify-between mt-2">
-                  <span class="text-3xl font-black text-rose-700">
+                  <span class="text-3xl font-black text-rose-700 dark:text-rose-300">
                     {{ promedioRecomendacion() > 0 ? (promedioRecomendacion() | number:'1.1-1') : '—' }}
                   </span>
-                  <span class="text-xs text-slate-400 font-bold">/ 5.0</span>
+                  <span class="text-xs text-slate-400 dark:text-slate-500 font-bold">/ 5.0</span>
                 </div>
-                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+                <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-3">
                   <div class="bg-rose-500 h-full rounded-full" [style.width.%]="(promedioRecomendacion() / 5) * 100"></div>
                 </div>
               </div>
@@ -894,10 +894,10 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
           </div>
 
           <!-- Tabla de Encuestas de Estudiantes -->
-          <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
-            <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
+          <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 dark:border-slate-800">
+            <h3 class="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
               <span>Registros Individuales de Encuesta</span>
-              <span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+              <span class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold">
                 {{ encuestas().length }}
               </span>
             </h3>
@@ -908,19 +908,19 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                 </svg>
-                <p class="text-sm text-slate-600">Cargando encuestas de satisfacción...</p>
+                <p class="text-sm text-slate-600 dark:text-slate-300">Cargando encuestas de satisfacción...</p>
               </div>
             } @else if (encuestas().length === 0) {
-              <div class="py-12 text-center border-2 border-dashed border-slate-200 rounded-2xl">
-                <p class="text-sm font-bold text-slate-700 mb-1">No hay encuestas registradas aún</p>
-                <p class="text-xs text-slate-500">
+              <div class="py-12 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50/50 dark:bg-slate-800/40">
+                <p class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1">No hay encuestas registradas aún</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
                   Las valoraciones aparecerán automáticamente cuando los estudiantes completen la encuesta tras la evaluación teórica.
                 </p>
               </div>
             } @else {
-              <div class="overflow-x-auto rounded-2xl border border-slate-200">
+              <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
                 <table class="w-full text-left text-xs sm:text-sm">
-                  <thead class="bg-slate-50 text-slate-700 font-extrabold uppercase text-[11px] border-b border-slate-200">
+                  <thead class="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-extrabold uppercase text-[11px] border-b border-slate-200 dark:border-slate-700">
                     <tr>
                       <th class="py-3 px-4">Estudiante</th>
                       <th class="py-3 px-4">Código</th>
@@ -932,22 +932,22 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                       <th class="py-3 px-4">Comentarios y Sugerencias</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-slate-100">
+                  <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     @for (enc of encuestas(); track enc.id) {
-                      <tr class="hover:bg-slate-50/70 transition">
-                        <td class="py-3.5 px-4 font-bold text-slate-900">{{ enc.nombre }}</td>
-                        <td class="py-3.5 px-4 font-mono text-xs text-slate-600">{{ enc.codigo }}</td>
-                        <td class="py-3.5 px-3 text-center font-bold text-slate-800">{{ enc.facilidadUso }} / 5</td>
-                        <td class="py-3.5 px-3 text-center font-bold text-slate-800">{{ enc.utilidadGuia }} / 5</td>
-                        <td class="py-3.5 px-3 text-center font-bold text-slate-800">{{ enc.claridadFeed }} / 5</td>
-                        <td class="py-3.5 px-3 text-center font-bold text-slate-800">{{ enc.recomendacion }} / 5</td>
+                      <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition">
+                        <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">{{ enc.nombre }}</td>
+                        <td class="py-3.5 px-4 font-mono text-xs text-slate-600 dark:text-slate-400">{{ enc.codigo }}</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-slate-800 dark:text-slate-200">{{ enc.facilidadUso }} / 5</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-slate-800 dark:text-slate-200">{{ enc.utilidadGuia }} / 5</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-slate-800 dark:text-slate-200">{{ enc.claridadFeed }} / 5</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-slate-800 dark:text-slate-200">{{ enc.recomendacion }} / 5</td>
                         <td class="py-3.5 px-3 text-center">
                           <span class="inline-block px-2.5 py-1 rounded-full font-black text-xs"
-                            [ngClass]="enc.promedioIndividual >= 4 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'">
+                            [ngClass]="enc.promedioIndividual >= 4 ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800'">
                             {{ enc.promedioIndividual.toFixed(1) }} ★
                           </span>
                         </td>
-                        <td class="py-3.5 px-4 text-xs text-slate-600 max-w-xs">
+                        <td class="py-3.5 px-4 text-xs text-slate-600 dark:text-slate-300 max-w-xs">
                           {{ enc.comentarios || 'Sin comentarios adicionales.' }}
                         </td>
                       </tr>
@@ -967,19 +967,19 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
       @if (pestanaActiva() === 'perfil') {
         <div class="space-y-8 animate-fade-in">
           <!-- Tarjeta de Resumen del Docente -->
-          <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 flex flex-col sm:flex-row items-center gap-6">
+          <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-6">
             <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#00B39F] to-[#008072] text-white flex items-center justify-center text-3xl font-black shadow-lg shrink-0">
               {{ docenteNombre().charAt(0).toUpperCase() }}
             </div>
             <div class="grow text-center sm:text-left">
-              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/30 text-[#008072] text-xs font-black mb-2">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00B39F]/10 border border-[#00B39F]/30 text-[#008072] dark:text-teal-300 text-xs font-black mb-2">
                 <span>{{ docenteRol() }} INSTITUCIONAL UCC</span>
               </div>
-              <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">
+              <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
                 {{ docenteNombre() }}
               </h3>
-              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-                {{ docenteCorreo() }} • Código Asignado: <strong class="text-slate-800">{{ docenteCodigo() }}</strong>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
+                {{ docenteCorreo() }} • Código Asignado: <strong class="text-slate-800 dark:text-slate-200">{{ docenteCodigo() }}</strong>
               </p>
             </div>
           </div>
@@ -987,41 +987,41 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
           <!-- Grid de Formularios: Datos de Contacto y Cambio de Contraseña -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Formulario 1: Datos Personales y Contacto -->
-            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
-              <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
+            <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 dark:border-slate-800">
+              <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4 mb-5">
                 <div class="w-10 h-10 rounded-2xl bg-[#00B39F]/15 text-[#00B39F] flex items-center justify-center font-bold">
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-heading text-lg font-bold text-slate-900">Datos de Perfil</h4>
-                  <p class="text-xs text-slate-500">Actualiza tu nombre y correo institucional</p>
+                  <h4 class="font-heading text-lg font-bold text-slate-900 dark:text-white">Datos de Perfil</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Actualiza tu nombre y correo institucional</p>
                 </div>
               </div>
 
               <form [formGroup]="formPerfil" (ngSubmit)="guardarPerfil()" class="space-y-4">
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5 uppercase tracking-wider">
                     Nombre Completo *
                   </label>
                   <input
                     type="text"
                     formControlName="nombre"
                     placeholder="Ej. Docente de Enfermería UCC"
-                    class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                    class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5 uppercase tracking-wider">
                     Correo Electrónico Institucional *
                   </label>
                   <input
                     type="email"
                     formControlName="correo"
                     placeholder="docente@ucc.edu.co"
-                    class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                    class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
                   />
                 </div>
 
@@ -1046,23 +1046,23 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
             </div>
 
             <!-- Formulario 2: Cambio de Contraseña -->
-            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80">
-              <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
+            <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 dark:border-slate-800">
+              <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4 mb-5">
                 <div class="w-10 h-10 rounded-2xl bg-[#FF6A4D]/15 text-[#FF6A4D] flex items-center justify-center font-bold">
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-heading text-lg font-bold text-slate-900">Seguridad de la Cuenta</h4>
-                  <p class="text-xs text-slate-500">Actualiza tu contraseña periódicamente</p>
+                  <h4 class="font-heading text-lg font-bold text-slate-900 dark:text-white">Seguridad de la Cuenta</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Actualiza tu contraseña periódicamente</p>
                 </div>
               </div>
 
               <form [formGroup]="formPassword" (ngSubmit)="guardarPassword()" class="space-y-4">
                 <!-- Contraseña Actual -->
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5 uppercase tracking-wider">
                     Contraseña Actual *
                   </label>
                   <div class="relative">
@@ -1070,12 +1070,12 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                       [type]="verPasswordActual() ? 'text' : 'password'"
                       formControlName="passwordActual"
                       placeholder="Ingresa tu contraseña actual"
-                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
                     />
                     <button
                       type="button"
                       (click)="verPasswordActual.set(!verPasswordActual())"
-                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none cursor-pointer"
                     >
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1087,7 +1087,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
 
                 <!-- Nueva Contraseña -->
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5 uppercase tracking-wider">
                     Nueva Contraseña (mínimo 6 caracteres) *
                   </label>
                   <div class="relative">
@@ -1095,12 +1095,12 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                       [type]="verPasswordNuevo() ? 'text' : 'password'"
                       formControlName="passwordNuevo"
                       placeholder="Ingresa la nueva contraseña"
-                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
                     />
                     <button
                       type="button"
                       (click)="verPasswordNuevo.set(!verPasswordNuevo())"
-                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none cursor-pointer"
                     >
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1112,7 +1112,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
 
                 <!-- Confirmar Nueva Contraseña -->
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5 uppercase tracking-wider">
                     Confirmar Nueva Contraseña *
                   </label>
                   <div class="relative">
@@ -1120,12 +1120,12 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                       [type]="verPasswordConfirmar() ? 'text' : 'password'"
                       formControlName="passwordConfirmar"
                       placeholder="Repite la nueva contraseña"
-                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
+                      class="w-full px-4 py-3 pr-11 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none text-xs sm:text-sm font-medium transition"
                     />
                     <button
                       type="button"
                       (click)="verPasswordConfirmar.set(!verPasswordConfirmar())"
-                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                      class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none cursor-pointer"
                     >
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1163,7 +1163,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
       <!-- ============================================================== -->
       @if (modalDetalleAbierto() && practicaSeleccionada()) {
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-white/60 flex flex-col">
+          <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-white/60 dark:border-slate-700 flex flex-col">
             <!-- Cabecera del Modal -->
             <div class="p-6 bg-gradient-to-r from-[#0e1626] to-[#0B2B29] text-white flex items-center justify-between">
               <div>
@@ -1188,44 +1188,44 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
             </div>
 
             <!-- Resumen de Calificación Consolidada -->
-            <div class="p-4 bg-slate-50 border-b border-slate-200 text-xs sm:text-sm space-y-3">
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700 text-xs sm:text-sm space-y-3">
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div class="p-2.5 rounded-xl bg-white border border-slate-200">
-                  <div class="text-[11px] font-bold text-slate-500 uppercase">Nota Práctica (60%)</div>
-                  <div class="text-base font-extrabold text-slate-800">
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                  <div class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase">Nota Práctica (60%)</div>
+                  <div class="text-base font-extrabold text-slate-800 dark:text-slate-100">
                     {{ (practicaSeleccionada()?.notaPractica !== undefined ? practicaSeleccionada()?.notaPractica : practicaSeleccionada()?.calificacion)?.toFixed(1) }} / 10
                   </div>
                 </div>
 
-                <div class="p-2.5 rounded-xl bg-white border border-blue-100">
-                  <div class="text-[11px] font-bold text-blue-700 uppercase">Nota Cuestionario (40%)</div>
-                  <div class="text-base font-extrabold text-blue-900">
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-blue-100 dark:border-blue-900/60">
+                  <div class="text-[11px] font-bold text-blue-700 dark:text-blue-300 uppercase">Nota Cuestionario (40%)</div>
+                  <div class="text-base font-extrabold text-blue-900 dark:text-blue-100">
                     {{ (practicaSeleccionada()?.notaTeorica !== undefined ? practicaSeleccionada()?.notaTeorica : 0)?.toFixed(1) }} / 10
                   </div>
                 </div>
 
-                <div class="p-2.5 rounded-xl bg-white border"
-                     [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'border-emerald-300 bg-emerald-50/50' : 'border-red-300 bg-red-50/50'">
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border"
+                     [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/40' : 'border-red-300 dark:border-red-800 bg-red-50/50 dark:bg-red-950/40'">
                   <div class="text-[11px] font-bold uppercase"
-                       [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'text-emerald-800' : 'text-red-800'">
+                       [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-800 dark:text-red-300'">
                     Nota Final Consolidada
                   </div>
                   <div class="text-base font-black"
-                       [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'text-emerald-700' : 'text-red-700'">
+                       [ngClass]="((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0) >= 6.0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'">
                     {{ ((practicaSeleccionada()?.notaFinal !== undefined ? practicaSeleccionada()?.notaFinal : practicaSeleccionada()?.calificacion) || 0).toFixed(1) }} / 10
                   </div>
                 </div>
               </div>
 
               @if (practicaSeleccionada()?.certificado) {
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-[#008072] font-bold">
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs text-[#008072] dark:text-emerald-300 font-bold">
                   <div class="flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-[#00B39F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" />
                     </svg>
                     <span>Certificado Emitido: <strong>{{ practicaSeleccionada()?.certificado?.codigoVerificacion }}</strong></span>
                   </div>
-                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-black uppercase">
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 text-[11px] font-black uppercase">
                     Competencia Aprobada
                   </span>
                 </div>
@@ -1235,25 +1235,25 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
             <!-- Lista de Pasos 1 al 6 -->
             <div class="p-6 overflow-y-auto space-y-3 grow">
               @if (obtenerPasosFormateados().length === 0) {
-                <p class="text-xs text-slate-500 text-center py-6">No hay desglose por paso disponible para esta práctica.</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 text-center py-6">No hay desglose por paso disponible para esta práctica.</p>
               } @else {
                 @for (paso of obtenerPasosFormateados(); track paso.stepNumber) {
-                  <div class="p-3.5 rounded-2xl border border-slate-200 bg-white shadow-xs">
+                  <div class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs">
                     <div class="flex items-center justify-between mb-1.5">
                       <div class="flex items-center gap-2">
                         <span class="w-6 h-6 rounded-lg bg-[#00B39F] text-white flex items-center justify-center font-bold text-xs">
                           {{ paso.stepNumber }}
                         </span>
-                        <h5 class="text-xs sm:text-sm font-extrabold text-slate-900">
+                        <h5 class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
                           {{ paso.stepTitle || ('Paso ' + paso.stepNumber) }}
                         </h5>
                       </div>
 
                       <span class="text-xs font-bold px-2.5 py-0.5 rounded-full"
                             [ngClass]="{
-                              'bg-emerald-100 text-emerald-800': paso.status === 'optimal',
-                              'bg-amber-100 text-amber-800': paso.status === 'too-fast',
-                              'bg-purple-100 text-purple-800': paso.status === 'too-slow'
+                              'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300': paso.status === 'optimal',
+                              'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300': paso.status === 'too-fast',
+                              'bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300': paso.status === 'too-slow'
                             }">
                         @if (paso.status === 'optimal') { ✓ Ritmo Óptimo }
                         @else if (paso.status === 'too-fast') { ⚠ Demasiado Rápido }
@@ -1261,13 +1261,13 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                       </span>
                     </div>
 
-                    <div class="flex items-center justify-between text-xs text-slate-600 mb-1">
-                      <span>Tiempo: <strong class="text-slate-900">{{ paso.seconds }}s</strong> (Esperado: 3.0s — 8.0s)</span>
-                      <span>Puntaje: <strong class="text-[#008072]">{{ paso.score?.toFixed(2) }} / 1.67</strong></span>
+                    <div class="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 mb-1">
+                      <span>Tiempo: <strong class="text-slate-900 dark:text-white">{{ paso.seconds }}s</strong> (Esperado: 3.0s — 8.0s)</span>
+                      <span>Puntaje: <strong class="text-[#008072] dark:text-teal-300">{{ paso.score?.toFixed(2) }} / 1.67</strong></span>
                     </div>
 
                     @if (paso.feedback) {
-                      <p class="text-[11px] text-slate-500 italic mt-1">
+                      <p class="text-[11px] text-slate-500 dark:text-slate-400 italic mt-1">
                         {{ paso.feedback }}
                       </p>
                     }
@@ -1277,7 +1277,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
             </div>
 
             <!-- Pie del Modal -->
-            <div class="p-4 bg-slate-100 border-t border-slate-200 text-right">
+            <div class="p-4 bg-slate-100 dark:bg-slate-800/90 border-t border-slate-200 dark:border-slate-700 text-right">
               <button
                 type="button"
                 (click)="cerrarDetalle()"
@@ -1295,7 +1295,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
       <!-- ============================================================== -->
       @if (modalDocenteAbierto()) {
         <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-white overflow-hidden text-slate-800">
+          <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full shadow-2xl border border-white dark:border-slate-700 overflow-hidden text-slate-800 dark:text-slate-100">
             <!-- Encabezado del Modal -->
             <div class="bg-gradient-to-r from-[#0B2B29] to-[#008072] p-6 text-white flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -1322,14 +1322,14 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
             <form [formGroup]="formNuevoDocente" (ngSubmit)="guardarNuevoDocente()" class="p-6 space-y-4">
               <!-- Nombre -->
               <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase mb-1">
                   Nombre Completo <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   formControlName="nombre"
                   placeholder="Ej: Dra. María Fernanda Gómez"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
                 />
                 @if (formNuevoDocente.get('nombre')?.touched && formNuevoDocente.get('nombre')?.invalid) {
                   <span class="text-[11px] text-red-500 mt-1 block font-medium">El nombre completo es requerido.</span>
@@ -1338,14 +1338,14 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
 
               <!-- Correo Institucional -->
               <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase mb-1">
                   Correo Institucional <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
                   formControlName="correo"
                   placeholder="docente.enfermeria@ucc.edu.co"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
                 />
                 @if (formNuevoDocente.get('correo')?.touched && formNuevoDocente.get('correo')?.invalid) {
                   <span class="text-[11px] text-red-500 mt-1 block font-medium">Ingrese un correo electrónico válido.</span>
@@ -1354,7 +1354,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
 
               <!-- Contraseña Temporal -->
               <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase mb-1">
                   Contraseña Temporal <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
@@ -1362,12 +1362,12 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
                     [type]="verPasswordDocente() ? 'text' : 'password'"
                     formControlName="password"
                     placeholder="Mínimo 6 caracteres"
-                    class="w-full px-4 py-2.5 pr-10 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
+                    class="w-full px-4 py-2.5 pr-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none"
                   />
                   <button
                     type="button"
                     (click)="verPasswordDocente.set(!verPasswordDocente())"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                   >
                     @if (verPasswordDocente()) {
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1388,23 +1388,23 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
 
               <!-- Código Docente (Opcional) -->
               <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase mb-1">
                   Código Institucional <span class="text-slate-400 font-normal lowercase">(opcional, ej. DOC-2026)</span>
                 </label>
                 <input
                   type="text"
                   formControlName="codigoEstudiantil"
                   placeholder="Se generará automáticamente si se omite"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none font-mono"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:border-[#00B39F] focus:ring-4 focus:ring-[#00B39F]/10 outline-none font-mono"
                 />
               </div>
 
               <!-- Botones del Modal -->
-              <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   (click)="cerrarModalDocente()"
-                  class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition cursor-pointer"
+                  class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition cursor-pointer"
                 >
                   Cancelar
                 </button>
