@@ -67,15 +67,6 @@ import { AuthService } from '../../services/auth.service';
             </div>
 
             <div class="flex items-center gap-3 self-end sm:self-auto flex-wrap">
-              <button
-                type="button"
-                (click)="irAPracticaDirecta()"
-                class="px-3.5 py-1.5 rounded-full bg-teal-50 hover:bg-teal-100 text-[#008072] border border-[#00B39F]/30 text-xs font-bold transition-all cursor-pointer shadow-xs"
-                title="Ir directo a la simulación con cámara"
-              >
-                <span>Saltar al Simulador ⚡</span>
-              </button>
-
               <div class="text-right">
                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
                   Progreso Pre-Test

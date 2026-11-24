@@ -755,6 +755,13 @@ export class EvaluacionPracticaComponent {
       this.router.navigate(['/bienvenida']);
       return;
     }
+
+    // BLOQUEO OBLIGATORIO: Impedir acceso a la simulación IA si no ha completado la práctica guiada previa
+    if (!this.stateService.isStepUnlocked(4)) {
+      this.router.navigate(['/practica']);
+      return;
+    }
+
     // Reiniciar práctica previa para registrar la evaluación autónoma limpia
     this.stateService.resetPractice();
     this.currentStepIndex.set(0);

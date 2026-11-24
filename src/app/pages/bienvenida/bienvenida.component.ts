@@ -15,48 +15,48 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="relative isolate w-full min-h-full bg-gradient-to-br from-[#06182E] via-[#0B3A6B] to-[#0A4F6E]">
+    <div class="relative isolate w-full min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-gradient-to-br from-[#06182E] via-[#0B3A6B] to-[#0A4F6E]">
       <!-- Decoración de fondo -->
       <div class="pointer-events-none absolute -left-24 -top-24 h-96 w-96 rounded-full bg-emerald-400/20 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-32 -right-24 h-[28rem] w-[28rem] rounded-full bg-sky-400/20 blur-3xl"></div>
       <div class="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:26px_26px]"></div>
 
-      <div class="relative mx-auto max-w-xl px-4 py-10 sm:px-6 md:py-16 animate-fade-in">
+      <div class="relative w-full max-w-lg lg:max-w-xl mx-auto py-6 sm:py-8 animate-fade-in">
         <!-- Encabezado -->
-        <div class="mb-9 text-center">
-          <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-400/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-200 backdrop-blur">
+        <div class="mb-6 sm:mb-8 text-center">
+          <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-400/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-200 backdrop-blur">
             <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-300"></span></span>
             <span>Plataforma Clínica • Facultad de Enfermería</span>
           </div>
-          <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-300 to-sky-400 shadow-[0_16px_40px_-8px_rgba(52,211,153,0.6)]">
-            <svg class="h-8 w-8 text-[#06182E]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <div class="mx-auto mb-3.5 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-300 to-sky-400 shadow-[0_16px_40px_-8px_rgba(52,211,153,0.6)]">
+            <svg class="h-7 w-7 sm:h-8 sm:w-8 text-[#06182E]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </div>
-          <h1 class="font-heading text-5xl font-extrabold tracking-tight text-white sm:text-6xl">
+          <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
             Manos <span class="bg-gradient-to-r from-emerald-300 via-teal-200 to-sky-300 bg-clip-text text-transparent">Seguras</span>
           </h1>
-          <p class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-300 sm:text-base">
+          <p class="mx-auto mt-2 max-w-sm sm:max-w-md text-xs sm:text-sm leading-relaxed text-slate-300">
             Simulación, entrenamiento clínico y acreditación de la higiene de manos bajo el protocolo oficial de la OMS.
           </p>
         </div>
 
         <!-- Selector de acceso -->
-        <div class="mb-5 grid grid-cols-2 gap-1.5 rounded-2xl border border-white/15 bg-white/10 p-1.5 shadow-xl backdrop-blur-xl">
+        <div class="mb-4 sm:mb-5 grid grid-cols-2 gap-1 rounded-2xl border border-white/15 bg-white/10 p-1 shadow-xl backdrop-blur-xl">
           <button type="button" (click)="cambiarTipoAcceso('estudiante')"
-            class="flex cursor-pointer items-center justify-center gap-2 rounded-xl px-3 py-3 text-xs font-bold transition-all duration-300 sm:text-sm"
+            class="flex cursor-pointer items-center justify-center gap-1.5 sm:gap-2 rounded-xl px-2.5 py-2.5 text-xs font-bold transition-all duration-200 sm:text-sm"
             [ngClass]="tipoAcceso() === 'estudiante' ? 'bg-white text-[#0B3A6B] shadow-md' : 'text-slate-200 hover:bg-white/10 hover:text-white'">
-            <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             <span>Estudiante</span>
           </button>
           <button type="button" (click)="cambiarTipoAcceso('docente')"
-            class="flex cursor-pointer items-center justify-center gap-2 rounded-xl px-3 py-3 text-xs font-bold transition-all duration-300 sm:text-sm"
+            class="flex cursor-pointer items-center justify-center gap-1.5 sm:gap-2 rounded-xl px-2.5 py-2.5 text-xs font-bold transition-all duration-200 sm:text-sm"
             [ngClass]="tipoAcceso() === 'docente' ? 'bg-white text-[#0B3A6B] shadow-md' : 'text-slate-200 hover:bg-white/10 hover:text-white'">
-            <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5"/></svg>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5"/></svg>
             <span>Docente / Admin</span>
           </button>
         </div>
 
         <!-- Tarjeta principal -->
-        <div class="rounded-3xl border border-white/60 bg-white p-6 shadow-[0_30px_80px_-20px_rgba(2,12,27,0.7)] sm:p-8 md:p-10">
+        <div class="rounded-3xl border border-white/60 bg-white p-5 sm:p-7 md:p-8 shadow-[0_20px_60px_-15px_rgba(2,12,27,0.6)]">
           @if (tipoAcceso() === 'docente') {
             <div class="mb-7 flex items-center gap-4 border-b border-slate-100 pb-6">
               <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0B3A6B] to-sky-600 text-white shadow-lg shadow-sky-900/20">
