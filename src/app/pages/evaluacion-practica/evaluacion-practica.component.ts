@@ -851,6 +851,9 @@ export class EvaluacionPracticaComponent {
             },
             runningMode: 'VIDEO',
             numHands: 2,
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
           });
         } catch {
           this.detector = await HandLandmarker.createFromOptions(vision, {
@@ -861,6 +864,9 @@ export class EvaluacionPracticaComponent {
             },
             runningMode: 'VIDEO',
             numHands: 2,
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
           });
         }
       }
@@ -1000,27 +1006,46 @@ export class EvaluacionPracticaComponent {
     const threshold = this.currentProximityThreshold();
     let areHandsTogether = false;
 
-    if (stepIdx === 0) {
-      areHandsTogether = palmDistance <= threshold && wristDistance <= threshold * 1.35;
+    // Validación anatómica calibrada para los 11 pasos técnicos de la OMS
+    if (stepIdx === 0 || stepIdx === 8) {
+      // Pasos 1 y 9: Mojar y Enjuagar bajo el agua
+      areHandsTogether = (palmDistance <= threshold * 1.6 || wristDistance <= threshold * 1.6);
     } else if (stepIdx === 1) {
+      // Paso 2: Aplicar jabón
+      areHandsTogether = palmDistance <= threshold * 1.5;
+    } else if (stepIdx === 2) {
+      // Paso 3: Palma con Palma (Palmas enfrentadas)
+      areHandsTogether = palmDistance <= threshold && wristDistance <= threshold * 1.4;
+    } else if (stepIdx === 3) {
+      // Paso 4: Palma sobre Dorso
       const dorsalDist0 = Math.hypot(palm0.x - landmarks[1][9].x, palm0.y - landmarks[1][9].y);
       const dorsalDist1 = Math.hypot(palm1.x - landmarks[0][9].x, palm1.y - landmarks[0][9].y);
-      areHandsTogether = dorsalDist0 <= threshold || dorsalDist1 <= threshold || palmDistance <= threshold;
-    } else if (stepIdx === 2) {
+      areHandsTogether = dorsalDist0 <= threshold || dorsalDist1 <= threshold || palmDistance <= threshold * 1.1;
+    } else if (stepIdx === 4) {
+      // Paso 5: Palma con palma y dedos entrelazados
       const fingerTipDist = Math.hypot(landmarks[0][12].x - landmarks[1][12].x, landmarks[0][12].y - landmarks[1][12].y);
-      areHandsTogether = (palmDistance <= threshold && fingerTipDist <= threshold * 1.25) || wristDistance <= threshold * 1.2;
-    } else if (stepIdx === 3) {
+      areHandsTogether = (palmDistance <= threshold && fingerTipDist <= threshold * 1.3) || wristDistance <= threshold * 1.3;
+    } else if (stepIdx === 5) {
+      // Paso 6: Dorso de Dedos
       const knuckleDist = Math.hypot(landmarks[0][8].x - landmarks[1][0].x, landmarks[0][8].y - landmarks[1][0].y);
       const knuckleDistRev = Math.hypot(landmarks[1][8].x - landmarks[0][0].x, landmarks[1][8].y - landmarks[0][0].y);
-      areHandsTogether = knuckleDist <= threshold * 1.2 || knuckleDistRev <= threshold * 1.2 || palmDistance <= threshold;
-    } else if (stepIdx === 4) {
+      areHandsTogether = knuckleDist <= threshold * 1.25 || knuckleDistRev <= threshold * 1.25 || palmDistance <= threshold;
+    } else if (stepIdx === 6) {
+      // Paso 7: Pulgares rotacionales
       const thumb0InPalm1 = Math.hypot(landmarks[0][4].x - palm1.x, landmarks[0][4].y - palm1.y);
       const thumb1InPalm0 = Math.hypot(landmarks[1][4].x - palm0.x, landmarks[1][4].y - palm0.y);
       areHandsTogether = thumb0InPalm1 <= threshold || thumb1InPalm0 <= threshold || palmDistance <= threshold;
-    } else {
+    } else if (stepIdx === 7) {
+      // Paso 8: Yemas y uñas sobre palma cóncava
       const tips0InPalm1 = Math.hypot(landmarks[0][8].x - palm1.x, landmarks[0][8].y - palm1.y);
       const tips1InPalm0 = Math.hypot(landmarks[1][8].x - palm0.x, landmarks[1][8].y - palm0.y);
-      areHandsTogether = tips0InPalm1 <= threshold || tips1InPalm0 <= threshold;
+      areHandsTogether = tips0InPalm1 <= threshold || tips1InPalm0 <= threshold || palmDistance <= threshold * 0.9;
+    } else if (stepIdx === 9) {
+      // Paso 10: Secar con toalla
+      areHandsTogether = palmDistance <= threshold * 1.5;
+    } else {
+      // Paso 11: Cerrar el grifo
+      areHandsTogether = (palmDistance <= threshold * 1.8 || wristDistance <= threshold * 1.8);
     }
 
     this.handsTogether.set(areHandsTogether);
@@ -1145,7 +1170,9 @@ export class EvaluacionPracticaComponent {
   }
 
   private currentProximityThreshold(): number {
-    return [0.22, 0.24, 0.20, 0.22, 0.18, 0.16][this.currentStepIndex()] ?? 0.22;
+    // Umbrales calibrados para los 11 pasos OMS frente a webcam/móvil
+    const thresholds = [0.35, 0.32, 0.28, 0.28, 0.28, 0.26, 0.26, 0.26, 0.35, 0.32, 0.38];
+    return thresholds[this.currentStepIndex()] ?? 0.30;
   }
 
   private resetBiomechanicalState(): void {
@@ -1278,6 +1305,9 @@ export class EvaluacionPracticaComponent {
             },
             runningMode: 'VIDEO',
             numHands: 2,
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
           });
         } catch {
           this.detector = await HandLandmarker.createFromOptions(vision, {
@@ -1288,6 +1318,9 @@ export class EvaluacionPracticaComponent {
             },
             runningMode: 'VIDEO',
             numHands: 2,
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
           });
         }
       }

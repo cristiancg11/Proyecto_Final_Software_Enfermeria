@@ -1582,6 +1582,9 @@ export class PracticaComponent implements OnInit, OnDestroy {
             },
             runningMode: 'VIDEO',
             numHands: 2,
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
           });
         } catch {
           // Fallback a CPU para GPUs móviles que no soporten texturas float16 en WebGL
@@ -1593,6 +1596,9 @@ export class PracticaComponent implements OnInit, OnDestroy {
             },
             runningMode: 'VIDEO',
             numHands: 2,
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
           });
         }
       }
@@ -1816,13 +1822,13 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.previousKeyPoints = currentKeyPoints;
 
     const avgMovement = sampleCount > 0 ? deltaMovement / sampleCount : 0;
-    this.smoothedMotion = this.smoothedMotion * 0.60 + avgMovement * 0.40;
-    const intensity = Math.min(100, Math.round((this.smoothedMotion / 0.020) * 100));
+    this.smoothedMotion = this.smoothedMotion * 0.50 + avgMovement * 0.50;
+    const intensity = Math.min(100, Math.round((this.smoothedMotion / 0.016) * 100));
     this.motionIntensityPercent.set(intensity);
 
-    // RESTRICCIÓN DE PRECISIÓN: Umbral mínimo estricto (0.0075) y descarte de sacudidas caóticas (> 0.09)
-    const isTooFastOrChaotic = avgMovement > 0.095;
-    const isRubbing = this.smoothedMotion >= 0.0075 && !isTooFastOrChaotic;
+    // Calibración de sensibilidad biomecánica: umbral mínimo accesible (0.0040) y filtrado de sacudidas (> 0.16)
+    const isTooFastOrChaotic = avgMovement > 0.16;
+    const isRubbing = this.smoothedMotion >= 0.0040 && !isTooFastOrChaotic;
     this.handsRubbing.set(isRubbing);
 
     if (isTooFastOrChaotic) {
@@ -1850,8 +1856,8 @@ export class PracticaComponent implements OnInit, OnDestroy {
     this.consecutiveFrames.update((f) => Math.min(25, f + 1));
     this.framesSinCumplirUmbral = 0;
 
-    // Solo acumula tiempo clínico si el estudiante mantiene al menos 8 frames consecutivos de técnica estable
-    if (this.consecutiveFrames() >= 8) {
+    // Acumula avance con 4 frames consecutivos estables (fluido y reactivo)
+    if (this.consecutiveFrames() >= 4) {
       this.effectiveSeconds += elapsed;
       const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
       if (this.currentSeconds() !== roundedSeconds) {
@@ -1861,8 +1867,8 @@ export class PracticaComponent implements OnInit, OnDestroy {
       const evidence = Math.min(4.0, this.palmsEvidence() + elapsed);
       this.palmsEvidence.set(evidence);
 
-      // Exige 2.8s de evidencia acumulada con estabilidad alta para considerar validado
-      if (evidence >= 2.8 && this.consecutiveFrames() >= 10 && !this.palmsValidated()) {
+      // Valida tras 2.2s de práctica sostenida y 6 frames estables
+      if (evidence >= 2.2 && this.consecutiveFrames() >= 6 && !this.palmsValidated()) {
         this.palmsValidated.set(true);
       }
 
@@ -1925,8 +1931,11 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   private currentProximityThreshold(): number {
-    // Umbrales estrictos de proximidad anatómica OMS por paso (distancia normalizada máxima entre puntos clave)
-    return [0.22, 0.24, 0.20, 0.22, 0.18, 0.16][this.currentStepIndex()] ?? 0.22;
+    // Umbrales calibrados para los 11 pasos OMS frente a webcam/móvil
+    // 0: Mojar (0.35), 1: Jabón (0.32), 2: Palma-Palma (0.28), 3: Palma-Dorso (0.28), 4: Entrelazado (0.28)
+    // 5: Dorso dedos (0.26), 6: Pulgares (0.26), 7: Yemas (0.26), 8: Enjuagar (0.35), 9: Secar (0.32), 10: Grifo (0.38)
+    const thresholds = [0.35, 0.32, 0.28, 0.28, 0.28, 0.26, 0.26, 0.26, 0.35, 0.32, 0.38];
+    return thresholds[this.currentStepIndex()] ?? 0.30;
   }
 
   private resetBiomechanicalState(): void {
@@ -2111,6 +2120,9 @@ export class PracticaComponent implements OnInit, OnDestroy {
             },
             runningMode: 'VIDEO',
             numHands: 2,
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
           });
         } catch {
           this.detector = await HandLandmarker.createFromOptions(vision, {
@@ -2121,6 +2133,9 @@ export class PracticaComponent implements OnInit, OnDestroy {
             },
             runningMode: 'VIDEO',
             numHands: 2,
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
           });
         }
       }
