@@ -283,4 +283,15 @@ export class PracticasService {
       { headers: this.obtenerHeadersAuth() }
     );
   }
+
+  /**
+   * Obtiene las preguntas activas creadas por el docente para el reto "¿Cuánto sabes?"
+   * GET /api/ia/reto-extremo/preguntas
+   */
+  obtenerPreguntasRetoExtremo(): Observable<{ total: number; preguntas: any[] }> {
+    return this.http.get<{ total: number; preguntas: any[] }>(
+      `${this.apiUrl}/ia/reto-extremo/preguntas`,
+      { headers: this.obtenerHeadersAuth() }
+    );
+  }
 }

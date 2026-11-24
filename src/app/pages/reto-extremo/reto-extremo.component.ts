@@ -42,7 +42,7 @@ export interface PreguntaRetoExtremo {
                 🧠 ¿Cuánto sabes?
               </h1>
               <p class="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
-                7 preguntas difíciles de microbiología intrahospitalaria y protocolos clínicos de la OMS. El puntaje combina <strong class="text-slate-900">aciertos + bonificación por rapidez</strong>.
+                {{ totalPreguntas() }} preguntas difíciles de microbiología intrahospitalaria y protocolos clínicos de la OMS. El puntaje combina <strong class="text-slate-900">aciertos + bonificación por rapidez</strong>.
               </p>
             </div>
 
@@ -59,7 +59,7 @@ export interface PreguntaRetoExtremo {
                   (click)="iniciarReto()"
                   class="w-full sm:w-auto text-center px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer active:scale-98"
                 >
-                  ⚡ Iniciar Reto (7 Preguntas)
+                  ⚡ Iniciar Reto ({{ totalPreguntas() }} Preguntas)
                 </button>
               }
             </div>
@@ -109,12 +109,12 @@ export interface PreguntaRetoExtremo {
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <div class="p-3 bg-white rounded-xl border border-slate-200 text-center">
-                  <span class="font-extrabold text-amber-800 text-lg block">7 Preguntas</span>
+                  <span class="font-extrabold text-amber-800 text-lg block">{{ totalPreguntas() }} Preguntas</span>
                   <span class="text-slate-500">4 opciones (A, B, C, D)</span>
                 </div>
                 <div class="p-3 bg-white rounded-xl border border-slate-200 text-center">
                   <span class="font-extrabold text-teal-700 text-lg block">Hasta 700 pts</span>
-                  <span class="text-slate-500">100 pts por acierto</span>
+                  <span class="text-slate-500">{{ (700 / totalPreguntas()).toFixed(0) }} pts por acierto</span>
                 </div>
                 <div class="p-3 bg-white rounded-xl border border-slate-200 text-center">
                   <span class="font-extrabold text-sky-700 text-lg block">Hasta 300 pts</span>
@@ -122,7 +122,7 @@ export interface PreguntaRetoExtremo {
                 </div>
               </div>
               <p class="text-xs text-slate-600 leading-relaxed pt-1">
-                • El cronómetro corre en vivo. Al completar las 7 preguntas, tu tiempo y puntaje se registrarán en la <strong>tabla de posiciones oficial</strong> para disputar el Podio.
+                • El cronómetro corre en vivo. Al completar las {{ totalPreguntas() }} preguntas, tu tiempo y puntaje se registrarán en la <strong>tabla de posiciones oficial</strong> para disputar el Podio.
               </p>
             </div>
 
@@ -131,7 +131,7 @@ export interface PreguntaRetoExtremo {
               (click)="iniciarReto()"
               class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-teal-600 hover:brightness-105 text-white font-extrabold text-base shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>🚀 Comenzar Trivia Contrarreloj (7 Preguntas)</span>
+              <span>🚀 Comenzar Trivia Contrarreloj ({{ totalPreguntas() }} Preguntas)</span>
             </button>
           </div>
         }
@@ -145,7 +145,7 @@ export interface PreguntaRetoExtremo {
             <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
               <div class="flex items-center gap-3">
                 <span class="w-10 h-10 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 font-bold text-sm flex items-center justify-center">
-                  {{ indicePregunta() + 1 }} / 7
+                  {{ indicePregunta() + 1 }} / {{ totalPreguntas() }}
                 </span>
                 <div>
                   <span class="text-xs font-bold uppercase tracking-wider text-amber-800 block">
@@ -168,7 +168,7 @@ export interface PreguntaRetoExtremo {
             <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
               <div
                 class="h-full bg-gradient-to-r from-amber-500 to-teal-600 transition-all duration-300"
-                [style.width.%]="((indicePregunta() + 1) / 7) * 100"
+                [style.width.%]="((indicePregunta() + 1) / totalPreguntas()) * 100"
               ></div>
             </div>
 
@@ -225,7 +225,7 @@ export interface PreguntaRetoExtremo {
                   class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer flex items-center gap-2"
                 >
                   <span>
-                    {{ indicePregunta() + 1 < 7 ? 'Siguiente Pregunta →' : 'Finalizar y Registrar Puntuación 🏆' }}
+                    {{ indicePregunta() + 1 < totalPreguntas() ? 'Siguiente Pregunta →' : 'Finalizar y Registrar Puntuación 🏆' }}
                   </span>
                 </button>
               </div>
@@ -255,7 +255,7 @@ export interface PreguntaRetoExtremo {
               <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
                 <span class="text-[10px] font-bold uppercase text-slate-500 block">Aciertos</span>
                 <span class="font-heading text-2xl font-extrabold text-teal-700">
-                  {{ aciertosTotales() }} / 7
+                  {{ aciertosTotales() }} / {{ totalPreguntas() }}
                 </span>
               </div>
               <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
@@ -367,7 +367,7 @@ export interface PreguntaRetoExtremo {
                         <span class="text-xl sm:text-2xl font-black text-amber-900">1.°</span>
                         <span class="text-[10px] text-amber-800 font-bold font-mono">⏱ {{ primerLugar()!.tiempoSegundos }}s</span>
                         <span class="text-[9px] text-emerald-800 font-semibold bg-emerald-100/80 px-1.5 py-0.5 rounded-full mt-1">
-                          {{ primerLugar()!.aciertos }}/7 aciertos
+                          {{ primerLugar()!.aciertos }}/{{ primerLugar()!.totalPreguntas || totalPreguntas() }} aciertos
                         </span>
                       </div>
                     </div>
@@ -408,14 +408,14 @@ export interface PreguntaRetoExtremo {
                   Aún no hay partidas registradas en el podio
                 </h4>
                 <p class="text-xs text-slate-500 max-w-md mx-auto mb-3.5 leading-relaxed">
-                  El podio muestra exclusivamente registros reales de estudiantes. ¡Completa el reto contrarreloj de 7 preguntas para posicionarte en el 1.º lugar oficial!
+                  El podio muestra exclusivamente registros reales de estudiantes. ¡Completa el reto contrarreloj de {{ totalPreguntas() }} preguntas para posicionarte en el 1.º lugar oficial!
                 </p>
                 <button
                   type="button"
                   (click)="iniciarReto()"
                   class="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs shadow-md transition-all cursor-pointer inline-flex items-center gap-1.5"
                 >
-                  <span>⚡ Iniciar Reto de 7 Preguntas</span>
+                  <span>⚡ Iniciar Reto de {{ totalPreguntas() }} Preguntas</span>
                 </button>
               </div>
             }
@@ -1324,10 +1324,14 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
 
   readonly estadoJuego = signal<'lobby' | 'jugando' | 'finalizado'>('lobby');
   readonly preguntasPartida = signal<PreguntaRetoExtremo[]>([]);
+  readonly preguntasDocente = signal<PreguntaRetoExtremo[]>([]);
   readonly indicePregunta = signal<number>(0);
   readonly opcionSeleccionada = signal<number | null>(null);
   readonly aciertosTotales = signal<number>(0);
   readonly tiempoTranscurridoSeg = signal<number>(0);
+
+  // Conteo total de preguntas de la partida (mínimo 7 o la cantidad de preguntas activas creadas por el docente)
+  readonly totalPreguntas = computed(() => Math.max(7, this.preguntasDocente().length));
 
   // Ranking y Podio en vivo
   readonly ranking = signal<RegistroRetoExtremo[]>([]);
@@ -1363,14 +1367,16 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
   readonly tiempoFormateado = computed(() => this.tiempoTranscurridoSeg().toFixed(1));
 
   readonly porcentajeAciertos = computed(() => {
-    return Math.round((this.aciertosTotales() / 7) * 100);
+    const total = this.totalPreguntas();
+    return total > 0 ? Math.round((this.aciertosTotales() / total) * 100) : 0;
   });
 
   readonly puntajeCalculado = computed(() => {
     const aciertos = this.aciertosTotales();
     const tiempo = this.tiempoTranscurridoSeg();
-    // 100 pts por acierto (hasta 700) + bono por rapidez (hasta 300)
-    const baseAciertos = Math.round((aciertos / 7) * 700);
+    const total = this.totalPreguntas();
+    // Puntos proporcionales por acierto (hasta 700 pts) + bono por rapidez (hasta 300 pts) = máx 1.000 pts
+    const baseAciertos = total > 0 ? Math.round((aciertos / total) * 700) : 0;
     const bonoVelocidad = Math.max(0, Math.round(300 - tiempo * 3.5));
     return baseAciertos + (aciertos > 0 ? bonoVelocidad : 0);
   });
@@ -1381,7 +1387,19 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
     this.nombreCompetidor = student?.fullName || authUser?.nombre || 'Estudiante de Enfermería';
     this.codigoCompetidor = student?.studentCode || authUser?.codigoEstudiantil || '2026-ENF-UCC';
 
+    this.cargarPreguntasDocente();
     this.cargarRankingCompetitivo();
+  }
+
+  cargarPreguntasDocente(): void {
+    this.practicasService.obtenerPreguntasRetoExtremo().subscribe({
+      next: (res) => {
+        if (Array.isArray(res?.preguntas) && res.preguntas.length > 0) {
+          this.preguntasDocente.set(res.preguntas);
+        }
+      },
+      error: (err) => console.warn('Aviso al cargar preguntas docentes para la trivia:', err),
+    });
   }
 
   ngOnDestroy(): void {
@@ -1426,18 +1444,38 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Selecciona 7 preguntas al azar del banco disponible y baraja las opciones de cada una.
+   * Selecciona las preguntas de la partida, priorizando las creadas por el docente en Supabase
+   * y complementando con el banco de preguntas si hay menos de 7.
    */
   private seleccionarPreguntasAleatorias(): PreguntaRetoExtremo[] {
-    const bancoCopia = [...this.bancoPreguntasExtremas];
+    const docentes = [...this.preguntasDocente()];
+    const bancoLocal = [...this.bancoPreguntasExtremas];
 
-    // Algoritmo Fisher-Yates para seleccionar preguntas aleatorias del banco
-    for (let i = bancoCopia.length - 1; i > 0; i--) {
+    // Barajar banco local con Fisher-Yates
+    for (let i = bancoLocal.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [bancoCopia[i], bancoCopia[j]] = [bancoCopia[j], bancoCopia[i]];
+      [bancoLocal[i], bancoLocal[j]] = [bancoLocal[j], bancoLocal[i]];
     }
 
-    const seleccionadas = bancoCopia.slice(0, Math.min(7, bancoCopia.length));
+    let seleccionadas: PreguntaRetoExtremo[] = [];
+    if (docentes.length >= 7) {
+      // Si el docente tiene 7 o más preguntas (ej. 8), se incluyen todas las del docente
+      seleccionadas = [...docentes];
+    } else {
+      // Si el docente tiene menos de 7, se incluyen todas las del docente y se completa con las locales hasta 7
+      const faltantes = 7 - docentes.length;
+      const filtroLocales = bancoLocal.filter(
+        (b) => !docentes.some((d) => d.enunciado.trim().toLowerCase() === b.enunciado.trim().toLowerCase())
+      );
+      seleccionadas = [...docentes, ...filtroLocales.slice(0, faltantes)];
+    }
+
+    // Barajar el orden de aparición de las preguntas seleccionadas
+    for (let i = seleccionadas.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [seleccionadas[i], seleccionadas[j]] = [seleccionadas[j], seleccionadas[i]];
+    }
+
     return seleccionadas.map((preg) => this.barajarOpcionesPregunta(preg));
   }
 
@@ -1469,7 +1507,7 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
 
   avanzarPregunta(): void {
     const siguiente = this.indicePregunta() + 1;
-    if (siguiente < 7) {
+    if (siguiente < this.totalPreguntas()) {
       this.indicePregunta.set(siguiente);
       this.opcionSeleccionada.set(null);
     } else {
@@ -1487,12 +1525,13 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
     const puntaje = this.puntajeCalculado();
     const tiempo = this.tiempoTranscurridoSeg();
     const aciertos = this.aciertosTotales();
+    const total = this.totalPreguntas();
 
     const payload = {
       nombre: this.nombreCompetidor.trim() || 'Estudiante de Enfermería',
       codigoEstudiantil: this.codigoCompetidor.trim() || '2026-ENF-UCC',
       aciertos,
-      totalPreguntas: 7,
+      totalPreguntas: total,
       tiempoSegundos: tiempo,
     };
 
@@ -1513,14 +1552,15 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
 
   private actualizarLocalYRanking(payload: any, puntaje: number): void {
     const local = this.obtenerRankingLocalFallback();
+    const total = payload.totalPreguntas || this.totalPreguntas();
     const nuevo: RegistroRetoExtremo = {
       id: `local-${Date.now()}`,
       posicion: 0,
       nombre: payload.nombre,
       codigoEstudiantil: payload.codigoEstudiantil,
       aciertos: payload.aciertos,
-      totalPreguntas: 7,
-      porcentajeExito: Math.round((payload.aciertos / 7) * 100),
+      totalPreguntas: total,
+      porcentajeExito: total > 0 ? Math.round((payload.aciertos / total) * 100) : 0,
       tiempoSegundos: payload.tiempoSegundos,
       puntajeCompetitivo: puntaje,
       fecha: new Date().toISOString(),

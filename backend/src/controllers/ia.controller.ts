@@ -568,3 +568,50 @@ export const registrarIntentoRetoExtremo = async (req: Request, res: Response): 
   }
 };
 
+/**
+ * GET /api/ia/reto-extremo/preguntas
+ * Consulta las preguntas activas creadas por el docente en la tabla Pregunta de Supabase
+ * para agregarlas dinámicamente al pool de "¿Cuánto sabes?"
+ */
+export const obtenerPreguntasRetoExtremo = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const preguntasDb = await prisma.pregunta.findMany({
+      where: { activa: true },
+      include: {
+        opciones: {
+          select: {
+            id: true,
+            texto: true,
+            esCorrecta: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const preguntas = preguntasDb
+      .filter((p) => p.opciones && p.opciones.length >= 2)
+      .map((p) => {
+        const correctIndex = p.opciones.findIndex((o) => o.esCorrecta);
+        return {
+          id: p.id,
+          categoria: 'Pregunta Clínica • Docente UCC',
+          dificultad: 'Alta' as const,
+          enunciado: p.enunciado,
+          opciones: p.opciones.map((o) => o.texto),
+          indiceCorrecto: correctIndex >= 0 ? correctIndex : 0,
+          explicacionClinica:
+            p.justificacion || 'Criterio clínico fundamentado en directrices OMS.',
+        };
+      });
+
+    res.json({
+      total: preguntas.length,
+      preguntas,
+    });
+  } catch (error) {
+    console.error('Error al obtener preguntas para reto extremo:', error);
+    res.status(500).json({ error: 'Error al consultar preguntas del docente para el reto' });
+  }
+};
+

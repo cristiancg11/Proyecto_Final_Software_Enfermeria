@@ -573,22 +573,22 @@ import {
         <div class="relative z-10">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
             <div>
-              <h4 class="font-heading text-lg font-extrabold text-[#0B2B29] flex items-center gap-2">
+              <h4 class="font-heading text-lg font-extrabold text-[#0B2B29] dark:text-white flex items-center gap-2">
                 <span>🏆 Ranking Grupal Anonimizado • Esfuerzo y Constancia</span>
               </h4>
-              <p class="text-xs text-slate-500">
+              <p class="text-xs text-slate-500 dark:text-slate-400">
                 Clasificación ética y protegida por código estudiantil que premia la mejora del intento 1 al 3
               </p>
             </div>
-            <span class="text-[11px] font-bold text-[#008072] bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+            <span class="text-[11px] font-bold text-[#008072] dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 px-3 py-1 rounded-full border border-teal-200 dark:border-teal-800">
               Privacidad Activa • Identidades Anonimizadas
             </span>
           </div>
 
-          <div class="overflow-x-auto rounded-2xl border border-slate-200/90 shadow-xs bg-white">
+          <div class="overflow-x-auto rounded-2xl border border-slate-200/90 dark:border-slate-700 shadow-xs bg-white dark:bg-slate-900">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                <tr class="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   <th class="py-3 px-4">Pos.</th>
                   <th class="py-3 px-4">Participante (Anonimizado)</th>
                   <th class="py-3 px-4 text-center">Progresión (1 → 2 → 3)</th>
@@ -597,55 +597,55 @@ import {
                   <th class="py-3 px-4 text-right">Índice IA</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 text-xs">
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
                 @for (fila of rankingGrupal(); track fila.codigoAnonimizado + fila.posicion) {
                   <tr
                     class="transition-colors"
                     [ngClass]="fila.esUsuarioActual
-                      ? 'bg-[#E6FBF7]/90 font-bold ring-1 ring-inset ring-[#00B39F]/40'
-                      : 'hover:bg-slate-50/80'"
+                      ? 'bg-[#E6FBF7]/90 dark:bg-teal-950/40 font-bold ring-1 ring-inset ring-[#00B39F]/40'
+                      : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/50'"
                   >
                     <!-- Posición / Medalla -->
                     <td class="py-3.5 px-4 font-black">
                       @if (fila.posicion === 1) {
                         <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-100 text-amber-700 border border-amber-300 text-sm">🥇</span>
                       } @else if (fila.posicion === 2) {
-                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-200 text-slate-700 border border-slate-300 text-sm">🥈</span>
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 text-sm">🥈</span>
                       } @else if (fila.posicion === 3) {
                         <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-orange-100 text-orange-800 border border-orange-300 text-sm">🥉</span>
                       } @else {
-                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-600 font-bold">#{{ fila.posicion }}</span>
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold">#{{ fila.posicion }}</span>
                       }
                     </td>
 
                     <!-- Alias y Código Anonimizado -->
                     <td class="py-3.5 px-4">
                       <div class="flex items-center gap-2">
-                        <span class="font-extrabold text-[#0B2B29]">{{ fila.aliasAnonimo }}</span>
+                        <span class="font-extrabold text-[#0B2B29] dark:text-slate-200">{{ fila.aliasAnonimo }}</span>
                         @if (fila.esUsuarioActual) {
                           <span class="px-2 py-0.5 rounded-full bg-[#00B39F] text-white text-[9px] font-black uppercase">Tú</span>
                         }
                       </div>
-                      <span class="font-mono text-[11px] text-slate-400">{{ fila.codigoAnonimizado }} • {{ fila.intentosCompletados }}/3 intentos</span>
+                      <span class="font-mono text-[11px] text-slate-400 dark:text-slate-400">{{ fila.codigoAnonimizado }} • {{ fila.intentosCompletados }}/3 intentos</span>
                     </td>
 
                     <!-- Notas de Intento 1 -> 2 -> 3 -->
                     <td class="py-3.5 px-4 text-center">
-                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100/90 border border-slate-200 text-[11px] font-bold">
-                        <span class="text-slate-600">{{ fila.notaIntento1.toFixed(1) }}</span>
-                        <span class="text-slate-400">→</span>
-                        <span class="text-teal-700">{{ fila.notaIntento2 !== null ? fila.notaIntento2.toFixed(1) : '—' }}</span>
-                        <span class="text-slate-400">→</span>
-                        <span class="text-emerald-700 font-black">{{ fila.notaIntento3 !== null ? fila.notaIntento3.toFixed(1) : fila.notaActual.toFixed(1) }}</span>
+                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100/90 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] font-bold">
+                        <span class="text-slate-600 dark:text-slate-300">{{ fila.notaIntento1.toFixed(1) }}</span>
+                        <span class="text-slate-400 dark:text-slate-500">→</span>
+                        <span class="text-teal-700 dark:text-teal-400">{{ fila.notaIntento2 !== null ? fila.notaIntento2.toFixed(1) : '—' }}</span>
+                        <span class="text-slate-400 dark:text-slate-500">→</span>
+                        <span class="text-emerald-700 dark:text-emerald-400 font-black">{{ fila.notaIntento3 !== null ? fila.notaIntento3.toFixed(1) : fila.notaActual.toFixed(1) }}</span>
                       </div>
                     </td>
 
                     <!-- Barra de Mejora Porcentual -->
                     <td class="py-3.5 px-4 min-w-[130px]">
                       <div class="flex items-center justify-between text-[11px] font-extrabold mb-1">
-                        <span class="text-emerald-700">+{{ fila.mejoraPorcentual }}%</span>
+                        <span class="text-emerald-700 dark:text-emerald-400">+{{ fila.mejoraPorcentual }}%</span>
                       </div>
-                      <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                         <div
                           class="h-full rounded-full bg-gradient-to-r from-[#00B39F] to-emerald-500"
                           [style.width.%]=" fila.mejoraPorcentual > 100 ? 100 : (fila.mejoraPorcentual < 12 ? 18 : fila.mejoraPorcentual * 1.8) "
@@ -657,7 +657,7 @@ import {
                     <td class="py-3.5 px-4">
                       <div class="flex flex-wrap gap-1">
                         @for (ins of fila.insignias.slice(0, 2); track ins) {
-                          <span class="px-2 py-0.5 rounded-full bg-teal-50 text-[#008072] border border-teal-200 text-[10px] font-bold">
+                          <span class="px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/60 text-[#008072] dark:text-teal-300 border border-teal-200 dark:border-teal-800 text-[10px] font-bold">
                             {{ ins }}
                           </span>
                         }
@@ -666,7 +666,7 @@ import {
 
                     <!-- Puntaje Esfuerzo IA -->
                     <td class="py-3.5 px-4 text-right">
-                      <span class="inline-flex items-center px-2.5 py-1 rounded-xl bg-[#0B2B29] text-[#50E7FF] font-black text-xs">
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-xl bg-[#0B2B29] dark:bg-slate-800 text-[#50E7FF] dark:text-teal-300 font-black text-xs border dark:border-slate-700">
                         {{ fila.puntajeEsfuerzoIA }} pts
                       </span>
                     </td>
