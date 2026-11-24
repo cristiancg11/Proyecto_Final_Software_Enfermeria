@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { studentAuthGuard } from './core/guards/student-auth.guard';
 import { docenteAuthGuard } from './core/guards/docente-auth.guard';
+import { simulacionIaGuard } from './core/guards/simulacion-ia.guard';
 
 export const routes: Routes = [
   {
@@ -76,7 +77,7 @@ export const routes: Routes = [
   },
   {
     path: 'evaluacion-practica',
-    canActivate: [studentAuthGuard],
+    canActivate: [studentAuthGuard, simulacionIaGuard],
     loadComponent: () =>
       import('./pages/evaluacion-practica/evaluacion-practica.component').then(
         (m) => m.EvaluacionPracticaComponent
@@ -128,13 +129,17 @@ export const routes: Routes = [
     redirectTo: 'resultado',
   },
   {
-    path: 'reto-extremo',
+    path: 'cuanto-sabes',
     canActivate: [studentAuthGuard],
     loadComponent: () =>
       import('./pages/reto-extremo/reto-extremo.component').then(
         (m) => m.RetoExtremoComponent
       ),
-    title: 'Manos Seguras — Modo Reto Extremo: Trivia de Asepsia OMS',
+    title: 'Manos Seguras — ¿Cuánto sabes? • Reto Contrarreloj OMS',
+  },
+  {
+    path: 'reto-extremo',
+    redirectTo: 'cuanto-sabes',
   },
   {
     path: 'validar/:codigo',

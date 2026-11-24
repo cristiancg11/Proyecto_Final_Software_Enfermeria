@@ -224,7 +224,7 @@ async function seed() {
         },
         // Caso 9: Uñas artificiales y esmalte en unidades clínicas
         {
-            enunciado: 'Caso Clínico 9: Una profesional de enfermería labora en la unidad de cuidados intensivos neonatales luciendo uñas esculpidas en acrílico con esmalte semipermanente intacto. En relación con las Directrices de la OMS sobre Higiene de Manos en la Atención Sanitaria, ¿por qué está terminantemente desaconsejado el uso de uñas postizas en profesionales sanitarios?',
+            enunciado: 'Caso Clínico OMS: Una profesional de enfermería labora en la unidad de cuidados intensivos neonatales luciendo uñas esculpidas en acrílico con esmalte semipermanente intacto. En relación con las Directrices de la OMS sobre Higiene de Manos en la Atención Sanitaria, ¿por qué está terminantemente desaconsejado el uso de uñas postizas en profesionales sanitarios?',
             justificacion: 'La OMS desaconseja de manera enfática el uso de uñas artificiales o extensiones en personal sanitario debido a que el espacio subungueal colonizado acumula una altísima carga de bacilos gramnegativos oportunistas (como Pseudomonas aeruginosa) y levaduras (Candida spp.), vinculándose directamente con brotes letales de bacteriemia nosocomial.',
             opciones: [
                 {

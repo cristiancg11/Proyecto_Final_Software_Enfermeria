@@ -383,11 +383,47 @@ function ordenarRankingReto(lista, codigoActual) {
 }
 /**
  * GET /api/ia/reto-extremo/ranking
- * Devuelve el ranking competitivo del Reto Extremo indicando explícitamente el primer y último lugar
+ * Devuelve el ranking competitivo de "¿Cuánto sabes?" indicando podio y último lugar
  */
 const obtenerRankingRetoExtremo = async (req, res) => {
     try {
         const codigo = req.query.codigoEstudiantil?.trim();
+        // Intentar leer registros sincronizados de la tabla Supabase "ranking_cuanto_sabes"
+        try {
+            const registrosDb = await prisma_1.prisma.$queryRawUnsafe(`
+        SELECT id, nombre, codigo_estudiantil as "codigoEstudiantil", aciertos, total_preguntas as "totalPreguntas",
+               tiempo_segundos as "tiempoSegundos", puntaje as "puntajeCompetitivo", created_at as "fecha"
+        FROM "ranking_cuanto_sabes"
+        ORDER BY puntaje DESC, tiempo_segundos ASC
+        LIMIT 50;
+      `);
+            if (Array.isArray(registrosDb) && registrosDb.length > 0) {
+                for (const fila of registrosDb) {
+                    const idx = historialRetoExtremo.findIndex((h) => h.codigoEstudiantil.toLowerCase() === (fila.codigoEstudiantil || '').toLowerCase());
+                    const reg = {
+                        id: String(fila.id),
+                        posicion: 0,
+                        nombre: String(fila.nombre),
+                        codigoEstudiantil: String(fila.codigoEstudiantil),
+                        aciertos: Number(fila.aciertos),
+                        totalPreguntas: Number(fila.totalPreguntas),
+                        porcentajeExito: Math.round((Number(fila.aciertos) / Number(fila.totalPreguntas)) * 100),
+                        tiempoSegundos: Number(fila.tiempoSegundos),
+                        puntajeCompetitivo: Number(fila.puntajeCompetitivo),
+                        fecha: new Date(fila.fecha).toISOString(),
+                    };
+                    if (idx >= 0) {
+                        historialRetoExtremo[idx] = reg;
+                    }
+                    else {
+                        historialRetoExtremo.push(reg);
+                    }
+                }
+            }
+        }
+        catch {
+            // Usar almacenamiento en memoria si la tabla aún no existe o hay latencia
+        }
         const ranking = ordenarRankingReto(historialRetoExtremo, codigo);
         const primerLugar = ranking[0] || null;
         const ultimoLugar = ranking.length > 0 ? ranking[ranking.length - 1] : null;
@@ -400,24 +436,24 @@ const obtenerRankingRetoExtremo = async (req, res) => {
     }
     catch (err) {
         console.error('Error en obtenerRankingRetoExtremo:', err);
-        res.status(500).json({ error: 'Error al obtener el ranking del Reto Extremo.' });
+        res.status(500).json({ error: 'Error al obtener el ranking de ¿Cuánto sabes?.' });
     }
 };
 exports.obtenerRankingRetoExtremo = obtenerRankingRetoExtremo;
 /**
  * POST /api/ia/reto-extremo/registrar
- * Registra el intento de trivia de alta dificultad y actualiza el ranking en tiempo real
+ * Registra el intento de la trivia contrarreloj de 7 preguntas y actualiza el ranking en Supabase y memoria
  */
 const registrarIntentoRetoExtremo = async (req, res) => {
     try {
         const nombre = String(req.body.nombre || 'Estudiante de Enfermería').trim();
         const codigoEstudiantil = String(req.body.codigoEstudiantil || `EST-${Math.floor(100 + Math.random() * 900)}`).trim();
         const aciertos = Math.max(0, Number(req.body.aciertos ?? 0));
-        const totalPreguntas = Math.max(1, Number(req.body.totalPreguntas ?? 8));
-        const tiempoSegundos = Math.max(1, Math.round(Number(req.body.tiempoSegundos ?? 45) * 10) / 10);
+        const totalPreguntas = Math.max(1, Number(req.body.totalPreguntas ?? 7));
+        const tiempoSegundos = Math.max(1, Math.round(Number(req.body.tiempoSegundos ?? 35) * 10) / 10);
         const porcentajeExito = Math.round((aciertos / totalPreguntas) * 100);
-        // Puntaje que premia precisión (hasta 700 pts) + bono de velocidad (hasta 300 pts)
-        const bonoVelocidad = Math.max(0, Math.round(300 - tiempoSegundos * 3.2));
+        // Puntaje: aciertos (hasta 700 pts) + bonificación por rapidez (hasta 300 pts)
+        const bonoVelocidad = Math.max(0, Math.round(300 - tiempoSegundos * 3.5));
         const puntajeCompetitivo = Math.round((aciertos / totalPreguntas) * 700 + (aciertos > 0 ? bonoVelocidad : 0));
         const nuevoRegistro = {
             id: `reto-${Date.now()}`,
@@ -432,7 +468,34 @@ const registrarIntentoRetoExtremo = async (req, res) => {
             fecha: new Date().toISOString(),
             esUsuarioActual: true,
         };
-        // Actualizar si ya existía el mismo código o agregarlo
+        // 1. Guardar en tabla Supabase "ranking_cuanto_sabes" de forma segura y tolerante
+        try {
+            await prisma_1.prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "ranking_cuanto_sabes" (
+          id TEXT PRIMARY KEY,
+          nombre TEXT NOT NULL,
+          codigo_estudiantil TEXT NOT NULL,
+          aciertos INTEGER NOT NULL,
+          total_preguntas INTEGER NOT NULL,
+          tiempo_segundos REAL NOT NULL,
+          puntaje INTEGER NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+      `);
+            await prisma_1.prisma.$executeRawUnsafe(`
+        INSERT INTO "ranking_cuanto_sabes" (id, nombre, codigo_estudiantil, aciertos, total_preguntas, tiempo_segundos, puntaje, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+        ON CONFLICT (id) DO UPDATE SET
+          aciertos = EXCLUDED.aciertos,
+          tiempo_segundos = EXCLUDED.tiempo_segundos,
+          puntaje = EXCLUDED.puntaje,
+          created_at = NOW();
+      `, nuevoRegistro.id, nombre, codigoEstudiantil, aciertos, totalPreguntas, tiempoSegundos, puntajeCompetitivo);
+        }
+        catch (dbErr) {
+            console.warn('Persistencia en Supabase ranking_cuanto_sabes:', dbErr);
+        }
+        // 2. Actualizar si ya existía el mismo código en memoria o agregarlo
         const idxExistente = historialRetoExtremo.findIndex((r) => r.codigoEstudiantil.toLowerCase() === codigoEstudiantil.toLowerCase());
         if (idxExistente >= 0) {
             historialRetoExtremo[idxExistente] = nuevoRegistro;
@@ -445,7 +508,7 @@ const registrarIntentoRetoExtremo = async (req, res) => {
         const ultimoLugar = ranking.length > 0 ? ranking[ranking.length - 1] : null;
         const miResultado = ranking.find((r) => r.codigoEstudiantil.toLowerCase() === codigoEstudiantil.toLowerCase());
         res.status(201).json({
-            mensaje: 'Resultado del Reto Extremo registrado en el ranking competitivo.',
+            mensaje: 'Resultado de ¿Cuánto sabes? registrado con éxito en Supabase y el ranking competitivo.',
             resultado: miResultado || nuevoRegistro,
             primerLugar,
             ultimoLugar,
@@ -454,7 +517,7 @@ const registrarIntentoRetoExtremo = async (req, res) => {
     }
     catch (err) {
         console.error('Error en registrarIntentoRetoExtremo:', err);
-        res.status(500).json({ error: 'Error al registrar resultado del Reto Extremo.' });
+        res.status(500).json({ error: 'Error al registrar resultado de ¿Cuánto sabes?.' });
     }
 };
 exports.registrarIntentoRetoExtremo = registrarIntentoRetoExtremo;

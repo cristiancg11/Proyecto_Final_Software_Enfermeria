@@ -64,6 +64,13 @@ export interface RegistroHistorialPractica {
             >
               <span>🎯 Simulación Cámara IA</span>
             </a>
+
+            <a
+              routerLink="/cuanto-sabes"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-300 cursor-pointer"
+            >
+              <span>🧠 ¿Cuánto sabes?</span>
+            </a>
           </div>
         </div>
       </div>
@@ -161,62 +168,81 @@ export interface RegistroHistorialPractica {
       </div>
 
       <!-- 3. ACCESOS DIRECTOS A MODOS CLÍNICOS -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         
         <!-- Opción 1: Práctica Guiada -->
         <a
           routerLink="/practica"
-          class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 hover:border-teal-400 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block group"
+          class="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-teal-400 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block group"
         >
-          <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center text-xl mb-4 group-hover:scale-105 transition-transform">
+          <div class="w-11 h-11 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center text-xl mb-3.5 group-hover:scale-105 transition-transform">
             🖐️
           </div>
           <div class="flex items-center justify-between mb-1">
-            <h3 class="font-heading text-base font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
+            <h3 class="font-heading text-sm font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
               Práctica Guiada OMS
             </h3>
-            <span class="text-teal-700 text-xs font-bold">Paso a Paso →</span>
+            <span class="text-teal-700 text-xs font-bold">11 Pasos →</span>
           </div>
           <p class="text-xs text-slate-600 leading-relaxed">
-            Entrenamiento asistido con animaciones clínicas, voz de acompañamiento y cronómetro de estabilidad para cada paso.
+            Entrenamiento asistido con animaciones clínicas, voz de acompañamiento y cronómetro de estabilidad.
           </p>
         </a>
 
         <!-- Opción 2: Simulación Cámara IA -->
         <a
           routerLink="/evaluacion-practica"
-          class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 hover:border-sky-400 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block group"
+          class="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-sky-400 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block group"
         >
-          <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center text-xl mb-4 group-hover:scale-105 transition-transform">
+          <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center text-xl mb-3.5 group-hover:scale-105 transition-transform">
             🎯
           </div>
           <div class="flex items-center justify-between mb-1">
-            <h3 class="font-heading text-base font-bold text-slate-900 group-hover:text-sky-700 transition-colors">
+            <h3 class="font-heading text-sm font-bold text-slate-900 group-hover:text-sky-700 transition-colors">
               Simulación Cámara IA
             </h3>
             <span class="text-sky-700 text-xs font-bold">Evaluación →</span>
           </div>
           <p class="text-xs text-slate-600 leading-relaxed">
-            Evaluación autónoma con MediaPipe HandLandmarker. Análisis de postura, fricción y tiempo sin asistencia de guía.
+            Evaluación autónoma con MediaPipe HandLandmarker. Análisis de postura, fricción y tiempo sin asistencia.
           </p>
         </a>
 
         <!-- Opción 3: Cuestionario Teórico OMS y Encuesta -->
         <a
           routerLink="/evaluacion-teorica"
-          class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 hover:border-teal-400 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block group relative overflow-hidden"
+          class="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-teal-400 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block group relative overflow-hidden"
         >
-          <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center text-xl mb-4 group-hover:scale-105 transition-transform">
+          <div class="w-11 h-11 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center text-xl mb-3.5 group-hover:scale-105 transition-transform">
             📋
           </div>
           <div class="flex items-center justify-between mb-1">
-            <h3 class="font-heading text-base font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
+            <h3 class="font-heading text-sm font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
               Cuestionario Teórico OMS
             </h3>
             <span class="text-teal-700 text-xs font-bold">Post-Test →</span>
           </div>
           <p class="text-xs text-slate-600 leading-relaxed">
             Evaluación oficial sobre los 5 momentos y técnica aséptica OMS, con retroalimentación inmediata.
+          </p>
+        </a>
+
+        <!-- Opción 4: Minijuego ¿Cuánto sabes? -->
+        <a
+          routerLink="/cuanto-sabes"
+          class="bg-gradient-to-br from-amber-50/60 to-white p-5 rounded-2xl border border-amber-300/80 hover:border-amber-500 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 block group relative overflow-hidden"
+        >
+          <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center text-xl mb-3.5 group-hover:scale-105 transition-transform">
+            🧠
+          </div>
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="font-heading text-sm font-bold text-slate-900 group-hover:text-amber-800 transition-colors">
+              ¿Cuánto sabes?
+            </h3>
+            <span class="text-amber-700 text-xs font-bold">Reto ⚡ →</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Trivia contrarreloj de 7 preguntas difíciles sobre microbiología y protocolos OMS. ¡Compite en el podio!
           </p>
         </a>
       </div>

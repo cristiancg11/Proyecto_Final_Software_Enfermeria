@@ -9,7 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   DrawingUtils,
   FilesetResolver,
@@ -196,7 +196,28 @@ export interface QualityAlert {
             </div>
           }
 
-          <!-- BARRA SUPERIOR DE PROGRESO DE LOS 6 PASOS -->
+          @if (avisoBloqueoSimulacion()) {
+            <div class="mb-4 p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex items-start justify-between gap-3 shadow-md animate-fade-in">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl shrink-0">🔒</span>
+                <div>
+                  <h3 class="text-sm font-extrabold text-amber-950">Acceso a Simulación IA Restringido</h3>
+                  <p class="text-xs text-amber-800 mt-0.5 leading-relaxed">
+                    Para ingresar a la evaluación con Inteligencia Artificial, primero debes completar y registrar los <strong>{{ steps.length }} pasos técnicos</strong> de esta práctica guiada.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                (click)="avisoBloqueoSimulacion.set(false)"
+                class="text-amber-700 hover:text-amber-950 font-bold text-sm px-2 py-1 rounded-lg hover:bg-amber-100 transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          }
+
+          <!-- BARRA SUPERIOR DE PROGRESO DE LOS PASOS TÉCNICOS -->
           <div class="bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-6 mb-6 shadow-xl border border-white/50 animate-fade-in">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
               <div class="flex items-center gap-3">
@@ -227,24 +248,15 @@ export interface QualityAlert {
 
                 <button
                   type="button"
-                  (click)="irAEncuesta()"
-                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/30 text-amber-300 text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
-                  title="Dar tu opinión y retroalimentación sobre la práctica"
-                >
-                  <span>⭐ Dejar Opinión</span>
-                </button>
-
-                <button
-                  type="button"
                   (click)="irAEvaluacionPractica()"
                   [disabled]="completedRecords().length < steps.length"
                   [ngClass]="completedRecords().length >= steps.length
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-orange-500/25 cursor-pointer active:scale-95'
-                    : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed opacity-70'"
-                  class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black transition-all"
-                  [title]="completedRecords().length >= steps.length ? 'Ir a Evaluación Práctica' : 'Completa los 6 pasos de práctica para desbloquear la Evaluación Práctica'"
+                    ? 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white shadow-md cursor-pointer active:scale-95'
+                    : 'bg-slate-200 text-slate-500 border border-slate-300 cursor-not-allowed opacity-80'"
+                  class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black transition-all"
+                  [title]="completedRecords().length >= steps.length ? 'Continuar a Simulación con IA' : 'Completa los ' + steps.length + ' pasos de práctica guiada para desbloquear la Simulación con IA'"
                 >
-                  <span>{{ completedRecords().length >= steps.length ? 'Ir a Evaluación Práctica' : '🔒 Ev. Práctica (' + completedRecords().length + '/' + steps.length + ' pasos)' }}</span>
+                  <span>{{ completedRecords().length >= steps.length ? 'Continuar a Simulación IA 🎯' : '🔒 Simulación IA (' + completedRecords().length + '/' + steps.length + ' pasos)' }}</span>
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -773,7 +785,7 @@ export interface QualityAlert {
                 >
                   <span>
                     @if (cameraActive() && !palmsValidated()) {
-                      Verificar Umbral con Manitos ({{ formattedTime() }}s / 4.0s)
+                      Confirmar cumplimiento del paso ({{ formattedTime() }}s / 4.0s)
                     } @else if (isLastStep()) {
                       Ir a Evaluación Práctica
                     } @else {
@@ -852,7 +864,10 @@ export interface QualityAlert {
 export class PracticaComponent implements OnInit, OnDestroy {
   readonly Math = Math;
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly stateService = inject(HandwashStateService);
+
+  readonly avisoBloqueoSimulacion = signal<boolean>(false);
 
   readonly student = this.stateService.student;
   readonly steps = this.stateService.steps;
@@ -893,7 +908,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
   readonly botEscribiendo = signal(false);
   readonly manitaBotEstado = signal<'guia' | 'optimo' | 'alerta'>('guia');
   readonly manitaBotMensaje = signal(
-    '¡Hola! Soy Manitos Coach. Te guiaré con voz e indicadores en tiempo real para que cumplas los segundos y movimientos OMS en cada paso.'
+    'Guía de técnica activa. Sigue las indicaciones del protocolo de la OMS para cada paso.'
   );
   readonly motionIntensityPercent = signal(0);
   private ultimoAvisoVozTimestamp = 0;
@@ -1099,6 +1114,13 @@ export class PracticaComponent implements OnInit, OnDestroy {
       this.router.navigate(['/bienvenida']);
       return;
     }
+
+    this.route.queryParams.subscribe((params) => {
+      if (params['bloqueo'] === 'simulacion_ia') {
+        this.avisoBloqueoSimulacion.set(true);
+      }
+    });
+
     // Iniciar cuenta regresiva orientativa de apertura de grifo (5 segundos)
     this.mostrarFaseInicial.set(true);
     this.segundosGrifo.set(5);

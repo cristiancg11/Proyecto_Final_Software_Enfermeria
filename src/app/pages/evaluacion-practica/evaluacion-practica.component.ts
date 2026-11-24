@@ -17,6 +17,7 @@ import {
 } from '@mediapipe/tasks-vision';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
 import { HandwashStep } from '../../core/models/handwash.models';
+import { AuthService } from '../../services/auth.service';
 
 export interface QualityAlert {
   type: 'hands-missing' | 'hands-apart' | 'still';
@@ -42,7 +43,37 @@ export interface QualityAlert {
 
       <div class="mx-auto relative z-10" [ngClass]="isFullScreen() ? 'w-full h-full' : 'max-w-5xl'">
 
-        @if (!evaluacionFinalizada()) {
+        @if (accesoBloqueado()) {
+          <!-- PANTALLA DE ACCESO BLOQUEADO CLARA Y DIRECTA -->
+          <div class="bg-white rounded-3xl p-6 sm:p-10 border border-amber-300 shadow-xl text-center max-w-xl mx-auto my-8 animate-fade-in">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-3xl sm:text-4xl mx-auto mb-4 border border-amber-200 shadow-sm">
+              🔒
+            </div>
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 text-xs font-bold uppercase tracking-wider mb-3">
+              <span>Módulo Bloqueado</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mb-2">
+              Práctica Guiada Requerida
+            </h2>
+            <p class="text-sm text-slate-600 mb-6 leading-relaxed">
+              Para ingresar a la <strong>Simulación Autónoma con Inteligencia Artificial</strong>, primero debes completar y registrar la <strong>Práctica Guiada de los 11 pasos</strong> del protocolo oficial de la OMS.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a
+                routerLink="/practica"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-sm shadow-md transition-all cursor-pointer"
+              >
+                <span>🖐️ Ir a la Práctica Guiada de 11 Pasos</span>
+              </a>
+              <a
+                routerLink="/dashboard"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm border border-slate-300 transition-all cursor-pointer"
+              >
+                <span>Dashboard</span>
+              </a>
+            </div>
+          </div>
+        } @else if (!evaluacionFinalizada()) {
 
           <!-- 1. ENCABEZADO MINIMALISTA DE EVALUACIÓN PRÁCTICA (Ocultable en Fullscreen Móvil) -->
           @if (!isFullScreen()) {
@@ -597,25 +628,17 @@ export interface QualityAlert {
                 </div>
               </div>
 
-              <!-- BOTÓN: CONTINUAR A EVALUACIÓN TEÓRICA / ENCUESTA -->
+              <!-- BOTÓN: CONTINUAR A EVALUACIÓN TEÓRICA (POST-TEST) -->
               <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap">
                 <button
                   type="button"
                   (click)="continuarAEvaluacionTeorica()"
                   class="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-[#00B39F] via-[#50E7FF] to-[#D9FF43] hover:brightness-110 text-[#080B10] font-black text-base shadow-2xl shadow-teal-500/30 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3 cursor-pointer"
                 >
-                  <span>Continuar a Evaluación Teórica</span>
+                  <span>Continuar al Post-Test OMS (Evaluación Teórica)</span>
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
-                </button>
-
-                <button
-                  type="button"
-                  (click)="irAEncuestaSatisfaccion()"
-                  class="w-full sm:w-auto px-6 py-4 rounded-full bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 font-bold text-sm transition border border-amber-400/40 flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95"
-                >
-                  <span>⭐ Dejar Opinión (Encuesta)</span>
                 </button>
 
                 <button
@@ -643,6 +666,10 @@ export class EvaluacionPracticaComponent {
   readonly Math = Math;
   private readonly router = inject(Router);
   private readonly stateService = inject(HandwashStateService);
+  private readonly authService = inject(AuthService);
+
+  readonly esDocente = this.authService.esDocente;
+  readonly accesoBloqueado = signal<boolean>(false);
 
   readonly student = this.stateService.student;
   readonly studentName = computed(() => this.student()?.fullName || 'Estudiante');
@@ -757,8 +784,8 @@ export class EvaluacionPracticaComponent {
     }
 
     // BLOQUEO OBLIGATORIO: Impedir acceso a la simulación IA si no ha completado la práctica guiada previa
-    if (!this.stateService.isStepUnlocked(4)) {
-      this.router.navigate(['/practica']);
+    if (!this.esDocente() && !this.stateService.isStepUnlocked(4)) {
+      this.accesoBloqueado.set(true);
       return;
     }
 
