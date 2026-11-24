@@ -104,14 +104,14 @@
             Navegación Académica
           </div>
 
-          <nav class="space-y-1.5">
+          <nav class="space-y-2">
             <!-- 1. Dashboard -->
             <a
               routerLink="/dashboard"
-              routerLinkActive="bg-sky-50 text-sky-700 border-sky-300 font-bold shadow-xs"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-sky-700 hover:bg-slate-50 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
+              routerLinkActive="!bg-gradient-to-r !from-sky-50 !to-teal-50/60 !text-sky-800 !border-sky-400 !shadow-xs !font-bold ring-1 ring-sky-300/40"
+              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/70 border border-slate-200/80 text-slate-700 hover:bg-sky-50/70 hover:border-sky-300 hover:text-sky-800 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
             >
-              <span class="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+              <span class="w-7 h-7 rounded-lg bg-sky-100/70 border border-sky-200/50 text-sky-700 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                 📊
               </span>
               <span>Dashboard</span>
@@ -120,10 +120,10 @@
             <!-- 2. Pre-Test Clínico OMS (Cuestionario Pre-Práctica) -->
             <a
               routerLink="/diagnostico"
-              routerLinkActive="bg-sky-50 text-sky-700 border-sky-300 font-bold shadow-xs"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-sky-700 hover:bg-slate-50 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
+              routerLinkActive="!bg-gradient-to-r !from-sky-50 !to-teal-50/60 !text-sky-800 !border-sky-400 !shadow-xs !font-bold ring-1 ring-sky-300/40"
+              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/70 border border-slate-200/80 text-slate-700 hover:bg-sky-50/70 hover:border-sky-300 hover:text-sky-800 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
             >
-              <span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+              <span class="w-7 h-7 rounded-lg bg-teal-100/70 border border-teal-200/50 text-teal-700 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                 📝
               </span>
               <span>Pre-Test OMS</span>
@@ -132,66 +132,54 @@
             <!-- 3. Práctica Guiada -->
             <a
               routerLink="/practica"
-              routerLinkActive="bg-sky-50 text-sky-700 border-sky-300 font-bold shadow-xs"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-sky-700 hover:bg-slate-50 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
+              routerLinkActive="!bg-gradient-to-r !from-sky-50 !to-teal-50/60 !text-sky-800 !border-sky-400 !shadow-xs !font-bold ring-1 ring-sky-300/40"
+              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/70 border border-slate-200/80 text-slate-700 hover:bg-sky-50/70 hover:border-sky-300 hover:text-sky-800 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
             >
-              <span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+              <span class="w-7 h-7 rounded-lg bg-teal-100/70 border border-teal-200/50 text-teal-700 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                 🖐️
               </span>
               <span>Práctica Guiada</span>
             </a>
 
-            <!-- 3. Simulación Cámara IA (MediaPipe) con bloqueo estricto -->
+            <!-- 4. Simulación Cámara IA (MediaPipe) con bloqueo estricto -->
             <button
               type="button"
               (click)="abrirSimulacionIa($event)"
               [ngClass]="simulacionHabilitada()
-                ? 'text-slate-700 hover:text-sky-700 hover:bg-slate-50 cursor-pointer'
-                : 'text-slate-400 hover:bg-amber-50/50 hover:text-amber-800 opacity-80 cursor-pointer'"
-              class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-transparent group text-left"
+                ? 'bg-slate-50/70 border-slate-200/80 text-slate-700 hover:bg-sky-50/70 hover:border-sky-300 hover:text-sky-800 cursor-pointer shadow-2xs hover:shadow-xs'
+                : 'bg-slate-100/70 border-slate-200 text-slate-400 hover:bg-amber-50/60 hover:border-amber-300 hover:text-amber-800 cursor-pointer opacity-90'"
+              class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 border group text-left"
               [title]="simulacionHabilitada() ? 'Simulación Cámara IA' : 'Bloqueado: Completa primero la Práctica Guiada'"
             >
               <div class="flex items-center gap-3">
                 <span
-                  class="w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-transform"
-                  [ngClass]="simulacionHabilitada() ? 'bg-sky-100 text-sky-700 group-hover:scale-110' : 'bg-slate-100 text-slate-400'"
+                  class="w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-transform shrink-0"
+                  [ngClass]="simulacionHabilitada() ? 'bg-sky-100/70 border border-sky-200/50 text-sky-700 group-hover:scale-105' : 'bg-slate-200/70 border border-slate-300 text-slate-500'"
                 >
                   {{ simulacionHabilitada() ? '🎯' : '🔒' }}
                 </span>
                 <span>Simulación Cámara IA</span>
               </div>
               @if (!simulacionHabilitada()) {
-                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
                   Bloqueada
                 </span>
               }
             </button>
 
-            <!-- 5. Mi Perfil -->
-            <a
-              routerLink="/perfil"
-              routerLinkActive="bg-sky-50 text-sky-700 border-sky-300 font-bold shadow-xs"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-sky-700 hover:bg-slate-50 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
-            >
-              <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
-                👤
-              </span>
-              <span>Mi Perfil</span>
-            </a>
-
-            <!-- Minijuego Extra: ¿Cuánto sabes? -->
+            <!-- 5. Minijuego Extra: ¿Cuánto sabes? -->
             <a
               routerLink="/cuanto-sabes"
-              routerLinkActive="bg-amber-50 text-amber-800 border-amber-300 font-bold shadow-xs"
-              class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-amber-800 hover:bg-amber-50/60 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
+              routerLinkActive="!bg-gradient-to-r !from-amber-50 !to-orange-50/60 !text-amber-900 !border-amber-400 !shadow-xs !font-bold ring-1 ring-amber-300/40"
+              class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50/70 border border-slate-200/80 text-slate-700 hover:text-amber-900 hover:bg-amber-50/70 hover:border-amber-300 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
             >
               <div class="flex items-center gap-3">
-                <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                <span class="w-7 h-7 rounded-lg bg-amber-100/70 border border-amber-200/50 text-amber-700 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                   🧠
                 </span>
                 <span>¿Cuánto sabes?</span>
               </div>
-              <span class="px-1.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-amber-100 text-amber-800 border border-amber-200">
+              <span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-amber-100 text-amber-800 border border-amber-200">
                 Reto
               </span>
             </a>
@@ -199,29 +187,41 @@
             <!-- 6. Encuesta de Satisfacción -->
             <a
               routerLink="/encuesta"
-              routerLinkActive="bg-amber-50 text-amber-800 border-amber-300 font-bold shadow-xs"
-              class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-amber-800 hover:bg-amber-50/50 text-xs sm:text-sm font-semibold transition-all border border-transparent group"
+              routerLinkActive="!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 !text-teal-900 !border-teal-400 !shadow-xs !font-bold ring-1 ring-teal-300/40"
+              class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50/70 border border-slate-200/80 text-slate-700 hover:text-teal-900 hover:bg-teal-50/70 hover:border-teal-300 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
             >
               <div class="flex items-center gap-3">
-                <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                <span class="w-7 h-7 rounded-lg bg-teal-100/70 border border-teal-200/50 text-teal-700 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                   ⭐
                 </span>
                 <span>Encuesta Final</span>
               </div>
-              <span class="px-1.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-amber-100 text-amber-800 border border-amber-200">
+              <span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-teal-100 text-teal-800 border border-teal-200">
                 Feedback
               </span>
             </a>
 
+            <!-- 7. Mi Perfil (Última posición del menú del estudiante) -->
+            <a
+              routerLink="/perfil"
+              routerLinkActive="!bg-gradient-to-r !from-sky-50 !to-teal-50/60 !text-sky-800 !border-sky-400 !shadow-xs !font-bold ring-1 ring-sky-300/40"
+              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/70 border border-slate-200/80 text-slate-700 hover:bg-sky-50/70 hover:border-sky-300 hover:text-sky-800 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
+            >
+              <span class="w-7 h-7 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
+                👤
+              </span>
+              <span>Mi Perfil</span>
+            </a>
+
             <!-- Panel Docente (Si aplica) -->
             @if (esDocente()) {
-              <div class="pt-2 border-t border-slate-800">
+              <div class="pt-2 border-t border-slate-200">
                 <a
                   routerLink="/admin"
-                  routerLinkActive="bg-amber-500/20 text-amber-300 border-amber-500/40 font-bold"
-                  class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-amber-300 hover:bg-amber-500/10 text-xs sm:text-sm font-semibold transition-all border border-amber-500/30"
+                  routerLinkActive="!bg-amber-100/80 !text-amber-900 !border-amber-400 !shadow-xs !font-bold ring-1 ring-amber-300/40"
+                  class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-amber-50/70 border border-amber-300/70 text-amber-900 hover:bg-amber-100/80 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
                 >
-                  <span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center text-sm">
+                  <span class="w-7 h-7 rounded-lg bg-amber-200/60 border border-amber-300/60 text-amber-800 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                     👑
                   </span>
                   <span>Panel Docente</span>
