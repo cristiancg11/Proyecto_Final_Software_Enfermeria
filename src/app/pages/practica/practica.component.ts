@@ -96,7 +96,7 @@ export interface QualityAlert {
               Identificación Requerida
             </h2>
             <p class="text-sm md:text-base text-[#0B2B29]/75 mb-8 leading-relaxed">
-              Para iniciar la práctica clínica supervisada de los 6 pasos y calibrar el cronómetro biomecánico, primero debes registrar tus datos en el módulo de bienvenida.
+              Para iniciar la práctica clínica supervisada de los 11 pasos y calibrar el cronómetro biomecánico, primero debes registrar tus datos en el módulo de bienvenida.
             </p>
             <button
               type="button"
@@ -152,7 +152,7 @@ export interface QualityAlert {
                 </h2>
 
                 <p class="text-sm text-slate-600 mb-6 leading-relaxed">
-                  Antes de iniciar el frotado mecánico de los 6 pasos, abre el grifo con el codo, humedece completamente tus manos con agua corriente y dosifica de 3 a 5 ml de jabón o antiséptico para cubrir toda la superficie palmar.
+                  Antes de iniciar el frotado mecánico de los 11 pasos, abre el grifo con el codo, humedece completamente tus manos con agua corriente y dosifica de 3 a 5 ml de jabón o antiséptico para cubrir toda la superficie palmar.
                 </p>
 
                 <!-- Instrucciones Rápidas de Seguridad -->
@@ -196,7 +196,7 @@ export interface QualityAlert {
             </div>
           }
 
-          <!-- BARRA SUPERIOR DE PROGRESO DE LOS 6 PASOS -->
+          <!-- BARRA SUPERIOR DE PROGRESO DE LOS 11 PASOS -->
           <div class="bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-6 mb-6 shadow-xl border border-white/50 animate-fade-in">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
               <div class="flex items-center gap-3">
@@ -205,7 +205,7 @@ export interface QualityAlert {
                   <h1 class="text-sm sm:text-base font-extrabold text-[#0B2B29] uppercase tracking-wide flex items-center gap-2">
                     <span>Práctica Clínica Supervisada</span>
                     <span class="text-[#00B39F]">•</span>
-                    <span class="text-[#00B39F] font-bold">Paso {{ currentStepIndex() + 1 }} de 6</span>
+                    <span class="text-[#00B39F] font-bold">Paso {{ currentStepIndex() + 1 }} de {{ steps.length }}</span>
                   </h1>
                   <p class="text-xs text-[#0B2B29]/70 hidden sm:block">
                     Evaluación por Calidad de Técnica Biomecánica • Protocolo OMS
@@ -225,14 +225,14 @@ export interface QualityAlert {
                 <button
                   type="button"
                   (click)="irAEvaluacionPractica()"
-                  [disabled]="completedRecords().length < 6"
-                  [ngClass]="completedRecords().length >= 6
+                  [disabled]="completedRecords().length < steps.length && !stateService.isStepUnlocked(4)"
+                  [ngClass]="completedRecords().length >= steps.length || stateService.isStepUnlocked(4)
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-orange-500/25 cursor-pointer active:scale-95'
                     : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed opacity-70'"
                   class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black transition-all"
-                  [title]="completedRecords().length >= 6 ? 'Ir a Evaluación Práctica' : 'Completa los 6 pasos de práctica para desbloquear la Evaluación Práctica'"
+                  [title]="completedRecords().length >= steps.length || stateService.isStepUnlocked(4) ? 'Ir a Evaluación Práctica' : 'Completa los 11 pasos de práctica para desbloquear la Evaluación Práctica'"
                 >
-                  <span>{{ completedRecords().length >= 6 ? 'Ir a Evaluación Práctica' : '🔒 Ev. Práctica (6/6 pasos)' }}</span>
+                  <span>{{ completedRecords().length >= steps.length || stateService.isStepUnlocked(4) ? 'Ir a Evaluación Práctica' : '🔒 Ev. Práctica (11/11 pasos)' }}</span>
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -240,7 +240,7 @@ export interface QualityAlert {
               </div>
             </div>
 
-            <!-- Stepper visual de 6 pasos con píldoras e indicadores dinámicos de estado -->
+            <!-- Stepper visual de 11 pasos con píldoras e indicadores dinámicos de estado -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sm:gap-3 items-stretch">
               @for (step of steps; track step.number; let idx = $index) {
                 <div
@@ -307,7 +307,7 @@ export interface QualityAlert {
                     Demostración Guía del Paso • Infografía OMS
                   </span>
                   <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                    Paso Activo: <strong class="text-teal-700">{{ currentStepIndex() + 1 }}</strong> de 6
+                    Paso Activo: <strong class="text-teal-700">{{ currentStepIndex() + 1 }}</strong> de {{ steps.length }}
                   </span>
                 </div>
 
@@ -889,7 +889,7 @@ export interface QualityAlert {
                         } @else if (manitaBotHablando()) {
                           <span>🔊 Hablando en tiempo real...</span>
                         } @else {
-                          <span>Mentora Clínica OMS • Paso {{ currentStepIndex() + 1 }} de 6</span>
+                          <span>Mentora Clínica OMS • Paso {{ currentStepIndex() + 1 }} de {{ steps.length }}</span>
                         }
                       </p>
                     </div>
@@ -1013,7 +1013,7 @@ export interface QualityAlert {
 })
 export class PracticaComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
-  private readonly stateService = inject(HandwashStateService);
+  readonly stateService = inject(HandwashStateService);
 
   readonly student = this.stateService.student;
   readonly steps = this.stateService.steps;
@@ -1070,7 +1070,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
     'Atención en yemas y uñas: frota las puntas de los dedos sobre la palma opuesta en círculos hasta alcanzar el umbral aséptico.',
   ];
 
-  // URLs remotas de fallback directo para los 6 pasos OMS (contingencia garantizada)
+  // URLs remotas de fallback directo para los 11 pasos OMS (contingencia garantizada)
   readonly fallbackVideoUrls: string[] = [
     'https://upload.wikimedia.org/wikipedia/commons/8/89/Clean_hands_short.webm',
     'https://upload.wikimedia.org/wikipedia/commons/6/60/20200303_-_SFGovTV_-_SFDPH_WASH_HANDS_SPANISH.webm',
@@ -1968,7 +1968,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
     if (this.isLastStep()) {
       this.hablarConManitaBot(
-        '¡Felicidades! Has completado los 6 pasos de práctica supervisada. Pasemos a la evaluación práctica.',
+        '¡Felicidades! Has completado los 11 pasos de práctica supervisada. Pasemos a la evaluación práctica.',
         true
       );
       this.stopTimer();
@@ -2076,7 +2076,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
   }
 
   irAEvaluacionPractica(): void {
-    if (this.completedRecords().length < 6 && !this.stateService.isStepUnlocked(4)) {
+    if (this.completedRecords().length < this.steps.length && !this.stateService.isStepUnlocked(4)) {
       return;
     }
     this.stopTimer();

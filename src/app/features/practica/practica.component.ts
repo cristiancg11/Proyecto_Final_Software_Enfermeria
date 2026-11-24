@@ -924,7 +924,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
     'Atención en yemas y uñas: frota las puntas de los dedos sobre la palma opuesta en círculos hasta alcanzar el umbral aséptico.',
   ];
 
-  // URLs remotas de fallback directo para los 6 pasos OMS (contingencia garantizada)
+  // URLs remotas de fallback directo para los 11 pasos OMS (contingencia garantizada)
   readonly fallbackVideoUrls: string[] = [
     'https://upload.wikimedia.org/wikipedia/commons/8/89/Clean_hands_short.webm',
     'https://upload.wikimedia.org/wikipedia/commons/6/60/20200303_-_SFGovTV_-_SFDPH_WASH_HANDS_SPANISH.webm',
@@ -1881,7 +1881,7 @@ export class PracticaComponent implements OnInit, OnDestroy {
 
     if (this.isLastStep()) {
       this.hablarConManitaBot(
-        '¡Felicidades! Has completado los 6 pasos de práctica supervisada. Pasemos a la evaluación práctica.',
+        '¡Felicidades! Has completado los 11 pasos de práctica supervisada. Pasemos a la evaluación práctica.',
         true
       );
       this.stopTimer();

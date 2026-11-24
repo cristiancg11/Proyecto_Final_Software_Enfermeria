@@ -220,7 +220,7 @@ type RespuestaMejora = 'Sí' | 'Parcialmente' | 'No';
                     Sí, totalmente
                   </div>
                   <p class="text-[11px] text-slate-300 mt-1 leading-snug">
-                    Mejoró mi precisión en los 6 pasos y mi conciencia del tiempo recomendado por la OMS.
+                    Mejoró mi precisión en los 11 pasos y mi conciencia del tiempo recomendado por la OMS.
                   </p>
                 </button>
 

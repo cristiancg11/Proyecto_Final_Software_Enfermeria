@@ -234,7 +234,7 @@ export const PASOS_GUIA_OMS: StepTutorialGuide[] = [
               Acceso a la Micro-Guía
             </h2>
             <p class="text-sm md:text-base text-slate-600 mb-8 leading-relaxed">
-              Para ver el visualizador interactivo de los 6 pasos y calibrar el simulador, primero debes registrarte en la pantalla de bienvenida.
+              Para ver el visualizador interactivo de los 11 pasos y calibrar el simulador, primero debes registrarte en la pantalla de bienvenida.
             </p>
             <button
               type="button"

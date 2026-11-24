@@ -241,7 +241,7 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
                 </span>
                 <span class="text-xs text-slate-400 font-semibold">• Práctica Asistida</span>
               </div>
-              <h4 class="text-base font-bold text-slate-900 mb-1.5">Los 6 Pasos OMS</h4>
+              <h4 class="text-base font-bold text-slate-900 mb-1.5">Los 11 Pasos OMS</h4>
               <p class="text-xs text-slate-600 leading-relaxed">
                 Ejecución guiada con modelos anatómicos biomecánicos y video demostrativo de alta resolución. Cada paso calibra el ritmo óptimo (3 a 8 segundos).
               </p>

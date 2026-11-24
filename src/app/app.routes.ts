@@ -73,7 +73,7 @@ export const routes: Routes = [
       import('./features/practica/practica.component').then(
         (m) => m.PracticaComponent
       ),
-    title: 'Manos Seguras — Práctica de 6 Pasos OMS',
+    title: 'Manos Seguras — Práctica de 11 Pasos OMS',
   },
   {
     path: 'evaluacion-practica',

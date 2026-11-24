@@ -94,7 +94,7 @@ import {
                     60% Ponderación
                   </span>
                   <h4 class="text-xs sm:text-sm font-bold text-slate-900">1. Práctica Biomecánica</h4>
-                  <p class="text-[11px] text-slate-600">6 pasos asistidos por cámara y MediaPipe</p>
+                  <p class="text-[11px] text-slate-600">11 pasos asistidos por cámara y MediaPipe</p>
                 </div>
                 <div class="mt-3 flex items-baseline justify-between border-t border-teal-100 pt-2">
                   <span class="text-xs text-slate-500 font-semibold">Desempeño:</span>
@@ -240,7 +240,7 @@ import {
         </div>
       </div>
 
-      <!-- Desglose Clínico de los 6 Pasos -->
+      <!-- Desglose Clínico de los 11 Pasos -->
       <div class="mb-10">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-heading text-2xl text-white font-extrabold tracking-tight">
@@ -733,7 +733,7 @@ import {
           </div>
 
           <p class="text-xs text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Por haber acreditado con rigor la técnica aséptica de lavado de manos en sus 6 pasos clínicos reglamentarios, demostrando destreza biomecánica supervisada mediante Visión Artificial MediaPipe y evaluado en fundamentos teóricos de los 5 Momentos de la OMS.
+            Por haber acreditado con rigor la técnica aséptica de lavado de manos en sus 11 pasos clínicos reglamentarios, demostrando destreza biomecánica supervisada mediante Visión Artificial MediaPipe y evaluado en fundamentos teóricos de los 5 Momentos de la OMS.
           </p>
 
           <!-- Cuadro de Calificaciones Oficiales -->
@@ -903,7 +903,7 @@ export class ResultadoComponent {
     const mejora = this.mejoraPorcentualEstudiante();
     const optimos = this.optimalStepsCount();
     if (mejora >= 25 && optimos >= 5) {
-      return 'Curva de aprendizaje acelerada con excelente retención biomecánica en los 6 pasos.';
+      return 'Curva de aprendizaje acelerada con excelente retención biomecánica en los 11 pasos.';
     }
     if (mejora >= 12) {
       return 'Progresión ascendente sostenida entre el intento 1 y el 3 con ritmo clínico estable.';
@@ -948,12 +948,12 @@ export class ResultadoComponent {
         id: 'maestro-asepsia',
         codigo: 'MAESTRO_ASEPSIA',
         nombre: 'Maestro de la Asepsia',
-        descripcion: 'Alcanza excelencia clínica (≥ 8.8/10) o completa los 6 pasos OMS en rango óptimo.',
+        descripcion: 'Alcanza excelencia clínica (≥ 8.8/10) o completa los 11 pasos OMS en rango óptimo.',
         icono: 'shield-check',
         categoria: 'excelencia',
         desbloqueada: maestroOk,
         progreso: maestroOk ? 100 : Math.min(95, Math.round((notaFinal / 8.8) * 100)),
-        criterio: 'Nota ≥ 8.8 o 6/6 pasos óptimos',
+        criterio: 'Nota ≥ 8.8 u 11/11 pasos óptimos',
       },
       {
         id: 'experto-pulgares',
@@ -1003,7 +1003,7 @@ export class ResultadoComponent {
         id: 'constancia-clinica',
         codigo: 'CONSTANCIA_CLINICA',
         nombre: 'Tríada de Constancia OMS',
-        descripcion: 'Compromiso continuo en el perfeccionamiento de los 6 pasos asistidos por visión artificial.',
+        descripcion: 'Compromiso continuo en el perfeccionamiento de los 11 pasos asistidos por visión artificial.',
         icono: 'award',
         categoria: 'constancia',
         desbloqueada: constanciaOk,
@@ -1148,6 +1148,27 @@ export class ResultadoComponent {
       const actualizados = [...previos, notaActual].slice(-3);
       localStorage.setItem(key, JSON.stringify(actualizados));
       this.historialIntentosLocales.set(actualizados);
+
+      // Guardar también en historial detallado para el Dashboard
+      const histKey = `manos_seguras_historial_${this.studentCode()}`;
+      const histRaw = localStorage.getItem(histKey);
+      const histPrevios = histRaw ? JSON.parse(histRaw) : [];
+      const evalData = this.evaluation();
+      const nuevoHistorial = [
+        {
+          id: 'sim-' + Date.now(),
+          modo: 'simulacion',
+          tituloModo: 'Simulación Cámara IA',
+          iconoModo: '🎯',
+          fecha: 'Hoy, ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          duracionSegundos: evalData.totalSeconds || 50,
+          errores: evalData.records ? evalData.records.filter((r: any) => r.status !== 'optimal').length : 0,
+          puntuacion: notaActual,
+          aprobado: notaActual >= 6.0,
+        },
+        ...histPrevios,
+      ];
+      localStorage.setItem(histKey, JSON.stringify(nuevoHistorial));
     } catch {
       this.historialIntentosLocales.set([6.8, 8.2, this.evaluation().overallScore || 9.2]);
     }

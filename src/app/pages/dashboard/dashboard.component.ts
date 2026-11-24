@@ -89,14 +89,15 @@ export interface RegistroHistorialPractica {
             </div>
           </div>
           <div class="flex items-baseline gap-2">
-            <span class="font-heading text-3xl font-extrabold text-slate-900 tracking-tight">{{ puntajePromedio() }}</span>
+            <span class="font-heading text-3xl font-extrabold text-slate-900 tracking-tight">{{ puntajePromedio().toFixed(1) }}</span>
             <span class="text-xs text-slate-500 font-medium">/ 10.0</span>
-            <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-              Óptimo OMS
+            <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold"
+              [ngClass]="puntajePromedio() > 0 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'">
+              {{ puntajePromedio() >= 8.5 ? 'Óptimo OMS' : puntajePromedio() > 0 ? 'Aprobado' : 'Sin Prácticas' }}
             </span>
           </div>
           <div class="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-gradient-to-r from-sky-500 to-teal-500 h-1.5 rounded-full" [style.width.%]="(puntajePromedio() / 10) * 100"></div>
+            <div class="bg-gradient-to-r from-sky-500 to-teal-500 h-1.5 rounded-full transition-all duration-500" [style.width.%]="(puntajePromedio() / 10) * 100"></div>
           </div>
         </div>
 
@@ -111,14 +112,15 @@ export interface RegistroHistorialPractica {
             </div>
           </div>
           <div class="flex items-baseline gap-2">
-            <span class="font-heading text-3xl font-extrabold text-amber-600 tracking-tight">{{ mejorPuntaje() }}</span>
+            <span class="font-heading text-3xl font-extrabold text-amber-600 tracking-tight">{{ mejorPuntaje().toFixed(1) }}</span>
             <span class="text-xs text-slate-500 font-medium">/ 10.0</span>
-            <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-              Récord
+            <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold"
+              [ngClass]="mejorPuntaje() > 0 ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-slate-100 text-slate-500 border border-slate-200'">
+              {{ mejorPuntaje() > 0 ? 'Récord' : 'Sin Récord' }}
             </span>
           </div>
           <p class="mt-3 text-[11px] text-slate-500">
-            Acreditación clínica con 0 errores biomecánicos
+            {{ mejorPuntaje() > 0 ? 'Acreditación clínica registrada' : 'Completa tu primera práctica para registrar tu récord' }}
           </p>
         </div>
 
@@ -140,7 +142,7 @@ export interface RegistroHistorialPractica {
             </span>
           </div>
           <p class="mt-3 text-[11px] text-slate-500">
-            Cumplimiento del rango OMS (40-60s por ciclo)
+            {{ tiempoAcumuladoMinutos() > 0 ? 'Cumplimiento del rango OMS (40-60s por ciclo)' : '0 minutos de práctica registrados' }}
           </p>
         </div>
 
@@ -155,14 +157,15 @@ export interface RegistroHistorialPractica {
             </div>
           </div>
           <div class="flex items-baseline gap-2">
-            <span class="font-heading text-3xl font-extrabold text-teal-700 tracking-tight">11 de 11</span>
+            <span class="font-heading text-3xl font-extrabold text-teal-700 tracking-tight">{{ pasosDominados() }} de 11</span>
             <span class="text-xs text-slate-500 font-medium">Pasos OMS</span>
-            <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
-              100%
+            <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold"
+              [ngClass]="porcentajePasosDominados() > 0 ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-slate-100 text-slate-500 border border-slate-200'">
+              {{ porcentajePasosDominados() }}%
             </span>
           </div>
           <p class="mt-3 text-[11px] text-slate-500">
-            Protocolo completo de higiene asistencial
+            {{ pasosDominados() === 11 ? 'Protocolo completo de 11 pasos dominado' : 'Completa la práctica guiada para dominar los 11 pasos' }}
           </p>
         </div>
       </div>
@@ -369,8 +372,19 @@ export interface RegistroHistorialPractica {
 
               @if (historialFiltrado().length === 0) {
                 <tr>
-                  <td colspan="6" class="py-8 text-center text-slate-400">
-                    No se encontraron registros para este filtro.
+                  <td colspan="6" class="py-10 text-center">
+                    <div class="flex flex-col items-center justify-center gap-2">
+                      <span class="text-3xl">📋</span>
+                      <p class="text-sm font-semibold text-slate-700">Aún no tienes prácticas ni evaluaciones registradas</p>
+                      <p class="text-xs text-slate-400 max-w-sm">Tus métricas iniciarán en cero y subirán en tiempo real a medida que completes las prácticas guiadas y simulaciones con IA.</p>
+                      <button
+                        type="button"
+                        (click)="repetirModo('guiado')"
+                        class="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+                      >
+                        <span>🖐️</span> Iniciar Práctica de 11 Pasos
+                      </button>
+                    </div>
                   </td>
                 </tr>
               }
@@ -378,9 +392,9 @@ export interface RegistroHistorialPractica {
           </table>
         </div>
 
-        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-200">
           <span>Mostrando {{ historialFiltrado().length }} de {{ historialCompleto().length }} registros</span>
-          <span class="text-[11px] text-teal-400">Directrices Oficiales OMS • Lavado de Manos Clínico</span>
+          <span class="text-[11px] text-teal-600">Directrices Oficiales OMS • Lavado de Manos Clínico (11 Pasos)</span>
         </div>
       </div>
     </div>
@@ -409,71 +423,62 @@ export class DashboardComponent implements OnInit {
       '2026-ENF-UCC'
   );
 
-  readonly puntajePromedio = signal<number>(9.5);
-  readonly mejorPuntaje = signal<number>(10.0);
-  readonly tiempoAcumuladoMinutos = signal<number>(38);
-
   readonly filtroActivo = signal<FiltroModo>('todos');
 
-  readonly historialCompleto = signal<RegistroHistorialPractica[]>([
-    {
-      id: 'prac-001',
-      modo: 'simulacion',
-      tituloModo: 'Simulación Cámara IA',
-      iconoModo: '🎯',
-      fecha: 'Hoy, 10:45 AM',
-      duracionSegundos: 48,
-      errores: 0,
-      puntuacion: 10.0,
-      aprobado: true,
-    },
-    {
-      id: 'prac-002',
-      modo: 'guiado',
-      tituloModo: 'Práctica Guiada OMS',
-      iconoModo: '🖐️',
-      fecha: 'Hoy, 09:15 AM',
-      duracionSegundos: 52,
-      errores: 0,
-      puntuacion: 9.8,
-      aprobado: true,
-    },
-    {
-      id: 'prac-003',
-      modo: 'desafio',
-      tituloModo: 'Cuestionario Teórico OMS',
-      iconoModo: '⚡',
-      fecha: 'Ayer, 04:30 PM',
-      duracionSegundos: 35,
-      errores: 1,
-      detalleError: 'Fallo en pregunta de esporas de C. difficile',
-      puntuacion: 9.2,
-      aprobado: true,
-    },
-    {
-      id: 'prac-004',
-      modo: 'simulacion',
-      tituloModo: 'Simulación Cámara IA',
-      iconoModo: '🎯',
-      fecha: 'Ayer, 02:10 PM',
-      duracionSegundos: 45,
-      errores: 0,
-      puntuacion: 10.0,
-      aprobado: true,
-    },
-    {
-      id: 'prac-005',
-      modo: 'guiado',
-      tituloModo: 'Práctica Guiada OMS',
-      iconoModo: '🖐️',
-      fecha: '12/11/2026',
-      duracionSegundos: 58,
-      errores: 1,
-      detalleError: 'Paso 4: Tiempo de fricción en candado menor a 4s',
-      puntuacion: 8.6,
-      aprobado: true,
-    },
-  ]);
+  readonly historialCompleto = signal<RegistroHistorialPractica[]>([]);
+
+  readonly puntajePromedio = computed<number>(() => {
+    const list = this.historialCompleto();
+    if (list.length > 0) {
+      const sum = list.reduce((acc, item) => acc + item.puntuacion, 0);
+      return Math.round((sum / list.length) * 10) / 10;
+    }
+    const evalData = this.stateService.evaluationResult();
+    if (evalData && (evalData.notaFinal !== undefined || evalData.overallScore !== undefined)) {
+      const nota = evalData.notaFinal ?? evalData.overallScore ?? 0;
+      return Math.round(nota * 10) / 10;
+    }
+    return 0.0;
+  });
+
+  readonly mejorPuntaje = computed<number>(() => {
+    const list = this.historialCompleto();
+    if (list.length > 0) {
+      const max = Math.max(...list.map((item) => item.puntuacion));
+      return Math.round(max * 10) / 10;
+    }
+    const evalData = this.stateService.evaluationResult();
+    if (evalData && (evalData.notaFinal !== undefined || evalData.overallScore !== undefined)) {
+      const nota = evalData.notaFinal ?? evalData.overallScore ?? 0;
+      return Math.round(nota * 10) / 10;
+    }
+    return 0.0;
+  });
+
+  readonly tiempoAcumuladoMinutos = computed<number>(() => {
+    const list = this.historialCompleto();
+    if (list.length > 0) {
+      const totalSeg = list.reduce((acc, item) => acc + (item.duracionSegundos || 0), 0);
+      return Math.round(totalSeg / 60);
+    }
+    const evalData = this.stateService.evaluationResult();
+    if (evalData && evalData.totalSeconds) {
+      return Math.round(evalData.totalSeconds / 60);
+    }
+    return 0;
+  });
+
+  readonly pasosDominados = computed<number>(() => {
+    if (this.historialCompleto().length > 0) return 11;
+    const records = this.stateService.stepRecords();
+    if (records && records.length > 0) return Math.min(11, records.length);
+    if (this.stateService.isStepUnlocked(4)) return 11;
+    return 0;
+  });
+
+  readonly porcentajePasosDominados = computed<number>(() => {
+    return Math.round((this.pasosDominados() / 11) * 100);
+  });
 
   readonly historialFiltrado = computed(() => {
     const filtro = this.filtroActivo();
@@ -485,15 +490,47 @@ export class DashboardComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // Si la evaluación en stateService tiene calificación reciente, sincronizarla
+    this.cargarHistorialReal();
+  }
+
+  private cargarHistorialReal(): void {
+    const registros: RegistroHistorialPractica[] = [];
+    const codigo = this.codigoEstudiante();
+
+    // 1. Intentar cargar desde localStorage si hay intentos previos guardados para este usuario
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem(`manos_seguras_historial_${codigo}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            registros.push(...parsed);
+          }
+        }
+      } catch {}
+    }
+
+    // 2. Si el stateService tiene una evaluación reciente y aún no está en la lista
     const evalResult = this.stateService.evaluationResult();
     if (evalResult && (evalResult.overallScore !== undefined || evalResult.notaFinal !== undefined)) {
-      const notaReal = evalResult.notaFinal ?? evalResult.overallScore ?? 9.5;
-      if (notaReal > this.mejorPuntaje()) {
-        this.mejorPuntaje.set(notaReal);
+      const notaReal = Number((evalResult.notaFinal ?? evalResult.overallScore ?? 0).toFixed(1));
+      const yaExiste = registros.some((r) => r.id === 'sesion-actual');
+      if (!yaExiste && notaReal > 0) {
+        registros.unshift({
+          id: 'sesion-actual',
+          modo: 'simulacion',
+          tituloModo: 'Simulación Cámara IA',
+          iconoModo: '🎯',
+          fecha: 'Hoy (Sesión reciente)',
+          duracionSegundos: evalResult.totalSeconds || 60,
+          errores: evalResult.records ? evalResult.records.filter((r) => r.status !== 'optimal').length : 0,
+          puntuacion: notaReal,
+          aprobado: notaReal >= 6.0,
+        });
       }
-      this.puntajePromedio.set(Number(((9.5 + notaReal) / 2).toFixed(1)));
     }
+
+    this.historialCompleto.set(registros);
   }
 
   repetirModo(modo: 'guiado' | 'simulacion' | 'desafio'): void {

@@ -84,7 +84,7 @@ import { PracticasService, ValidarCertificadoResponse } from '../../services/pra
               <!-- Bloque Clínico de Acreditación -->
               <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200/80 text-xs sm:text-sm text-slate-700 leading-relaxed text-center sm:text-left">
                 <p>
-                  Certificamos que el estudiante ha completado y aprobado satisfactoriamente la simulación y evaluación de la <strong>Técnica de Lavado de Manos Clínico en 6 Pasos</strong>, conforme a los protocolos biomecánicos y los 5 Momentos estandarizados por la <strong>Organización Mundial de la Salud (OMS)</strong>.
+                  Certificamos que el estudiante ha completado y aprobado satisfactoriamente la simulación y evaluación de la <strong>Técnica de Lavado de Manos Clínico en 11 Pasos</strong>, conforme a los protocolos biomecánicos y los 5 Momentos estandarizados por la <strong>Organización Mundial de la Salud (OMS)</strong>.
                 </p>
               </div>
 
