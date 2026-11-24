@@ -398,6 +398,26 @@ export interface PreguntaRetoExtremo {
 
                 </div>
               </div>
+            } @else {
+              <!-- Estado vacío cuando no hay registros reales aún -->
+              <div class="py-8 px-5 text-center bg-slate-50/80 rounded-2xl border border-slate-200 my-4">
+                <div class="w-12 h-12 rounded-full bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center text-2xl mx-auto mb-2.5 shadow-xs">
+                  🏆
+                </div>
+                <h4 class="font-extrabold text-slate-900 text-sm sm:text-base mb-1">
+                  Aún no hay partidas registradas en el podio
+                </h4>
+                <p class="text-xs text-slate-500 max-w-md mx-auto mb-3.5 leading-relaxed">
+                  El podio muestra exclusivamente registros reales de estudiantes. ¡Completa el reto contrarreloj de 7 preguntas para posicionarte en el 1.º lugar oficial!
+                </p>
+                <button
+                  type="button"
+                  (click)="iniciarReto()"
+                  class="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs shadow-md transition-all cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <span>⚡ Iniciar Reto de 7 Preguntas</span>
+                </button>
+              </div>
             }
 
             <!-- TABLA DE CLASIFICACIÓN COMPLETA (ORDENADA DE MAYOR A MENOR) -->
@@ -471,6 +491,12 @@ export interface PreguntaRetoExtremo {
                         <span class="px-2.5 py-1 rounded-lg bg-slate-900 text-amber-300 font-extrabold text-xs">
                           {{ item.puntajeCompetitivo }} pts
                         </span>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="5" class="py-8 text-center text-slate-400 font-medium text-xs">
+                        No hay registros en la clasificación. ¡Sé el primero en competir!
                       </td>
                     </tr>
                   }
@@ -1532,76 +1558,25 @@ export class RetoExtremoComponent implements OnInit, OnDestroy {
         if (raw) {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            return this.ordenarRegistros(parsed);
+            // Filtrar cualquier participante de prueba o ficticio previo
+            const reales = parsed.filter(
+              (p: any) =>
+                !p.id?.toString().startsWith('seed-') &&
+                p.nombre !== 'Valeria Mendoza (UCI Adultos)' &&
+                p.nombre !== 'Sebastián Rojas (Quirófano)' &&
+                p.nombre !== 'Camila Gómez (Urgencias)' &&
+                p.nombre !== 'Mateo Solarte (Hospitalización)' &&
+                p.nombre !== 'Daniela Narváez (Pediatría)'
+            );
+            if (reales.length > 0) {
+              return this.ordenarRegistros(reales);
+            }
           }
         }
       } catch {}
     }
 
-    const iniciales: RegistroRetoExtremo[] = [
-      {
-        id: 'seed-1',
-        posicion: 1,
-        nombre: 'Valeria Mendoza (UCI Adultos)',
-        codigoEstudiantil: '2026-ENF-412',
-        aciertos: 7,
-        totalPreguntas: 7,
-        porcentajeExito: 100,
-        tiempoSegundos: 19.4,
-        puntajeCompetitivo: 980,
-        fecha: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-      },
-      {
-        id: 'seed-2',
-        posicion: 2,
-        nombre: 'Sebastián Rojas (Quirófano)',
-        codigoEstudiantil: '2026-ENF-809',
-        aciertos: 7,
-        totalPreguntas: 7,
-        porcentajeExito: 100,
-        tiempoSegundos: 25.1,
-        puntajeCompetitivo: 935,
-        fecha: new Date(Date.now() - 1000 * 60 * 75).toISOString(),
-      },
-      {
-        id: 'seed-3',
-        posicion: 3,
-        nombre: 'Camila Gómez (Urgencias)',
-        codigoEstudiantil: '2026-ENF-274',
-        aciertos: 6,
-        totalPreguntas: 7,
-        porcentajeExito: 86,
-        tiempoSegundos: 21.8,
-        puntajeCompetitivo: 855,
-        fecha: new Date(Date.now() - 1000 * 60 * 110).toISOString(),
-      },
-      {
-        id: 'seed-4',
-        posicion: 4,
-        nombre: 'Mateo Solarte (Hospitalización)',
-        codigoEstudiantil: '2026-ENF-930',
-        aciertos: 5,
-        totalPreguntas: 7,
-        porcentajeExito: 71,
-        tiempoSegundos: 38.6,
-        puntajeCompetitivo: 645,
-        fecha: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
-      },
-      {
-        id: 'seed-5',
-        posicion: 5,
-        nombre: 'Daniela Narváez (Pediatría)',
-        codigoEstudiantil: '2026-ENF-155',
-        aciertos: 4,
-        totalPreguntas: 7,
-        porcentajeExito: 57,
-        tiempoSegundos: 46.2,
-        puntajeCompetitivo: 495,
-        fecha: new Date(Date.now() - 1000 * 60 * 240).toISOString(),
-      },
-    ];
-
-    return this.ordenarRegistros(iniciales);
+    return [];
   }
 
   private detenerCronometro(): void {
