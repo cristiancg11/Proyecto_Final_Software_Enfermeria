@@ -75,9 +75,27 @@ export class AuthService {
 
   // Señales computadas de utilidad clínica
   readonly estaAutenticado = computed<boolean>(() => !!this.token());
-  readonly esDocente = computed<boolean>(() => this.usuarioActual()?.rol === 'DOCENTE');
-  readonly esEstudiante = computed<boolean>(() => this.usuarioActual()?.rol === 'ESTUDIANTE');
+  readonly esDocente = computed<boolean>(() => AuthService.esRolDocente(this.usuarioActual()?.rol));
+  readonly esEstudiante = computed<boolean>(() => !AuthService.esRolDocente(this.usuarioActual()?.rol) && !!this.usuarioActual());
   readonly avatarUsuario = computed<string>(() => this.usuarioActual()?.avatar || '');
+
+  /**
+   * Normaliza variantes del rol docente (docente, profesor/a, admin) para evitar
+   * rechazos o redirecciones indebidas por diferencias de mayúsculas o nomenclatura.
+   */
+  static esRolDocente(rol: unknown): boolean {
+    const r = String(rol ?? '').trim().toUpperCase();
+    return ['DOCENTE', 'PROFESOR', 'PROFESORA', 'ADMIN', 'ADMINISTRADOR', 'TEACHER'].includes(r);
+  }
+
+  static normalizarRol(rol: unknown): 'ESTUDIANTE' | 'DOCENTE' {
+    return AuthService.esRolDocente(rol) ? 'DOCENTE' : 'ESTUDIANTE';
+  }
+
+  /** Indica si la sesión activa es la sesión local de demostración (sin token real del servidor) */
+  esSesionDemo(): boolean {
+    return (this.token() || '').startsWith('demo-jwt-token');
+  }
 
   /**
    * Registra un nuevo estudiante o docente de forma persistente en Supabase PostgreSQL
@@ -238,6 +256,7 @@ export class AuthService {
         tap((res) => {
           const user = res.user || res.usuario;
           if (user) {
+            user.rol = AuthService.normalizarRol(user.rol);
             if (typeof window !== 'undefined') {
               localStorage.setItem('usuario', JSON.stringify(user));
             }
@@ -254,6 +273,7 @@ export class AuthService {
     const rawUser = res.usuario || res.user;
     const user: Usuario = {
       ...rawUser,
+      rol: AuthService.normalizarRol(rawUser?.rol),
       consentimiento: rawUser.consentimiento !== undefined ? !!rawUser.consentimiento : true,
     };
     if (typeof window !== 'undefined') {
@@ -276,7 +296,11 @@ export class AuthService {
       const raw = localStorage.getItem('usuario');
       if (raw) {
         try {
-          return JSON.parse(raw) as Usuario;
+          const parsed = JSON.parse(raw) as Usuario;
+          if (parsed && typeof parsed === 'object') {
+            parsed.rol = AuthService.normalizarRol(parsed.rol);
+          }
+          return parsed;
         } catch {
           return null;
         }

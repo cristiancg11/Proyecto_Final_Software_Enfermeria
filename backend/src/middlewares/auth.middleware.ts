@@ -91,7 +91,11 @@ export const requerirDocente = (
     return;
   }
 
-  if (req.user.rol !== 'DOCENTE') {
+  // Normalización tolerante del rol (DOCENTE / PROFESOR / ADMIN) para evitar rechazos indebidos
+  const rolNormalizado = String(req.user.rol || '').trim().toUpperCase();
+  const rolesDocentes = ['DOCENTE', 'PROFESOR', 'PROFESORA', 'ADMIN', 'ADMINISTRADOR'];
+
+  if (!rolesDocentes.includes(rolNormalizado)) {
     res.status(403).json({
       error: 'Acceso restringido a personal docente',
     });

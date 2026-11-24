@@ -3,7 +3,13 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { PracticasService, PracticaEstudianteDocente, DetallePasoBiomecanico } from '../../services/practicas.service';
+import {
+  PracticasService,
+  PracticaEstudianteDocente,
+  DetallePasoBiomecanico,
+  SeguimientoEstudianteDocente,
+  ResumenSeguimientoDocente,
+} from '../../services/practicas.service';
 import { PreguntasService, PreguntaDocente } from '../../services/preguntas.service';
 import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.service';
 
@@ -132,6 +138,22 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
 
       <!-- PESTAÑAS DE NAVEGACIÓN DOCENTE (3 PESTAÑAS) -->
       <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 border-b border-slate-200 pb-3">
+        <!-- Pestaña 0: Seguimiento de la investigación -->
+        <button
+          type="button"
+          (click)="pestanaActiva.set('seguimiento')"
+          class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
+          [ngClass]="pestanaActiva() === 'seguimiento' ? 'bg-[#00B39F] text-white shadow-md' : 'bg-white/80 text-slate-700 hover:bg-white'"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span>Seguimiento y Porcentajes</span>
+          <span class="px-2 py-0.5 rounded-full text-xs font-black" [ngClass]="pestanaActiva() === 'seguimiento' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+            {{ resumenSeguimiento().totalEstudiantes }}
+          </span>
+        </button>
+
         <!-- Pestaña 1 -->
         <button
           type="button"
@@ -193,6 +215,215 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
           <span>4. Mi Perfil & Seguridad</span>
         </button>
       </div>
+
+      <!-- AVISO DE SESIÓN DE DEMOSTRACIÓN (sin token real del servidor) -->
+      @if (esSesionDemo()) {
+        <div class="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div class="flex items-start gap-2">
+            <span class="text-lg leading-none">🧪</span>
+            <span>
+              <strong>Modo demostración activo.</strong> Esta sesión es local y no puede consultar los registros reales de la base de datos.
+              Para ver a tus estudiantes y sus resultados, cierra sesión e ingresa con tu correo y contraseña de docente.
+            </span>
+          </div>
+          <button type="button" (click)="logout()" class="shrink-0 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs cursor-pointer">
+            Ingresar con cuenta docente
+          </button>
+        </div>
+      }
+
+      <!-- ============================================================== -->
+      <!-- PESTAÑA 0: SEGUIMIENTO DE LA INVESTIGACIÓN Y PORCENTAJES        -->
+      <!-- ============================================================== -->
+      @if (pestanaActiva() === 'seguimiento') {
+        <div class="space-y-6 animate-fade-in">
+          <!-- Tarjetas de porcentajes globales -->
+          <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-5 sm:p-7 shadow-xl border border-white/80 dark:border-slate-800">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-5">
+              <div>
+                <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">Seguimiento de participación y resultados</h2>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                  Porcentajes calculados sobre {{ resumenSeguimiento().totalEstudiantes }} estudiante(s) registrados en la plataforma.
+                </p>
+              </div>
+              @if (cargandoPracticas()) {
+                <span class="text-xs font-semibold text-[#008072] dark:text-teal-300">Actualizando datos...</span>
+              }
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
+              @for (m of metricasSeguimiento(); track m.titulo) {
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/70 p-3.5 sm:p-4 flex flex-col gap-2">
+                  <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ m.titulo }}</span>
+                  <span class="text-2xl sm:text-3xl font-black" [ngClass]="m.color">{{ m.porcentaje.toFixed(0) }}%</span>
+                  <div class="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                    <div class="h-full rounded-full transition-all duration-500" [ngClass]="m.barra" [style.width.%]="m.porcentaje"></div>
+                  </div>
+                  <span class="text-[11px] text-slate-600 dark:text-slate-300 font-medium">{{ m.detalle }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Comparativa Pre-Test vs Post-Test -->
+            <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              <div class="rounded-2xl border border-sky-200 dark:border-sky-900/60 bg-sky-50 dark:bg-sky-950/40 p-4">
+                <span class="text-[11px] font-bold uppercase text-sky-700 dark:text-sky-300">Promedio Pre-Test (OMS)</span>
+                <div class="text-2xl font-black text-sky-800 dark:text-sky-200">{{ resumenSeguimiento().preTest.promedioPuntaje.toFixed(0) }}%</div>
+                <span class="text-[11px] text-sky-700/80 dark:text-sky-300/80">Conocimiento previo a la práctica</span>
+              </div>
+              <div class="rounded-2xl border border-teal-200 dark:border-teal-900/60 bg-teal-50 dark:bg-teal-950/40 p-4">
+                <span class="text-[11px] font-bold uppercase text-teal-700 dark:text-teal-300">Promedio Post-Test (OMS)</span>
+                <div class="text-2xl font-black text-teal-800 dark:text-teal-200">{{ resumenSeguimiento().postTest.promedioPuntaje.toFixed(0) }}%</div>
+                <span class="text-[11px] text-teal-700/80 dark:text-teal-300/80">Conocimiento tras la práctica y simulación</span>
+              </div>
+              <div class="rounded-2xl border p-4"
+                   [ngClass]="(resumenSeguimiento().mejoraPromedioPrePost ?? 0) >= 0 ? 'border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40' : 'border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40'">
+                <span class="text-[11px] font-bold uppercase text-emerald-700 dark:text-emerald-300">Cambio promedio Pre → Post</span>
+                <div class="text-2xl font-black" [ngClass]="(resumenSeguimiento().mejoraPromedioPrePost ?? 0) >= 0 ? 'text-emerald-800 dark:text-emerald-200' : 'text-rose-700 dark:text-rose-300'">
+                  @if (resumenSeguimiento().mejoraPromedioPrePost !== null) {
+                    {{ (resumenSeguimiento().mejoraPromedioPrePost! > 0 ? '+' : '') + resumenSeguimiento().mejoraPromedioPrePost!.toFixed(1) }} pts
+                  } @else {
+                    —
+                  }
+                </div>
+                <span class="text-[11px] text-slate-600 dark:text-slate-300">Solo estudiantes con Pre-Test y Post-Test</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla de seguimiento por estudiante -->
+          <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-5 sm:p-7 shadow-xl border border-white/80 dark:border-slate-800">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">Estudiantes que ingresaron y etapas completadas</h3>
+              <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+                <input
+                  type="text"
+                  [value]="busqueda()"
+                  (input)="alBuscar($event)"
+                  placeholder="Buscar estudiante, código o correo..."
+                  class="w-full sm:w-64 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:border-[#00B39F] outline-none text-xs sm:text-sm"
+                />
+                <select
+                  [value]="filtroEstado()"
+                  (change)="alCambiarFiltroEstado($event)"
+                  class="px-3 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs sm:text-sm outline-none cursor-pointer"
+                >
+                  <option value="todos">Todos los estados</option>
+                  <option value="Sin iniciar">Sin iniciar</option>
+                  <option value="En curso">En curso</option>
+                  <option value="Flujo completo">Flujo completo</option>
+                </select>
+              </div>
+            </div>
+
+            @if (cargandoPracticas() && seguimientoVista().length === 0) {
+              <p class="py-12 text-center text-sm text-slate-600 dark:text-slate-300">Consultando registros de estudiantes...</p>
+            } @else if (seguimientoFiltrado().length === 0) {
+              <div class="py-12 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
+                <p class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1">No hay estudiantes para mostrar</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  {{ busqueda() || filtroEstado() !== 'todos' ? 'Ajusta la búsqueda o el filtro de estado.' : 'Los estudiantes aparecerán aquí en cuanto se registren e inicien su recorrido.' }}
+                </p>
+              </div>
+            } @else {
+              <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
+                <table class="w-full min-w-[860px] text-left text-xs sm:text-sm">
+                  <thead class="bg-slate-50/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 font-extrabold uppercase text-[11px] border-b border-slate-200 dark:border-slate-700">
+                    <tr>
+                      <th class="py-3 px-4">Estudiante</th>
+                      <th class="py-3 px-3">Última actividad</th>
+                      <th class="py-3 px-3 text-center">Pre-Test</th>
+                      <th class="py-3 px-3 text-center">Práctica / Simulación</th>
+                      <th class="py-3 px-3 text-center">Post-Test</th>
+                      <th class="py-3 px-3 text-center">Encuesta</th>
+                      <th class="py-3 px-3 text-center">Avance</th>
+                      <th class="py-3 px-4 text-center">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                    @for (s of seguimientoFiltrado(); track s.estudianteId) {
+                      <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                        <td class="py-3 px-4">
+                          <div class="font-extrabold text-slate-900 dark:text-white">{{ s.nombre }}</div>
+                          <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ s.correo }} • <span class="font-mono">{{ s.codigo }}</span></div>
+                        </td>
+                        <td class="py-3 px-3 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                          {{ s.ultimaActividad ? (s.ultimaActividad | date:'dd/MM/yyyy HH:mm') : ('Registro: ' + ((s.fechaRegistro | date:'dd/MM/yyyy') || '—')) }}
+                        </td>
+                        <td class="py-3 px-3 text-center">
+                          @if (s.preTest.completado) {
+                            <span class="inline-flex flex-col items-center px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-xs">
+                              ✓ {{ (s.preTest.puntaje ?? 0).toFixed(0) }}%
+                            </span>
+                          } @else {
+                            <span class="text-[11px] font-semibold text-slate-400">Pendiente</span>
+                          }
+                        </td>
+                        <td class="py-3 px-3 text-center">
+                          @if (s.practica.completado) {
+                            <span class="inline-flex flex-col items-center px-2.5 py-1 rounded-xl border font-bold text-xs"
+                                  [ngClass]="s.practica.aprobado ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800'">
+                              ✓ {{ ((s.practica.mejorNota ?? 0) * 10).toFixed(0) }}%
+                              <span class="text-[10px] font-medium opacity-80">{{ s.practica.intentos }} intento(s) • {{ s.practica.aprobado ? 'Aprobado' : 'Refuerzo' }}</span>
+                            </span>
+                          } @else {
+                            <span class="text-[11px] font-semibold text-slate-400">Pendiente</span>
+                          }
+                        </td>
+                        <td class="py-3 px-3 text-center">
+                          @if (s.postTest.completado) {
+                            <span class="inline-flex flex-col items-center px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-xs">
+                              ✓ {{ (s.postTest.puntaje ?? 0).toFixed(0) }}%
+                              @if (s.mejoraPrePost !== null) {
+                                <span class="text-[10px] font-medium" [ngClass]="s.mejoraPrePost >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
+                                  {{ s.mejoraPrePost > 0 ? '+' : '' }}{{ s.mejoraPrePost.toFixed(0) }} pts vs Pre
+                                </span>
+                              }
+                            </span>
+                          } @else {
+                            <span class="text-[11px] font-semibold text-slate-400">Pendiente</span>
+                          }
+                        </td>
+                        <td class="py-3 px-3 text-center">
+                          @if (s.encuesta.completada) {
+                            <span class="inline-flex px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-xs">
+                              ✓ {{ s.encuesta.promedio !== null ? (s.encuesta.promedio.toFixed(1) + '/5') : 'Enviada' }}
+                            </span>
+                          } @else {
+                            <span class="text-[11px] font-semibold text-slate-400">Pendiente</span>
+                          }
+                        </td>
+                        <td class="py-3 px-3">
+                          <div class="flex items-center gap-2 min-w-[110px]">
+                            <div class="h-2 flex-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                              <div class="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-500" [style.width.%]="s.porcentajeAvance"></div>
+                            </div>
+                            <span class="text-xs font-black text-slate-800 dark:text-slate-100">{{ s.porcentajeAvance.toFixed(0) }}%</span>
+                          </div>
+                          <span class="text-[10px] text-slate-500 dark:text-slate-400">{{ s.etapasCompletadas }}/4 etapas</span>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                          <span class="inline-flex px-3 py-1 rounded-full text-[11px] font-bold border whitespace-nowrap"
+                                [ngClass]="{
+                                  'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800': s.estadoActividad === 'Flujo completo',
+                                  'bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800': s.estadoActividad === 'En curso',
+                                  'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600': s.estadoActividad === 'Sin iniciar'
+                                }">
+                            {{ s.estadoActividad }}
+                          </span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              <p class="mt-3 text-[11px] text-slate-500 dark:text-slate-400">
+                Mostrando {{ seguimientoFiltrado().length }} de {{ seguimientoVista().length }} estudiantes. Los puntajes de Pre-Test y Post-Test corresponden al último intento registrado; la práctica muestra la mejor nota obtenida.
+              </p>
+            }
+          </div>
+        </div>
+      }
 
       <!-- ============================================================== -->
       <!-- PESTAÑA 1: SUPERVISIÓN DE PRÁCTICAS DE LAVADO                  -->
@@ -1209,8 +1440,9 @@ export class AdminComponent implements OnInit {
 
   readonly optionLetters = ['A', 'B', 'C', 'D'];
 
-  readonly pestanaActiva = signal<'practicas' | 'preguntas' | 'encuestas' | 'perfil'>('practicas');
+  readonly pestanaActiva = signal<'seguimiento' | 'practicas' | 'preguntas' | 'encuestas' | 'perfil'>('seguimiento');
   readonly busqueda = signal<string>('');
+  readonly filtroEstado = signal<'todos' | 'Sin iniciar' | 'En curso' | 'Flujo completo'>('todos');
   readonly cargandoPracticas = signal<boolean>(false);
   readonly cargandoPreguntas = signal<boolean>(false);
   readonly cargandoEncuestas = signal<boolean>(false);
@@ -1223,6 +1455,8 @@ export class AdminComponent implements OnInit {
   readonly verPasswordConfirmar = signal<boolean>(false);
 
   readonly practicas = signal<PracticaEstudianteDocente[]>([]);
+  readonly seguimiento = signal<SeguimientoEstudianteDocente[]>([]);
+  readonly resumenServidor = signal<ResumenSeguimientoDocente | null>(null);
   readonly preguntas = signal<PreguntaDocente[]>([]);
   readonly encuestas = signal<EncuestaDocenteItem[]>([]);
   readonly totalEncuestas = signal<number>(0);
@@ -1238,10 +1472,164 @@ export class AdminComponent implements OnInit {
   readonly mensajeExito = signal<string | null>(null);
   readonly mensajeError = signal<string | null>(null);
 
+  readonly esSesionDemo = computed(() => this.authService.esSesionDemo());
   readonly docenteNombre = computed(() => this.authService.usuarioActual()?.nombre || 'Docente UCC');
   readonly docenteCodigo = computed(() => this.authService.usuarioActual()?.codigoEstudiantil || 'DOC-UCC');
   readonly docenteCorreo = computed(() => this.authService.usuarioActual()?.correo || 'docente@ucc.edu.co');
   readonly docenteRol = computed(() => this.authService.usuarioActual()?.rol || 'DOCENTE');
+
+  readonly seguimientoVista = computed<SeguimientoEstudianteDocente[]>(() => {
+    const desdeServidor = this.seguimiento();
+    if (desdeServidor.length > 0) return desdeServidor;
+
+    // Fallback a partir de practicas() si el endpoint no proveyó seguimiento
+    return this.practicas().map((p) => {
+      const tienePractica = p.calificacion > 0 || (p.notaFinal !== undefined && p.notaFinal > 0) || p.aprobado;
+      const tienePost = p.notaTeorica !== undefined && p.notaTeorica > 0;
+      const etapas = [tienePractica, tienePractica, tienePost, false];
+      const completadas = etapas.filter(Boolean).length;
+      return {
+        estudianteId: p.estudianteId || p.id,
+        nombre: p.nombre,
+        codigo: p.codigo,
+        correo: p.correo,
+        fechaRegistro: p.fecha,
+        ultimaActividad: p.fecha,
+        estadoActividad: completadas === 0 ? 'Sin iniciar' : completadas >= 3 ? 'Flujo completo' : 'En curso',
+        preTest: { completado: tienePractica, intentos: tienePractica ? 1 : 0, puntaje: tienePractica ? 80 : null, fecha: p.fecha },
+        practica: {
+          completado: tienePractica,
+          intentos: tienePractica ? 1 : 0,
+          mejorNota: p.notaPractica ?? p.calificacion,
+          ultimaNota: p.notaFinal ?? p.calificacion,
+          aprobado: p.aprobado,
+          certificado: !!p.certificado,
+          fecha: p.fecha,
+        },
+        postTest: { completado: tienePost, intentos: tienePost ? 1 : 0, puntaje: tienePost ? ((p.notaTeorica ?? 0) * 10) : null, fecha: p.fecha },
+        encuesta: { completada: false, promedio: null, fecha: null },
+        mejoraPrePost: null,
+        etapasCompletadas: completadas,
+        porcentajeAvance: Math.round((completadas / 4) * 100),
+      };
+    });
+  });
+
+  readonly seguimientoFiltrado = computed(() => {
+    const q = this.busqueda().toLowerCase().trim();
+    const f = this.filtroEstado();
+    let list = this.seguimientoVista();
+    if (f !== 'todos') {
+      list = list.filter((s) => s.estadoActividad === f);
+    }
+    if (!q) return list;
+    return list.filter(
+      (s) =>
+        s.nombre?.toLowerCase().includes(q) ||
+        s.codigo?.toLowerCase().includes(q) ||
+        s.correo?.toLowerCase().includes(q)
+    );
+  });
+
+  readonly resumenSeguimiento = computed<ResumenSeguimientoDocente>(() => {
+    const res = this.resumenServidor();
+    if (res) return res;
+
+    const seg = this.seguimientoVista();
+    const total = seg.length;
+    const pct = (parte: number, tot: number) => (tot > 0 ? Math.round((parte / tot) * 100 * 10) / 10 : 0);
+    const conPre = seg.filter((s) => s.preTest.completado);
+    const conPractica = seg.filter((s) => s.practica.completado);
+    const conPost = seg.filter((s) => s.postTest.completado);
+    const conEncuesta = seg.filter((s) => s.encuesta.completada);
+    const conActividad = seg.filter((s) => s.etapasCompletadas > 0);
+    const completos = seg.filter((s) => s.etapasCompletadas === 4);
+    const aprobados = conPractica.filter((s) => s.practica.aprobado);
+    const conMejora = seg.filter((s) => s.mejoraPrePost !== null);
+    const prom = (vals: number[]) => vals.length > 0 ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10 : 0;
+
+    return {
+      totalEstudiantes: total,
+      conActividad: conActividad.length,
+      porcentajeParticipacion: pct(conActividad.length, total),
+      preTest: {
+        completados: conPre.length,
+        porcentaje: pct(conPre.length, total),
+        promedioPuntaje: prom(conPre.map((s) => s.preTest.puntaje ?? 0)),
+      },
+      practica: {
+        completados: conPractica.length,
+        porcentaje: pct(conPractica.length, total),
+        promedioNota: prom(conPractica.map((s) => s.practica.mejorNota ?? 0)),
+        aprobados: aprobados.length,
+        porcentajeAprobacion: pct(aprobados.length, conPractica.length),
+      },
+      postTest: {
+        completados: conPost.length,
+        porcentaje: pct(conPost.length, total),
+        promedioPuntaje: prom(conPost.map((s) => s.postTest.puntaje ?? 0)),
+      },
+      encuesta: {
+        completados: conEncuesta.length,
+        porcentaje: pct(conEncuesta.length, total),
+        promedioSatisfaccion: prom(conEncuesta.map((s) => s.encuesta.promedio ?? 0)),
+      },
+      flujoCompleto: {
+        completados: completos.length,
+        porcentaje: pct(completos.length, total),
+      },
+      avancePromedio: prom(seg.map((s) => s.porcentajeAvance)),
+      mejoraPromedioPrePost: conMejora.length > 0 ? prom(conMejora.map((s) => s.mejoraPrePost!)) : null,
+    };
+  });
+
+  readonly metricasSeguimiento = computed(() => {
+    const r = this.resumenSeguimiento();
+    return [
+      {
+        titulo: 'Participación Global',
+        porcentaje: r.porcentajeParticipacion,
+        detalle: `${r.conActividad} de ${r.totalEstudiantes} estudiantes ingresaron`,
+        color: 'text-sky-600 dark:text-sky-400',
+        barra: 'bg-sky-500',
+      },
+      {
+        titulo: 'Pre-Test OMS',
+        porcentaje: r.preTest.porcentaje,
+        detalle: `${r.preTest.completados} completados (Prom: ${r.preTest.promedioPuntaje.toFixed(0)}%)`,
+        color: 'text-indigo-600 dark:text-indigo-400',
+        barra: 'bg-indigo-500',
+      },
+      {
+        titulo: 'Práctica / Simulación',
+        porcentaje: r.practica.porcentaje,
+        detalle: `${r.practica.completados} completados (${r.practica.porcentajeAprobacion.toFixed(0)}% aprobados)`,
+        color: 'text-teal-600 dark:text-teal-400',
+        barra: 'bg-teal-500',
+      },
+      {
+        titulo: 'Post-Test OMS',
+        porcentaje: r.postTest.porcentaje,
+        detalle: `${r.postTest.completados} completados (Prom: ${r.postTest.promedioPuntaje.toFixed(0)}%)`,
+        color: 'text-emerald-600 dark:text-emerald-400',
+        barra: 'bg-emerald-500',
+      },
+      {
+        titulo: 'Encuesta Calidad',
+        porcentaje: r.encuesta.porcentaje,
+        detalle: `${r.encuesta.completados} respondidas (Prom: ${r.encuesta.promedioSatisfaccion > 0 ? r.encuesta.promedioSatisfaccion.toFixed(1) + '/5' : '—'})`,
+        color: 'text-amber-600 dark:text-amber-400',
+        barra: 'bg-amber-500',
+      },
+      {
+        titulo: 'Flujo Completo (100%)',
+        porcentaje: r.flujoCompleto.porcentaje,
+        detalle: `${r.flujoCompleto.completados} estudiantes completaron todo`,
+        color: 'text-violet-600 dark:text-violet-400',
+        barra: 'bg-violet-500',
+      },
+    ];
+  });
 
   readonly practicasFiltradas = computed(() => {
     const q = this.busqueda().toLowerCase().trim();
@@ -1336,6 +1724,12 @@ export class AdminComponent implements OnInit {
     this.practicasService.obtenerPracticasDocente().subscribe({
       next: (res) => {
         this.practicas.set(res.practicas || []);
+        if (res.seguimiento) {
+          this.seguimiento.set(res.seguimiento);
+        }
+        if (res.resumen) {
+          this.resumenServidor.set(res.resumen);
+        }
         this.cargandoPracticas.set(false);
       },
       error: (err) => {
@@ -1362,6 +1756,11 @@ export class AdminComponent implements OnInit {
   alBuscar(event: Event): void {
     const val = (event.target as HTMLInputElement).value;
     this.busqueda.set(val);
+  }
+
+  alCambiarFiltroEstado(event: Event): void {
+    const val = (event.target as HTMLSelectElement).value as any;
+    this.filtroEstado.set(val);
   }
 
   abrirDetalle(practica: PracticaEstudianteDocente): void {

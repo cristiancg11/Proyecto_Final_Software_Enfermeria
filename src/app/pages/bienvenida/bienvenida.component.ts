@@ -306,30 +306,34 @@ export class BienvenidaComponent {
     this.mensajeError.set(null);
 
     const emailNorm = (correo || '').trim().toLowerCase();
-    const esClaveDocente = password === 'Docente2026*' || (password && password.length >= 6);
 
     this.authService.login({ identificador: emailNorm, password: password || '' }).subscribe({
       next: (res) => {
         this.cargando.set(false);
         const user = res.user || res.usuario;
-        if (user && (user.rol?.toUpperCase() === 'DOCENTE' || user.rol?.toUpperCase() === 'ADMIN')) {
+        if (user && AuthService.esRolDocente(user.rol)) {
           this.stateService.setStudent({ fullName: user.nombre, studentCode: user.codigoEstudiantil || 'DOCENTE-UCC', consent: true });
           this.stateService.unlockStep(12);
           this.router.navigate(['/admin']);
         } else {
-          if (emailNorm.includes('docente') || emailNorm.includes('martinez') || esClaveDocente) {
-            this.iniciarDemoDocente();
-          } else {
-            this.mensajeError.set('Esta cuenta no cuenta con rol de Docente/Administrador.');
-          }
+          // La cuenta existe pero está registrada como estudiante: no se abre una sesión docente ficticia
+          this.authService.logout();
+          this.mensajeError.set(
+            'Esta cuenta está registrada con rol de Estudiante. Ingresa por la pestaña "Estudiante" o solicita a un docente que te registre como Docente desde el panel.'
+          );
         }
       },
-      error: () => {
+      error: (err) => {
         this.cargando.set(false);
-        if (emailNorm.includes('docente') || emailNorm.includes('martinez') || esClaveDocente) {
-          this.iniciarDemoDocente();
+        const status = err?.status ?? 0;
+        if (status === 401 || status === 400) {
+          this.mensajeError.set('Correo o contraseña incorrectos. Verifica tus credenciales de docente e intenta nuevamente.');
+        } else if (status === 0 || status >= 500) {
+          this.mensajeError.set(
+            'No fue posible conectar con el servidor en este momento (la base de datos puede estar reactivándose). Espera unos segundos e intenta de nuevo.'
+          );
         } else {
-          this.mensajeError.set('Credenciales de docente no válidas. Puedes usar docente@ucc.edu.co / Docente2026*');
+          this.mensajeError.set(err?.error?.error || 'No fue posible iniciar sesión como docente.');
         }
       },
     });
@@ -401,7 +405,7 @@ export class BienvenidaComponent {
       studentCode: user.codigoEstudiantil || '',
       consent: user?.consentimiento !== undefined ? !!user.consentimiento : true,
     });
-    if (user.rol === 'DOCENTE') {
+    if (AuthService.esRolDocente(user.rol)) {
       this.stateService.unlockStep(7);
       this.router.navigate(['/admin']);
     } else {

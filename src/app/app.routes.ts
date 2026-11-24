@@ -12,7 +12,7 @@ export const routes: Routes = [
   {
     path: 'bienvenida',
     loadComponent: () =>
-      import('./features/bienvenida/bienvenida.component').then(
+      import('./pages/bienvenida/bienvenida.component').then(
         (m) => m.BienvenidaComponent
       ),
     title: 'Manos Seguras — Registro y Consentimiento',

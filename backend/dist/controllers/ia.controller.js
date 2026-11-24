@@ -302,77 +302,20 @@ const obtenerRankingProgresoIA = async (req, res) => {
     }
 };
 exports.obtenerRankingProgresoIA = obtenerRankingProgresoIA;
-// Almacenamiento en memoria enriquecido con registros iniciales competitivos para el Reto Extremo
-const historialRetoExtremo = [
-    {
-        id: 'reto-seed-1',
-        posicion: 1,
-        nombre: 'Valeria Mendoza (Guardia UCI)',
-        codigoEstudiantil: 'ENF-2026-412',
-        aciertos: 8,
-        totalPreguntas: 8,
-        porcentajeExito: 100,
-        tiempoSegundos: 38.4,
-        puntajeCompetitivo: 985,
-        fecha: new Date(Date.now() - 1000 * 60 * 42).toISOString(),
-    },
-    {
-        id: 'reto-seed-2',
-        posicion: 2,
-        nombre: 'Sebastián Rojas (Quirófano)',
-        codigoEstudiantil: 'ENF-2026-809',
-        aciertos: 8,
-        totalPreguntas: 8,
-        porcentajeExito: 100,
-        tiempoSegundos: 44.7,
-        puntajeCompetitivo: 950,
-        fecha: new Date(Date.now() - 1000 * 60 * 85).toISOString(),
-    },
-    {
-        id: 'reto-seed-3',
-        posicion: 3,
-        nombre: 'Camila Gómez (Urgencias)',
-        codigoEstudiantil: 'ENF-2026-274',
-        aciertos: 7,
-        totalPreguntas: 8,
-        porcentajeExito: 88,
-        tiempoSegundos: 41.2,
-        puntajeCompetitivo: 865,
-        fecha: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-    },
-    {
-        id: 'reto-seed-4',
-        posicion: 4,
-        nombre: 'Andrés Felipe Castro (Pediatría)',
-        codigoEstudiantil: 'ENF-2026-651',
-        aciertos: 6,
-        totalPreguntas: 8,
-        porcentajeExito: 75,
-        tiempoSegundos: 56.8,
-        puntajeCompetitivo: 710,
-        fecha: new Date(Date.now() - 1000 * 60 * 190).toISOString(),
-    },
-    {
-        id: 'reto-seed-5',
-        posicion: 5,
-        nombre: 'Mateo Solarte (Hospitalización)',
-        codigoEstudiantil: 'ENF-2026-930',
-        aciertos: 5,
-        totalPreguntas: 8,
-        porcentajeExito: 63,
-        tiempoSegundos: 69.5,
-        puntajeCompetitivo: 580,
-        fecha: new Date(Date.now() - 1000 * 60 * 240).toISOString(),
-    },
-];
+// Almacenamiento en memoria para registros reales del Reto Extremo (sin datos ficticios/quemados)
+const historialRetoExtremo = [];
 function ordenarRankingReto(lista, codigoActual) {
     return [...lista]
         .sort((a, b) => {
-        // 1. Mayor porcentaje de aciertos primero
+        // 1. Mayor puntaje competitivo primero
+        if (b.puntajeCompetitivo !== a.puntajeCompetitivo) {
+            return b.puntajeCompetitivo - a.puntajeCompetitivo;
+        }
+        // 2. Mayor porcentaje de aciertos
         if (b.porcentajeExito !== a.porcentajeExito) {
             return b.porcentajeExito - a.porcentajeExito;
         }
-        // 2. A igual porcentaje de aciertos, gana quien lo hizo en MENOR tiempo
+        // 3. Menor tiempo
         return a.tiempoSegundos - b.tiempoSegundos;
     })
         .map((item, idx) => ({

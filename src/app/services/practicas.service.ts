@@ -33,9 +33,49 @@ export interface PracticaEstudianteDocente {
   detallePasos: DetallePasoBiomecanico[] | any;
 }
 
+export interface SeguimientoEstudianteDocente {
+  estudianteId: string;
+  nombre: string;
+  codigo: string;
+  correo: string;
+  fechaRegistro: string | Date;
+  ultimaActividad: string | Date | null;
+  estadoActividad: 'Sin iniciar' | 'En curso' | 'Flujo completo';
+  preTest: { completado: boolean; intentos: number; puntaje: number | null; fecha: string | Date | null };
+  practica: {
+    completado: boolean;
+    intentos: number;
+    mejorNota: number | null;
+    ultimaNota: number | null;
+    aprobado: boolean;
+    certificado: boolean;
+    fecha: string | Date | null;
+  };
+  postTest: { completado: boolean; intentos: number; puntaje: number | null; fecha: string | Date | null };
+  encuesta: { completada: boolean; promedio: number | null; fecha: string | Date | null };
+  mejoraPrePost: number | null;
+  etapasCompletadas: number;
+  porcentajeAvance: number;
+}
+
+export interface ResumenSeguimientoDocente {
+  totalEstudiantes: number;
+  conActividad: number;
+  porcentajeParticipacion: number;
+  preTest: { completados: number; porcentaje: number; promedioPuntaje: number };
+  practica: { completados: number; porcentaje: number; promedioNota: number; aprobados: number; porcentajeAprobacion: number };
+  postTest: { completados: number; porcentaje: number; promedioPuntaje: number };
+  encuesta: { completados: number; porcentaje: number; promedioSatisfaccion: number };
+  flujoCompleto: { completados: number; porcentaje: number };
+  avancePromedio: number;
+  mejoraPromedioPrePost: number | null;
+}
+
 export interface PracticasDocenteResponse {
   total: number;
   practicas: PracticaEstudianteDocente[];
+  seguimiento?: SeguimientoEstudianteDocente[];
+  resumen?: ResumenSeguimientoDocente | null;
 }
 
 export interface RegistrarPracticaDto {

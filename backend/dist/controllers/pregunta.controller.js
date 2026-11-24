@@ -243,7 +243,12 @@ const registrarDiagnostico = async (req, res) => {
         const opcionesSeleccionadas = await prisma_1.prisma.opcionRespuesta.findMany({
             where: { id: { in: opcionIds } },
         });
-        const aciertos = opcionesSeleccionadas.filter((o) => o.esCorrecta).length;
+        const aciertosEnBd = opcionesSeleccionadas.filter((o) => o.esCorrecta).length;
+        // Clave oficial del cuestionario OMS fijo del Pre-Test / Post-Test (preguntas locales q1..q5)
+        const CLAVE_OMS_LOCAL = new Set(['q1-b', 'q2-c', 'q3-a', 'q4-b', 'q5-c']);
+        const idsOpcionesEnBd = new Set(opcionesSeleccionadas.map((o) => o.id));
+        const aciertosLocales = respuestas.filter((r) => !idsOpcionesEnBd.has(r.opcionSeleccionadaId) && CLAVE_OMS_LOCAL.has(r.opcionSeleccionadaId)).length;
+        const aciertos = aciertosEnBd + aciertosLocales;
         const totalPreguntas = respuestas.length;
         const puntaje = Math.round((aciertos / totalPreguntas) * 100 * 10) / 10; // 0 - 100%
         const calificacion10 = Math.round((aciertos / totalPreguntas) * 10 * 10) / 10; // 0 - 10

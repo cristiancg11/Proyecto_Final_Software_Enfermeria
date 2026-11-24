@@ -113,9 +113,141 @@ const obtenerPracticasDocente = async (req, res) => {
             detallePasos: { records: [] },
         }));
         const practicas = [...practicasDeIntentos, ...estudiantesSinPractica];
+        // ------------------------------------------------------------------
+        // Seguimiento de investigación: etapas completadas por estudiante
+        // (Pre-Test, Práctica/Simulación, Post-Test y Encuesta) + porcentajes
+        // ------------------------------------------------------------------
+        let seguimiento = [];
+        let resumen = null;
+        try {
+            const [diagnosticos, encuestas] = await (0, prisma_1.ejecutarConReconexion)((db) => Promise.all([
+                db.intentoDiagnostico.findMany({
+                    select: { usuarioId: true, tipo: true, puntaje: true, createdAt: true },
+                    orderBy: { createdAt: 'asc' },
+                }),
+                db.encuestaPlataforma.findMany({
+                    select: {
+                        usuarioId: true,
+                        facilidadUso: true,
+                        utilidadGuia: true,
+                        claridadFeed: true,
+                        recomendacion: true,
+                        createdAt: true,
+                    },
+                    orderBy: { createdAt: 'asc' },
+                }),
+            ]));
+            const redondear = (n) => Math.round(n * 10) / 10;
+            const pct = (parte, total) => (total > 0 ? redondear((parte / total) * 100) : 0);
+            const promedio = (valores) => valores.length > 0 ? redondear(valores.reduce((a, b) => a + b, 0) / valores.length) : 0;
+            const maxFecha = (...fechas) => fechas.filter((f) => !!f).reduce((acc, f) => (!acc || f > acc ? f : acc), null);
+            seguimiento = estudiantesRegistrados.map((est) => {
+                const intentosEst = intentos.filter((i) => i.usuarioId === est.id);
+                const preEst = diagnosticos.filter((d) => d.usuarioId === est.id && d.tipo === 'PRE');
+                const postEst = diagnosticos.filter((d) => d.usuarioId === est.id && d.tipo === 'POST');
+                const encEst = encuestas.filter((e) => e.usuarioId === est.id);
+                const ultimoPre = preEst.length > 0 ? preEst[preEst.length - 1] : null;
+                const ultimoPost = postEst.length > 0 ? postEst[postEst.length - 1] : null;
+                const ultimaEnc = encEst.length > 0 ? encEst[encEst.length - 1] : null;
+                // intentos viene ordenado desc: el primero es el más reciente
+                const ultimoIntento = intentosEst.length > 0 ? intentosEst[0] : null;
+                const mejorNota = intentosEst.length > 0 ? Math.max(...intentosEst.map((i) => i.calificacion)) : 0;
+                const etapas = [!!ultimoPre, intentosEst.length > 0, !!ultimoPost, !!ultimaEnc];
+                const etapasCompletadas = etapas.filter(Boolean).length;
+                const ultimaActividad = maxFecha(ultimoPre?.createdAt, ultimoIntento?.createdAt, ultimoPost?.createdAt, ultimaEnc?.createdAt);
+                return {
+                    estudianteId: est.id,
+                    nombre: est.nombre,
+                    codigo: est.codigoEstudiantil,
+                    correo: est.correo,
+                    fechaRegistro: est.fechaRegistro,
+                    ultimaActividad: ultimaActividad || null,
+                    estadoActividad: etapasCompletadas === 0 ? 'Sin iniciar' : etapasCompletadas === 4 ? 'Flujo completo' : 'En curso',
+                    preTest: {
+                        completado: !!ultimoPre,
+                        intentos: preEst.length,
+                        puntaje: ultimoPre ? redondear(ultimoPre.puntaje) : null,
+                        fecha: ultimoPre?.createdAt || null,
+                    },
+                    practica: {
+                        completado: intentosEst.length > 0,
+                        intentos: intentosEst.length,
+                        mejorNota: intentosEst.length > 0 ? redondear(mejorNota) : null,
+                        ultimaNota: ultimoIntento ? redondear(ultimoIntento.calificacion) : null,
+                        aprobado: intentosEst.some((i) => i.aprobado),
+                        certificado: intentosEst.some((i) => !!i.certificado),
+                        fecha: ultimoIntento?.createdAt || null,
+                    },
+                    postTest: {
+                        completado: !!ultimoPost,
+                        intentos: postEst.length,
+                        puntaje: ultimoPost ? redondear(ultimoPost.puntaje) : null,
+                        fecha: ultimoPost?.createdAt || null,
+                    },
+                    encuesta: {
+                        completada: !!ultimaEnc,
+                        promedio: ultimaEnc
+                            ? redondear((ultimaEnc.facilidadUso + ultimaEnc.utilidadGuia + ultimaEnc.claridadFeed + ultimaEnc.recomendacion) / 4)
+                            : null,
+                        fecha: ultimaEnc?.createdAt || null,
+                    },
+                    mejoraPrePost: ultimoPre && ultimoPost ? redondear(ultimoPost.puntaje - ultimoPre.puntaje) : null,
+                    etapasCompletadas,
+                    porcentajeAvance: pct(etapasCompletadas, 4),
+                };
+            });
+            const total = seguimiento.length;
+            const conPre = seguimiento.filter((s) => s.preTest.completado);
+            const conPractica = seguimiento.filter((s) => s.practica.completado);
+            const conPost = seguimiento.filter((s) => s.postTest.completado);
+            const conEncuesta = seguimiento.filter((s) => s.encuesta.completada);
+            const conActividad = seguimiento.filter((s) => s.etapasCompletadas > 0);
+            const completos = seguimiento.filter((s) => s.etapasCompletadas === 4);
+            const aprobados = conPractica.filter((s) => s.practica.aprobado);
+            const conMejora = seguimiento.filter((s) => s.mejoraPrePost !== null);
+            resumen = {
+                totalEstudiantes: total,
+                conActividad: conActividad.length,
+                porcentajeParticipacion: pct(conActividad.length, total),
+                preTest: {
+                    completados: conPre.length,
+                    porcentaje: pct(conPre.length, total),
+                    promedioPuntaje: promedio(conPre.map((s) => s.preTest.puntaje ?? 0)),
+                },
+                practica: {
+                    completados: conPractica.length,
+                    porcentaje: pct(conPractica.length, total),
+                    promedioNota: promedio(conPractica.map((s) => s.practica.mejorNota ?? 0)),
+                    aprobados: aprobados.length,
+                    porcentajeAprobacion: pct(aprobados.length, conPractica.length),
+                },
+                postTest: {
+                    completados: conPost.length,
+                    porcentaje: pct(conPost.length, total),
+                    promedioPuntaje: promedio(conPost.map((s) => s.postTest.puntaje ?? 0)),
+                },
+                encuesta: {
+                    completados: conEncuesta.length,
+                    porcentaje: pct(conEncuesta.length, total),
+                    promedioSatisfaccion: promedio(conEncuesta.map((s) => s.encuesta.promedio ?? 0)),
+                },
+                flujoCompleto: {
+                    completados: completos.length,
+                    porcentaje: pct(completos.length, total),
+                },
+                avancePromedio: promedio(seguimiento.map((s) => s.porcentajeAvance)),
+                mejoraPromedioPrePost: conMejora.length > 0 ? promedio(conMejora.map((s) => s.mejoraPrePost)) : null,
+            };
+        }
+        catch (errSeguimiento) {
+            // El seguimiento es complementario: si falla no debe bloquear la lista de prácticas
+            console.error('Aviso al construir seguimiento docente:', errSeguimiento);
+        }
         res.json({
             total: practicas.length,
             practicas,
+            seguimiento,
+            resumen,
         });
     }
     catch (err) {
