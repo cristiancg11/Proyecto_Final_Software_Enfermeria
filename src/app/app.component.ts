@@ -4,6 +4,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { HandwashStateService } from './core/services/handwash-state.service';
 import { AuthService } from './services/auth.service';
 import { ThemeService } from './services/theme.service';
+import { DocenteTabService, DocentePestana } from './core/services/docente-tab.service';
 import { filter } from 'rxjs';
 
 @Component({
@@ -18,6 +19,7 @@ export class App {
   readonly stateService = inject(HandwashStateService);
   readonly authService = inject(AuthService);
   readonly themeService = inject(ThemeService);
+  readonly docenteTabService = inject(DocenteTabService);
 
   readonly isDark = computed(() => this.themeService.isDark());
 
@@ -43,6 +45,17 @@ export class App {
       (!!this.authService.usuarioActual()?.nombre ||
         (!!this.student() && !!this.student()?.fullName))
   );
+
+  irAPestanaDocente(tab: DocentePestana): void {
+    this.docenteTabService.seleccionarPestana(tab);
+    this.cerrarMenuMovil();
+    this.router.navigate(['/admin'], { queryParams: { tab } });
+  }
+
+  esPestanaDocenteActiva(tab: DocentePestana): boolean {
+    const ruta = (this.rutaActual() || this.router.url || '').split('?')[0];
+    return ruta === '/admin' && this.docenteTabService.pestanaActiva() === tab;
+  }
 
   readonly simulacionHabilitada = computed(() => {
     return this.esDocente() || this.stateService.haCompletadoPracticaGuiada();

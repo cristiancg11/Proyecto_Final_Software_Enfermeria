@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { DocenteTabService, DocentePestana } from '../../core/services/docente-tab.service';
 import {
   PracticasService,
   PracticaEstudianteDocente,
@@ -141,7 +142,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <!-- Pestaña 0: Seguimiento de la investigación -->
         <button
           type="button"
-          (click)="pestanaActiva.set('seguimiento')"
+          (click)="cambiarPestana('seguimiento')"
           class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
           [ngClass]="pestanaActiva() === 'seguimiento' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
@@ -157,7 +158,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <!-- Pestaña 1 -->
         <button
           type="button"
-          (click)="pestanaActiva.set('practicas')"
+          (click)="cambiarPestana('practicas')"
           class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
           [ngClass]="pestanaActiva() === 'practicas' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
@@ -173,7 +174,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <!-- Pestaña 2 -->
         <button
           type="button"
-          (click)="pestanaActiva.set('preguntas')"
+          (click)="cambiarPestana('preguntas')"
           class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
           [ngClass]="pestanaActiva() === 'preguntas' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
@@ -189,7 +190,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <!-- Pestaña 3: Encuestas de Usabilidad y Calidad -->
         <button
           type="button"
-          (click)="pestanaActiva.set('encuestas')"
+          (click)="cambiarPestana('encuestas')"
           class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
           [ngClass]="pestanaActiva() === 'encuestas' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
@@ -205,7 +206,7 @@ import { EncuestaService, EncuestaDocenteItem } from '../../services/encuesta.se
         <!-- Pestaña 4: Mi Perfil & Seguridad -->
         <button
           type="button"
-          (click)="pestanaActiva.set('perfil')"
+          (click)="cambiarPestana('perfil')"
           class="px-5 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer shadow-xs border"
           [ngClass]="pestanaActiva() === 'perfil' ? 'bg-[#00B39F] text-white shadow-md border-[#00B39F]' : 'bg-white/80 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'"
         >
@@ -1437,10 +1438,12 @@ export class AdminComponent implements OnInit {
   private readonly preguntasService = inject(PreguntasService);
   private readonly encuestaService = inject(EncuestaService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  readonly docTabService = inject(DocenteTabService);
 
   readonly optionLetters = ['A', 'B', 'C', 'D'];
 
-  readonly pestanaActiva = signal<'seguimiento' | 'practicas' | 'preguntas' | 'encuestas' | 'perfil'>('seguimiento');
+  readonly pestanaActiva = this.docTabService.pestanaActiva;
   readonly busqueda = signal<string>('');
   readonly filtroEstado = signal<'todos' | 'Sin iniciar' | 'En curso' | 'Flujo completo'>('todos');
   readonly cargandoPracticas = signal<boolean>(false);
@@ -1683,6 +1686,13 @@ export class AdminComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const tab = params.get('tab') as DocentePestana | null;
+      if (tab && ['seguimiento', 'practicas', 'preguntas', 'encuestas', 'perfil'].includes(tab)) {
+        this.docTabService.seleccionarPestana(tab);
+      }
+    });
+
     this.recargarDatos();
     const u = this.authService.usuarioActual();
     if (u) {
@@ -1691,6 +1701,15 @@ export class AdminComponent implements OnInit {
         correo: u.correo,
       });
     }
+  }
+
+  cambiarPestana(tab: DocentePestana): void {
+    this.docTabService.seleccionarPestana(tab);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge',
+    });
   }
 
   recargarDatos(): void {

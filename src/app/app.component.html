@@ -196,11 +196,11 @@
           @if (esDocente()) {
             <!-- NAVEGACIÓN EXCLUSIVA PARA DOCENTE -->
             <!-- 1. Supervisión y Porcentajes -->
-            <a
-              routerLink="/admin"
-              (click)="cerrarMenuMovil()"
-              routerLinkActive="!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !font-bold ring-1 ring-teal-300/40"
-              class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800 text-xs font-semibold transition-all active:scale-98"
+            <button
+              type="button"
+              (click)="irAPestanaDocente('seguimiento')"
+              [ngClass]="esPestanaDocenteActiva('seguimiento') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/80 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800'"
+              class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all active:scale-98 cursor-pointer"
             >
               <div class="flex items-center gap-3">
                 <span class="w-7 h-7 rounded-lg bg-teal-100 dark:bg-teal-900/60 border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-300 flex items-center justify-center text-sm shrink-0">
@@ -211,55 +211,59 @@
               <span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-teal-100 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border border-teal-200 dark:border-teal-800/60">
                 General
               </span>
-            </a>
+            </button>
 
             <!-- 2. Prácticas de Lavado -->
-            <a
-              routerLink="/admin"
-              (click)="cerrarMenuMovil()"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800 text-xs font-semibold transition-all active:scale-98"
+            <button
+              type="button"
+              (click)="irAPestanaDocente('practicas')"
+              [ngClass]="esPestanaDocenteActiva('practicas') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/80 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800'"
+              class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all active:scale-98 cursor-pointer"
             >
               <span class="w-7 h-7 rounded-lg bg-teal-100 dark:bg-teal-900/60 border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-300 flex items-center justify-center text-sm shrink-0">
                 🖐️
               </span>
               <span>Prácticas de Lavado</span>
-            </a>
+            </button>
 
             <!-- 3. Creador de Preguntas Clínicas -->
-            <a
-              routerLink="/admin"
-              (click)="cerrarMenuMovil()"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800 text-xs font-semibold transition-all active:scale-98"
+            <button
+              type="button"
+              (click)="irAPestanaDocente('preguntas')"
+              [ngClass]="esPestanaDocenteActiva('preguntas') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/80 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800'"
+              class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all active:scale-98 cursor-pointer"
             >
               <span class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 flex items-center justify-center text-sm shrink-0">
                 📝
               </span>
               <span>Banco de Preguntas</span>
-            </a>
+            </button>
 
             <!-- 4. Evaluación de la Plataforma -->
-            <a
-              routerLink="/admin"
-              (click)="cerrarMenuMovil()"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800 text-xs font-semibold transition-all active:scale-98"
+            <button
+              type="button"
+              (click)="irAPestanaDocente('encuestas')"
+              [ngClass]="esPestanaDocenteActiva('encuestas') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/80 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800'"
+              class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all active:scale-98 cursor-pointer"
             >
               <span class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-sm shrink-0">
                 ⭐
               </span>
               <span>Evaluación de Plataforma</span>
-            </a>
+            </button>
 
             <!-- 5. Mi Perfil Docente -->
-            <a
-              routerLink="/admin"
-              (click)="cerrarMenuMovil()"
-              class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800 text-xs font-semibold transition-all active:scale-98"
+            <button
+              type="button"
+              (click)="irAPestanaDocente('perfil')"
+              [ngClass]="esPestanaDocenteActiva('perfil') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/80 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-slate-800'"
+              class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-all active:scale-98 cursor-pointer"
             >
               <span class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-sm shrink-0">
                 👤
               </span>
               <span>Mi Perfil & Seguridad</span>
-            </a>
+            </button>
           } @else {
             <!-- NAVEGACIÓN COMPLETA PARA ESTUDIANTE -->
             <!-- 1. Dashboard -->
@@ -468,10 +472,11 @@
             @if (esDocente()) {
               <!-- NAVEGACIÓN EXCLUSIVA ROL DOCENTE -->
               <!-- 1. Seguimiento y Porcentajes -->
-              <a
-                routerLink="/admin"
-                routerLinkActive="!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !shadow-xs !font-bold ring-1 ring-teal-300/40"
-                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-teal-900 dark:hover:text-teal-300 hover:bg-teal-50/70 dark:hover:bg-slate-800 hover:border-teal-300 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
+              <button
+                type="button"
+                (click)="irAPestanaDocente('seguimiento')"
+                [ngClass]="esPestanaDocenteActiva('seguimiento') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !shadow-xs !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/70 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-teal-900 dark:hover:text-teal-300 hover:bg-teal-50/70 dark:hover:bg-slate-800 hover:border-teal-300'"
+                class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group cursor-pointer text-left"
               >
                 <div class="flex items-center gap-3">
                   <span class="w-7 h-7 rounded-lg bg-teal-100/70 dark:bg-teal-900/60 border border-teal-200/50 dark:border-teal-800 text-teal-700 dark:text-teal-300 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
@@ -482,51 +487,59 @@
                 <span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-teal-100 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border border-teal-200 dark:border-teal-800/60">
                   Panel
                 </span>
-              </a>
+              </button>
 
               <!-- 2. Prácticas de Lavado -->
-              <a
-                routerLink="/admin"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-teal-900 dark:hover:text-teal-300 hover:bg-teal-50/70 dark:hover:bg-slate-800 hover:border-teal-300 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
+              <button
+                type="button"
+                (click)="irAPestanaDocente('practicas')"
+                [ngClass]="esPestanaDocenteActiva('practicas') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !shadow-xs !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/70 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-teal-900 dark:hover:text-teal-300 hover:bg-teal-50/70 dark:hover:bg-slate-800 hover:border-teal-300'"
+                class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group cursor-pointer text-left"
               >
                 <span class="w-7 h-7 rounded-lg bg-teal-100/70 dark:bg-teal-900/60 border border-teal-200/50 dark:border-teal-800 text-teal-700 dark:text-teal-300 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                   🖐️
                 </span>
                 <span>Prácticas de Lavado</span>
-              </a>
+              </button>
 
               <!-- 3. Creador de Preguntas Clínicas -->
-              <a
-                routerLink="/admin"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-amber-900 dark:hover:text-amber-300 hover:bg-amber-50/70 dark:hover:bg-slate-800 hover:border-amber-300 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
+              <button
+                type="button"
+                (click)="irAPestanaDocente('preguntas')"
+                [ngClass]="esPestanaDocenteActiva('preguntas') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !shadow-xs !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/70 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-amber-900 dark:hover:text-amber-300 hover:bg-amber-50/70 dark:hover:bg-slate-800 hover:border-amber-300'"
+                class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group cursor-pointer text-left"
               >
                 <span class="w-7 h-7 rounded-lg bg-amber-100/70 dark:bg-amber-900/60 border border-amber-200/50 dark:border-amber-800 text-amber-700 dark:text-amber-300 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                   📝
                 </span>
                 <span>Banco de Preguntas</span>
-              </a>
+              </button>
 
               <!-- 4. Evaluación de la Plataforma -->
-              <a
-                routerLink="/admin"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-emerald-900 dark:hover:text-emerald-300 hover:bg-emerald-50/70 dark:hover:bg-slate-800 hover:border-emerald-300 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
+              <button
+                type="button"
+                (click)="irAPestanaDocente('encuestas')"
+                [ngClass]="esPestanaDocenteActiva('encuestas') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !shadow-xs !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/70 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-emerald-900 dark:hover:text-emerald-300 hover:bg-emerald-50/70 dark:hover:bg-slate-800 hover:border-emerald-300'"
+                class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group cursor-pointer text-left"
               >
                 <span class="w-7 h-7 rounded-lg bg-emerald-100/70 dark:bg-emerald-900/60 border border-emerald-200/50 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                   ⭐
                 </span>
                 <span>Evaluación de Plataforma</span>
-              </a>
+              </button>
 
               <!-- 5. Mi Perfil Docente & Seguridad -->
-              <a
-                routerLink="/admin"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group"
+              <button
+                type="button"
+                (click)="irAPestanaDocente('perfil')"
+                [ngClass]="esPestanaDocenteActiva('perfil') ? '!bg-gradient-to-r !from-teal-50 !to-emerald-50/60 dark:!from-teal-950/60 dark:!to-emerald-950/60 !text-teal-900 dark:!text-teal-300 !border-teal-400 !shadow-xs !font-bold ring-1 ring-teal-300/40' : 'bg-slate-50/70 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800'"
+                class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:shadow-xs group cursor-pointer text-left"
               >
                 <span class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-sm group-hover:scale-105 transition-transform shrink-0">
                   👤
                 </span>
                 <span>Mi Perfil & Seguridad</span>
-              </a>
+              </button>
             } @else {
               <!-- 1. Dashboard -->
               <a
@@ -697,15 +710,15 @@
         @if (esDocente()) {
           <!-- BARRA INFERIOR MÓVIL EXCLUSIVA PARA DOCENTE -->
           <!-- 1. Panel Supervisión -->
-          <a
-            routerLink="/admin"
-            (click)="cerrarMenuMovil()"
-            routerLinkActive="text-teal-600 dark:text-teal-400 font-bold"
-            class="flex flex-col items-center justify-center p-1.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-all text-center group cursor-pointer"
+          <button
+            type="button"
+            (click)="irAPestanaDocente('seguimiento')"
+            [ngClass]="esPestanaDocenteActiva('seguimiento') ? 'text-teal-600 dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400'"
+            class="flex flex-col items-center justify-center p-1.5 rounded-xl transition-all text-center group cursor-pointer"
           >
             <span class="text-base mb-0.5 group-hover:scale-110 transition-transform">📊</span>
             <span class="text-[10px] tracking-tight">Supervisión</span>
-          </a>
+          </button>
 
           <!-- 2. Tema Oscuro / Claro -->
           <button
@@ -719,15 +732,15 @@
           </button>
 
           <!-- 3. Botón Central Hero Docente -->
-          <a
-            routerLink="/admin"
-            (click)="cerrarMenuMovil()"
+          <button
+            type="button"
+            (click)="irAPestanaDocente('seguimiento')"
             class="relative -top-3 flex flex-col items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#008072] via-[#00B39F] to-teal-400 text-white shadow-md border-2 border-teal-300/40 active:scale-95 transition-all duration-300 group cursor-pointer"
             title="Panel Docente UCC"
           >
             <span class="text-base leading-none">👑</span>
             <span class="text-[9px] font-extrabold tracking-tight mt-0.5">Docente</span>
-          </a>
+          </button>
 
           <!-- 4. Drawer Toggle -->
           <button

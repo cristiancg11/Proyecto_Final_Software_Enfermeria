@@ -216,13 +216,13 @@ import { ThemeService } from '../../services/theme.service';
           }
         </div>
 
-        <!-- ACCESO RÁPIDO PARA JURADO / DEMOSTRACIÓN ACADÉMICA EN VIVO -->
+        <!-- ACCESO RÁPIDO PARA DEMOSTRACIÓN DE ESTUDIANTE -->
         <div class="mt-6 p-4 rounded-2xl bg-slate-900/85 border border-teal-500/40 text-center shadow-2xl backdrop-blur-md space-y-2.5">
           <div class="flex items-center justify-center gap-2 text-xs font-bold text-teal-300">
             <span class="animate-pulse">🧪</span>
-            <span>Acceso Rápido de Demostración para Jurados y Docentes</span>
+            <span>Acceso de Demostración Académica (Estudiante)</span>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
             <button
               type="button"
               (click)="iniciarDemoEstudiante()"
@@ -230,14 +230,6 @@ import { ThemeService } from '../../services/theme.service';
             >
               <span>👨‍🎓</span>
               <span>Entrar como Estudiante Demo</span>
-            </button>
-            <button
-              type="button"
-              (click)="iniciarDemoDocente()"
-              class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              <span>👑</span>
-              <span>Entrar como Jurado / Docente</span>
             </button>
           </div>
         </div>
