@@ -148,11 +148,11 @@ export interface QualityAlert {
                 </div>
 
                 <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-[#0B2B29] mb-3 leading-tight">
-                  Humedece tus manos y aplica suficiente jabón
+                  Simulación Gestual: Moja tus manos y aplica jabón
                 </h2>
 
                 <p class="text-sm text-slate-600 mb-6 leading-relaxed">
-                  Antes de iniciar el lavado completo de los 11 pasos, abre el grifo con el codo, humedece completamente tus manos con agua corriente y dosifica de 3 a 5 ml de jabón o antiséptico para cubrir toda la superficie palmar.
+                  En este simulador con cámara realizarás una <strong>práctica guiada / simulación gestual sin agua real</strong>. Ubícate frente al visor y realiza los gestos técnicos de los 11 pasos oficiales de la OMS.
                 </p>
 
                 <!-- Instrucciones Rápidas de Seguridad -->
@@ -1102,31 +1102,31 @@ export class PracticaComponent implements OnInit, OnDestroy {
   });
 
   readonly clinicalNames: string[] = [
-    'Paso 1: Mojar las Manos con Agua',
-    'Paso 2: Aplicar Jabón para Cubrir la Superficie',
+    'Paso 1: Mojar las Manos (Simulación gestual sin agua real)',
+    'Paso 2: Aplicar Jabón (Simulación gestual de dispensador)',
     'Paso 3: Frotar Palma con Palma',
     'Paso 4: Palma con Dorso y Dedos Entrelazados',
     'Paso 5: Palma con Palma y Dedos Entrelazados',
     'Paso 6: Dorso de Dedos contra Palma Opuesta',
     'Paso 7: Frotación Rotacional de Pulgares',
     'Paso 8: Yemas de Dedos en Círculos sobre la Palma',
-    'Paso 9: Enjuagar con Abundante Agua',
-    'Paso 10: Secar con Toalla Desechable',
-    'Paso 11: Cerrar el Grifo con la Misma Toalla',
+    'Paso 9: Enjuagar (Simulación gestual sin agua real)',
+    'Paso 10: Secar (Simulación gestual con toalla desechable)',
+    'Paso 11: Cerrar el Grifo (Simulación gestual con la toalla)',
   ];
 
   readonly anatomicalTips: string[] = [
-    'Colocar ambas manos debajo del chorro de agua corriente para humedecer toda la superficie dérmica.',
-    'Depositar suficiente jabón para cubrir toda la superficie de las manos y generar una emulsión adecuada.',
+    'Simulación gestual sin agua real: coloca ambas manos frente al visor simulando el chorro de agua corriente.',
+    'Simulación gestual: ahueca una palma y simula presionar el dispensador para recibir jabón sobre la mano.',
     'Frotar ambas palmas entre sí con movimientos circulares enérgicos para distribuir el jabón.',
     'Frotar la palma derecha sobre el dorso de la mano izquierda, con los dedos entrelazados, y viceversa.',
     'Frotar ambas palmas entre sí, entrelazando los dedos para limpiar a fondo los espacios interdigitales.',
     'Frotar el dorso de los dedos contra la palma de la mano contraria, manteniendo los dedos unidos.',
     'Rodear el pulgar izquierdo con la palma derecha y frotar con movimientos circulares; repetir con el otro pulgar.',
     'Frotar las yemas de los dedos de una mano contra la palma de la otra, realizando movimientos circulares. Repetir con la otra mano.',
-    'Colocar ambas manos debajo del agua para retirar completamente el jabón y los microorganismos arrastrados.',
-    'Secar las manos cuidadosamente con una toalla desechable mediante toques suaves.',
-    'Utilizar la misma toalla desechable para cerrar la llave del agua, evitando tocar el grifo con la piel limpia.',
+    'Simulación gestual sin agua real: coloca ambas manos frente al encuadre simulando el enjuague completo bajo el agua.',
+    'Simulación gestual: simula toques suaves de secado en palmas y dorsos como si usaras toalla desechable.',
+    'Simulación gestual: simula cerrar la llave del agua interponiendo la toalla imaginaria sin tocar la manija.',
   ];
 
   readonly currentClinicalName = computed(() => {
@@ -1175,17 +1175,17 @@ export class PracticaComponent implements OnInit, OnDestroy {
   ];
 
   readonly techniqueInstructions: string[] = [
-    'Colocar ambas manos debajo del chorro de agua.',
-    'Depositar suficiente jabón para cubrir toda la superficie de las manos.',
+    'Simulación gestual sin agua real: coloca ambas manos juntas debajo del chorro imaginario frente a la cámara.',
+    'Simulación gestual: simula accionar el dispensador y recibir jabón en la palma de la mano.',
     'Frotar ambas palmas entre sí.',
     'Frotar la palma derecha sobre el dorso de la mano izquierda, con los dedos entrelazados, y viceversa.',
     'Frotar ambas palmas entre sí, entrelazando los dedos.',
     'Frotar el dorso de los dedos contra la palma de la mano contraria, manteniendo los dedos unidos.',
     'Rodear el pulgar izquierdo con la palma derecha y frotar con movimientos circulares; repetir con el otro pulgar.',
     'Frotar las yemas de los dedos de una mano contra la palma de la otra, realizando movimientos circulares. Repetir con la otra mano.',
-    'Colocar ambas manos debajo del agua para retirar completamente el jabón.',
-    'Secar las manos con una toalla desechable.',
-    'Utilizar la misma toalla desechable para cerrar la llave del agua.',
+    'Simulación gestual sin agua real: coloca ambas manos simulando el retiro completo de espuma con agua.',
+    'Simulación gestual: realiza movimientos de palpación secante simulando usar una toalla de papel desechable.',
+    'Simulación gestual: simula cerrar la llave del grifo interponiendo la toalla protectora.',
   ];
 
   readonly currentClinicalTitle = computed(() => {

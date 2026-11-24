@@ -680,17 +680,17 @@ export class EvaluacionPracticaComponent {
   });
 
   readonly clinicalTitles: string[] = [
-    'Paso 1: Mojar las manos con agua',
-    'Paso 2: Aplicar suficiente jabón',
+    'Paso 1: Mojar las manos (Simulación gestual sin agua real)',
+    'Paso 2: Aplicar jabón (Simulación gestual de dispensador)',
     'Paso 3: Frotar palmas entre sí',
     'Paso 4: Palma derecha sobre dorso izquierdo y viceversa',
     'Paso 5: Palma con palma y dedos entrelazados',
     'Paso 6: Dorso de dedos contra la palma opuesta',
     'Paso 7: Frotación rotacional de los pulgares',
     'Paso 8: Yemas de los dedos en círculos sobre la palma',
-    'Paso 9: Enjuagar completamente con agua',
-    'Paso 10: Secar con toalla desechable',
-    'Paso 11: Cerrar el grifo con la misma toalla',
+    'Paso 9: Enjuagar (Simulación gestual sin agua real)',
+    'Paso 10: Secar (Simulación gestual con toalla desechable)',
+    'Paso 11: Cerrar el grifo (Simulación gestual con la toalla)',
   ];
 
   readonly currentClinicalTitle = computed(() => {
