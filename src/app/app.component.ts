@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HandwashStateService } from './core/services/handwash-state.service';
 import { AuthService } from './services/auth.service';
+import { ThemeService } from './services/theme.service';
 import { filter } from 'rxjs';
 
 @Component({
@@ -16,6 +17,13 @@ export class App {
   private readonly router = inject(Router);
   readonly stateService = inject(HandwashStateService);
   readonly authService = inject(AuthService);
+  readonly themeService = inject(ThemeService);
+
+  readonly isDark = computed(() => this.themeService.isDark());
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
 
   readonly student = this.stateService.student;
   readonly studentName = computed(

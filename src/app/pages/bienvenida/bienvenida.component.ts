@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { AuthService, AuthResponse } from '../../services/auth.service';
 import { HandwashStateService } from '../../core/services/handwash-state.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-bienvenida',
@@ -16,6 +17,19 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
   imports: [CommonModule, ReactiveFormsModule],
   template: `
     <div class="relative isolate w-full min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-gradient-to-br from-[#06182E] via-[#0B3A6B] to-[#0A4F6E]">
+      <!-- Botón Flotante de Modo Oscuro / Claro en Bienvenida -->
+      <div class="absolute top-4 right-4 z-20">
+        <button
+          type="button"
+          (click)="themeService.toggleTheme()"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95"
+          [title]="themeService.isDark() ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'"
+        >
+          <span>{{ themeService.isDark() ? '☀️' : '🌙' }}</span>
+          <span class="text-[11px] font-medium hidden sm:inline">{{ themeService.isDark() ? 'Modo Claro' : 'Modo Oscuro' }}</span>
+        </button>
+      </div>
+
       <!-- Decoración de fondo -->
       <div class="pointer-events-none absolute -left-24 -top-24 h-96 w-96 rounded-full bg-emerald-400/20 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-32 -right-24 h-[28rem] w-[28rem] rounded-full bg-sky-400/20 blur-3xl"></div>
@@ -56,15 +70,15 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
         </div>
 
         <!-- Tarjeta principal -->
-        <div class="rounded-3xl border border-white/60 bg-white p-5 sm:p-7 md:p-8 shadow-[0_20px_60px_-15px_rgba(2,12,27,0.6)]">
+        <div class="rounded-3xl border border-white/60 dark:border-slate-800 bg-white dark:bg-slate-900/95 p-5 sm:p-7 md:p-8 shadow-[0_20px_60px_-15px_rgba(2,12,27,0.6)]">
           @if (tipoAcceso() === 'docente') {
-            <div class="mb-7 flex items-center gap-4 border-b border-slate-100 pb-6">
+            <div class="mb-7 flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
               <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0B3A6B] to-sky-600 text-white shadow-lg shadow-sky-900/20">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5"/></svg>
               </div>
               <div>
-                <h2 class="font-heading text-xl font-bold tracking-tight text-slate-900 md:text-2xl">Ingreso de Personal Docente</h2>
-                <p class="mt-0.5 text-xs text-slate-500 md:text-sm">Panel de gestión clínica y supervisión docente</p>
+                <h2 class="font-heading text-xl font-bold tracking-tight text-slate-900 dark:text-white md:text-2xl">Ingreso de Personal Docente</h2>
+                <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 md:text-sm">Panel de gestión clínica y supervisión docente</p>
               </div>
             </div>
 
@@ -77,14 +91,14 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
 
             <form [formGroup]="docenteForm" (ngSubmit)="onSubmitDocente()" class="space-y-5">
               <div>
-                <label for="docenteCorreo" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700">Correo institucional <span class="text-rose-500">*</span></label>
-                <input id="docenteCorreo" type="email" formControlName="correo" placeholder="docente@ucc.edu.co" class="peer w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/15" />
+                <label for="docenteCorreo" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Correo institucional <span class="text-rose-500">*</span></label>
+                <input id="docenteCorreo" type="email" formControlName="correo" placeholder="docente@ucc.edu.co" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15" />
               </div>
               <div>
-                <label for="docentePassword" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700">Contraseña <span class="text-rose-500">*</span></label>
+                <label for="docentePassword" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Contraseña <span class="text-rose-500">*</span></label>
                 <div class="relative">
-                  <input id="docentePassword" [type]="verPassword() ? 'text' : 'password'" formControlName="password" placeholder="Ingresa tu contraseña de docente" class="peer w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/15 pr-12" />
-                  <button type="button" (click)="verPassword.set(!verPassword())" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                  <input id="docentePassword" [type]="verPassword() ? 'text' : 'password'" formControlName="password" placeholder="Ingresa tu contraseña de docente" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15 pr-12" />
+                  <button type="button" (click)="verPassword.set(!verPassword())" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:hover:text-slate-200 transition" [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   </button>
                 </div>
@@ -102,22 +116,22 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
           }
 
           @if (tipoAcceso() === 'estudiante') {
-            <div class="mb-7 flex flex-col gap-4 border-b border-slate-100 pb-6 sm:flex-row sm:items-center sm:justify-between">
+            <div class="mb-7 flex flex-col gap-4 border-b border-slate-100 dark:border-slate-800 pb-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 class="font-heading text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
+                <h2 class="font-heading text-xl font-bold tracking-tight text-slate-900 dark:text-white md:text-2xl">
                   {{ modo() === 'registro' ? 'Identificación del estudiante' : 'Iniciar sesión clínica' }}
                 </h2>
-                <p class="mt-0.5 text-xs text-slate-500 md:text-sm">
+                <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 md:text-sm">
                   {{ modo() === 'registro' ? 'Registra tus datos institucionales para tu práctica clínica' : 'Accede con tus credenciales registradas' }}
                 </p>
               </div>
-              <div class="flex shrink-0 rounded-2xl border border-slate-200 bg-slate-100 p-1">
+              <div class="flex shrink-0 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 p-1">
                 <button type="button" (click)="cambiarModo('registro')"
                   class="cursor-pointer rounded-xl px-4 py-2 text-xs font-bold transition-all duration-300"
-                  [ngClass]="modo() === 'registro' ? 'bg-gradient-to-r from-[#0B3A6B] to-sky-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'">Registro</button>
+                  [ngClass]="modo() === 'registro' ? 'bg-gradient-to-r from-[#0B3A6B] to-sky-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'">Registro</button>
                 <button type="button" (click)="cambiarModo('login')"
                   class="cursor-pointer rounded-xl px-4 py-2 text-xs font-bold transition-all duration-300"
-                  [ngClass]="modo() === 'login' ? 'bg-gradient-to-r from-[#0B3A6B] to-sky-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'">Ingresar</button>
+                  [ngClass]="modo() === 'login' ? 'bg-gradient-to-r from-[#0B3A6B] to-sky-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'">Ingresar</button>
               </div>
             </div>
 
@@ -131,32 +145,32 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             @if (modo() === 'registro') {
               <form [formGroup]="studentForm" (ngSubmit)="onSubmitRegistro()" class="space-y-5">
               <div>
-                <label for="fullName" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700">Nombre completo <span class="text-rose-500">*</span></label>
-                <input id="fullName" type="text" formControlName="fullName" placeholder="Ej. Laura Marcela Ramírez Gómez" class="peer w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/15" />
+                <label for="fullName" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Nombre completo <span class="text-rose-500">*</span></label>
+                <input id="fullName" type="text" formControlName="fullName" placeholder="Ej. Laura Marcela Ramírez Gómez" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15" />
               </div>
               <div>
-                <label for="studentCode" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700">Código estudiantil o documento <span class="text-rose-500">*</span></label>
-                <input id="studentCode" type="text" formControlName="studentCode" (input)="alCambiarCodigo()" placeholder="Ej. ENF-2026-101 o documento de identidad" class="peer w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/15" />
+                <label for="studentCode" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Código estudiantil o documento <span class="text-rose-500">*</span></label>
+                <input id="studentCode" type="text" formControlName="studentCode" (input)="alCambiarCodigo()" placeholder="Ej. ENF-2026-101 o documento de identidad" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15" />
               </div>
               <div>
-                <label for="correo" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700">Correo electrónico institucional <span class="text-rose-500">*</span></label>
-                <input id="correo" type="email" formControlName="correo" placeholder="estudiante@campusucc.edu.co" class="peer w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/15" />
+                <label for="correo" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Correo electrónico institucional <span class="text-rose-500">*</span></label>
+                <input id="correo" type="email" formControlName="correo" placeholder="estudiante@campusucc.edu.co" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15" />
               </div>
               <div>
-                <label for="password" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700">Contraseña de acceso <span class="text-rose-500">*</span></label>
+                <label for="password" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Contraseña de acceso <span class="text-rose-500">*</span></label>
                 <div class="relative">
-                  <input id="password" [type]="verPassword() ? 'text' : 'password'" formControlName="password" placeholder="Ej. Estudiante2026*" class="peer w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/15 pr-12" />
-                  <button type="button" (click)="verPassword.set(!verPassword())" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                  <input id="password" [type]="verPassword() ? 'text' : 'password'" formControlName="password" placeholder="Ej. Estudiante2026*" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15 pr-12" />
+                  <button type="button" (click)="verPassword.set(!verPassword())" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:hover:text-slate-200 transition" [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   </button>
                 </div>
               </div>
 
-                <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-sky-50 p-4 md:p-5">
+                <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-br from-emerald-50 to-sky-50 dark:from-emerald-950/40 dark:to-sky-950/30 p-4 md:p-5">
                   <label class="flex cursor-pointer items-start gap-3.5">
                     <input type="checkbox" formControlName="consent" id="consentCheck" class="mt-1 h-5 w-5 shrink-0 cursor-pointer rounded accent-emerald-600" />
-                    <div class="text-xs leading-relaxed text-slate-700 md:text-sm">
-                      <span class="font-bold text-[#0B3A6B]">Consentimiento informado: </span>
+                    <div class="text-xs leading-relaxed text-slate-700 dark:text-slate-300 md:text-sm">
+                      <span class="font-bold text-[#0B3A6B] dark:text-emerald-400">Consentimiento informado: </span>
                       Acepto participar voluntariamente en esta sesión pedagógica y de evaluación de bioseguridad.
                     </div>
                   </label>
@@ -175,14 +189,14 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
             @if (modo() === 'login') {
               <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()" class="space-y-5">
               <div>
-                <label for="identificador" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700">Código estudiantil o correo <span class="text-rose-500">*</span></label>
-                <input id="identificador" type="text" formControlName="identificador" placeholder="Ej. ENF-2026-101 o estudiante@campusucc.edu.co" class="peer w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/15" />
+                <label for="identificador" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Código estudiantil o correo <span class="text-rose-500">*</span></label>
+                <input id="identificador" type="text" formControlName="identificador" placeholder="Ej. ENF-2026-101 o estudiante@campusucc.edu.co" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15" />
               </div>
               <div>
-                <label for="loginPassword" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700">Contraseña <span class="text-rose-500">*</span></label>
+                <label for="loginPassword" class="mb-2 block text-[13px] font-semibold tracking-wide text-slate-700 dark:text-slate-200">Contraseña <span class="text-rose-500">*</span></label>
                 <div class="relative">
-                  <input id="loginPassword" [type]="verPassword() ? 'text' : 'password'" formControlName="password" placeholder="Ingresa tu contraseña" class="peer w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/15 pr-12" />
-                  <button type="button" (click)="verPassword.set(!verPassword())" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                  <input id="loginPassword" [type]="verPassword() ? 'text' : 'password'" formControlName="password" placeholder="Ingresa tu contraseña" class="peer w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/15 pr-12" />
+                  <button type="button" (click)="verPassword.set(!verPassword())" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:hover:text-slate-200 transition" [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   </button>
                 </div>
@@ -235,6 +249,7 @@ export class BienvenidaComponent {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly stateService = inject(HandwashStateService);
+  readonly themeService = inject(ThemeService);
 
   readonly tipoAcceso = signal<'estudiante' | 'docente'>('estudiante');
   readonly modo = signal<'registro' | 'login'>('registro');

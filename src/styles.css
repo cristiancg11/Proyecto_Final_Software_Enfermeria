@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -193,21 +195,167 @@ app-root {
 
 /* Encabezados y barras de navegación clínicas */
 header.sticky {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-color: #E2E8F0 !important;
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05) !important;
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #E2E8F0;
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05);
 }
 
 footer {
-  background: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
+  background: #FFFFFF;
+  border-color: #E2E8F0;
 }
 
 /* Legibilidad y contraste en tarjetas */
-.bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4,
-.bg-white\/90 h1, .bg-white\/90 h2, .bg-white\/90 h3, .bg-white\/90 h4,
-.bg-white\/95 h1, .bg-white\/95 h2, .bg-white\/95 h3, .bg-white\/95 h4 {
+:not(.dark) .bg-white h1, :not(.dark) .bg-white h2, :not(.dark) .bg-white h3, :not(.dark) .bg-white h4,
+:not(.dark) .bg-white\/90 h1, :not(.dark) .bg-white\/90 h2, :not(.dark) .bg-white\/90 h3, :not(.dark) .bg-white\/90 h4,
+:not(.dark) .bg-white\/95 h1, :not(.dark) .bg-white\/95 h2, :not(.dark) .bg-white\/95 h3, :not(.dark) .bg-white\/95 h4 {
   color: #0F172A;
+}
+
+/* ==========================================================================
+   TEMA CLÍNICO OSCURO (HOSPITAL-GRADE DARK MODE)
+   ========================================================================== */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  color: #F1F5F9;
+  background-color: #070D1E;
+  background-image:
+    radial-gradient(circle at 12% 10%, rgba(2, 132, 199, 0.12), transparent 28rem),
+    radial-gradient(circle at 88% 18%, rgba(13, 148, 136, 0.10), transparent 30rem),
+    radial-gradient(circle at 50% 90%, rgba(2, 132, 199, 0.08), transparent 35rem);
+}
+
+html.dark header.sticky {
+  background: rgba(11, 19, 43, 0.95) !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.dark footer {
+  background: #0B132B !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+}
+
+html.dark .card-soft {
+  background: #0F172A;
+  border-color: rgba(51, 65, 85, 0.8);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35);
+}
+
+html.dark .card-soft:hover {
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+html.dark .card-soft-elevated {
+  background: #0F172A;
+  border-color: rgba(71, 85, 105, 0.8);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Soporte de Superficies Clínicas en Modo Oscuro para Dashboard, Perfil, Admin y Resultado */
+html.dark app-dashboard .bg-white,
+html.dark app-perfil .bg-white,
+html.dark app-admin .bg-white,
+html.dark app-diagnostico .bg-white,
+html.dark app-resultado .bg-white\/98,
+html.dark app-resultado .bg-white {
+  background-color: #0B132B !important;
+  border-color: rgba(51, 65, 85, 0.7) !important;
+  color: #F8FAFC !important;
+}
+
+html.dark app-dashboard .bg-white h1,
+html.dark app-dashboard .bg-white h2,
+html.dark app-dashboard .bg-white h3,
+html.dark app-dashboard .bg-white h4,
+html.dark app-dashboard .text-slate-900,
+html.dark app-perfil .text-slate-900,
+html.dark app-admin .text-slate-900,
+html.dark app-resultado .text-slate-900 {
+  color: #F8FAFC !important;
+}
+
+html.dark app-dashboard .text-slate-800,
+html.dark app-perfil .text-slate-800,
+html.dark app-admin .text-slate-800,
+html.dark app-resultado .text-slate-800 {
+  color: #F1F5F9 !important;
+}
+
+html.dark app-dashboard .text-slate-700,
+html.dark app-perfil .text-slate-700,
+html.dark app-admin .text-slate-700,
+html.dark app-resultado .text-slate-700 {
+  color: #CBD5E1 !important;
+}
+
+html.dark app-dashboard .text-slate-600,
+html.dark app-dashboard .text-slate-500,
+html.dark app-perfil .text-slate-600,
+html.dark app-perfil .text-slate-500,
+html.dark app-admin .text-slate-600,
+html.dark app-admin .text-slate-500,
+html.dark app-resultado .text-slate-600,
+html.dark app-resultado .text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+html.dark app-dashboard .bg-slate-50,
+html.dark app-dashboard .bg-slate-100,
+html.dark app-perfil .bg-slate-50,
+html.dark app-perfil .bg-slate-50\/70,
+html.dark app-perfil .bg-slate-100,
+html.dark app-resultado .bg-slate-50 {
+  background-color: #132247 !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  color: #E2E8F0 !important;
+}
+
+html.dark app-dashboard .border-slate-200,
+html.dark app-dashboard .border-slate-200\/90,
+html.dark app-dashboard .border-slate-100,
+html.dark app-perfil .border-slate-200,
+html.dark app-perfil .border-slate-100,
+html.dark app-resultado .border-slate-200,
+html.dark app-resultado .border-slate-100 {
+  border-color: rgba(51, 65, 85, 0.8) !important;
+}
+
+html.dark input:not([type="checkbox"]):not([type="radio"]),
+html.dark select,
+html.dark textarea {
+  background-color: #111E38 !important;
+  color: #F8FAFC !important;
+  border-color: #334155 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+html.dark .btn-secondary {
+  background: #1E293B;
+  color: #F8FAFC;
+  border-color: #475569;
+}
+
+html.dark .btn-secondary:hover {
+  background-color: #334155;
+  border-color: #38BDF8;
+  color: #38BDF8;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 /* Animaciones suaves */
