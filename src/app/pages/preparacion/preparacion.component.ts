@@ -43,6 +43,21 @@ import { HandwashStateService } from '../../core/services/handwash-state.service
         </div>
       </div>
 
+            <!-- AVISO IMPORTANTE: RETIRAR RELOJES/OBJETOS Y SIMULACIÓN GESTUAL SIN AGUA -->
+      <div class="mb-8 p-5 sm:p-6 rounded-3xl bg-amber-500/15 border-2 border-amber-400/40 backdrop-blur-md flex flex-col sm:flex-row items-start sm:items-center gap-4 text-amber-100 shadow-xl animate-fade-in">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/25 text-amber-300 border border-amber-400/50 flex items-center justify-center text-2xl shrink-0 shadow-sm">
+          ⚠️
+        </div>
+        <div class="space-y-1">
+          <h4 class="text-sm sm:text-base font-black text-amber-200 uppercase tracking-wide">
+            Recordatorio de Seguridad Previo a la Cámara
+          </h4>
+          <p class="text-xs sm:text-sm text-amber-100/90 leading-relaxed font-medium">
+            Por favor, <strong>retírate relojes, manillas, anillos u objetos</strong> que puedan estorbar o interrumpir durante la práctica. Recuerda que la simulación frente a cámara se realiza de <strong>forma gestual / guiada sin agua real</strong>, cuidando de no mojar tus dispositivos (computador o celular).
+          </p>
+        </div>
+      </div>
+
       <!-- 3 TARJETAS VISUALES DE INDICACIONES CLÍNICAS -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 

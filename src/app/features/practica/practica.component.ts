@@ -582,7 +582,10 @@ export interface QualityAlert {
                       </svg>
                     </div>
                     <h4 class="font-extrabold text-base mb-1">Cámara en Espera</h4>
-                    <p class="text-xs text-slate-300 max-w-xs mb-4">
+                    <div class="mb-3 p-3 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-200 text-xs max-w-sm text-center font-medium">
+                      ⚠️ <strong>Recordatorio previo:</strong> Retira relojes, manillas y anillos para no obstruir los movimientos. La simulación frente a la cámara se realiza de <strong>forma gestual sin agua real</strong> para no mojar tus dispositivos.
+                    </div>
+                    <p class="text-xs text-slate-300 max-w-xs mb-3">
                       Ubica tus manos frente a la cámara para que MediaPipe detecte los 21 puntos articulares.
                     </p>
                     <div class="flex flex-wrap items-center justify-center gap-2">

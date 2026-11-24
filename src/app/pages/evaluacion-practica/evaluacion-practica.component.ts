@@ -256,6 +256,9 @@ export interface QualityAlert {
                   </div>
 
                   <h3 class="font-black text-xl mb-1 text-white">Examen Práctico Autónomo</h3>
+                  <div class="my-3 p-3.5 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-200 text-xs max-w-md text-center font-medium">
+                    ⚠️ <strong>Recordatorio obligatorio:</strong> Retírate relojes, manillas y anillos antes de iniciar. La simulación se ejecuta de <strong>forma gestual sin agua real</strong> (cuidando de no mojar tu dispositivo).
+                  </div>
                   <p class="text-xs sm:text-sm text-slate-300 max-w-md mb-2 leading-relaxed">
                     Colócate frente a la cámara con las manos visibles. El cronómetro se activará <strong>únicamente cuando la cámara empiece a transmitir</strong>.
                   </p>
