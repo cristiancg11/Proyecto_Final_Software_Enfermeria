@@ -119,7 +119,7 @@ export const registrarEncuesta = async (req: Request, res: Response): Promise<vo
  */
 export const obtenerEncuestasDocente = async (_req: Request, res: Response): Promise<void> => {
   try {
-    const encuestas = await prisma.encuestaPlataforma.findMany({
+    const encuestasRaw = await prisma.encuestaPlataforma.findMany({
       include: {
         usuario: {
           select: {
@@ -134,6 +134,24 @@ export const obtenerEncuestasDocente = async (_req: Request, res: Response): Pro
         createdAt: 'desc',
       },
     });
+
+    const esRegistroFicticio = (correo?: string | null, codigo?: string | null, nombre?: string | null): boolean => {
+      const c = (correo || '').toLowerCase().trim();
+      const cod = (codigo || '').toLowerCase().trim();
+      const n = (nombre || '').toLowerCase().trim();
+      return (
+        c.includes('demo') ||
+        c.includes('example.com') ||
+        c.includes('test.com') ||
+        cod.startsWith('demo-') ||
+        n.includes('demo estudiante') ||
+        n.includes('estudiante de prueba')
+      );
+    };
+
+    const encuestas = encuestasRaw.filter(
+      (e) => !esRegistroFicticio(e.usuario?.correo, e.usuario?.codigoEstudiantil, e.usuario?.nombre)
+    );
 
     const total = encuestas.length;
 

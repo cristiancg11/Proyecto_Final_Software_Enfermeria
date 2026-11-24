@@ -1402,40 +1402,7 @@ export class AdminComponent implements OnInit {
   readonly docenteRol = computed(() => this.authService.usuarioActual()?.rol || 'DOCENTE');
 
   readonly seguimientoVista = computed<SeguimientoEstudianteDocente[]>(() => {
-    const desdeServidor = this.seguimiento();
-    if (desdeServidor.length > 0) return desdeServidor;
-
-    // Fallback a partir de practicas() si el endpoint no proveyó seguimiento
-    return this.practicas().map((p) => {
-      const tienePractica = p.calificacion > 0 || (p.notaFinal !== undefined && p.notaFinal > 0) || p.aprobado;
-      const tienePost = p.notaTeorica !== undefined && p.notaTeorica > 0;
-      const etapas = [tienePractica, tienePractica, tienePost, false];
-      const completadas = etapas.filter(Boolean).length;
-      return {
-        estudianteId: p.estudianteId || p.id,
-        nombre: p.nombre,
-        codigo: p.codigo,
-        correo: p.correo,
-        fechaRegistro: p.fecha,
-        ultimaActividad: p.fecha,
-        estadoActividad: completadas === 0 ? 'Sin iniciar' : completadas >= 3 ? 'Flujo completo' : 'En curso',
-        preTest: { completado: tienePractica, intentos: tienePractica ? 1 : 0, puntaje: tienePractica ? 80 : null, fecha: p.fecha },
-        practica: {
-          completado: tienePractica,
-          intentos: tienePractica ? 1 : 0,
-          mejorNota: p.notaPractica ?? p.calificacion,
-          ultimaNota: p.notaFinal ?? p.calificacion,
-          aprobado: p.aprobado,
-          certificado: !!p.certificado,
-          fecha: p.fecha,
-        },
-        postTest: { completado: tienePost, intentos: tienePost ? 1 : 0, puntaje: tienePost ? ((p.notaTeorica ?? 0) * 10) : null, fecha: p.fecha },
-        encuesta: { completada: false, promedio: null, fecha: null },
-        mejoraPrePost: null,
-        etapasCompletadas: completadas,
-        porcentajeAvance: Math.round((completadas / 4) * 100),
-      };
-    });
+    return this.seguimiento();
   });
 
   readonly seguimientoFiltrado = computed(() => {
@@ -1653,6 +1620,13 @@ export class AdminComponent implements OnInit {
       },
       error: (err) => {
         this.cargandoEncuestas.set(false);
+        this.encuestas.set([]);
+        this.totalEncuestas.set(0);
+        this.promedioSatisfaccion.set(0);
+        this.promedioFacilidad.set(0);
+        this.promedioGuia.set(0);
+        this.promedioCamara.set(0);
+        this.promedioRecomendacion.set(0);
         console.warn('Aviso al cargar encuestas docente:', err);
       },
     });
@@ -1663,16 +1637,15 @@ export class AdminComponent implements OnInit {
     this.practicasService.obtenerPracticasDocente().subscribe({
       next: (res) => {
         this.practicas.set(res.practicas || []);
-        if (res.seguimiento) {
-          this.seguimiento.set(res.seguimiento);
-        }
-        if (res.resumen) {
-          this.resumenServidor.set(res.resumen);
-        }
+        this.seguimiento.set(res.seguimiento || []);
+        this.resumenServidor.set(res.resumen || null);
         this.cargandoPracticas.set(false);
       },
       error: (err) => {
         this.cargandoPracticas.set(false);
+        this.practicas.set([]);
+        this.seguimiento.set([]);
+        this.resumenServidor.set(null);
         this.mensajeError.set(err.error?.error || 'Error al cargar supervisión de prácticas');
       },
     });
@@ -1687,6 +1660,7 @@ export class AdminComponent implements OnInit {
       },
       error: (err) => {
         this.cargandoPreguntas.set(false);
+        this.preguntas.set([]);
         this.mensajeError.set(err.error?.error || 'Error al cargar el banco de preguntas');
       },
     });

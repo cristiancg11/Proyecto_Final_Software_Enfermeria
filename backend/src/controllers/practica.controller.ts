@@ -59,67 +59,65 @@ export const obtenerPracticasDocente = async (req: Request, res: Response): Prom
       ])
     );
 
-    const usuariosConIntento = new Set<string>();
+    const esRegistroFicticio = (correo?: string | null, codigo?: string | null, nombre?: string | null): boolean => {
+      const c = (correo || '').toLowerCase().trim();
+      const cod = (codigo || '').toLowerCase().trim();
+      const n = (nombre || '').toLowerCase().trim();
+      return (
+        c.includes('demo') ||
+        c.includes('example.com') ||
+        c.includes('test.com') ||
+        cod.startsWith('demo-') ||
+        n.includes('demo estudiante') ||
+        n.includes('estudiante de prueba')
+      );
+    };
 
-    const practicasDeIntentos = intentos.map((intento) => {
-      usuariosConIntento.add(intento.usuarioId);
-      const detalle = (intento.detallePasosJson || {}) as any;
-      const notaFinal = intento.calificacion;
-      const notaPractica = detalle.notaPractica !== undefined
-        ? Number(detalle.notaPractica)
-        : (Array.isArray(detalle.records) && detalle.records.length > 0
-            ? Math.min(10, Math.round((detalle.records.reduce((acc: number, r: any) => acc + (r.score || 0), 0)) * 10) / 10)
-            : notaFinal);
-      const notaTeorica = detalle.notaTeorica !== undefined
-        ? Number(detalle.notaTeorica)
-        : (detalle.quizScore !== undefined && detalle.totalQuizQuestions
-            ? Math.round((detalle.quizScore / detalle.totalQuizQuestions) * 100) / 10
-            : 0);
+    // Estudiantes reales en Supabase (excluyendo registros ficticios o de prueba)
+    const estudiantesReales = estudiantesRegistrados.filter(
+      (est) => !esRegistroFicticio(est.correo, est.codigoEstudiantil, est.nombre)
+    );
 
-      return {
-        id: intento.id,
-        estudianteId: intento.usuarioId,
-        nombre: intento.usuario.nombre,
-        codigo: intento.usuario.codigoEstudiantil,
-        correo: intento.usuario.correo,
-        fecha: intento.createdAt,
-        calificacion: notaFinal,
-        notaPractica,
-        notaTeorica,
-        notaFinal,
-        aprobado: intento.aprobado,
-        estado: intento.aprobado ? 'Aprobado' : 'Requiere práctica',
-        certificado: intento.certificado
-          ? {
-              id: intento.certificado.id,
-              codigoVerificacion: intento.certificado.codigoVerificacion,
-              fechaEmision: intento.certificado.fechaEmision,
-            }
-          : null,
-        detallePasos: intento.detallePasosJson,
-      };
-    });
+    // Prácticas reales guardadas en Supabase (excluyendo registros ficticios)
+    const practicas = intentos
+      .filter((intento) => !esRegistroFicticio(intento.usuario?.correo, intento.usuario?.codigoEstudiantil, intento.usuario?.nombre))
+      .map((intento) => {
+        const detalle = (intento.detallePasosJson || {}) as any;
+        const notaFinal = intento.calificacion;
+        const notaPractica = detalle.notaPractica !== undefined
+          ? Number(detalle.notaPractica)
+          : (Array.isArray(detalle.records) && detalle.records.length > 0
+              ? Math.min(10, Math.round((detalle.records.reduce((acc: number, r: any) => acc + (r.score || 0), 0)) * 10) / 10)
+              : notaFinal);
+        const notaTeorica = detalle.notaTeorica !== undefined
+          ? Number(detalle.notaTeorica)
+          : (detalle.quizScore !== undefined && detalle.totalQuizQuestions
+              ? Math.round((detalle.quizScore / detalle.totalQuizQuestions) * 100) / 10
+              : 0);
 
-    const estudiantesSinPractica = estudiantesRegistrados
-      .filter((est) => !usuariosConIntento.has(est.id))
-      .map((est) => ({
-        id: `reg-${est.id}`,
-        estudianteId: est.id,
-        nombre: est.nombre,
-        codigo: est.codigoEstudiantil,
-        correo: est.correo,
-        fecha: est.fechaRegistro,
-        calificacion: 0,
-        notaPractica: 0,
-        notaTeorica: 0,
-        notaFinal: 0,
-        aprobado: false,
-        estado: 'Registrado (En curso)',
-        certificado: null,
-        detallePasos: { records: [] },
-      }));
-
-    const practicas = [...practicasDeIntentos, ...estudiantesSinPractica];
+        return {
+          id: intento.id,
+          estudianteId: intento.usuarioId,
+          nombre: intento.usuario?.nombre || 'Estudiante',
+          codigo: intento.usuario?.codigoEstudiantil || '—',
+          correo: intento.usuario?.correo || '—',
+          fecha: intento.createdAt,
+          calificacion: notaFinal,
+          notaPractica,
+          notaTeorica,
+          notaFinal,
+          aprobado: intento.aprobado,
+          estado: intento.aprobado ? 'Aprobado' : 'Requiere práctica',
+          certificado: intento.certificado
+            ? {
+                id: intento.certificado.id,
+                codigoVerificacion: intento.certificado.codigoVerificacion,
+                fechaEmision: intento.certificado.fechaEmision,
+              }
+            : null,
+          detallePasos: intento.detallePasosJson,
+        };
+      });
 
     // ------------------------------------------------------------------
     // Seguimiento de investigación: etapas completadas por estudiante
@@ -155,7 +153,7 @@ export const obtenerPracticasDocente = async (req: Request, res: Response): Prom
       const maxFecha = (...fechas: (Date | null | undefined)[]) =>
         fechas.filter((f): f is Date => !!f).reduce<Date | null>((acc, f) => (!acc || f > acc ? f : acc), null);
 
-      seguimiento = estudiantesRegistrados.map((est) => {
+      seguimiento = estudiantesReales.map((est) => {
         const intentosEst = intentos.filter((i) => i.usuarioId === est.id);
         const preEst = diagnosticos.filter((d) => d.usuarioId === est.id && d.tipo === 'PRE');
         const postEst = diagnosticos.filter((d) => d.usuarioId === est.id && d.tipo === 'POST');
