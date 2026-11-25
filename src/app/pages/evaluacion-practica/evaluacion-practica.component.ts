@@ -704,9 +704,11 @@ export class EvaluacionPracticaComponent {
   readonly evaluacionFinalizada = signal(false);
   readonly completedRecords = this.stateService.stepRecords;
 
+  readonly tiempoGlobalSesion = signal(0);
+
   readonly tiempoTotalAcumulado = computed(() => {
     const sumPasos = this.completedRecords().reduce((acc, r) => acc + r.seconds, 0);
-    return Math.round((sumPasos + this.currentSeconds()) * 10) / 10;
+    return Math.round(Math.max(this.tiempoGlobalSesion(), sumPasos + this.currentSeconds()) * 10) / 10;
   });
 
   readonly clinicalTitles: string[] = [
@@ -740,10 +742,10 @@ export class EvaluacionPracticaComponent {
       return { type: 'hands-missing', message: 'Coloca ambas manos en el encuadre' };
     }
     if (!this.handsTogether()) {
-      return { type: 'hands-apart', message: 'Junta las manos para frotar' };
+      return { type: 'hands-apart', message: 'Junta las manos según el paso activo' };
     }
     if (!this.handsRubbing()) {
-      return { type: 'still', message: '⚠️ Frota activamente las manos' };
+      return { type: 'still', message: '⚠️ Manos estáticas: frota activamente con fricción continua' };
     }
     return null;
   });
@@ -773,6 +775,8 @@ export class EvaluacionPracticaComponent {
   private timerInterval: any = null;
 
   private previousKeyPoints: { x: number; y: number }[][] | null = null;
+  private previousPalmCenter0: { x: number; y: number } | null = null;
+  private previousPalmCenter1: { x: number; y: number } | null = null;
   private previousFrameAt: number | null = null;
   private smoothedMotion: number = 0;
   private effectiveSeconds: number = 0;
@@ -795,6 +799,7 @@ export class EvaluacionPracticaComponent {
     this.evaluacionFinalizada.set(false);
     this.effectiveSeconds = 0;
     this.currentSeconds.set(0);
+    this.tiempoGlobalSesion.set(0);
     // REQUISITO 1: El temporizador NO debe iniciar automáticamente al cargar la vista.
     // Solo arrancará cuando la cámara esté transmitiendo video.
   }
@@ -1009,94 +1014,125 @@ export class EvaluacionPracticaComponent {
     const instruction = this.currentStep().title;
     const stepIdx = this.currentStepIndex();
 
-    // a) Validar presencia de ambas manos
+    // Actualiza el cronómetro general de sesión de forma continua y monótona (meta OMS 60s)
+    if (elapsed > 0) {
+      this.tiempoGlobalSesion.update((t) => Math.round((t + elapsed) * 10) / 10);
+    }
+
+    // a) Validar presencia obligatoria de ambas manos frente a la cámara
     this.handsDetected.set(landmarks.length);
 
     if (landmarks.length < 2) {
       this.handsTogether.set(false);
       this.handsRubbing.set(false);
       this.consecutiveFrames.update((f) => Math.max(0, f - 3));
-      this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre para calibrar la postura.`);
+      this.palmsFeedback.set(`${instruction}: coloca ambas manos en el encuadre frente a la cámara.`);
       this.previousKeyPoints = null;
+      this.previousPalmCenter0 = null;
+      this.previousPalmCenter1 = null;
+
+      // Retroceso suave del progreso por ausencia de manos
+      if (this.effectiveSeconds > 0) {
+        this.effectiveSeconds = Math.max(0, this.effectiveSeconds - elapsed * 0.40);
+        const rounded = Math.round(this.effectiveSeconds * 10) / 10;
+        this.currentSeconds.set(rounded);
+      }
+      if (this.palmsEvidence() > 0) {
+        this.palmsEvidence.update((e) => Math.max(0, e - elapsed * 0.45));
+      }
+      if (this.effectiveSeconds < 3.8 && this.palmsValidated()) {
+        this.palmsValidated.set(false);
+      }
+      if (this.autoAdvanceTimer !== null) {
+        clearTimeout(this.autoAdvanceTimer);
+        this.autoAdvanceTimer = null;
+      }
       return;
     }
 
-    // b) Proximidad y postura anatómica estricta según paso OMS
-    const wrist0 = landmarks[0][0];
-    const wrist1 = landmarks[1][0];
+    const hand0 = landmarks[0];
+    const hand1 = landmarks[1];
+
+    // Escala anatómica normalizada de las manos (distancia muñeca 0 a nudillo dedo medio 9)
+    // Permite calibración precisa e invariable frente a distancia de la cámara en móviles y PC
+    const scale0 = Math.hypot(hand0[0].x - hand0[9].x, hand0[0].y - hand0[9].y) || 0.18;
+    const scale1 = Math.hypot(hand1[0].x - hand1[9].x, hand1[0].y - hand1[9].y) || 0.18;
+    const avgScale = (scale0 + scale1) / 2;
+
+    // Centros de palma aproximados (punto medio entre muñeca y metacarpiano medio)
+    const palm0 = {
+      x: (hand0[0].x + hand0[9].x) / 2,
+      y: (hand0[0].y + hand0[9].y) / 2,
+    };
+    const palm1 = {
+      x: (hand1[0].x + hand1[9].x) / 2,
+      y: (hand1[0].y + hand1[9].y) / 2,
+    };
+
+    const wrist0 = hand0[0];
+    const wrist1 = hand1[0];
     const wristDistance = Math.hypot(wrist0.x - wrist1.x, wrist0.y - wrist1.y);
     this.wristDistance.set(Math.round(wristDistance * 100) / 100);
 
-    const palm0 = {
-      x: (landmarks[0][0].x + landmarks[0][9].x) / 2,
-      y: (landmarks[0][0].y + landmarks[0][9].y) / 2,
-    };
-    const palm1 = {
-      x: (landmarks[1][0].x + landmarks[1][9].x) / 2,
-      y: (landmarks[1][0].y + landmarks[1][9].y) / 2,
-    };
     const palmDistance = Math.hypot(palm0.x - palm1.x, palm0.y - palm1.y);
 
-    const threshold = this.currentProximityThreshold();
+    // b) Postura anatómica estricta para cada uno de los 11 pasos protocolarios de la OMS
     let areHandsTogether = false;
 
-    // Validación anatómica calibrada para los 11 pasos técnicos de la OMS
-    if (stepIdx === 0 || stepIdx === 8) {
-      // Pasos 1 y 9: Mojar y Enjuagar bajo el agua
-      areHandsTogether = (palmDistance <= threshold * 1.6 || wristDistance <= threshold * 1.6);
+    if (stepIdx === 0) {
+      // Paso 1: Mojar las manos (simulación gestual de frotado y lavado bajo chorro)
+      areHandsTogether = palmDistance <= avgScale * 1.6 || wristDistance <= avgScale * 1.8;
     } else if (stepIdx === 1) {
-      // Paso 2: Aplicar jabón
-      areHandsTogether = palmDistance <= threshold * 1.5;
+      // Paso 2: Aplicar jabón (simulación gestual de dispensador y recepción en palma)
+      areHandsTogether = palmDistance <= avgScale * 1.4;
     } else if (stepIdx === 2) {
-      // Paso 3: Palma con Palma (Palmas enfrentadas)
-      areHandsTogether = palmDistance <= threshold && wristDistance <= threshold * 1.4;
+      // Paso 3: Palma con palma (contacto directo entre palmas)
+      areHandsTogether = palmDistance <= avgScale * 1.15 && wristDistance <= avgScale * 1.45;
     } else if (stepIdx === 3) {
-      // Paso 4: Palma sobre Dorso
-      const dorsalDist0 = Math.hypot(palm0.x - landmarks[1][9].x, palm0.y - landmarks[1][9].y);
-      const dorsalDist1 = Math.hypot(palm1.x - landmarks[0][9].x, palm1.y - landmarks[0][9].y);
-      areHandsTogether = dorsalDist0 <= threshold || dorsalDist1 <= threshold || palmDistance <= threshold * 1.1;
+      // Paso 4: Palma sobre dorso (palma derecha sobre dorso izquierdo y viceversa)
+      const dorsalDist0 = Math.hypot(palm0.x - hand1[9].x, palm0.y - hand1[9].y);
+      const dorsalDist1 = Math.hypot(palm1.x - hand0[9].x, palm1.y - hand0[9].y);
+      areHandsTogether = dorsalDist0 <= avgScale * 1.2 || dorsalDist1 <= avgScale * 1.2 || palmDistance <= avgScale * 1.25;
     } else if (stepIdx === 4) {
       // Paso 5: Palma con palma y dedos entrelazados
-      const fingerTipDist = Math.hypot(landmarks[0][12].x - landmarks[1][12].x, landmarks[0][12].y - landmarks[1][12].y);
-      areHandsTogether = (palmDistance <= threshold && fingerTipDist <= threshold * 1.3) || wristDistance <= threshold * 1.3;
+      const fingerTipDist = Math.hypot(hand0[12].x - hand1[12].x, hand0[12].y - hand1[12].y);
+      areHandsTogether = (palmDistance <= avgScale * 1.1 && fingerTipDist <= avgScale * 1.35) || palmDistance <= avgScale * 1.0;
     } else if (stepIdx === 5) {
-      // Paso 6: Dorso de Dedos
-      const knuckleDist = Math.hypot(landmarks[0][8].x - landmarks[1][0].x, landmarks[0][8].y - landmarks[1][0].y);
-      const knuckleDistRev = Math.hypot(landmarks[1][8].x - landmarks[0][0].x, landmarks[1][8].y - landmarks[0][0].y);
-      areHandsTogether = knuckleDist <= threshold * 1.25 || knuckleDistRev <= threshold * 1.25 || palmDistance <= threshold;
+      // Paso 6: Dorso de dedos contra la palma opuesta (agarre en gancho)
+      const knuckleDist0 = Math.hypot(hand0[8].x - palm1.x, hand0[8].y - palm1.y);
+      const knuckleDist1 = Math.hypot(hand1[8].x - palm0.x, hand1[8].y - palm0.y);
+      areHandsTogether = knuckleDist0 <= avgScale * 1.2 || knuckleDist1 <= avgScale * 1.2 || palmDistance <= avgScale * 1.15;
     } else if (stepIdx === 6) {
-      // Paso 7: Pulgares rotacionales
-      const thumb0InPalm1 = Math.hypot(landmarks[0][4].x - palm1.x, landmarks[0][4].y - palm1.y);
-      const thumb1InPalm0 = Math.hypot(landmarks[1][4].x - palm0.x, landmarks[1][4].y - palm0.y);
-      areHandsTogether = thumb0InPalm1 <= threshold || thumb1InPalm0 <= threshold || palmDistance <= threshold;
+      // Paso 7: Frotación rotacional de pulgares (pulgar atrapado en palma contraria)
+      const thumb0InPalm1 = Math.hypot(hand0[4].x - palm1.x, hand0[4].y - palm1.y);
+      const thumb1InPalm0 = Math.hypot(hand1[4].x - palm0.x, hand1[4].y - palm0.y);
+      areHandsTogether = thumb0InPalm1 <= avgScale * 1.15 || thumb1InPalm0 <= avgScale * 1.15 || palmDistance <= avgScale * 1.1;
     } else if (stepIdx === 7) {
-      // Paso 8: Yemas y uñas sobre palma cóncava
-      const tips0InPalm1 = Math.hypot(landmarks[0][8].x - palm1.x, landmarks[0][8].y - palm1.y);
-      const tips1InPalm0 = Math.hypot(landmarks[1][8].x - palm0.x, landmarks[1][8].y - palm0.y);
-      areHandsTogether = tips0InPalm1 <= threshold || tips1InPalm0 <= threshold || palmDistance <= threshold * 0.9;
+      // Paso 8: Yemas de los dedos en círculos sobre la palma
+      const tips0InPalm1 = Math.hypot(hand0[8].x - palm1.x, hand0[8].y - palm1.y);
+      const tips1InPalm0 = Math.hypot(hand1[8].x - palm0.x, hand1[8].y - palm0.y);
+      areHandsTogether = tips0InPalm1 <= avgScale * 0.95 || tips1InPalm0 <= avgScale * 0.95 || palmDistance <= avgScale * 1.0;
+    } else if (stepIdx === 8) {
+      // Paso 9: Enjuagar (movimiento continuo de aclarado bajo chorro de agua)
+      areHandsTogether = palmDistance <= avgScale * 1.6 || wristDistance <= avgScale * 1.7;
     } else if (stepIdx === 9) {
-      // Paso 10: Secar con toalla
-      areHandsTogether = palmDistance <= threshold * 1.5;
+      // Paso 10: Secar con toalla desechable (frotado y secado recíproco con toalla)
+      areHandsTogether = palmDistance <= avgScale * 1.45;
     } else {
-      // Paso 11: Cerrar el grifo
-      areHandsTogether = (palmDistance <= threshold * 1.8 || wristDistance <= threshold * 1.8);
+      // Paso 11: Cerrar el grifo con la toalla (contacto y giro con toalla interpuesta)
+      areHandsTogether = palmDistance <= avgScale * 1.7 || wristDistance <= avgScale * 1.8;
     }
 
     this.handsTogether.set(areHandsTogether);
 
-    if (!areHandsTogether) {
-      this.handsRubbing.set(false);
-      this.consecutiveFrames.update((f) => Math.max(0, f - 2));
-      this.palmsFeedback.set(`Ajusta la postura anatómica: junta y alinea las manos para ${instruction.toLowerCase()}.`);
-      this.previousKeyPoints = null;
-      return;
-    }
-
-    // c) Detección de frotado firme (filtra movimientos leves o caóticos)
-    const keyIndices = [4, 8, 12, 16, 20];
-    const currentKeyPoints: { x: number; y: number }[][] = landmarks
-      .slice(0, 2)
-      .map((hand) => keyIndices.map((idx) => ({ x: hand[idx].x, y: hand[idx].y })));
+    // c) Detección rigurosa de movimiento y fricción mecánica continua
+    // Muestreamos 10 landmarks anatómicos por mano:
+    // Muñeca (0), Pulgar base (2), Pulgar punta (4), Índice base (5), Índice punta (8), Medio base (9), Medio punta (12), Anular base (13), Anular punta (16), Meñique punta (20)
+    const keyIndices = [0, 2, 4, 5, 8, 9, 12, 13, 16, 20];
+    const currentKeyPoints: { x: number; y: number }[][] = [
+      keyIndices.map((idx) => ({ x: hand0[idx].x, y: hand0[idx].y })),
+      keyIndices.map((idx) => ({ x: hand1[idx].x, y: hand1[idx].y })),
+    ];
 
     let deltaMovement = 0;
     let sampleCount = 0;
@@ -1113,33 +1149,68 @@ export class EvaluacionPracticaComponent {
         }
       }
     }
+
+    // Variación de distancia relativa entre las dos manos (movimiento recíproco de fricción)
+    let relativePalmDelta = 0;
+    if (this.previousPalmCenter0 && this.previousPalmCenter1) {
+      const prevPalmDist = Math.hypot(
+        this.previousPalmCenter0.x - this.previousPalmCenter1.x,
+        this.previousPalmCenter0.y - this.previousPalmCenter1.y
+      );
+      relativePalmDelta = Math.abs(palmDistance - prevPalmDist);
+    }
+
     this.previousKeyPoints = currentKeyPoints;
+    this.previousPalmCenter0 = palm0;
+    this.previousPalmCenter1 = palm1;
 
-    const avgMovement = sampleCount > 0 ? deltaMovement / sampleCount : 0;
-    this.smoothedMotion = this.smoothedMotion * 0.60 + avgMovement * 0.40;
+    const avgDisplacement = sampleCount > 0 ? deltaMovement / sampleCount : 0;
+    const rawMotionIndex = (avgDisplacement * 0.55 + relativePalmDelta * 0.45) / avgScale;
 
-    // RESTRICCIÓN DE PRECISIÓN: Umbral mínimo 0.0075 y descarte de sacudidas caóticas
-    const isTooFastOrChaotic = avgMovement > 0.095;
-    const isRubbing = this.smoothedMotion >= 0.0075 && !isTooFastOrChaotic;
+    // Suavizado exponencial para amortiguar ruido pero reaccionar con rapidez
+    this.smoothedMotion = this.smoothedMotion * 0.65 + rawMotionIndex * 0.35;
+
+    // Umbrales calibrados para descartar manos quietas (estáticas) y movimientos bruscos/caóticos
+    const isTooFastOrChaotic = rawMotionIndex > 0.60;
+    const isRubbing = this.smoothedMotion >= 0.038 && !isTooFastOrChaotic;
     this.handsRubbing.set(isRubbing);
 
-    if (isTooFastOrChaotic) {
+    // Si la postura no coincide o las manos están quietas / fuera de rango
+    if (!areHandsTogether || !isRubbing || isTooFastOrChaotic) {
       this.consecutiveFrames.update((f) => Math.max(0, f - 2));
-      this.palmsFeedback.set(`⚠️ Movimiento muy brusco: mantén una cadencia rítmica controlada.`);
+
+      // RETROCESO SUAVE DEL PROGRESO POR INACTIVIDAD O POSTURA INADECUADA
+      if (this.effectiveSeconds > 0) {
+        this.effectiveSeconds = Math.max(0, this.effectiveSeconds - elapsed * 0.40);
+        const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
+        this.currentSeconds.set(roundedSeconds);
+      }
+      if (this.palmsEvidence() > 0) {
+        this.palmsEvidence.update((e) => Math.max(0, e - elapsed * 0.45));
+      }
+      if (this.effectiveSeconds < 3.8 && this.palmsValidated()) {
+        this.palmsValidated.set(false);
+      }
+      if (this.autoAdvanceTimer !== null) {
+        clearTimeout(this.autoAdvanceTimer);
+        this.autoAdvanceTimer = null;
+      }
+
+      // Mensajes contextuales de corrección en vivo
+      if (!areHandsTogether) {
+        this.palmsFeedback.set(`Ajusta la postura anatómica: alinea las manos para ${instruction.toLowerCase()}.`);
+      } else if (isTooFastOrChaotic) {
+        this.palmsFeedback.set(`⚠️ Movimiento muy brusco: mantén una cadencia rítmica controlada.`);
+      } else {
+        this.palmsFeedback.set(`⚠️ Manos estáticas: frota activamente con fricción continua para avanzar.`);
+      }
       return;
     }
 
-    if (!isRubbing) {
-      this.consecutiveFrames.update((f) => Math.max(0, f - 2));
-      this.palmsFeedback.set(`⚠️ Fricción insuficiente: frota con firmeza mecánica continua.`);
-      return;
-    }
-
-    // d) ACUMULACIÓN DE FOTOGRAMAS CONSECUTIVOS DE ESTABILIDAD
+    // d) Fricción continua y postura correcta confirmada: acumulamos estabilidad y tiempo
     this.consecutiveFrames.update((f) => Math.min(25, f + 1));
 
-    // Solo acumula tiempo si el estudiante sostiene al menos 8 frames consecutivos de técnica estable
-    if (this.consecutiveFrames() >= 8) {
+    if (this.consecutiveFrames() >= 6) {
       this.effectiveSeconds += elapsed;
       const roundedSeconds = Math.round(this.effectiveSeconds * 10) / 10;
       if (this.currentSeconds() !== roundedSeconds) {
@@ -1149,13 +1220,13 @@ export class EvaluacionPracticaComponent {
       const evidence = Math.min(4.0, this.palmsEvidence() + elapsed);
       this.palmsEvidence.set(evidence);
 
-      if (evidence >= 2.8 && this.consecutiveFrames() >= 10 && !this.palmsValidated()) {
+      if (evidence >= 3.6 && this.consecutiveFrames() >= 12 && !this.palmsValidated()) {
         this.palmsValidated.set(true);
       }
 
       if (this.effectiveSeconds < 4.0) {
         this.palmsFeedback.set(
-          `✓ Fricción activa en ${instruction} (${roundedSeconds}s / 4.0s). Mantén el frotado estable.`
+          `✓ Fricción activa en ${instruction} (${roundedSeconds}s / 4.0s). Mantén el frotado continuo.`
         );
       } else {
         this.palmsFeedback.set(`✓ ¡Excelente técnica autónoma y tiempo óptimo alcanzado (${roundedSeconds}s)!`);
@@ -1163,7 +1234,7 @@ export class EvaluacionPracticaComponent {
 
       // Avance automático solo tras alcanzar 4.0s de fricción continua y validada
       if (this.palmsValidated() && this.effectiveSeconds >= 4.0 && this.autoAdvanceTimer === null) {
-        this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 900);
+        this.autoAdvanceTimer = setTimeout(() => this.finishCurrentStep(), 850);
       }
     } else {
       this.palmsFeedback.set(`Estabilizando postura biomecánica... (${this.consecutiveFrames()}/12 frames)`);
@@ -1216,6 +1287,8 @@ export class EvaluacionPracticaComponent {
     this.consecutiveFrames.set(0);
     this.manosDetectadasHUD.set([]);
     this.previousKeyPoints = null;
+    this.previousPalmCenter0 = null;
+    this.previousPalmCenter1 = null;
     this.previousFrameAt = null;
     this.smoothedMotion = 0;
     this.effectiveSeconds = 0;
@@ -1372,6 +1445,7 @@ export class EvaluacionPracticaComponent {
     this.stateService.resetPractice();
     this.currentStepIndex.set(0);
     this.evaluacionFinalizada.set(false);
+    this.tiempoGlobalSesion.set(0);
     this.startCamera();
   }
 
